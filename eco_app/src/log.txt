@@ -1,0 +1,183 @@
+01-23 12:26:47.205: I/Adreno-EGL(20318): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+01-23 12:26:47.225: D/OpenGLRenderer(20318): Enabling debug mode 0
+01-23 12:26:51.929: D/MostViewPager(20318): Manual Page Enabled:true target_position:1 permitted:0
+01-23 12:26:51.929: D/MostViewPager(20318): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 12:26:51.949: D/MostViewPager(20318): Page selected:1 Permitted position;0
+01-23 12:26:54.562: D/MostViewPager(20318): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
+01-23 12:26:54.572: D/AndroidRuntime(20318): Shutting down VM
+01-23 12:26:54.572: W/dalvikvm(20318): threadid=1: thread exiting with uncaught exception (group=0x41610ba8)
+01-23 12:26:54.572: E/AndroidRuntime(20318): FATAL EXCEPTION: main
+01-23 12:26:54.572: E/AndroidRuntime(20318): Process: most.demo.ecoapp, PID: 20318
+01-23 12:26:54.572: E/AndroidRuntime(20318): java.lang.NullPointerException
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.app.FragmentStatePagerAdapter.instantiateItem(FragmentStatePagerAdapter.java:116)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at most.demo.ecoapp.SmartFragmentStatePagerAdapter.instantiateItem(SmartFragmentStatePagerAdapter.java:25)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.addNewItem(ViewPager.java:837)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.populate(ViewPager.java:1053)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:555)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:514)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.setCurrentItem(ViewPager.java:495)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at most.demo.ecoapp.MostViewPager.setCurrentItem(MostViewPager.java:58)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.PagerTabStrip$2.onClick(PagerTabStrip.java:116)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.view.View.performClick(View.java:4438)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.view.View$PerformClick.run(View.java:18422)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.os.Handler.handleCallback(Handler.java:733)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.os.Handler.dispatchMessage(Handler.java:95)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.os.Looper.loop(Looper.java:136)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at java.lang.reflect.Method.invokeNative(Native Method)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at java.lang.reflect.Method.invoke(Method.java:515)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+01-23 12:26:54.572: E/AndroidRuntime(20318): 	at dalvik.system.NativeStart.main(Native Method)
+01-23 12:26:54.592: D/dalvikvm(20318): GC_FOR_ALLOC freed 233K, 3% free 9328K/9592K, paused 22ms, total 22ms
+01-23 12:27:40.717: I/Adreno-EGL(20432): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+01-23 12:27:40.747: D/OpenGLRenderer(20432): Enabling debug mode 0
+01-23 12:27:48.434: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
+01-23 12:27:48.434: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 12:27:48.454: D/MostViewPager(20432): Page selected:1 Permitted position;0
+01-23 12:27:54.110: D/MostViewPager(20432): Page selected:2 Permitted position;0
+01-23 12:27:54.110: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
+01-23 12:27:54.110: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 12:27:54.110: D/MostViewPager(20432): Page selected:1 Permitted position;0
+01-23 12:27:58.354: D/dalvikvm(20432): GC_FOR_ALLOC freed 222K, 3% free 9324K/9580K, paused 17ms, total 17ms
+01-23 12:28:06.192: D/MostViewPager(20432): PASSCODE:000 LEN:3
+01-23 12:28:06.352: D/MostViewPager(20432): PASSCODE:00 LEN:2
+01-23 12:28:06.502: D/MostViewPager(20432): PASSCODE:0 LEN:1
+01-23 12:28:06.642: D/MostViewPager(20432): PASSCODE: LEN:0
+01-23 12:28:08.654: D/MostViewPager(20432): PASSCODE:1 LEN:1
+01-23 12:28:08.864: D/MostViewPager(20432): PASSCODE:12 LEN:2
+01-23 12:28:09.074: D/MostViewPager(20432): PASSCODE:123 LEN:3
+01-23 12:28:09.335: D/MostViewPager(20432): PASSCODE:1234 LEN:4
+01-23 12:28:09.335: D/MostViewPager(20432): PASSCODE: LEN:0
+01-23 12:28:09.335: D/MostViewPager(20432): Manual Page Enabled:true target_position:0 permitted:0
+01-23 12:28:09.335: D/MostViewPager(20432): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 12:28:09.345: D/MostViewPager(20432): Page selected:0 Permitted position;0
+01-23 12:28:09.345: W/IInputConnectionWrapper(20432): endBatchEdit on inactive InputConnection
+01-23 12:28:09.355: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
+01-23 12:28:09.385: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
+01-23 12:28:09.395: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
+01-23 12:28:11.106: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
+01-23 12:28:11.106: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 12:28:11.116: D/MostViewPager(20432): Page selected:1 Permitted position;0
+01-23 12:28:12.918: D/MostViewPager(20432): PASSCODE:0 LEN:1
+01-23 12:28:13.228: D/MostViewPager(20432): PASSCODE:00 LEN:2
+01-23 12:28:13.509: D/MostViewPager(20432): PASSCODE:000 LEN:3
+01-23 12:28:13.699: D/MostViewPager(20432): PASSCODE:0000 LEN:4
+01-23 12:28:13.709: D/MostViewPager(20432): PASSCODE: LEN:0
+01-23 12:28:13.709: D/MostViewPager(20432): Manual Page Enabled:true target_position:0 permitted:0
+01-23 12:28:13.709: D/MostViewPager(20432): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 12:28:13.709: D/MostViewPager(20432): Page selected:0 Permitted position;0
+01-23 12:28:13.709: W/IInputConnectionWrapper(20432): sendKeyEvent on inactive InputConnection
+01-23 12:28:13.719: W/IInputConnectionWrapper(20432): endBatchEdit on inactive InputConnection
+01-23 12:28:13.739: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
+01-23 12:28:13.759: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
+01-23 12:28:13.769: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
+01-23 12:28:15.871: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
+01-23 12:28:15.871: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 12:28:15.881: D/MostViewPager(20432): Page selected:1 Permitted position;0
+01-23 12:28:16.952: D/MostViewPager(20432): PASSCODE:1 LEN:1
+01-23 12:28:17.142: D/MostViewPager(20432): PASSCODE:12 LEN:2
+01-23 12:28:17.353: D/MostViewPager(20432): PASSCODE:123 LEN:3
+01-23 12:28:17.583: D/MostViewPager(20432): PASSCODE:1234 LEN:4
+01-23 12:28:17.583: D/MostViewPager(20432): PASSCODE: LEN:0
+01-23 12:28:17.583: W/IInputConnectionWrapper(20432): sendKeyEvent on inactive InputConnection
+01-23 12:28:17.583: W/IInputConnectionWrapper(20432): endBatchEdit on inactive InputConnection
+01-23 12:28:30.465: D/MostViewPager(20432): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
+01-23 12:28:30.475: D/AndroidRuntime(20432): Shutting down VM
+01-23 12:28:30.475: W/dalvikvm(20432): threadid=1: thread exiting with uncaught exception (group=0x41610ba8)
+01-23 12:28:30.485: E/AndroidRuntime(20432): FATAL EXCEPTION: main
+01-23 12:28:30.485: E/AndroidRuntime(20432): Process: most.demo.ecoapp, PID: 20432
+01-23 12:28:30.485: E/AndroidRuntime(20432): java.lang.NullPointerException
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.app.FragmentStatePagerAdapter.instantiateItem(FragmentStatePagerAdapter.java:116)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at most.demo.ecoapp.SmartFragmentStatePagerAdapter.instantiateItem(SmartFragmentStatePagerAdapter.java:25)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.addNewItem(ViewPager.java:837)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.populate(ViewPager.java:1053)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:555)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:514)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.setCurrentItem(ViewPager.java:495)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at most.demo.ecoapp.MostViewPager.setCurrentItem(MostViewPager.java:58)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.PagerTabStrip$2.onClick(PagerTabStrip.java:116)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.view.View.performClick(View.java:4438)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.view.View$PerformClick.run(View.java:18422)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.os.Handler.handleCallback(Handler.java:733)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.os.Handler.dispatchMessage(Handler.java:95)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.os.Looper.loop(Looper.java:136)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at java.lang.reflect.Method.invokeNative(Native Method)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at java.lang.reflect.Method.invoke(Method.java:515)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+01-23 12:28:30.485: E/AndroidRuntime(20432): 	at dalvik.system.NativeStart.main(Native Method)
+01-23 12:32:33.833: I/Adreno-EGL(20702): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+01-23 12:32:33.863: D/OpenGLRenderer(20702): Enabling debug mode 0
+01-23 12:32:38.677: D/MostViewPager(20702): Manual Page Enabled:true target_position:1 permitted:0
+01-23 12:32:38.677: D/MostViewPager(20702): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 12:32:38.697: D/MostViewPager(20702): Page selected:1 Permitted position;0
+01-23 12:32:40.509: D/dalvikvm(20702): GC_FOR_ALLOC freed 218K, 3% free 9310K/9560K, paused 21ms, total 21ms
+01-23 12:32:44.063: D/MostViewPager(20702): PASSCODE:000 LEN:3
+01-23 12:32:44.213: D/MostViewPager(20702): PASSCODE:00 LEN:2
+01-23 12:32:44.353: D/MostViewPager(20702): PASSCODE:0 LEN:1
+01-23 12:32:44.473: D/MostViewPager(20702): PASSCODE: LEN:0
+01-23 12:32:45.384: D/MostViewPager(20702): PASSCODE:1 LEN:1
+01-23 12:32:45.614: D/MostViewPager(20702): PASSCODE:12 LEN:2
+01-23 12:32:45.864: D/MostViewPager(20702): PASSCODE:123 LEN:3
+01-23 12:32:46.205: D/MostViewPager(20702): PASSCODE:1234 LEN:4
+01-23 12:32:46.215: D/MostViewPager(20702): PASSCODE: LEN:0
+01-23 12:32:46.215: D/MostViewPager(20702): Manual Page Enabled:true target_position:2 permitted:0
+01-23 12:32:46.215: D/MostViewPager(20702): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
+01-23 12:32:46.225: D/AndroidRuntime(20702): Shutting down VM
+01-23 12:32:46.225: W/dalvikvm(20702): threadid=1: thread exiting with uncaught exception (group=0x41610ba8)
+01-23 12:32:46.225: E/AndroidRuntime(20702): FATAL EXCEPTION: main
+01-23 12:32:46.225: E/AndroidRuntime(20702): Process: most.demo.ecoapp, PID: 20702
+01-23 12:32:46.225: E/AndroidRuntime(20702): java.lang.NullPointerException
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.app.FragmentStatePagerAdapter.instantiateItem(FragmentStatePagerAdapter.java:116)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.SmartFragmentStatePagerAdapter.instantiateItem(SmartFragmentStatePagerAdapter.java:25)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.addNewItem(ViewPager.java:837)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.populate(ViewPager.java:1053)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:555)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:514)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.setCurrentItem(ViewPager.java:495)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.MostViewPager.setCurrentItem(MostViewPager.java:58)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.MostViewPager.setInternalCurrentItem(MostViewPager.java:41)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.MainActivity.listPatients(MainActivity.java:124)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.config_fragments.Fragment_EnterPasscode.checkPasscode(Fragment_EnterPasscode.java:92)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.config_fragments.Fragment_EnterPasscode.access$3(Fragment_EnterPasscode.java:89)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.config_fragments.Fragment_EnterPasscode$1.afterTextChanged(Fragment_EnterPasscode.java:81)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView.sendAfterTextChanged(TextView.java:7424)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView$ChangeWatcher.afterTextChanged(TextView.java:9198)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.sendAfterTextChanged(SpannableStringBuilder.java:970)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.replace(SpannableStringBuilder.java:497)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.replace(SpannableStringBuilder.java:435)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.replace(SpannableStringBuilder.java:30)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.method.NumberKeyListener.onKeyDown(NumberKeyListener.java:121)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView.doKeyDown(TextView.java:5532)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView.onKeyDown(TextView.java:5343)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.KeyEvent.dispatch(KeyEvent.java:2640)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.View.dispatchKeyEvent(View.java:7665)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.dispatchKeyEvent(ViewPager.java:2481)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.superDispatchKeyEvent(PhoneWindow.java:2035)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at com.android.internal.policy.impl.PhoneWindow.superDispatchKeyEvent(PhoneWindow.java:1505)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.app.Activity.dispatchKeyEvent(Activity.java:2418)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v7.app.ActionBarActivityDelegateICS$WindowCallbackWrapper.dispatchKeyEvent(ActionBarActivityDelegateICS.java:258)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.dispatchKeyEvent(PhoneWindow.java:1962)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$ViewPostImeInputStage.processKeyEvent(ViewRootImpl.java:3845)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$ViewPostImeInputStage.onProcess(ViewRootImpl.java:3819)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3392)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3442)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3411)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$AsyncInputStage.forward(ViewRootImpl.java:3518)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3419)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$AsyncInputStage.apply(ViewRootImpl.java:3575)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3392)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3442)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3411)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3419)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3392)
+01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRo
