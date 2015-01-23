@@ -6,26 +6,29 @@ import most.demo.ecoapp.config_fragments.ConfigFragment;
 import most.demo.ecoapp.config_fragments.Fragment_EnterPasscode;
 import most.demo.ecoapp.config_fragments.Fragment_PatientSelection;
 import most.demo.ecoapp.config_fragments.Fragment_UserSelection;
-import most.demo.ecoapp.config_fragments.LoginFragment;
 import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Patient;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
+import android.util.Log;
 import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity implements IConfigBuilder {
    
 	private static String [] pages = { "User Selection",
-									   "Pass Code",
+									"Pass Code",
 									   "Emergency Patient Selection", 
 									   "Task Group",
 									   "Summary"};
+	
+	private static String TAG = "MostViewPager";
 	
 	private ConfigFragment [] configFragments = null;
 
@@ -40,7 +43,11 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
 		vpPager = (MostViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(this,getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
-        vpPager.setOnPageListener();
+        vpPager.setOnPageListener(pages);
+        
+        //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        //actionBar.setDisplayHomeAsUpEnabled(true);
+
 
 	}
 
@@ -52,6 +59,7 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
 	   this.configFragments[0] = Fragment_UserSelection.newInstance(this,1, "User Selection");	
 	   this.configFragments[1] = Fragment_EnterPasscode.newInstance(this, 2, "Enter passcode");
 	   this.configFragments[2] = Fragment_PatientSelection.newInstance(this, 3, "Patient Selection");
+	   this.configFragments[3] = Fragment_PatientSelection.newInstance(this, 4, "Patient Selection");
 	}
 
 
@@ -65,6 +73,7 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
         public MyPagerAdapter(MainActivity activity,FragmentManager fragmentManager) {
             super(fragmentManager);
             this.activity = activity; 
+            
         }
         
         
@@ -78,6 +87,8 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
         // Returns the fragment to display for that page
         @Override
         public Fragment getItem(int position) {
+        	Log.d(TAG,"Selected Page Item at pos:" + position);
+        	
         	  Toast.makeText(this.activity, 
                       "getItem on position:::: " + position, Toast.LENGTH_SHORT).show();
               if (position>=0 && position < pages.length)

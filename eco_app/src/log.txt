@@ -1,183 +1,274 @@
-01-23 12:26:47.205: I/Adreno-EGL(20318): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
-01-23 12:26:47.225: D/OpenGLRenderer(20318): Enabling debug mode 0
-01-23 12:26:51.929: D/MostViewPager(20318): Manual Page Enabled:true target_position:1 permitted:0
-01-23 12:26:51.929: D/MostViewPager(20318): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
-01-23 12:26:51.949: D/MostViewPager(20318): Page selected:1 Permitted position;0
-01-23 12:26:54.562: D/MostViewPager(20318): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
-01-23 12:26:54.572: D/AndroidRuntime(20318): Shutting down VM
-01-23 12:26:54.572: W/dalvikvm(20318): threadid=1: thread exiting with uncaught exception (group=0x41610ba8)
-01-23 12:26:54.572: E/AndroidRuntime(20318): FATAL EXCEPTION: main
-01-23 12:26:54.572: E/AndroidRuntime(20318): Process: most.demo.ecoapp, PID: 20318
-01-23 12:26:54.572: E/AndroidRuntime(20318): java.lang.NullPointerException
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.app.FragmentStatePagerAdapter.instantiateItem(FragmentStatePagerAdapter.java:116)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at most.demo.ecoapp.SmartFragmentStatePagerAdapter.instantiateItem(SmartFragmentStatePagerAdapter.java:25)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.addNewItem(ViewPager.java:837)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.populate(ViewPager.java:1053)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:555)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:514)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.ViewPager.setCurrentItem(ViewPager.java:495)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at most.demo.ecoapp.MostViewPager.setCurrentItem(MostViewPager.java:58)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.support.v4.view.PagerTabStrip$2.onClick(PagerTabStrip.java:116)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.view.View.performClick(View.java:4438)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.view.View$PerformClick.run(View.java:18422)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.os.Handler.handleCallback(Handler.java:733)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.os.Handler.dispatchMessage(Handler.java:95)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.os.Looper.loop(Looper.java:136)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at java.lang.reflect.Method.invokeNative(Native Method)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at java.lang.reflect.Method.invoke(Method.java:515)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
-01-23 12:26:54.572: E/AndroidRuntime(20318): 	at dalvik.system.NativeStart.main(Native Method)
-01-23 12:26:54.592: D/dalvikvm(20318): GC_FOR_ALLOC freed 233K, 3% free 9328K/9592K, paused 22ms, total 22ms
-01-23 12:27:40.717: I/Adreno-EGL(20432): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
-01-23 12:27:40.747: D/OpenGLRenderer(20432): Enabling debug mode 0
-01-23 12:27:48.434: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
-01-23 12:27:48.434: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
-01-23 12:27:48.454: D/MostViewPager(20432): Page selected:1 Permitted position;0
-01-23 12:27:54.110: D/MostViewPager(20432): Page selected:2 Permitted position;0
-01-23 12:27:54.110: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
-01-23 12:27:54.110: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
-01-23 12:27:54.110: D/MostViewPager(20432): Page selected:1 Permitted position;0
-01-23 12:27:58.354: D/dalvikvm(20432): GC_FOR_ALLOC freed 222K, 3% free 9324K/9580K, paused 17ms, total 17ms
-01-23 12:28:06.192: D/MostViewPager(20432): PASSCODE:000 LEN:3
-01-23 12:28:06.352: D/MostViewPager(20432): PASSCODE:00 LEN:2
-01-23 12:28:06.502: D/MostViewPager(20432): PASSCODE:0 LEN:1
-01-23 12:28:06.642: D/MostViewPager(20432): PASSCODE: LEN:0
-01-23 12:28:08.654: D/MostViewPager(20432): PASSCODE:1 LEN:1
-01-23 12:28:08.864: D/MostViewPager(20432): PASSCODE:12 LEN:2
-01-23 12:28:09.074: D/MostViewPager(20432): PASSCODE:123 LEN:3
-01-23 12:28:09.335: D/MostViewPager(20432): PASSCODE:1234 LEN:4
-01-23 12:28:09.335: D/MostViewPager(20432): PASSCODE: LEN:0
-01-23 12:28:09.335: D/MostViewPager(20432): Manual Page Enabled:true target_position:0 permitted:0
-01-23 12:28:09.335: D/MostViewPager(20432): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
-01-23 12:28:09.345: D/MostViewPager(20432): Page selected:0 Permitted position;0
-01-23 12:28:09.345: W/IInputConnectionWrapper(20432): endBatchEdit on inactive InputConnection
-01-23 12:28:09.355: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
-01-23 12:28:09.385: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
-01-23 12:28:09.395: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
-01-23 12:28:11.106: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
-01-23 12:28:11.106: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
-01-23 12:28:11.116: D/MostViewPager(20432): Page selected:1 Permitted position;0
-01-23 12:28:12.918: D/MostViewPager(20432): PASSCODE:0 LEN:1
-01-23 12:28:13.228: D/MostViewPager(20432): PASSCODE:00 LEN:2
-01-23 12:28:13.509: D/MostViewPager(20432): PASSCODE:000 LEN:3
-01-23 12:28:13.699: D/MostViewPager(20432): PASSCODE:0000 LEN:4
-01-23 12:28:13.709: D/MostViewPager(20432): PASSCODE: LEN:0
-01-23 12:28:13.709: D/MostViewPager(20432): Manual Page Enabled:true target_position:0 permitted:0
-01-23 12:28:13.709: D/MostViewPager(20432): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
-01-23 12:28:13.709: D/MostViewPager(20432): Page selected:0 Permitted position;0
-01-23 12:28:13.709: W/IInputConnectionWrapper(20432): sendKeyEvent on inactive InputConnection
-01-23 12:28:13.719: W/IInputConnectionWrapper(20432): endBatchEdit on inactive InputConnection
-01-23 12:28:13.739: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
-01-23 12:28:13.759: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
-01-23 12:28:13.769: W/IInputConnectionWrapper(20432): getTextBeforeCursor on inactive InputConnection
-01-23 12:28:15.871: D/MostViewPager(20432): Manual Page Enabled:true target_position:1 permitted:0
-01-23 12:28:15.871: D/MostViewPager(20432): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
-01-23 12:28:15.881: D/MostViewPager(20432): Page selected:1 Permitted position;0
-01-23 12:28:16.952: D/MostViewPager(20432): PASSCODE:1 LEN:1
-01-23 12:28:17.142: D/MostViewPager(20432): PASSCODE:12 LEN:2
-01-23 12:28:17.353: D/MostViewPager(20432): PASSCODE:123 LEN:3
-01-23 12:28:17.583: D/MostViewPager(20432): PASSCODE:1234 LEN:4
-01-23 12:28:17.583: D/MostViewPager(20432): PASSCODE: LEN:0
-01-23 12:28:17.583: W/IInputConnectionWrapper(20432): sendKeyEvent on inactive InputConnection
-01-23 12:28:17.583: W/IInputConnectionWrapper(20432): endBatchEdit on inactive InputConnection
-01-23 12:28:30.465: D/MostViewPager(20432): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
-01-23 12:28:30.475: D/AndroidRuntime(20432): Shutting down VM
-01-23 12:28:30.475: W/dalvikvm(20432): threadid=1: thread exiting with uncaught exception (group=0x41610ba8)
-01-23 12:28:30.485: E/AndroidRuntime(20432): FATAL EXCEPTION: main
-01-23 12:28:30.485: E/AndroidRuntime(20432): Process: most.demo.ecoapp, PID: 20432
-01-23 12:28:30.485: E/AndroidRuntime(20432): java.lang.NullPointerException
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.app.FragmentStatePagerAdapter.instantiateItem(FragmentStatePagerAdapter.java:116)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at most.demo.ecoapp.SmartFragmentStatePagerAdapter.instantiateItem(SmartFragmentStatePagerAdapter.java:25)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.addNewItem(ViewPager.java:837)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.populate(ViewPager.java:1053)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:555)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:514)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.ViewPager.setCurrentItem(ViewPager.java:495)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at most.demo.ecoapp.MostViewPager.setCurrentItem(MostViewPager.java:58)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.support.v4.view.PagerTabStrip$2.onClick(PagerTabStrip.java:116)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.view.View.performClick(View.java:4438)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.view.View$PerformClick.run(View.java:18422)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.os.Handler.handleCallback(Handler.java:733)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.os.Handler.dispatchMessage(Handler.java:95)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.os.Looper.loop(Looper.java:136)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at java.lang.reflect.Method.invokeNative(Native Method)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at java.lang.reflect.Method.invoke(Method.java:515)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
-01-23 12:28:30.485: E/AndroidRuntime(20432): 	at dalvik.system.NativeStart.main(Native Method)
-01-23 12:32:33.833: I/Adreno-EGL(20702): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
-01-23 12:32:33.863: D/OpenGLRenderer(20702): Enabling debug mode 0
-01-23 12:32:38.677: D/MostViewPager(20702): Manual Page Enabled:true target_position:1 permitted:0
-01-23 12:32:38.677: D/MostViewPager(20702): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
-01-23 12:32:38.697: D/MostViewPager(20702): Page selected:1 Permitted position;0
-01-23 12:32:40.509: D/dalvikvm(20702): GC_FOR_ALLOC freed 218K, 3% free 9310K/9560K, paused 21ms, total 21ms
-01-23 12:32:44.063: D/MostViewPager(20702): PASSCODE:000 LEN:3
-01-23 12:32:44.213: D/MostViewPager(20702): PASSCODE:00 LEN:2
-01-23 12:32:44.353: D/MostViewPager(20702): PASSCODE:0 LEN:1
-01-23 12:32:44.473: D/MostViewPager(20702): PASSCODE: LEN:0
-01-23 12:32:45.384: D/MostViewPager(20702): PASSCODE:1 LEN:1
-01-23 12:32:45.614: D/MostViewPager(20702): PASSCODE:12 LEN:2
-01-23 12:32:45.864: D/MostViewPager(20702): PASSCODE:123 LEN:3
-01-23 12:32:46.205: D/MostViewPager(20702): PASSCODE:1234 LEN:4
-01-23 12:32:46.215: D/MostViewPager(20702): PASSCODE: LEN:0
-01-23 12:32:46.215: D/MostViewPager(20702): Manual Page Enabled:true target_position:2 permitted:0
-01-23 12:32:46.215: D/MostViewPager(20702): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
-01-23 12:32:46.225: D/AndroidRuntime(20702): Shutting down VM
-01-23 12:32:46.225: W/dalvikvm(20702): threadid=1: thread exiting with uncaught exception (group=0x41610ba8)
-01-23 12:32:46.225: E/AndroidRuntime(20702): FATAL EXCEPTION: main
-01-23 12:32:46.225: E/AndroidRuntime(20702): Process: most.demo.ecoapp, PID: 20702
-01-23 12:32:46.225: E/AndroidRuntime(20702): java.lang.NullPointerException
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.app.FragmentStatePagerAdapter.instantiateItem(FragmentStatePagerAdapter.java:116)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.SmartFragmentStatePagerAdapter.instantiateItem(SmartFragmentStatePagerAdapter.java:25)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.addNewItem(ViewPager.java:837)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.populate(ViewPager.java:1053)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:555)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:514)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.setCurrentItem(ViewPager.java:495)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.MostViewPager.setCurrentItem(MostViewPager.java:58)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.MostViewPager.setInternalCurrentItem(MostViewPager.java:41)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.MainActivity.listPatients(MainActivity.java:124)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.config_fragments.Fragment_EnterPasscode.checkPasscode(Fragment_EnterPasscode.java:92)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.config_fragments.Fragment_EnterPasscode.access$3(Fragment_EnterPasscode.java:89)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at most.demo.ecoapp.config_fragments.Fragment_EnterPasscode$1.afterTextChanged(Fragment_EnterPasscode.java:81)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView.sendAfterTextChanged(TextView.java:7424)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView$ChangeWatcher.afterTextChanged(TextView.java:9198)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.sendAfterTextChanged(SpannableStringBuilder.java:970)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.replace(SpannableStringBuilder.java:497)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.replace(SpannableStringBuilder.java:435)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.SpannableStringBuilder.replace(SpannableStringBuilder.java:30)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.text.method.NumberKeyListener.onKeyDown(NumberKeyListener.java:121)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView.doKeyDown(TextView.java:5532)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.widget.TextView.onKeyDown(TextView.java:5343)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.KeyEvent.dispatch(KeyEvent.java:2640)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.View.dispatchKeyEvent(View.java:7665)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v4.view.ViewPager.dispatchKeyEvent(ViewPager.java:2481)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewGroup.dispatchKeyEvent(ViewGroup.java:1408)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.superDispatchKeyEvent(PhoneWindow.java:2035)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at com.android.internal.policy.impl.PhoneWindow.superDispatchKeyEvent(PhoneWindow.java:1505)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.app.Activity.dispatchKeyEvent(Activity.java:2418)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.support.v7.app.ActionBarActivityDelegateICS$WindowCallbackWrapper.dispatchKeyEvent(ActionBarActivityDelegateICS.java:258)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.dispatchKeyEvent(PhoneWindow.java:1962)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$ViewPostImeInputStage.processKeyEvent(ViewRootImpl.java:3845)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$ViewPostImeInputStage.onProcess(ViewRootImpl.java:3819)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3392)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3442)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3411)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$AsyncInputStage.forward(ViewRootImpl.java:3518)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3419)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$AsyncInputStage.apply(ViewRootImpl.java:3575)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3392)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3442)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3411)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3419)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3392)
-01-23 12:32:46.225: E/AndroidRuntime(20702): 	at android.view.ViewRo
+01-23 17:07:14.762: D/MostViewPager(28579): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:07:14.762: D/MostViewPager(28579): MostViewer childs:3
+01-23 17:07:14.762: D/MostViewPager(28579): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:07:14.762: D/MostViewPager(28579): Selected Page Item at pos:1
+01-23 17:07:14.772: D/MostViewPager(28579): Selected Page Item at pos:2
+01-23 17:07:14.792: D/MostViewPager(28579): Page selected:1 Permitted position;0
+01-23 17:07:21.959: D/MostViewPager(28579): MostViewer childs:4
+01-23 17:07:21.959: D/MostViewPager(28579): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 17:07:21.959: D/MostViewPager(28579): Selected Page Item at pos:0
+01-23 17:07:21.969: D/MostViewPager(28579): Page selected:0 Permitted position;0
+01-23 17:16:33.217: D/MostViewPager(28901): Selected Page Item at pos:0
+01-23 17:16:33.227: D/MostViewPager(28901): Selected Page Item at pos:1
+01-23 17:16:33.247: I/Adreno-EGL(28901): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+01-23 17:16:33.277: D/OpenGLRenderer(28901): Enabling debug mode 0
+01-23 17:16:36.109: D/MostViewPager(28901): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:16:36.109: D/MostViewPager(28901): MostViewer childs:3
+01-23 17:16:36.109: D/MostViewPager(28901): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:16:36.109: D/MostViewPager(28901): Selected Page Item at pos:1
+01-23 17:16:36.109: D/MostViewPager(28901): Selected Page Item at pos:2
+01-23 17:16:36.129: D/MostViewPager(28901): Page selected:1 Permitted position;0
+01-23 17:16:42.946: D/MostViewPager(28901): Page selected:0 Permitted position;0
+01-23 17:16:49.432: D/MostViewPager(28901): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:16:49.432: D/MostViewPager(28901): MostViewer childs:3
+01-23 17:16:49.462: D/dalvikvm(28901): GC_FOR_ALLOC freed 261K, 4% free 9301K/9592K, paused 32ms, total 32ms
+01-23 17:16:49.462: D/MostViewPager(28901): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:16:49.462: D/MostViewPager(28901): Selected Page Item at pos:1
+01-23 17:16:49.472: D/MostViewPager(28901): Selected Page Item at pos:2
+01-23 17:16:49.482: D/MostViewPager(28901): Page selected:1 Permitted position;0
+01-23 17:18:46.497: D/MostViewPager(29054): Selected Page Item at pos:0
+01-23 17:18:46.497: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:18:46.527: I/Adreno-EGL(29054): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+01-23 17:18:46.557: D/OpenGLRenderer(29054): Enabling debug mode 0
+01-23 17:18:48.809: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:18:48.809: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:18:48.809: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:18:48.809: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:18:48.819: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:18:48.829: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:18:59.079: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:18:59.079: D/MostViewPager(29054): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 17:18:59.079: D/MostViewPager(29054): Selected Page Item at pos:0
+01-23 17:18:59.089: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:19:00.450: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:00.450: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:00.450: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:00.450: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:00.450: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:19:00.480: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:19:00.540: D/dalvikvm(29054): GC_FOR_ALLOC freed 231K, 3% free 9331K/9592K, paused 31ms, total 36ms
+01-23 17:19:21.981: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:19:21.981: D/MostViewPager(29054): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:21.981: D/MostViewPager(29054): Selected Page Item at pos:0
+01-23 17:19:21.991: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:19:23.152: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:23.152: D/MostViewPager(29054): Called setCurrentItem:-1 with MostViewPager.manual_page_change_enabled:false
+01-23 17:19:23.923: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:23.923: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:23.923: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:23.923: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:23.933: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:19:23.943: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:19:24.774: D/MostViewPager(29054): Page selected:2 Permitted position;0
+01-23 17:19:24.774: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:24.774: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:19:24.774: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:24.774: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:24.774: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:19:30.740: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:19:32.892: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:32.892: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:32.892: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:32.892: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:32.892: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:19:32.902: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:19:35.454: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:19:37.676: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:37.676: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:37.676: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:37.676: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:37.676: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:19:37.686: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:19:38.507: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:19:40.790: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:40.790: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:40.790: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:40.790: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:40.800: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:19:40.810: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:19:42.811: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:19:44.433: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:44.433: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:44.433: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:44.433: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:44.443: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:19:44.443: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:19:45.264: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:19:45.264: D/MostViewPager(29054): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:45.264: D/MostViewPager(29054): Selected Page Item at pos:0
+01-23 17:19:45.264: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:19:47.796: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:19:47.796: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:19:47.796: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:19:47.796: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:19:47.796: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:19:47.806: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:20:57.735: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:21:00.227: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:00.227: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:21:00.227: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:00.227: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:00.227: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:21:00.237: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:02.319: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:21:05.012: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:05.012: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:21:05.012: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:05.012: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:05.012: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:21:05.022: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:07.054: D/dalvikvm(29054): GC_FOR_ALLOC freed 341K, 4% free 9501K/9872K, paused 26ms, total 26ms
+01-23 17:21:11.388: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:11.388: D/MostViewPager(29054): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:11.388: D/MostViewPager(29054): Selected Page Item at pos:0
+01-23 17:21:11.388: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:21:13.640: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:13.640: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:21:13.650: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:13.650: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:13.650: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:21:13.660: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:14.671: D/MostViewPager(29054): Page selected:2 Permitted position;0
+01-23 17:21:14.671: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:14.671: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:14.671: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:14.671: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:14.671: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:15.222: D/MostViewPager(29054): Page selected:2 Permitted position;0
+01-23 17:21:15.222: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:15.222: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:15.222: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:15.222: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:15.222: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:19.095: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:19.095: D/MostViewPager(29054): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:19.095: D/MostViewPager(29054): Selected Page Item at pos:0
+01-23 17:21:19.095: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:21:21.798: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:21:21.798: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:false
+01-23 17:21:23.139: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:23.139: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:21:23.139: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:23.139: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:23.139: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:21:23.149: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:25.632: D/MostViewPager(29054): Page selected:2 Permitted position;0
+01-23 17:21:25.632: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:25.632: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:25.632: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:25.632: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:25.632: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:26.623: D/MostViewPager(29054): Page selected:0 Permitted position;0
+01-23 17:21:29.255: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:29.255: D/MostViewPager(29054): MostViewer childs:3
+01-23 17:21:29.255: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:29.255: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:29.255: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:21:29.265: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:31.848: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:31.848: D/MostViewPager(29054): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:31.848: D/MostViewPager(29054): Selected Page Item at pos:2
+01-23 17:21:31.848: D/MostViewPager(29054): Selected Page Item at pos:3
+01-23 17:21:31.858: D/MostViewPager(29054): Page selected:2 Permitted position;0
+01-23 17:21:31.858: D/MostViewPager(29054): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:31.858: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:31.858: D/MostViewPager(29054): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:31.858: D/MostViewPager(29054): Selected Page Item at pos:1
+01-23 17:21:31.858: D/MostViewPager(29054): Selected Page Item at pos:0
+01-23 17:21:31.868: D/MostViewPager(29054): Page selected:1 Permitted position;0
+01-23 17:21:34.070: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:34.070: D/MostViewPager(29054): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:false
+01-23 17:21:34.621: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:34.621: D/MostViewPager(29054): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:false
+01-23 17:21:40.096: D/MostViewPager(29054): MostViewer childs:4
+01-23 17:21:40.096: D/MostViewPager(29054): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:false
+01-23 17:21:41.357: W/IInputConnectionWrapper(29054): showStatusIcon on inactive InputConnection
+01-23 17:21:53.979: D/MostViewPager(29308): Selected Page Item at pos:0
+01-23 17:21:53.979: D/MostViewPager(29308): Selected Page Item at pos:1
+01-23 17:21:54.009: I/Adreno-EGL(29308): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+01-23 17:21:54.050: D/OpenGLRenderer(29308): Enabling debug mode 0
+01-23 17:21:57.253: D/MostViewPager(29308): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:21:57.253: D/MostViewPager(29308): MostViewer childs:3
+01-23 17:21:57.253: D/MostViewPager(29308): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:21:57.253: D/MostViewPager(29308): Selected Page Item at pos:1
+01-23 17:21:57.253: D/MostViewPager(29308): Selected Page Item at pos:2
+01-23 17:21:57.263: D/MostViewPager(29308): Page selected:1 Permitted position;0
+01-23 17:22:03.479: D/MostViewPager(29308): Page selected:0 Permitted position;0
+01-23 17:22:06.241: D/MostViewPager(29308): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:22:06.241: D/MostViewPager(29308): MostViewer childs:3
+01-23 17:22:06.241: D/MostViewPager(29308): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:22:06.241: D/MostViewPager(29308): Selected Page Item at pos:1
+01-23 17:22:06.251: D/MostViewPager(29308): Selected Page Item at pos:2
+01-23 17:22:06.261: D/MostViewPager(29308): Page selected:1 Permitted position;0
+01-23 17:22:06.291: D/dalvikvm(29308): GC_FOR_ALLOC freed 237K, 3% free 9325K/9592K, paused 15ms, total 18ms
+01-23 17:22:07.683: D/MostViewPager(29308): MostViewer childs:4
+01-23 17:22:07.683: D/MostViewPager(29308): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:true
+01-23 17:22:07.683: D/MostViewPager(29308): Selected Page Item at pos:0
+01-23 17:22:07.683: D/MostViewPager(29308): Page selected:0 Permitted position;0
+01-23 17:22:09.645: D/MostViewPager(29308): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:22:09.645: D/MostViewPager(29308): MostViewer childs:3
+01-23 17:22:09.645: D/MostViewPager(29308): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:22:09.645: D/MostViewPager(29308): Selected Page Item at pos:1
+01-23 17:22:09.655: D/MostViewPager(29308): Selected Page Item at pos:2
+01-23 17:22:09.665: D/MostViewPager(29308): Page selected:1 Permitted position;0
+01-23 17:22:13.799: D/MostViewPager(29308): Page selected:0 Permitted position;0
+01-23 17:22:14.790: D/MostViewPager(29308): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:22:14.790: D/MostViewPager(29308): MostViewer childs:3
+01-23 17:22:14.790: D/MostViewPager(29308): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:22:14.790: D/MostViewPager(29308): Selected Page Item at pos:1
+01-23 17:22:14.790: D/MostViewPager(29308): Selected Page Item at pos:2
+01-23 17:22:14.810: D/MostViewPager(29308): Page selected:1 Permitted position;0
+01-23 17:22:17.843: D/MostViewPager(29308): MostViewer childs:4
+01-23 17:22:17.843: D/MostViewPager(29308): Called setCurrentItem:2 with MostViewPager.manual_page_change_enabled:true
+01-23 17:22:17.843: D/MostViewPager(29308): Selected Page Item at pos:2
+01-23 17:22:17.843: D/MostViewPager(29308): Selected Page Item at pos:3
+01-23 17:22:17.853: D/MostViewPager(29308): Page selected:2 Permitted position;0
+01-23 17:22:17.853: D/MostViewPager(29308): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:22:17.853: D/MostViewPager(29308): MostViewer childs:4
+01-23 17:22:17.853: D/MostViewPager(29308): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:22:17.853: D/MostViewPager(29308): Selected Page Item at pos:1
+01-23 17:22:17.853: D/MostViewPager(29308): Selected Page Item at pos:0
+01-23 17:22:17.863: D/MostViewPager(29308): Page selected:1 Permitted position;0
+01-23 17:22:18.844: D/MostViewPager(29308): MostViewer childs:4
+01-23 17:22:18.844: D/MostViewPager(29308): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:false
+01-23 17:22:21.066: D/MostViewPager(29308): MostViewer childs:4
+01-23 17:22:21.066: D/MostViewPager(29308): Called setCurrentItem:0 with MostViewPager.manual_page_change_enabled:false
+01-23 17:32:50.990: D/MostViewPager(29516): Selected Page Item at pos:0
+01-23 17:32:50.990: D/MostViewPager(29516): Selected Page Item at pos:1
+01-23 17:32:51.020: I/Adreno-EGL(29516): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+01-23 17:32:51.051: D/OpenGLRenderer(29516): Enabling debug mode 0
+01-23 17:32:56.025: D/MostViewPager(29516): Manual Page Enabled:true target_position:1 permitted:0
+01-23 17:32:56.025: D/MostViewPager(29516): MostViewer childs:3
+01-23 17:32:56.025: D/MostViewPager(29516): Called setCurrentItem:1 with MostViewPager.manual_page_change_enabled:true
+01-23 17:32:56.025: D/MostViewPager(29516): Selected Page Item at pos:1
+01-23 17:32:56.035: D/MostViewPager(29516): Selected Page Item at pos:2
+01-23 17:32:56.045: D/MostViewPager(29516): Page selected:1 Permitted position;0
+01-23 17:32:56.045: D/AndroidRuntime(29516): Shutting down VM
+01-23 17:32:56.045: W/dalvikvm(29516): threadid=1: thread exiting with uncaught exception (group=0x41610ba8)
+01-23 17:32:56.055: E/AndroidRuntime(29516): FATAL EXCEPTION: main
+01-23 17:32:56.055: E/AndroidRuntime(29516): Process: most.demo.ecoapp, PID: 29516
+01-23 17:32:56.055: E/AndroidRuntime(29516): java.lang.NullPointerException
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at most.demo.ecoapp.MostViewPager.updatePageTitleStyle(MostViewPager.java:73)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at most.demo.ecoapp.MostViewPager.access$5(MostViewPager.java:60)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at most.demo.ecoapp.MostViewPager$PageListener.onPageSelected(MostViewPager.java:128)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.support.v4.view.ViewPager.scrollToItem(ViewPager.java:572)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:556)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.support.v4.view.ViewPager.setCurrentItemInternal(ViewPager.java:514)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.support.v4.view.ViewPager.setCurrentItem(ViewPager.java:495)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at most.demo.ecoapp.MostViewPager.setCurrentItem(MostViewPager.java:92)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at most.demo.ecoapp.MostViewPager.setInternalCurrentItem(MostViewPager.java:50)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at most.demo.ecoapp.MainActivity.setEcoUser(MainActivity.java:120)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at most.demo.ecoapp.config_fragments.Fragment_UserSelection$1.onItemClick(Fragment_UserSelection.java:74)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.widget.AdapterView.performItemClick(AdapterView.java:299)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.widget.AbsListView.performItemClick(AbsListView.java:1113)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.widget.AbsListView$PerformClick.run(AbsListView.java:2911)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.widget.AbsListView$3.run(AbsListView.java:3645)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.os.Handler.handleCallback(Handler.java:733)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.os.Handler.dispatchMessage(Handler.java:95)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.os.Looper.loop(Looper.java:136)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at java.lang.reflect.Method.invokeNative(Native Method)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at java.lang.reflect.Method.invoke(Method.java:515)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+01-23 17:32:56.055: E/AndroidRuntime(29516): 	at dalvik.system.NativeStart.main(Native Method)
