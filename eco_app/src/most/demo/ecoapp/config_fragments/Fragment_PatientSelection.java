@@ -13,9 +13,11 @@ import most.demo.ecoapp.models.Patient;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -56,6 +58,17 @@ public class Fragment_PatientSelection extends ConfigFragment {
     private void initializeGUI(View view)
     {
 
+    	Button butEmergency = (Button)view.findViewById(R.id.buttonEmergency);
+    	
+    	butEmergency.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				config.setPatient(null);
+				
+			}
+		});
+    	
         ListView listView = (ListView)view.findViewById(R.id.listPatients);
        
         this.patientsArray = new ArrayList<Patient>();

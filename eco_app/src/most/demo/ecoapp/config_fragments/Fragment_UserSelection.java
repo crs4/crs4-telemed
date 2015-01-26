@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import most.demo.ecoapp.IConfigBuilder;
 import most.demo.ecoapp.R;
 import most.demo.ecoapp.models.EcoUser;
+import most.demo.ecoapp.models.TaskGroup;
 
 
 import android.os.Bundle;
@@ -79,9 +80,9 @@ public class Fragment_UserSelection extends ConfigFragment {
 
     private void retrieveEcoUsers()
     {
-    	this.ecoArray.add(new EcoUser("Eco 1", "1234", "Lanusei"));
-    	this.ecoArray.add(new EcoUser("Eco 2", "5678","Lanusei"));
-    	this.ecoArray.add(new EcoUser("Eco 3", "0000" , "Cagliari"));
+    	this.ecoArray.add(new EcoUser("Eco 1", "1234", new TaskGroup("1234","Lanusei")));
+    	this.ecoArray.add(new EcoUser("Eco 2","5678", new TaskGroup("1234","Lanusei")));
+    	this.ecoArray.add(new EcoUser("Eco 3", "0000" , new TaskGroup("1234","Cagliari")));
     	this.ecoArrayAdapter.notifyDataSetChanged();
     }
     

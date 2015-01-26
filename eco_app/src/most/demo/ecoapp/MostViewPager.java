@@ -41,24 +41,6 @@ public class MostViewPager extends ViewPager {
 		this.pages = pages;
 	}
 	
-	public void setInternalCurrentItem(int target_position, int permitted_position)
-	{
-		MostViewPager.manual_page_change_enabled = true;
-		permittedPos = permitted_position;
-		targetPos = target_position;
-		Log.d(TAG, "Manual Page Enabled:" +MostViewPager.manual_page_change_enabled + " target_position:" +target_position + " permitted:" + permittedPos);
-		this.setCurrentItem(targetPos);
-		
-		 
-		
-		if (getCurrentItem()==targetPos && targetPos!=permittedPos)
-		{
-			MostViewPager.manual_page_change_enabled = true;
-		}
-		
-		
-	}
-	
 	private void updatePageTitleStyle()
 	{
 		Log.d(TAG, "Num Pages:" + pages.length +" Num Childs:" + titleStrip.getChildCount());
@@ -91,13 +73,35 @@ public class MostViewPager extends ViewPager {
 		   
 	}
 	
+
+	public void setInternalCurrentItem(int target_position, int permitted_position)
+	{
+		MostViewPager.manual_page_change_enabled = true;
+		permittedPos = permitted_position;
+		targetPos = target_position;
+		Log.d(TAG, "Manual Page Enabled:" +MostViewPager.manual_page_change_enabled + " target_position:" +target_position + " permitted:" + permittedPos);
+		
+		
+		((ConfigFragment)((MainActivity.MyPagerAdapter) this.getAdapter()).getItem(targetPos)).updateConfigFields();
+		super.setCurrentItem(targetPos);
+		MostViewPager.manual_page_change_enabled = false;
+		updatePageTitleStyle();
+		
+		 
+		
+		if (getCurrentItem()==targetPos && targetPos!=permittedPos)
+		{
+			MostViewPager.manual_page_change_enabled = true;
+		}
+	}
+	
 	@Override
 	public void setCurrentItem(int position)
 	{
 		Log.d(TAG, "MostViewer childs:" +  getChildCount());
 		Log.d(TAG, "Called setCurrentItem:" + position + " with MostViewPager.manual_page_change_enabled:" + MostViewPager.manual_page_change_enabled);
 		
-		if (!MostViewPager.manual_page_change_enabled)
+		if (!MostViewPager.manual_page_change_enabled || position!=permittedPos)
 		{
 			return;
 		}
@@ -111,7 +115,6 @@ public class MostViewPager extends ViewPager {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 	    if (MostViewPager.manual_page_change_enabled) {
-	    	
 	        return super.onTouchEvent(event);
 	    }
 
@@ -138,8 +141,10 @@ public class MostViewPager extends ViewPager {
         	   MostViewPager.this.setInternalCurrentItem(targetPos, permittedPos);
            }
            else 
+           {
         	   MostViewPager.manual_page_change_enabled = false;
-           
+        	   updatePageTitleStyle();
+           }
     }
 }
 }

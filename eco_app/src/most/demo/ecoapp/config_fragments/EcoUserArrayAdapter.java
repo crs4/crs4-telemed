@@ -41,7 +41,7 @@ public class EcoUserArrayAdapter extends ArrayAdapter<EcoUser> {
         }
         EcoUser ecoUser = getItem(position);
         viewHolder.username.setText(ecoUser.getUsername());
-        viewHolder.opUnit.setText(ecoUser.getOpUnit());
+        viewHolder.opUnit.setText(ecoUser.getTaskGroup().getDescription());
         return convertView;
     }
 

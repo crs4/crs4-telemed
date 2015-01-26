@@ -5,9 +5,12 @@ package most.demo.ecoapp;
 import most.demo.ecoapp.config_fragments.ConfigFragment;
 import most.demo.ecoapp.config_fragments.Fragment_EnterPasscode;
 import most.demo.ecoapp.config_fragments.Fragment_PatientSelection;
+import most.demo.ecoapp.config_fragments.Fragment_Summary;
 import most.demo.ecoapp.config_fragments.Fragment_UserSelection;
 import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Patient;
+import most.demo.ecoapp.models.Teleconsultation;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -23,10 +26,10 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity implements IConfigBuilder {
    
 	private static String [] pages = { "User Selection",
-									"Pass Code",
+									  "Pass Code",
 									   "Emergency Patient Selection", 
-									   "Task Group",
-									   "Summary"};
+									   "Summary",
+									   };
 	
 	private static String TAG = "MostViewPager";
 	
@@ -34,6 +37,8 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
 
 	private MostViewPager vpPager  = null;
 	private EcoUser ecoUser = null;
+	private Patient patient = null;
+	private Teleconsultation teleconsultation = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,7 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
 	   this.configFragments[0] = Fragment_UserSelection.newInstance(this,1, "User Selection");	
 	   this.configFragments[1] = Fragment_EnterPasscode.newInstance(this, 2, "Enter passcode");
 	   this.configFragments[2] = Fragment_PatientSelection.newInstance(this, 3, "Patient Selection");
-	   this.configFragments[3] = Fragment_PatientSelection.newInstance(this, 4, "Patient Selection");
+	   this.configFragments[3] = Fragment_Summary.newInstance(this, 4, "Summary  ");
 	}
 
 
@@ -136,11 +141,33 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
 	}
 
 	@Override
-	public void setPatient(Patient selectedUser) {
-		// TODO Auto-generated method stub
+	public void setPatient(Patient selectedPatient) {
 		
+	this.patient = selectedPatient;
+	this.vpPager.setInternalCurrentItem(3, 2);
 	}
 
 
+	@Override
+	public void setTeleconsultation(Teleconsultation teleconsultation) {
+	 this.teleconsultation = teleconsultation;
+     this.startTeleconsultationActivity();
+	}
+
+
+	@Override
+	public Patient getPatient() {
+		return this.patient;
+	}
+
+
+	private void startTeleconsultationActivity()
+	{
+		Intent i = new Intent(this,TeleconsultationActivity.class);
+		Log.d(TAG,"STARTING ACTIVITY WITH ECO USER:" + this.ecoUser);
+		i.putExtra("EcoUser", this.ecoUser);
+		i.putExtra("Teleconsultation" , this.teleconsultation);
+		startActivity(i);
+	}
 	
 }

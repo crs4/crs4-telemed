@@ -1,7 +1,13 @@
 package most.demo.ecoapp.models;
 
-public class Patient {
+import java.io.Serializable;
+
+public class Patient implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8133793084935247284L;
 	private String id;
 	private String name;
 	private String surname;

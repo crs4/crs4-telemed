@@ -11,7 +11,9 @@
     <string name="lbl_ip_address">Ip Address</string>
     
     <string name="lbl_enter_passcode">Enter your passcode:</string>
-    <string name="default_password">0000</string>
+    <string name="lbl_patients_title">Patient</string>
+    <string name="lbl_teleconsultation_title">Teleconsultation</string>
+    <string name="default_password"></string>
     
 
 </resources>

@@ -2,6 +2,7 @@ package most.demo.ecoapp;
 
 import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Patient;
+import most.demo.ecoapp.models.Teleconsultation;
 
 public interface IConfigBuilder {
 	
@@ -11,4 +12,6 @@ public interface IConfigBuilder {
 	public EcoUser getEcoUser();
 	
 	public void setPatient(Patient selectedUser);
+	public Patient getPatient();
+	public void setTeleconsultation(Teleconsultation teleconsultation);
 }
