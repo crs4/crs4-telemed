@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:example="http://schemas.android.com/apk/res/most.demo.ecoapp"
+          >
+
+    <item example:teleconsultation_state="0"
+          android:drawable="@android:color/holo_red_light"
+          />
+    
+    <item example:teleconsultation_state="1"
+          android:drawable="@android:color/holo_orange_dark"
+          />
+    
+    <item example:teleconsultation_state="2"
+          android:drawable="@android:color/holo_green_light"
+          />
+
+    <item android:drawable="@android:color/holo_red_light" />
+    
+</selector>

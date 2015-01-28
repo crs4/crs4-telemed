@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+ <attr name="teleconsultation_state" format="integer">
+      <enum name="IDLE" value="0"/>
+      <enum name="READY" value="1"/>
+      <enum name="CALLING" value="2"/>
+      <enum name="HOLDING" value="3"/>
+     </attr>
+        
+    <declare-styleable name="most.demo.ecoapp.TeleconsultationStateView">
+        <attr name="teleconsultation_state" />
+    </declare-styleable>
+
+</resources>
