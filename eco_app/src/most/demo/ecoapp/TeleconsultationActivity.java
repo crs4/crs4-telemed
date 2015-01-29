@@ -10,20 +10,36 @@ import org.crs4.most.visualization.IStreamFragmentCommandListener;
 import org.crs4.most.visualization.StreamViewerFragment;
 
 import most.demo.ecoapp.models.EcoUser;
+import most.demo.ecoapp.ui.TcStateTextView;
+import android.annotation.SuppressLint;
+import android.app.ActionBar.LayoutParams;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 
 import android.os.Handler;
 import android.os.Message;
 
+@SuppressLint("InlinedApi")
 public class TeleconsultationActivity extends ActionBarActivity implements Handler.Callback, IStreamFragmentCommandListener {
 
 	private static final String TAG = "TeleconsultationActivity";
@@ -36,7 +52,8 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 	private ProgressDialog progressWaitingSpec;
 	
 	private TeleconsultationState tcState = TeleconsultationState.READY;
-	private TeleconsultationStateView tcStateView;
+	private TcStateTextView txtTcState = null;
+	private ImageButton butCall;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +63,10 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 		//this.ecoUser =  (EcoUser) i.getExtras().getSerializable("EcoUser");
 		
 		    setContentView(R.layout.activity_teleconsultation);
-	         
+	        txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
+	        txtTcState.setTeleconsultationState(this.tcState);
 		    //this.waitForSpecialist();
-		    
-		    this.tcStateView = (TeleconsultationStateView) findViewById(R.id.tcStateView);
-		    this.tcStateView.setTeleconsultationState(this.tcState);
+
 		    
 			this.handler = new Handler(this);
 			 
@@ -67,6 +83,8 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 			fragmentTransaction.add(R.id.container_stream,
 					stream1Fragment);
 			fragmentTransaction.commit();
+			
+			this.setupActionBar();
 			
 	}
 
@@ -92,6 +110,26 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 	
 	}
 	
+	private void setupActionBar()
+	{
+		ActionBar actionBar = getSupportActionBar();
+	    // add the custom view to the action bar
+	    actionBar.setCustomView(R.layout.actionbar_view);
+	    butCall = (ImageButton) actionBar.getCustomView().findViewById(R.id.butCallActionBar);
+	    butCall.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+			 showCallPopupWindow();
+				
+			}
+		});
+	    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+	        | ActionBar.DISPLAY_SHOW_HOME);
+		
+	}
+	
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -105,12 +143,44 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_call) {
+			showCallPopupWindow();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	*/
 
+	private void showCallPopupWindow()
+	{
+		 LayoutInflater inflater = (LayoutInflater)  TeleconsultationActivity.this
+				 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				 
+		 View popupView = inflater.inflate(R.layout.popup_call_selection,
+				 null);
+				 
+       
+        final PopupWindow popupWindow = new PopupWindow(popupView,
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
+        
+    
+        Button cancelButton = (Button) popupView.findViewById(R.id.butCallCancel);
+        
+        cancelButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				popupWindow.dismiss();
+				
+			}
+		});
+        
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+
+        popupWindow.showAtLocation(popupView, Gravity.BOTTOM, 0, 0);
+       
+	}
 	
 	@Override
 	public void onPlay(String streamId) {

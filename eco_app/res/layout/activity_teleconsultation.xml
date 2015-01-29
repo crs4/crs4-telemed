@@ -16,15 +16,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
+  
     
     <FrameLayout android:id="@+id/container_stream" android:layout_height="0px" 
         		 android:layout_width="match_parent" android:layout_weight="2"/>
     
-    <most.demo.ecoapp.TeleconsultationStateView 
-      android:id="@+id/tcStateView"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center"
-      example:teleconsultation_state="1" />
-
+    
+      <most.demo.ecoapp.ui.TcStateTextView
+        android:id="@+id/txtTcState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center" 
+        android:text="dffddf" />
+    
+   
 </LinearLayout>

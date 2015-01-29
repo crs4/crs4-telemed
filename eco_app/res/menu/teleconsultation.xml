@@ -3,9 +3,11 @@
     tools:context="most.demo.ecoapp.TeleconsultationActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_call"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_call"
+        android:icon="@drawable/ic_action_call2"
+        android:showAsAction="always"
+        />
 
 </menu>
