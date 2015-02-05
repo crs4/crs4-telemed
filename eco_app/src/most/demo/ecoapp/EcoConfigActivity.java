@@ -20,7 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
-public class MainActivity extends ActionBarActivity implements IConfigBuilder {
+public class EcoConfigActivity extends ActionBarActivity implements IConfigBuilder {
    
 	private static String [] pages = { "User Selection",
 									  "Pass Code",
@@ -70,9 +70,9 @@ public class MainActivity extends ActionBarActivity implements IConfigBuilder {
     // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
     public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
        
-    	private MainActivity activity = null;
+    	private EcoConfigActivity activity = null;
        
-        public MyPagerAdapter(MainActivity activity,FragmentManager fragmentManager) {
+        public MyPagerAdapter(EcoConfigActivity activity,FragmentManager fragmentManager) {
             super(fragmentManager);
             this.activity = activity; 
             

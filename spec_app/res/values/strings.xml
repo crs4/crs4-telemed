@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MOST DEMO Specialist App</string>
+
+    <string name="holdCall">Hold</string>
+    <string name="makeCall">Make</string>
+    <string name="unoldCall">Unhold</string>
+    <string name="hangupCall">Hangup</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

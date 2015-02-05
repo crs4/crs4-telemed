@@ -318,7 +318,7 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 	
 	private void waitForSpecialist()
 	{
-		//Toast.makeText(MainActivity.this, "Connecting to:" + deviceName + "(" + macAddress +")" , Toast.LENGTH_LONG).show();
+		//Toast.makeText(EcoConfigActivity.this, "Connecting to:" + deviceName + "(" + macAddress +")" , Toast.LENGTH_LONG).show();
 		progressWaitingSpec = new ProgressDialog(TeleconsultationActivity.this);
 		progressWaitingSpec.setTitle("Preparing Teleconsultation Session");
 		progressWaitingSpec.setMessage("Waiting for specialist...");
