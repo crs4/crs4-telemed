@@ -160,7 +160,7 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 
 	private void startTeleconsultationActivity()
 	{
-		Intent i = new Intent(this,TeleconsultationActivity.class);
+		Intent i = new Intent(this,EcoTeleconsultationActivity.class);
 		Log.d(TAG,"STARTING ACTIVITY WITH ECO USER:" + this.ecoUser);
 		i.putExtra("EcoUser", this.ecoUser);
 		i.putExtra("Teleconsultation" , this.teleconsultation);

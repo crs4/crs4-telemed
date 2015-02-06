@@ -10,10 +10,7 @@ import android.widget.TextView;
 
 public class TcStateTextView extends TextView {
 
-	private static final String TAG = "TeleconsultationActivity";
-
-
-
+	private static final String TAG = "SpecTeleconsultationActivity";
 
 	public TcStateTextView(Context context, AttributeSet attrs) {
 		super(context, attrs);

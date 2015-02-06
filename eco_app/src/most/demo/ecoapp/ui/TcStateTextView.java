@@ -9,9 +9,7 @@ import android.widget.TextView;
 
 public class TcStateTextView extends TextView {
 
-	private static final String TAG = "TeleconsultationActivity";
-
-
+	private static final String TAG = "EcoTeleconsultationActivity";
 
 
 	public TcStateTextView(Context context, AttributeSet attrs) {
@@ -54,7 +52,7 @@ public class TcStateTextView extends TextView {
        		
        	default:
        		Log.d(TAG,"Called DEFAULT:");
-       		this.setTextColor(Color.WHITE);
+       		this.setTextColor(Color.BLUE);
        		//this.setBackgroundColor(Color.WHITE);
        		break;
        		 

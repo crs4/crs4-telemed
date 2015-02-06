@@ -13,9 +13,16 @@ import java.util.List;
 import java.util.Properties;
 
 
-
 import most.demo.specapp.TeleconsultationState;
 import most.demo.specapp.ui.TcStateTextView;
+import most.voip.api.Utils;
+import most.voip.api.VoipEventBundle;
+import most.voip.api.VoipLib;
+import most.voip.api.VoipLibBackend;
+import most.voip.api.enums.CallState;
+import most.voip.api.enums.VoipEvent;
+import most.voip.api.enums.VoipEventType;
+import most.voip.api.interfaces.IBuddy;
 
 import org.crs4.most.streaming.IStream;
 import org.crs4.most.streaming.StreamingEventBundle;
@@ -43,6 +50,7 @@ import org.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 
  
 
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
  
 import android.content.res.AssetManager;
@@ -95,40 +103,67 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	private String streamingEchoUri;
 	
 	private Properties uriProps = null;
+	
+	// VOIP
+	
+	private String sipServerIp;
+	private String sipServerPort;
+	private String accountName;
+	private VoipLib myVoip;
+	private CallHandler voipHandler;
 
- 
+    private boolean streaming_ready = false;
+    private boolean voip_ready = false;
 
 	private PTZ_ControllerPopupWindowFactory ptzPopupWindowController;
 
+	private String MAIN_STREAM="MAIN_STREAM";
+	private String ECHO_STREAM="ECHO_STREAM";
+
+	private String ecoExtension;
+
+	private Button butMakeCall;
+
+	private Button butHoldCall;
+
+	private HashMap<String, String> voipParams;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
         
         this.handler = new Handler(this);
+        setContentView(R.layout.activity_main);
+        this.setupActionBar();
+        this.setupVoipGUI();
+        
+        
         this.setTeleconsultationState(TeleconsultationState.IDLE);
         
-        try {
-         
+		this.setupStreamLib();
+		this.setupPtzPopupWindow();
+        this.setupVoipLib();
+        
+    }
+    
+    private void setupStreamLib()
+    {
+    	try {
+            
+        	this.uriProps = getUriProperties("uri.properties.default");
+        	
+        	
         	// Instance and initialize the Streaming Library
         	StreamingLib streamingLib = new StreamingLibBackend();
-            
-            
-            this.ptzControllerFragment = PTZ_ControllerFragment.newInstance(true,true,true);
-            
     	  	// First of all, initialize the library 
 			streamingLib.initLib(this.getApplicationContext());
 			
-			
-	    	this.uriProps = getUriProperties("uri.properties.default");
-       	 	
+			this.ptzControllerFragment = PTZ_ControllerFragment.newInstance(true,true,true);
             this.ptzManager = new PTZ_Manager(this, uriProps.getProperty("uri_ptz") , uriProps.getProperty("username_ptz"), uriProps.getProperty("password_ptz"));
             
             // Instance the first stream
 	    	HashMap<String,String> stream1_params = new HashMap<String,String>();
-	    	stream1_params.put("name", "Stream_1");
+	    	stream1_params.put("name", MAIN_STREAM);
 	    	
 	    	
        	    this.streamingUri =  uriProps.getProperty("uri_stream");  
@@ -146,7 +181,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	    	
 	    	
 	    	HashMap<String,String> stream_echo_params = new HashMap<String,String>();
-	    	stream_echo_params.put("name", "Stream_Echo");
+	    	stream_echo_params.put("name", ECHO_STREAM);
 	    	
 	    	
        	    this.streamingEchoUri =  uriProps.getProperty("uri_echo");  
@@ -160,7 +195,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	    	
 	    	 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		    streaming_ready = false;
 			e.printStackTrace();
 		}
     	
@@ -171,9 +206,43 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 		fragmentTransaction.add(R.id.container_stream_echo, streamEchoFragment);
 		fragmentTransaction.commit();
 		
-		this.setupPtzPopupWindow();
-        this.setupActionBar();
+		streaming_ready = true;
     }
+    
+    private void setupVoipLib()
+	{
+		// Voip Lib Initialization Params
+
+				this.voipParams = getVoipSetupParams();
+				
+				this.ecoExtension = voipParams.get("ecoExtension");
+				
+				Log.d(TAG, "Initializing the lib...");
+				if (myVoip==null)
+				{
+					Log.d(TAG,"Voip null... Initialization.....");
+					myVoip = new  VoipLibBackend();
+					this.voipHandler = new CallHandler(this, myVoip);
+					
+					// Initialize the library providing custom initialization params and an handler where
+					// to receive event notifications. Following Voip methods are called from the handleMassage() callback method
+					//boolean result = myVoip.initLib(params, new RegistrationHandler(this, myVoip));
+					myVoip.initLib(this.getApplicationContext(), voipParams, this.voipHandler);
+				}
+				else 
+					{
+					Log.d(TAG,"Voip is not null... Destroying the lib before reinitializing.....");
+					// Reinitialization will be done after deinitialization event callback
+					this.voipHandler.reinitRequest  = true;
+					myVoip.destroyLib();
+					}
+	}
+	
+	
+
+
+	
+	
     
     private void setupActionBar()
 	{
@@ -202,6 +271,22 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     	
     }
     
+    
+    private void setupVoipGUI()
+    {
+    	this.butMakeCall = (Button) findViewById(R.id.but_make_call);
+    	
+    	this.butMakeCall.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				handleButMakeCallClicked();
+			}
+		});
+    	
+    	this.butHoldCall = (Button) findViewById(R.id.but_hold_call);
+    }
+    
     private void showPTZPopupWindow()
     {
     	this.ptzPopupWindowController.show();
@@ -217,31 +302,48 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     
 private void notifyTeleconsultationStateChanched() {
 		
+	if (txtTcState==null)
+		txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
+       
 		txtTcState.setTeleconsultationState(this.tcState);
-		if (this.tcState==TeleconsultationState.IDLE || tcState==TeleconsultationState.READY)
+		if (this.tcState==TeleconsultationState.IDLE)
 		{  
-			
-//			butCall.setEnabled(false);
-//			popupCancelButton.setEnabled(true);
-//			popupHoldButton.setEnabled(false);
-//			popupHangupButton.setEnabled(false);
+			butMakeCall.setText("Make");
+			butMakeCall.setEnabled(false);
+			butHoldCall.setEnabled(false);
+
 		}
+		else if (this.tcState==TeleconsultationState.READY)
+		{  
+			butMakeCall.setText("Make");
+			butMakeCall.setEnabled(true);
+			butHoldCall.setEnabled(false);
+		}
+		
 		else if (this.tcState==TeleconsultationState.CALLING)
 		{
-//			butCall.setEnabled(true);
-//			popupCancelButton.setEnabled(true);
-//			popupHoldButton.setEnabled(true);
-//			popupHangupButton.setEnabled(true);
+			butMakeCall.setEnabled(true);
+			butMakeCall.setText("Hangup");
+			butHoldCall.setEnabled(true);
+			butHoldCall.setText("Hold");
+ 
 		}
 		
 		else if (this.tcState==TeleconsultationState.HOLDING)
 		{
-//			butCall.setEnabled(true);
-//			popupCancelButton.setEnabled(true);
-//			popupHoldButton.setEnabled(true);
-//			popupHoldButton.setText("Unhold"); // to be fixed
-//			popupHangupButton.setEnabled(true);
+			butMakeCall.setEnabled(true);
+			butMakeCall.setText("Hangup");
+			butHoldCall.setEnabled(true);
+			butHoldCall.setText("Unhold");
 		}
+		else if (this.tcState==TeleconsultationState.REMOTE_HOLDING)
+		{
+			butMakeCall.setEnabled(true);
+			butMakeCall.setText("Hangup");
+			butHoldCall.setEnabled(true);
+			butHoldCall.setText("Unhold");
+		}
+		 
 		 
 	}
     
@@ -405,31 +507,42 @@ private void notifyTeleconsultationStateChanched() {
 
 	@Override
 	public void onPlay(String streamId) {
-		//showPTZDialog();
-		setupPtzPopupWindow();
-		//this.stream1.play();
+		if (streamId.equals(MAIN_STREAM))
+		this.stream1.play();
+		else if (streamId.equals(ECHO_STREAM))
+			this.streamEcho.play();
 	}
 
 	@Override
 	public void onPause(String streamId) {
-		this.stream1.pause();
+		if (streamId.equals(MAIN_STREAM))
+			this.stream1.pause();
+			else if (streamId.equals(ECHO_STREAM))
+				this.streamEcho.pause();
 		
 	}
 
 	@Override
 	public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
-		this.stream1.prepare(surfaceView);
+		if (streamId.equals(MAIN_STREAM))
+			this.stream1.prepare(surfaceView);
+		else if (streamId.equals(ECHO_STREAM))
+			this.streamEcho.prepare(surfaceView);
 	}
 
 	@Override
 	public void onSurfaceViewDestroyed(String streamId) {
-		this.stream1.destroy();
+		if (streamId.equals(MAIN_STREAM))
+			this.stream1.destroy();
+		else if (streamId.equals(ECHO_STREAM))
+			this.streamEcho.destroy();
 	}
 
 	@Override
 	public List<IStream> getStreams() {
 		 List<IStream> streams = new ArrayList<IStream>();
 		 streams.add(this.stream1);
+		 streams.add(this.streamEcho);
 		return streams;
 	}
 
@@ -442,4 +555,215 @@ private void notifyTeleconsultationStateChanched() {
 	}
 
 	
+	// VOIP METHODS AND LOGIC
+	
+	 private void handleButMakeCallClicked()
+	 {
+		 if (this.tcState==TeleconsultationState.READY)
+			 makeCall();
+		 else if (this.tcState==TeleconsultationState.CALLING || this.tcState==TeleconsultationState.HOLDING || this.tcState==TeleconsultationState.REMOTE_HOLDING)
+			 hangupCall();
+	 }
+	 
+	  private void makeCall()
+	  {
+		  if (myVoip!=null && myVoip.getCall().getState()==CallState.IDLE)
+			  myVoip.makeCall(this.ecoExtension);
+	  }
+	  
+	  private void hangupCall()
+	  {
+		  myVoip.hangupCall();
+	  }
+	
+	  private Properties getProperties(String FileName) {
+			Properties properties = new Properties();
+	        try {
+	               /**
+	                * getAssets() Return an AssetManager instance for your
+	                * application's package. AssetManager Provides access to an
+	                * application's raw asset files;
+	                */
+	               AssetManager assetManager = this.getAssets();
+	               /**
+	                * Open an asset using ACCESS_STREAMING mode. This
+	                */
+	               InputStream inputStream = assetManager.open(FileName);
+	               /**
+	                * Loads properties from the specified InputStream,
+	                */
+	               properties.load(inputStream);
+
+	        } catch (IOException e) {
+	               // TODO Auto-generated catch block
+	               Log.e("AssetsPropertyReader",e.toString());
+	        }
+	        return properties;
+
+	 }
+
+	  private void subscribeBuddies()
+		{
+			 String buddyExtension = this.voipParams.get("ecoExtension");
+			 Log.d(TAG, "adding buddies...");
+			 myVoip.getAccount().addBuddy(getBuddyUri(buddyExtension));
+		}
+	  
+	  private String getBuddyUri(String extension)
+		{
+			return "sip:" + extension + "@" + this.sipServerIp + ":" + this.sipServerPort ;
+		}
+
+	private HashMap<String,String> getVoipSetupParams()
+	    { 
+		   Properties props = getProperties("uri.properties.default");
+		    this.sipServerIp = props.getProperty("sipServerIp");
+		    this.sipServerPort=props.getProperty("sipServerPort");
+	    	HashMap<String,String> params = new HashMap<String,String>();
+			params.put("sipServerIp",sipServerIp); 
+			params.put("sipServerPort",sipServerPort); // default 5060
+			params.put("turnServerIp",  sipServerIp);
+			params.put("sipServerTransport","tcp"); 
+			
+			// used by the app for calling the specified extension, not used directly by the VoipLib
+			params.put("ecoExtension","MOST0002"); 
+
+			// specialista	
+			accountName =  props.getProperty("sipServerUser");
+			params.put("userPwd",props.getProperty("sipServerPwd")); // 
+		
+			
+			params.put("userName",accountName); // specialista
+			params.put("turnServerUser",accountName);  // specialista
+			params.put("turnServerPwd",accountName);  // specialista
+		 
+			
+			String onHoldSoundPath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "test_hold.wav");
+			String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_in_call.wav");
+			String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_out_call.wav");
+			
+			
+			params.put("onHoldSound", onHoldSoundPath);
+			params.put("onIncomingCallSound",onIncomingCallRingTonePath ); // onIncomingCallRingTonePath
+			params.put("onOutcomingCallSound",onOutcomingCallRingTonePath); // onOutcomingCallRingTonePath
+			
+			Log.d(TAG,"OnHoldSoundPath:" + onHoldSoundPath);
+			 
+			return params;
+	    	
+	    }
+	
+	
+		private class CallHandler extends Handler {
+
+			private SpecTeleconsultationActivity app;
+			private VoipLib myVoip;
+			public boolean reinitRequest = false;
+			private boolean incoming_call_request;
+
+			public CallHandler(SpecTeleconsultationActivity teleconsultationActivity,
+					VoipLib myVoip) {
+				this.app = teleconsultationActivity;
+				this.myVoip = myVoip;
+			}
+			
+			protected VoipEventBundle getEventBundle(Message voipMessage)
+	 		{
+	 			//int msg_type = voipMessage.what;
+				VoipEventBundle myState = (VoipEventBundle) voipMessage.obj;
+				String infoMsg = "Event:" + myState.getEvent() + ": Type:"  + myState.getEventType() + " : " + myState.getInfo();
+				Log.d(TAG, "Called handleMessage with event info:" + infoMsg);
+				return myState;
+	 		}
+			
+			@Override
+			public void handleMessage(Message voipMessage) {
+			
+				
+				VoipEventBundle myEventBundle = getEventBundle(voipMessage);
+				Log.d(TAG, "HANDLE EVENT TYPE:" + myEventBundle.getEventType() + " EVENT:" + myEventBundle.getEvent());
+				
+				
+		
+				//if (myEventBundle.getEventType()==VoipEventType.BUDDY_EVENT){}
+				
+				// Register the account after the Lib Initialization
+				if (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZED)   {myVoip.registerAccount();
+																				}	
+				else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTERED)    {
+																		subscribeBuddies();
+																		  // the teleconsultation is ready when also the Echographist is on line
+																	     //this.app.setTeleconsultationState(TeleconsultationState.READY);
+				                                                      }	
+				else if (myEventBundle.getEventType()==VoipEventType.BUDDY_EVENT)
+				{
+					
+					Log.d(TAG, "In handle Message for BUDDY EVENT");
+					//IBuddy myBuddy = (IBuddy) myEventBundle.getData();
+					
+					// There is only one subscribed buddy in this app, so we don't need to get IBuddy informations
+					if (myEventBundle.getEvent()==VoipEvent.BUDDY_CONNECTED)
+					{
+						setTeleconsultationState(TeleconsultationState.READY);
+					}
+					else if(myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)
+					{
+						if (myVoip.getCall().getState()== CallState.ACTIVE || myVoip.getCall().getState()== CallState.HOLDING)
+							setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
+					}
+					 
+				}
+				
+				//else if (myEventBundle.getEvent()==VoipEvent.CALL_INCOMING)  
+				
+				else if (myEventBundle.getEvent()==VoipEvent.CALL_READY)
+				{
+					
+				}
+				
+				else if  (myEventBundle.getEvent()==VoipEvent.CALL_ACTIVE)    {
+					this.app.setTeleconsultationState(TeleconsultationState.CALLING);
+				}
+				else if  (myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)    {
+					this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
+				}
+				else if  (myEventBundle.getEvent()==VoipEvent.CALL_HOLDING)    {
+					this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
+				}
+			 
+				
+			
+				else if (myEventBundle.getEvent()==VoipEvent.CALL_HANGUP)    {
+					this.app.setTeleconsultationState(TeleconsultationState.READY);
+				}
+				// Deinitialize the Voip Lib and release all allocated resources
+				else if (myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZED || myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZATION_FAILED) 
+				{
+					Log.d(TAG,"Setting to null MyVoipLib");
+					this.app.myVoip = null;
+					this.app.setTeleconsultationState(TeleconsultationState.IDLE);
+					
+					if (this.reinitRequest)
+					{	this.reinitRequest = false;
+						this.app.setupVoipLib();
+					}
+				}
+				else if  (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
+						myEventBundle.getEvent()==VoipEvent.LIB_CONNECTION_FAILED || myEventBundle.getEvent()==VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
+					    showErrorEventAlert(myEventBundle);
+				
+				     
+			} // end of handleMessage()
+
+			
+			private void showErrorEventAlert(VoipEventBundle myEventBundle) {
+			
+				AlertDialog.Builder miaAlert = new AlertDialog.Builder(this.app);
+				miaAlert.setTitle(myEventBundle.getEventType() + ":" + myEventBundle.getEvent());
+				miaAlert.setMessage(myEventBundle.getInfo());
+				AlertDialog alert = miaAlert.create();
+				alert.show();
+			}
+	
 }
+																		}

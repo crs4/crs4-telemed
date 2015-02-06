@@ -1,6 +1,9 @@
 package most.demo.ecoapp;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.crs4.most.streaming.IStream;
 import org.crs4.most.streaming.StreamingEventBundle;
@@ -23,6 +26,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -47,9 +51,9 @@ import android.os.Handler;
 import android.os.Message;
 
 @SuppressLint("InlinedApi")
-public class TeleconsultationActivity extends ActionBarActivity implements Handler.Callback, IStreamFragmentCommandListener {
+public class EcoTeleconsultationActivity extends ActionBarActivity implements Handler.Callback, IStreamFragmentCommandListener {
 
-	private static final String TAG = "TeleconsultationActivity";
+	private static final String TAG = "EcoTeleconsultationActivity";
 	private EcoUser ecoUser = null;
 	private StreamViewerFragment stream1Fragment = null;
 	private IStream stream1 = null;
@@ -111,6 +115,7 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 		{
 			butCall.setEnabled(false);
 			popupCancelButton.setEnabled(true);
+			popupHoldButton.setText("Hold");
 			popupHoldButton.setEnabled(false);
 			popupHangupButton.setEnabled(false);
 		}
@@ -119,6 +124,7 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 			butCall.setEnabled(true);
 			popupCancelButton.setEnabled(true);
 			popupHoldButton.setEnabled(true);
+			popupHoldButton.setText("Hold");
 			popupHangupButton.setEnabled(true);
 		}
 		
@@ -216,7 +222,7 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 
 	private void showCallPopupWindow()
 	{
-		 LayoutInflater inflater = (LayoutInflater)  TeleconsultationActivity.this
+		 LayoutInflater inflater = (LayoutInflater)  EcoTeleconsultationActivity.this
 				 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				 
 		 View popupView = inflater.inflate(R.layout.popup_call_selection,
@@ -227,7 +233,7 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 	private void setupCallPopupWindow()
 	{
 		
-		 LayoutInflater inflater = (LayoutInflater)  TeleconsultationActivity.this
+		 LayoutInflater inflater = (LayoutInflater)  EcoTeleconsultationActivity.this
 				 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				 
 		 View popupView = inflater.inflate(R.layout.popup_call_selection,
@@ -256,7 +262,7 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 				
 				@Override
 				public void onClick(View v) {
-					// to be implemented
+					handleButHoldClicked();
 					popupWindow.dismiss();
 				}
 			});
@@ -319,7 +325,7 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 	private void waitForSpecialist()
 	{
 		//Toast.makeText(EcoConfigActivity.this, "Connecting to:" + deviceName + "(" + macAddress +")" , Toast.LENGTH_LONG).show();
-		progressWaitingSpec = new ProgressDialog(TeleconsultationActivity.this);
+		progressWaitingSpec = new ProgressDialog(EcoTeleconsultationActivity.this);
 		progressWaitingSpec.setTitle("Preparing Teleconsultation Session");
 		progressWaitingSpec.setMessage("Waiting for specialist...");
 		progressWaitingSpec.setCancelable(false);
@@ -332,12 +338,12 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 	
 	private class CallHandler extends Handler {
 
-		private TeleconsultationActivity app;
+		private EcoTeleconsultationActivity app;
 		private VoipLib myVoip;
 		public boolean reinitRequest = false;
 		private boolean incoming_call_request;
 
-		public CallHandler(TeleconsultationActivity teleconsultationActivity,
+		public CallHandler(EcoTeleconsultationActivity teleconsultationActivity,
 				VoipLib myVoip) {
 			this.app = teleconsultationActivity;
 			this.myVoip = myVoip;
@@ -385,6 +391,13 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 				this.app.setTeleconsultationState(TeleconsultationState.CALLING);
 			}
 			
+			else if  (myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)    {
+				this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
+			}
+			else if  (myEventBundle.getEvent()==VoipEvent.CALL_HOLDING)    {
+				this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
+			}
+			
 		 
 			
 		
@@ -403,12 +416,14 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 					this.app.setupVoipLib();
 				}
 			}
-			else showUnhandledEventAlert(myEventBundle);
+			else if  (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
+					myEventBundle.getEvent()==VoipEvent.LIB_CONNECTION_FAILED || myEventBundle.getEvent()==VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
+				    showErrorEventAlert(myEventBundle);
 			     
 		} // end of handleMessage()
 
 		
-		private void showUnhandledEventAlert(VoipEventBundle myEventBundle) {
+		private void showErrorEventAlert(VoipEventBundle myEventBundle) {
 		
 			AlertDialog.Builder miaAlert = new AlertDialog.Builder(this.app);
 			miaAlert.setTitle(myEventBundle.getEventType() + ":" + myEventBundle.getEvent());
@@ -439,6 +454,13 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 		  }
 		}, 2000);
 		*/
+	}
+	private void handleButHoldClicked()
+	{
+		if (this.tcState==TeleconsultationState.CALLING)
+			toggleHoldCall(true);
+		else if (this.tcState==TeleconsultationState.HOLDING)
+			toggleHoldCall(false);
 	}
 	
 	private void toggleHoldCall(boolean holding)
@@ -482,46 +504,44 @@ public class TeleconsultationActivity extends ActionBarActivity implements Handl
 	}
 	
 	
-
-
 	private HashMap<String,String> getVoipSetupParams()
-	    { 
-		    this.sipServerIp = "192.168.1.1";
-		    this.sipServerPort="5060";
-	    	HashMap<String,String> params = new HashMap<String,String>();
-			params.put("sipServerIp",sipServerIp); 
-			params.put("sipServerPort",sipServerPort); // default 5060
-			params.put("turnServerIp",  sipServerIp);
-			params.put("sipServerTransport","tcp"); 
-			
-			/* ecografista 	*/
-			accountName = "ecografista";
-			params.put("userPwd","sha1$fdcad$659da6841c6d8538b7a10ca12aae");
+    { 
+	    this.sipServerIp = "192.168.1.1";
+	    this.sipServerPort="5060";
+    	HashMap<String,String> params = new HashMap<String,String>();
+		params.put("sipServerIp",sipServerIp); 
+		params.put("sipServerPort",sipServerPort); // default 5060
+		params.put("turnServerIp",  sipServerIp);
+		params.put("sipServerTransport","tcp"); 
+		
+		/* ecografista 	*/
+		accountName = "ecografista";
+		params.put("userPwd","sha1$fdcad$659da6841c6d8538b7a10ca12aae");
 
-			
-			/* specialista	
-			accountName = "specialista";
-			params.put("userPwd","sha1$40fcf$4718177db1b6966f64d2d436f212"); // 
-		*/
-			
-			params.put("userName",accountName); // specialista
-			params.put("turnServerUser",accountName);  // specialista
-			params.put("turnServerPwd",accountName);  // specialista
+		
+		/* specialista	
+		accountName = "specialista";
+		params.put("userPwd","sha1$40fcf$4718177db1b6966f64d2d436f212"); // 
+	*/
+		
+		params.put("userName",accountName); // specialista
+		params.put("turnServerUser",accountName);  // specialista
+		params.put("turnServerPwd",accountName);  // specialista
+	 
+		
+		String onHoldSoundPath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "test_hold.wav");
+		String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_in_call.wav");
+		String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_out_call.wav");
+		
+		
+		params.put("onHoldSound", onHoldSoundPath);
+		params.put("onIncomingCallSound",onIncomingCallRingTonePath ); // onIncomingCallRingTonePath
+		params.put("onOutcomingCallSound",onOutcomingCallRingTonePath); // onOutcomingCallRingTonePath
+		
+		Log.d(TAG,"OnHoldSoundPath:" + onHoldSoundPath);
 		 
-			
-			String onHoldSoundPath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "test_hold.wav");
-			String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_in_call.wav");
-			String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_out_call.wav");
-			
-			
-			params.put("onHoldSound", onHoldSoundPath);
-			params.put("onIncomingCallSound",onIncomingCallRingTonePath ); // onIncomingCallRingTonePath
-			params.put("onOutcomingCallSound",onOutcomingCallRingTonePath); // onOutcomingCallRingTonePath
-			
-			Log.d(TAG,"OnHoldSoundPath:" + onHoldSoundPath);
-			 
-			return params;
-	    	
-	    }
+		return params;
+    	
+    }
 	
 }
