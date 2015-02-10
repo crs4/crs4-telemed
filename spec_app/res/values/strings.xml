@@ -8,5 +8,9 @@
     <string name="unoldCall">Unhold</string>
     <string name="hangupCall">Hangup</string>
     <string name="action_settings">Settings</string>
+    
+    <string name="lblUsername">Username</string>
+    <string name="lblPassword">Password</string>
+     
 
 </resources>

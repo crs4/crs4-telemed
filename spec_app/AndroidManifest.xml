@@ -19,12 +19,21 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="most.demo.specapp.SpecTeleconsultationActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="reverseLandscape"
             android:label="@string/app_name" >
+         
+        </activity>
+        
+         <activity
+            android:name=".SpecConfigActivity"
+            android:screenOrientation="reverseLandscape"
+            android:label="Spec Setup" >
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
         </activity>
     </application>
 

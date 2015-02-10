@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.TextView;
 
 public class TcStateTextView extends TextView {
@@ -32,7 +33,8 @@ public class TcStateTextView extends TextView {
 	private void updateStyle() {
 	   
        this.setText(this.tcState.toString());
-    
+       this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+       
        switch (this.tcState) {
        	case IDLE:
        		Log.d(TAG,"Called IDLE:");

@@ -14,6 +14,7 @@ import java.util.Properties;
 
 
 import most.demo.specapp.TeleconsultationState;
+import most.demo.specapp.models.Teleconsultation;
 import most.demo.specapp.ui.TcStateTextView;
 import most.voip.api.Utils;
 import most.voip.api.VoipEventBundle;
@@ -53,6 +54,7 @@ import org.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
  
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
  
@@ -66,6 +68,7 @@ import android.view.View.OnClickListener;
 
 
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import android.widget.Toast;
@@ -93,7 +96,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	
 	private TeleconsultationState tcState = TeleconsultationState.IDLE;
 	private TcStateTextView txtTcState = null;
-	
+	private boolean localHold = false;
 
 	
 	private PTZ_ControllerFragment ptzControllerFragment = null;
@@ -112,8 +115,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	private VoipLib myVoip;
 	private CallHandler voipHandler;
 
-    private boolean streaming_ready = false;
-    private boolean voip_ready = false;
+    private Teleconsultation teleconsultation = null;
 
 	private PTZ_ControllerPopupWindowFactory ptzPopupWindowController;
 
@@ -127,23 +129,37 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	private Button butHoldCall;
 
 	private HashMap<String, String> voipParams;
+
+	private boolean streaming_ready=false;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+    
         this.handler = new Handler(this);
         setContentView(R.layout.activity_main);
         this.setupActionBar();
+        this.setupTeleconsultationInfo();
         this.setupVoipGUI();
         
         
         this.setTeleconsultationState(TeleconsultationState.IDLE);
         
+        
 		this.setupStreamLib();
 		this.setupPtzPopupWindow();
         this.setupVoipLib();
         
+    }
+    
+    private void setupTeleconsultationInfo()
+    {
+    	  Intent i = getIntent();
+          this.teleconsultation =  (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+          TextView txtTeleconsultation = (TextView) findViewById(R.id.txtTeleconsultation);
+          txtTeleconsultation.setText(this.teleconsultation.getInfo());
+         
     }
     
     private void setupStreamLib()
@@ -285,6 +301,14 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 		});
     	
     	this.butHoldCall = (Button) findViewById(R.id.but_hold_call);
+    	
+    	this.butHoldCall.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				handleButHoldClicked();
+			}
+		});
     }
     
     private void showPTZPopupWindow()
@@ -311,6 +335,7 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setText("Make");
 			butMakeCall.setEnabled(false);
 			butHoldCall.setEnabled(false);
+			localHold = false;
 
 		}
 		else if (this.tcState==TeleconsultationState.READY)
@@ -318,6 +343,7 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setText("Make");
 			butMakeCall.setEnabled(true);
 			butHoldCall.setEnabled(false);
+			localHold = false;
 		}
 		
 		else if (this.tcState==TeleconsultationState.CALLING)
@@ -326,6 +352,7 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setText("Hangup");
 			butHoldCall.setEnabled(true);
 			butHoldCall.setText("Hold");
+			localHold = false;
  
 		}
 		
@@ -335,6 +362,7 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setText("Hangup");
 			butHoldCall.setEnabled(true);
 			butHoldCall.setText("Unhold");
+			localHold = true;
 		}
 		else if (this.tcState==TeleconsultationState.REMOTE_HOLDING)
 		{
@@ -571,6 +599,26 @@ private void notifyTeleconsultationStateChanched() {
 			  myVoip.makeCall(this.ecoExtension);
 	  }
 	  
+	  private void handleButHoldClicked()
+		{
+			if (this.tcState==TeleconsultationState.CALLING)
+				toggleHoldCall(true);
+			else if (this.tcState==TeleconsultationState.HOLDING)
+				toggleHoldCall(false);
+		}
+		
+		private void toggleHoldCall(boolean holding)
+		{
+			if (holding)
+			{
+				myVoip.holdCall();
+			}
+			else
+			{
+				myVoip.unholdCall();
+			}
+		}
+		
 	  private void hangupCall()
 	  {
 		  myVoip.hangupCall();
@@ -660,6 +708,7 @@ private void notifyTeleconsultationStateChanched() {
 			private VoipLib myVoip;
 			public boolean reinitRequest = false;
 			private boolean incoming_call_request;
+		
 
 			public CallHandler(SpecTeleconsultationActivity teleconsultationActivity,
 					VoipLib myVoip) {
@@ -704,7 +753,21 @@ private void notifyTeleconsultationStateChanched() {
 					// There is only one subscribed buddy in this app, so we don't need to get IBuddy informations
 					if (myEventBundle.getEvent()==VoipEvent.BUDDY_CONNECTED)
 					{
-						setTeleconsultationState(TeleconsultationState.READY);
+
+						if (tcState==TeleconsultationState.REMOTE_HOLDING)
+						{
+							if (localHold)
+							{
+								setTeleconsultationState(TeleconsultationState.HOLDING);
+							}
+							else
+								setTeleconsultationState(TeleconsultationState.CALLING);
+						}
+						else if (tcState==TeleconsultationState.IDLE)
+						{
+							setTeleconsultationState(TeleconsultationState.READY);
+						}
+					 
 					}
 					else if(myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)
 					{
@@ -733,7 +796,7 @@ private void notifyTeleconsultationStateChanched() {
 			 
 				
 			
-				else if (myEventBundle.getEvent()==VoipEvent.CALL_HANGUP)    {
+				else if (myEventBundle.getEvent()==VoipEvent.CALL_HANGUP || myEventBundle.getEvent()==VoipEvent.CALL_REMOTE_HANGUP)    {
 					this.app.setTeleconsultationState(TeleconsultationState.READY);
 				}
 				// Deinitialize the Voip Lib and release all allocated resources

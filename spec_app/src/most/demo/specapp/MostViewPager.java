@@ -1,6 +1,6 @@
-package most.demo.ecoapp;
+package most.demo.specapp;
 
-import most.demo.ecoapp.config_fragments.ConfigFragment;
+import most.demo.specapp.config_fragments.ConfigFragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.view.PagerTitleStrip;
@@ -81,7 +81,7 @@ public class MostViewPager extends ViewPager {
 		Log.d(TAG, "Manual Page Enabled:" +MostViewPager.manual_page_change_enabled + " target_position:" +target_position + " permitted:" + permittedPos);
 		
 		
-		((ConfigFragment)((EcoConfigActivity.MyPagerAdapter) this.getAdapter()).getItem(targetPos)).updateConfigFields();
+		((ConfigFragment)((SpecConfigActivity.MyPagerAdapter) this.getAdapter()).getItem(targetPos)).updateConfigFields();
 		super.setCurrentItem(targetPos);
 		MostViewPager.manual_page_change_enabled = false;
 		updatePageTitleStyle();
@@ -105,7 +105,7 @@ public class MostViewPager extends ViewPager {
 			return;
 		}
 		
-		((ConfigFragment)((EcoConfigActivity.MyPagerAdapter) this.getAdapter()).getItem(position)).updateConfigFields();
+		((ConfigFragment)((SpecConfigActivity.MyPagerAdapter) this.getAdapter()).getItem(position)).updateConfigFields();
 		super.setCurrentItem(position);
 		MostViewPager.manual_page_change_enabled = false;
 		updatePageTitleStyle();
