@@ -37,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.ToggleButton;
 
 
 
@@ -64,11 +65,16 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private VoipLib myVoip;
 	private CallHandler voipHandler;
 	private PopupWindow popupWindow;
+	
 	private Button popupCancelButton;
 	private Button popupHangupButton;
-	private Button popupHoldButton;
+	private ToggleButton popupHoldButton;
 	private HashMap<String, String> voipParams;
+	
 	private boolean localHold = false;
+	private boolean remoteHold = false;
+	
+	private boolean accountRegistered = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,22 +112,36 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private void notifyTeleconsultationStateChanched() {
 		
 		txtTcState.setTeleconsultationState(this.tcState);
-		if (this.tcState==TeleconsultationState.IDLE || tcState==TeleconsultationState.READY)
+		if (this.tcState==TeleconsultationState.IDLE)
 		{
 			butCall.setEnabled(false);
 			popupCancelButton.setEnabled(true);
-			popupHoldButton.setText("Hold");
+	
 			popupHoldButton.setEnabled(false);
 			popupHangupButton.setEnabled(false);
 			
 			localHold = false;
+			accountRegistered = false;
 		}
+		else if (tcState==TeleconsultationState.READY)
+			{
+				butCall.setEnabled(false);
+				popupCancelButton.setEnabled(true);
+	
+				popupHoldButton.setEnabled(false);
+				popupHangupButton.setEnabled(false);
+				
+				localHold = false;
+				accountRegistered = true;
+			}
+		
+		
 		else if (this.tcState==TeleconsultationState.CALLING)
 		{
 			butCall.setEnabled(true);
 			popupCancelButton.setEnabled(true);
 			popupHoldButton.setEnabled(true);
-			popupHoldButton.setText("Hold");
+
 			popupHangupButton.setEnabled(true);
 			
 			localHold = false;
@@ -132,7 +152,6 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			butCall.setEnabled(true);
 			popupCancelButton.setEnabled(true);
 			popupHoldButton.setEnabled(true);
-			popupHoldButton.setText("Unhold"); // to be fixed
 			popupHangupButton.setEnabled(true);
 			
 			localHold = true;
@@ -265,7 +284,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				}
 			});
 	        
-	        popupHoldButton = (Button) popupView.findViewById(R.id.butCallHold);
+	        popupHoldButton = (ToggleButton) popupView.findViewById(R.id.butCallHold);
 	        
 	        popupHoldButton.setOnClickListener(new OnClickListener() {
 				
@@ -382,9 +401,17 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			if (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZED)   {myVoip.registerAccount();
 																			}	
 			else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTERED)    {
+																	if (!accountRegistered)
+																	{
 																	 this.app.subscribeBuddies();
-																     this.app.setTeleconsultationState(TeleconsultationState.READY);
+																	}
+																	else accountRegistered = true;
 			                                                      }	
+			
+			else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_UNREGISTERED)
+			{
+				 setTeleconsultationState(TeleconsultationState.IDLE);
+			}
 			
 			else if (myEventBundle.getEventType()==VoipEventType.BUDDY_EVENT)
 			{
@@ -460,9 +487,16 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				}
 			}
 			else if  (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
-					myEventBundle.getEvent()==VoipEvent.LIB_CONNECTION_FAILED || myEventBundle.getEvent()==VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
+					myEventBundle.getEvent()==VoipEvent.LIB_CONNECTION_FAILED)
+			{
+					setTeleconsultationState(TeleconsultationState.IDLE);
 				    showErrorEventAlert(myEventBundle);
-			     
+			}    
+			else if (myEventBundle.getEvent()==VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
+			{
+				 showErrorEventAlert(myEventBundle);
+			}
+			
 		} // end of handleMessage()
 
 		
@@ -501,10 +535,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	
 	private void handleButHoldClicked()
 	{
-		if (this.tcState==TeleconsultationState.CALLING)
-			toggleHoldCall(true);
-		else if (this.tcState==TeleconsultationState.HOLDING)
-			toggleHoldCall(false);
+		if (this.tcState!=TeleconsultationState.READY && this.tcState!=TeleconsultationState.IDLE)
+			toggleHoldCall(popupHoldButton.isChecked());
 	}
 	
 	private void toggleHoldCall(boolean holding)

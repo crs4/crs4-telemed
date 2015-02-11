@@ -62,9 +62,10 @@
 			              android:layout_height="match_parent"
 			               />
 			          
-           <Button
+           <ToggleButton
               android:id="@+id/but_hold_call"
-              android:text="@string/holdCall"
+              android:textOn="@string/onHoldCall"
+              android:textOff="@string/onHoldCall"
               android:layout_width="wrap_content"
               android:layout_height="match_parent"
                />

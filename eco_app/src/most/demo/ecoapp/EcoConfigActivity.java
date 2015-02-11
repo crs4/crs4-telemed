@@ -41,7 +41,7 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setupConfigFragments();
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.config_activity_main);
 		vpPager = (MostViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(this,getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);

@@ -4,7 +4,8 @@
     <string name="app_name">MOST DEMO Specialist App</string>
 
     <string name="holdCall">Hold</string>
-    <string name="makeCall">Make</string>
+    <string name="onHoldCall">On Hold</string>
+    <string name="makeCall">Make Call</string>
     <string name="unoldCall">Unhold</string>
     <string name="hangupCall">Hangup</string>
     <string name="action_settings">Settings</string>

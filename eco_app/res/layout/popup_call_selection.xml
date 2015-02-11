@@ -11,11 +11,12 @@
     android:text="@string/call_hangup"
    />
  
- <Button
+ <ToggleButton
      android:id="@+id/butCallHold"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/call_hold"
+    android:textOn="@string/call_onHold"
+    android:textOff="@string/call_onLine"
    />
  
  <Button

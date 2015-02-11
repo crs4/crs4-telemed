@@ -20,7 +20,9 @@
     <string name="hello_world">Hello world!</string>
     
      <string name="call_hangup">Hangup</string>
-     <string name="call_hold">Hold</string>
+
+     <string name="call_onHold">On Hold</string>
+     <string name="call_onLine">On Line</string>
      <string name="cancel">Cancel</string>
      
      

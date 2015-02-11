@@ -69,6 +69,7 @@ import android.view.View.OnClickListener;
 
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 
 import android.widget.Toast;
@@ -96,7 +97,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	
 	private TeleconsultationState tcState = TeleconsultationState.IDLE;
 	private TcStateTextView txtTcState = null;
-	private boolean localHold = false;
+	
+	
 
 	
 	private PTZ_ControllerFragment ptzControllerFragment = null;
@@ -125,12 +127,19 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	private String ecoExtension;
 
 	private Button butMakeCall;
-
-	private Button butHoldCall;
+	private ToggleButton butHoldCall;
 
 	private HashMap<String, String> voipParams;
 
 	private boolean streaming_ready=false;
+	
+	private boolean localHold = false;
+	private boolean remoteHold = false;
+	private boolean accountRegistered = false;
+
+	private boolean streamMainDestroyed=false;
+	private boolean streamEchoDestroyed=false;
+	private boolean voipDestroyed=false;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,7 +309,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 			}
 		});
     	
-    	this.butHoldCall = (Button) findViewById(R.id.but_hold_call);
+    	this.butHoldCall = (ToggleButton) findViewById(R.id.but_hold_call);
     	
     	this.butHoldCall.setOnClickListener(new OnClickListener() {
 			
@@ -336,6 +345,8 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setEnabled(false);
 			butHoldCall.setEnabled(false);
 			localHold = false;
+			remoteHold = false;
+			accountRegistered = false;
 
 		}
 		else if (this.tcState==TeleconsultationState.READY)
@@ -344,6 +355,8 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setEnabled(true);
 			butHoldCall.setEnabled(false);
 			localHold = false;
+			remoteHold = false;
+			accountRegistered = true;
 		}
 		
 		else if (this.tcState==TeleconsultationState.CALLING)
@@ -351,8 +364,8 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setEnabled(true);
 			butMakeCall.setText("Hangup");
 			butHoldCall.setEnabled(true);
-			butHoldCall.setText("Hold");
 			localHold = false;
+			remoteHold = false;
  
 		}
 		
@@ -361,7 +374,6 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setEnabled(true);
 			butMakeCall.setText("Hangup");
 			butHoldCall.setEnabled(true);
-			butHoldCall.setText("Unhold");
 			localHold = true;
 		}
 		else if (this.tcState==TeleconsultationState.REMOTE_HOLDING)
@@ -369,7 +381,7 @@ private void notifyTeleconsultationStateChanched() {
 			butMakeCall.setEnabled(true);
 			butMakeCall.setText("Hangup");
 			butHoldCall.setEnabled(true);
-			butHoldCall.setText("Unhold");
+			remoteHold = true;
 		}
 		 
 		 
@@ -507,31 +519,49 @@ private void notifyTeleconsultationStateChanched() {
 				if (myEvent.getEventType()==StreamingEventType.STREAM_EVENT)
 					if (myEvent.getEvent()==StreamingEvent.STREAM_STATE_CHANGED || myEvent.getEvent()== StreamingEvent.STREAM_ERROR)
 					{
-						if (this.stream1.getState()==StreamState.DEINITIALIZED && this.exitFromAppRequest)
-						{
-							Log.d(TAG,"Stream deinitialized. Exiting from app.");
-							this.finish();
-						}
 						
-					    // All events of type STREAM_EVENT provide a reference to the stream that triggered it.
+						// All events of type STREAM_EVENT provide a reference to the stream that triggered it.
 					    // In this case we are handling two streams, so we need to check what stream triggered the event.
 					    // Note that we are only interested to the new state of the stream
 						IStream stream  =  (IStream) myEvent.getData();
-					   
+					    String streamName = stream.getName();
+						
+						if (this.stream1.getState()==StreamState.DEINITIALIZED && this.exitFromAppRequest)
+						{ 
+							if (streamName.equalsIgnoreCase(MAIN_STREAM))
+							streamMainDestroyed=true;
+							else if (streamName.equalsIgnoreCase(ECHO_STREAM))
+								streamEchoDestroyed = true;
+							
+							Log.d(TAG,"Stream " + streamName + " deinitialized..");
+							exitFromApp();
+						}
+						
+					  
 						 
 					}
 				return false;
 	}
 	
 	 private void exitFromApp() {
-			this.exitFromAppRequest = true;
-			if (this.stream1!=null)
-			{
-				this.stream1.destroy();
+		    
+		Log.d(TAG,"Called exitFromApp()");
+	
+		this.exitFromAppRequest = true;
+		
+		
+			if (this.myVoip!=null &&  !this.voipDestroyed)
+			{   
+				this.myVoip.destroyLib();
 			}
-			else
+			else 
+			{
+				Log.d(TAG, "Voip Library deinitialized. Exiting the app");
 				this.finish();
+			}
 		}
+		    
+
 
 	@Override
 	public void onPlay(String streamId) {
@@ -601,10 +631,13 @@ private void notifyTeleconsultationStateChanched() {
 	  
 	  private void handleButHoldClicked()
 		{
-			if (this.tcState==TeleconsultationState.CALLING)
-				toggleHoldCall(true);
-			else if (this.tcState==TeleconsultationState.HOLDING)
-				toggleHoldCall(false);
+//			if (this.tcState==TeleconsultationState.CALLING)
+//				toggleHoldCall(true);
+//			else if (this.tcState==TeleconsultationState.HOLDING)
+//				toggleHoldCall(false);
+			
+			if (this.tcState!=TeleconsultationState.READY && this.tcState!=TeleconsultationState.IDLE)
+				toggleHoldCall(butHoldCall.isChecked());
 		}
 		
 		private void toggleHoldCall(boolean holding)
@@ -740,10 +773,18 @@ private void notifyTeleconsultationStateChanched() {
 				if (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZED)   {myVoip.registerAccount();
 																				}	
 				else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTERED)    {
-																		subscribeBuddies();
-																		  // the teleconsultation is ready when also the Echographist is on line
-																	     //this.app.setTeleconsultationState(TeleconsultationState.READY);
-				                                                      }	
+																					if (!accountRegistered)
+																						{
+																						 this.app.subscribeBuddies(); // disabled for debugging!
+																						}
+																					else accountRegistered = true;
+																					}	
+				
+				else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_UNREGISTERED)
+				{
+					 setTeleconsultationState(TeleconsultationState.IDLE);
+				}
+				
 				else if (myEventBundle.getEventType()==VoipEventType.BUDDY_EVENT)
 				{
 					
@@ -753,7 +794,9 @@ private void notifyTeleconsultationStateChanched() {
 					// There is only one subscribed buddy in this app, so we don't need to get IBuddy informations
 					if (myEventBundle.getEvent()==VoipEvent.BUDDY_CONNECTED)
 					{
-
+						// the remote buddy is no longer on Hold State
+                        remoteHold = false;
+                        
 						if (tcState==TeleconsultationState.REMOTE_HOLDING)
 						{
 							if (localHold)
@@ -785,7 +828,15 @@ private void notifyTeleconsultationStateChanched() {
 				}
 				
 				else if  (myEventBundle.getEvent()==VoipEvent.CALL_ACTIVE)    {
-					this.app.setTeleconsultationState(TeleconsultationState.CALLING);
+					if (remoteHold)
+					{
+						this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
+					}
+					else
+					{
+						this.app.setTeleconsultationState(TeleconsultationState.CALLING);
+					}
+					
 				}
 				else if  (myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)    {
 					this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
@@ -793,9 +844,7 @@ private void notifyTeleconsultationStateChanched() {
 				else if  (myEventBundle.getEvent()==VoipEvent.CALL_HOLDING)    {
 					this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
 				}
-			 
-				
-			
+
 				else if (myEventBundle.getEvent()==VoipEvent.CALL_HANGUP || myEventBundle.getEvent()==VoipEvent.CALL_REMOTE_HANGUP)    {
 					this.app.setTeleconsultationState(TeleconsultationState.READY);
 				}
@@ -809,6 +858,10 @@ private void notifyTeleconsultationStateChanched() {
 					if (this.reinitRequest)
 					{	this.reinitRequest = false;
 						this.app.setupVoipLib();
+					}
+					else if(exitFromAppRequest)
+					{
+						exitFromApp();
 					}
 				}
 				else if  (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
