@@ -75,6 +75,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private boolean remoteHold = false;
 	
 	private boolean accountRegistered = false;
+	private boolean exitFromAppRequest = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +168,22 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		 
 	}
 	
+	private void exitFromApp() {
+	    
+		Log.d(TAG,"Called exitFromApp()");
+	
+		this.exitFromAppRequest  = true;
+		
+			if (this.myVoip!=null)
+			{   
+				this.myVoip.destroyLib();
+			}
+			else 
+			{
+				Log.d(TAG, "Voip Library deinitialized. Exiting the app");
+				this.finish();
+			}
+		}
 	private void setupStreamLib()
 	{
 		String streamName = "Teleconsultation Stream"; 
@@ -221,6 +238,16 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				
 			}
 		});
+	    
+	    ImageButton butExit  = (ImageButton) actionBar.getCustomView().findViewById(R.id.butExit);
+	    butExit.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				exitFromApp();
+				
+			}});
+	    
 	    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
 	        | ActionBar.DISPLAY_SHOW_HOME);
 		
@@ -443,6 +470,11 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 					if (myVoip.getCall().getState()== CallState.ACTIVE || myVoip.getCall().getState()== CallState.HOLDING)
 						setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
 				}
+				else if(myEventBundle.getEvent()==VoipEvent.BUDDY_DISCONNECTED)
+				{
+					setTeleconsultationState(TeleconsultationState.IDLE);
+				}
+				 
 				 
 			}
 			
@@ -466,6 +498,14 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			}
 			else if  (myEventBundle.getEvent()==VoipEvent.CALL_HOLDING)    {
 				this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
+			}
+			else if  (myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZED)
+			{
+				if (exitFromAppRequest)
+				{
+					Log.d(TAG, "Voip Lib successfully deinitialized. Exit from app...");
+					finish();
+				}
 			}
 			
 		 

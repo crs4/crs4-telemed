@@ -817,6 +817,10 @@ private void notifyTeleconsultationStateChanched() {
 						if (myVoip.getCall().getState()== CallState.ACTIVE || myVoip.getCall().getState()== CallState.HOLDING)
 							setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
 					}
+					else if(myEventBundle.getEvent()==VoipEvent.BUDDY_DISCONNECTED)
+					{
+						setTeleconsultationState(TeleconsultationState.IDLE);
+					}
 					 
 				}
 				
