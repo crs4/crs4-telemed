@@ -710,11 +710,11 @@ private void notifyTeleconsultationStateChanched() {
 			params.put("ecoExtension","MOST0002"); 
 
 			// specialista	
-			accountName =  props.getProperty("sipServerUser");
-			params.put("userPwd",props.getProperty("sipServerPwd")); // 
-		
+			accountName =  props.getProperty("sipUserName");
+			params.put("sipUserPwd",props.getProperty("sipUserPwd")); // 
+			params.put("sipUserName",accountName); // specialista
 			
-			params.put("userName",accountName); // specialista
+			Log.d(TAG,"Sip User:" + params.get("sipUserName")+  " PWD:" + params.get("sipUserPwd"));
 			params.put("turnServerUser",accountName);  // specialista
 			params.put("turnServerPwd",accountName);  // specialista
 		 
@@ -767,15 +767,14 @@ private void notifyTeleconsultationStateChanched() {
 				
 				
 		
-				//if (myEventBundle.getEventType()==VoipEventType.BUDDY_EVENT){}
-				
+			
 				// Register the account after the Lib Initialization
 				if (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZED)   {myVoip.registerAccount();
 																				}	
 				else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTERED)    {
 																					if (!accountRegistered)
 																						{
-																						 this.app.subscribeBuddies(); // disabled for debugging!
+																						 this.app.subscribeBuddies(); 
 																						}
 																					else accountRegistered = true;
 																					}	
@@ -797,7 +796,7 @@ private void notifyTeleconsultationStateChanched() {
 						// the remote buddy is no longer on Hold State
                         remoteHold = false;
                         
-						if (tcState==TeleconsultationState.REMOTE_HOLDING)
+						if (tcState==TeleconsultationState.REMOTE_HOLDING || tcState==TeleconsultationState.HOLDING)
 						{
 							if (localHold)
 							{
@@ -842,15 +841,15 @@ private void notifyTeleconsultationStateChanched() {
 					}
 					
 				}
-				else if  (myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)    {
-					this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-				}
+			
 				else if  (myEventBundle.getEvent()==VoipEvent.CALL_HOLDING)    {
 					this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
 				}
 
 				else if (myEventBundle.getEvent()==VoipEvent.CALL_HANGUP || myEventBundle.getEvent()==VoipEvent.CALL_REMOTE_HANGUP)    {
-					this.app.setTeleconsultationState(TeleconsultationState.READY);
+					
+					if (this.app.tcState!=TeleconsultationState.IDLE)
+						this.app.setTeleconsultationState(TeleconsultationState.READY);
 				}
 				// Deinitialize the Voip Lib and release all allocated resources
 				else if (myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZED || myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZATION_FAILED) 

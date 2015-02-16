@@ -15,8 +15,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 
@@ -42,6 +46,9 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 		super.onCreate(savedInstanceState);
 		setupConfigFragments();
 		setContentView(R.layout.config_activity_main);
+		
+		//setupActionBar();
+		
 		vpPager = (MostViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(this,getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
@@ -53,6 +60,14 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 
 	}
 
+	private void setupActionBar()
+	{
+		ActionBar actionBar = getSupportActionBar();
+	    // add the custom view to the action bar
+	    actionBar.setCustomView(R.layout.config_actionbar_view);
+	    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+		        | ActionBar.DISPLAY_SHOW_HOME);
+	}
 	
     private void setupConfigFragments() {
 			

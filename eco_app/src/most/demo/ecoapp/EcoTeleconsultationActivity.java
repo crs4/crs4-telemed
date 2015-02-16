@@ -19,6 +19,7 @@ import most.voip.api.VoipLibBackend;
 import most.voip.api.enums.CallState;
 import most.voip.api.enums.VoipEvent;
 import most.voip.api.enums.VoipEventType;
+import most.voip.api.interfaces.IBuddy;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
@@ -123,6 +124,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			
 			localHold = false;
 			accountRegistered = false;
+			remoteHold = false;
 		}
 		else if (tcState==TeleconsultationState.READY)
 			{
@@ -134,6 +136,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				
 				localHold = false;
 				accountRegistered = true;
+				remoteHold = false;
 			}
 		
 		
@@ -144,7 +147,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			popupHoldButton.setEnabled(true);
 
 			popupHangupButton.setEnabled(true);
-			
+			remoteHold = false;
 			localHold = false;
 		}
 		
@@ -164,6 +167,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			popupCancelButton.setEnabled(true);
 			popupHoldButton.setEnabled(true);
 			popupHangupButton.setEnabled(true);
+			remoteHold = true;
 		}
 		 
 	}
@@ -422,18 +426,17 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			
 			
 	
-			//if (myEventBundle.getEventType()==VoipEventType.BUDDY_EVENT){}
-			
+		
 			// Register the account after the Lib Initialization
 			if (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZED)   {myVoip.registerAccount();
 																			}	
 			else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTERED)    {
-																	if (!accountRegistered)
-																	{
-																	 this.app.subscribeBuddies();
-																	}
-																	else accountRegistered = true;
-			                                                      }	
+																				if (!accountRegistered)
+																					{
+																					 this.app.subscribeBuddies(); 
+																					}
+																				else accountRegistered = true;
+																				}	
 			
 			else if (myEventBundle.getEvent()==VoipEvent.ACCOUNT_UNREGISTERED)
 			{
@@ -449,7 +452,10 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				// There is only one subscribed buddy in this app, so we don't need to get IBuddy informations
 				if (myEventBundle.getEvent()==VoipEvent.BUDDY_CONNECTED)
 				{
-					if (tcState==TeleconsultationState.REMOTE_HOLDING)
+					// the remote buddy is no longer on Hold State
+                    remoteHold = false;
+                    
+					if (tcState==TeleconsultationState.REMOTE_HOLDING || tcState==TeleconsultationState.HOLDING)
 					{
 						if (localHold)
 						{
@@ -462,8 +468,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 					{
 						setTeleconsultationState(TeleconsultationState.READY);
 					}
-						
-					
+				 
 				}
 				else if(myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)
 				{
@@ -475,44 +480,39 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 					setTeleconsultationState(TeleconsultationState.IDLE);
 				}
 				 
-				 
 			}
 			
-			
-			else if (myEventBundle.getEvent()==VoipEvent.CALL_INCOMING)  handleIncomingCallRequest();
-			
-			else if (myEventBundle.getEvent()==VoipEvent.CALL_READY)
-			{
-				if (incoming_call_request)
-				{
-					answerCall();
-				}
-			}
-			
+            else if (myEventBundle.getEvent()==VoipEvent.CALL_INCOMING)  handleIncomingCallRequest();
+
+            else if (myEventBundle.getEvent()==VoipEvent.CALL_READY)
+            {
+                    if (incoming_call_request)
+
+                    {
+                            answerCall();
+                    }
+            }
+
 			else if  (myEventBundle.getEvent()==VoipEvent.CALL_ACTIVE)    {
-				this.app.setTeleconsultationState(TeleconsultationState.CALLING);
+				if (remoteHold)
+				{
+					this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
+				}
+				else
+				{
+					this.app.setTeleconsultationState(TeleconsultationState.CALLING);
+				}
+				
 			}
-			
-			else if  (myEventBundle.getEvent()==VoipEvent.BUDDY_HOLDING)    {
-				this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-			}
+		
 			else if  (myEventBundle.getEvent()==VoipEvent.CALL_HOLDING)    {
 				this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
 			}
-			else if  (myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZED)
-			{
-				if (exitFromAppRequest)
-				{
-					Log.d(TAG, "Voip Lib successfully deinitialized. Exit from app...");
-					finish();
-				}
-			}
-			
-		 
-			
-		
+
 			else if (myEventBundle.getEvent()==VoipEvent.CALL_HANGUP || myEventBundle.getEvent()==VoipEvent.CALL_REMOTE_HANGUP)    {
-				this.app.setTeleconsultationState(TeleconsultationState.READY);
+				
+				if (this.app.tcState!=TeleconsultationState.IDLE)
+					this.app.setTeleconsultationState(TeleconsultationState.READY);
 			}
 			// Deinitialize the Voip Lib and release all allocated resources
 			else if (myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZED || myEventBundle.getEvent()==VoipEvent.LIB_DEINITIALIZATION_FAILED) 
@@ -525,20 +525,17 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				{	this.reinitRequest = false;
 					this.app.setupVoipLib();
 				}
+				else if(exitFromAppRequest)
+				{
+					exitFromApp();
+				}
 			}
 			else if  (myEventBundle.getEvent()==VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent()==VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
-					myEventBundle.getEvent()==VoipEvent.LIB_CONNECTION_FAILED)
-			{
-					setTeleconsultationState(TeleconsultationState.IDLE);
+					myEventBundle.getEvent()==VoipEvent.LIB_CONNECTION_FAILED || myEventBundle.getEvent()==VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
 				    showErrorEventAlert(myEventBundle);
-			}    
-			else if (myEventBundle.getEvent()==VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
-			{
-				 showErrorEventAlert(myEventBundle);
-			}
 			
+			     
 		} // end of handleMessage()
-
 		
 		private void showErrorEventAlert(VoipEventBundle myEventBundle) {
 		
