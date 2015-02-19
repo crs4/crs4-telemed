@@ -1,7 +1,7 @@
 MOST
 ====
 
-The  MOST (Moving research Outcomes to Standard Telemedicine practice) project aims to achieve an open,
+The MOST (Moving research Outcomes to Standard Telemedicine practice) project aims to achieve an open,
 modular and scalable solution for the creation, execution and management of remote clinical consultations with direct
 interaction between specialists.
 
