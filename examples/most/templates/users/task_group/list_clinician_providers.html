@@ -1,0 +1,103 @@
+{% extends "users/base_modal.html" %}
+{% block modal_body %}
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <form class="form-horizontal" role="form" id="modal_form">
+        <div class="ui-widget form-group" id="task_group_field">
+          <label for="select_task_group" class="control-label">Select task group</label>  <!--col-sm-4-->
+           <input id="select_task_group_id" type="hidden" />
+           <input class="form-control" id="select_task_group" type="text" />
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-4 col-sm-8">
+             <button type="submit" class="btn btn-default">List clinician providers</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    $(function() {
+        $( "#select_task_group" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax({
+                url: "/users/task_group/search/",
+                dataType: "json",
+                data: {
+                    query_string: request.term
+                },
+                success: function( data ) {
+                    response( $.map( data.data, function( item ) {
+                        return {
+                            label: item.title + (item.hospital ? ' (' + item.hospital + ')' : '') + (item.is_health_care_provider ? ' - Provider' : ''),
+                            value: item.id,
+                            title: item.title,
+                            description: item.description,
+                            task_group_type: item.task_group_type.value,
+                            hospital: item.hospital,
+                            is_health_care_provider: item.is_health_care_provider,
+                            is_active: item.is_active
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            $( "#select_task_group" ).val( ui.item.label );
+            $( "#select_task_group_id" ).val( ui.item.value );
+            return false;
+        },
+        open: function() {
+            $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }});
+        $( "#select_task_group" ).autocomplete( "option", "appendTo", "#task_group_field" );
+
+        $( "#modal_form").submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/users/task_group/' + $( "#select_task_group_id" ).val() + '/list_clinician_providers/',
+                type: 'GET',
+                dataType: 'text',
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    var beautifiedData = JSON.stringify(jsonData, null, 4);
+                    $('#task_group_results_body').html('<div><pre class="pre-scrollable">' + beautifiedData + '</pre></div>');
+                    if (jsonData.success) {
+                        if ($('#task_group_results').hasClass('panel-danger')) {
+                            $('#task_group_results').removeClass('panel-danger');
+                        }
+                        if (!$('#task_group_results').hasClass('panel-success')) {
+                            $('#task_group_results').addClass('panel-success');
+                        }
+                    }
+                    else {
+                        $('#task_group_results_body').html('<div>' + jsonData.errors + '</div>');
+                        if ($('#task_group_results').hasClass('panel-success')) {
+                            $('#task_group_results').removeClass('panel-success');
+                        }
+                        if (!$('#task_group_results').hasClass('panel-danger')) {
+                            $('#task_group_results').addClass('panel-danger');
+                        }
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#task_group_result_body').html('<div>' + textStatus + ': ' + errorThrown + '</div>');
+                    if ($('#task_group_results').hasClass('panel-success')) {
+                        $('#task_group_results').removeClass('panel-success');
+                    }
+                    if (!$('#task_group_results').hasClass('panel-danger')) {
+                        $('#task_group_results').addClass('panel-danger');
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                }
+            });
+            return false;
+        });
+    });
+  </script>
+{% endblock %}
