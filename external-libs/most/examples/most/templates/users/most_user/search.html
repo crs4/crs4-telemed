@@ -1,0 +1,67 @@
+{% extends "users/base_modal.html" %}
+{% block modal_body %}
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <form class="form-horizontal" role="form" id="modal_form">
+        <div class="ui-widget form-group" id="most_user_field">
+          <label for="query-string" class="control-label">Query string</label>  <!--col-sm-4-->
+           <input class="form-control" id="query-string" type="text" />
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-4 col-sm-8">
+             <button type="submit" class="btn btn-default">Search users</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    $(function() {
+        $( "#modal_form").submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/users/user/search/',
+                type: 'GET',
+                data: {
+                    query_string: $( '#query-string' ).val()
+                },
+                dataType: 'text',
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    var beautifiedData = JSON.stringify(jsonData, null, 4);
+                    $('#most_user_results_body').html('<div><pre class="pre-scrollable">' + beautifiedData + '</pre></div>');
+                    if (jsonData.success) {
+                        if ($('#most_user_results').hasClass('panel-danger')) {
+                            $('#most_user_results').removeClass('panel-danger');
+                        }
+                        if (!$('#most_user_results').hasClass('panel-success')) {
+                            $('#most_user_results').addClass('panel-success');
+                        }
+                    }
+                    else {
+                        $('#most_user_results_body').html('<div>' + jsonData.errors + '</div>');
+                        if ($('#most_user_results').hasClass('panel-success')) {
+                            $('#most_user_results').removeClass('panel-success');
+                        }
+                        if (!$('#most_user_results').hasClass('panel-danger')) {
+                            $('#most_user_results').addClass('panel-danger');
+                        }
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#most_user_results_body').html('<div>' + textStatus + ': ' + errorThrown + '</div>');
+                    if ($('#most_user_results').hasClass('panel-success')) {
+                        $('#most_user_results').removeClass('panel-success');
+                    }
+                    if (!$('#most_user_results').hasClass('panel-danger')) {
+                        $('#most_user_results').addClass('panel-danger');
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                }
+            });
+            return false;
+        });
+    });
+  </script>
+{% endblock %}

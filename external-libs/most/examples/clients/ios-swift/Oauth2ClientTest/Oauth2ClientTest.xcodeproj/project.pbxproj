@@ -1,0 +1,471 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		29F99F8D194F382D00F5E5E8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F99F8C194F382D00F5E5E8 /* AppDelegate.swift */; };
+		29F99F8F194F382D00F5E5E8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F99F8E194F382D00F5E5E8 /* ViewController.swift */; };
+		29F99F92194F382D00F5E5E8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29F99F90194F382D00F5E5E8 /* Main.storyboard */; };
+		29F99F94194F382D00F5E5E8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29F99F93194F382D00F5E5E8 /* Images.xcassets */; };
+		29F99FA0194F382D00F5E5E8 /* Oauth2ClientTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F99F9F194F382D00F5E5E8 /* Oauth2ClientTestTests.swift */; };
+		6FA2DB5984054E64BEB995A9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30FD0379CC314BFDB8351706 /* libPods.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		29F99F9A194F382D00F5E5E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29F99F7F194F382D00F5E5E8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29F99F86194F382D00F5E5E8;
+			remoteInfo = Oauth2ClientTest;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2998B927194F3AB100E0506C /* Project-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Project-Bridging-Header.h"; sourceTree = "<group>"; };
+		29F99F87194F382D00F5E5E8 /* Oauth2ClientTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Oauth2ClientTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29F99F8B194F382D00F5E5E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		29F99F8C194F382D00F5E5E8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		29F99F8E194F382D00F5E5E8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		29F99F91194F382D00F5E5E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		29F99F93194F382D00F5E5E8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		29F99F99194F382D00F5E5E8 /* Oauth2ClientTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Oauth2ClientTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		29F99F9E194F382D00F5E5E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		29F99F9F194F382D00F5E5E8 /* Oauth2ClientTestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Oauth2ClientTestTests.swift; sourceTree = "<group>"; };
+		30FD0379CC314BFDB8351706 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D962451663514F5CB4309806 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		29F99F84194F382D00F5E5E8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FA2DB5984054E64BEB995A9 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29F99F96194F382D00F5E5E8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		29F99F7E194F382D00F5E5E8 = {
+			isa = PBXGroup;
+			children = (
+				29F99F89194F382D00F5E5E8 /* Oauth2ClientTest */,
+				29F99F9C194F382D00F5E5E8 /* Oauth2ClientTestTests */,
+				29F99F88194F382D00F5E5E8 /* Products */,
+				D962451663514F5CB4309806 /* Pods.xcconfig */,
+				7CC07F162FA341B798465080 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		29F99F88194F382D00F5E5E8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				29F99F87194F382D00F5E5E8 /* Oauth2ClientTest.app */,
+				29F99F99194F382D00F5E5E8 /* Oauth2ClientTestTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29F99F89194F382D00F5E5E8 /* Oauth2ClientTest */ = {
+			isa = PBXGroup;
+			children = (
+				29F99F8C194F382D00F5E5E8 /* AppDelegate.swift */,
+				29F99F8E194F382D00F5E5E8 /* ViewController.swift */,
+				29F99F90194F382D00F5E5E8 /* Main.storyboard */,
+				29F99F93194F382D00F5E5E8 /* Images.xcassets */,
+				29F99F8A194F382D00F5E5E8 /* Supporting Files */,
+			);
+			path = Oauth2ClientTest;
+			sourceTree = "<group>";
+		};
+		29F99F8A194F382D00F5E5E8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				29F99F8B194F382D00F5E5E8 /* Info.plist */,
+				2998B927194F3AB100E0506C /* Project-Bridging-Header.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		29F99F9C194F382D00F5E5E8 /* Oauth2ClientTestTests */ = {
+			isa = PBXGroup;
+			children = (
+				29F99F9F194F382D00F5E5E8 /* Oauth2ClientTestTests.swift */,
+				29F99F9D194F382D00F5E5E8 /* Supporting Files */,
+			);
+			path = Oauth2ClientTestTests;
+			sourceTree = "<group>";
+		};
+		29F99F9D194F382D00F5E5E8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				29F99F9E194F382D00F5E5E8 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7CC07F162FA341B798465080 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				30FD0379CC314BFDB8351706 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		29F99F86194F382D00F5E5E8 /* Oauth2ClientTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29F99FA3194F382D00F5E5E8 /* Build configuration list for PBXNativeTarget "Oauth2ClientTest" */;
+			buildPhases = (
+				976B233F58FD434F96A1B025 /* Check Pods Manifest.lock */,
+				29F99F83194F382D00F5E5E8 /* Sources */,
+				29F99F84194F382D00F5E5E8 /* Frameworks */,
+				29F99F85194F382D00F5E5E8 /* Resources */,
+				04C82396054E44BAB119E2D9 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Oauth2ClientTest;
+			productName = Oauth2ClientTest;
+			productReference = 29F99F87194F382D00F5E5E8 /* Oauth2ClientTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+		29F99F98194F382D00F5E5E8 /* Oauth2ClientTestTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29F99FA6194F382D00F5E5E8 /* Build configuration list for PBXNativeTarget "Oauth2ClientTestTests" */;
+			buildPhases = (
+				29F99F95194F382D00F5E5E8 /* Sources */,
+				29F99F96194F382D00F5E5E8 /* Frameworks */,
+				29F99F97194F382D00F5E5E8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				29F99F9B194F382D00F5E5E8 /* PBXTargetDependency */,
+			);
+			name = Oauth2ClientTestTests;
+			productName = Oauth2ClientTestTests;
+			productReference = 29F99F99194F382D00F5E5E8 /* Oauth2ClientTestTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29F99F7F194F382D00F5E5E8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "CRS4 srl";
+				TargetAttributes = {
+					29F99F86194F382D00F5E5E8 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+					29F99F98194F382D00F5E5E8 = {
+						CreatedOnToolsVersion = 6.0;
+						TestTargetID = 29F99F86194F382D00F5E5E8;
+					};
+				};
+			};
+			buildConfigurationList = 29F99F82194F382D00F5E5E8 /* Build configuration list for PBXProject "Oauth2ClientTest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 29F99F7E194F382D00F5E5E8;
+			productRefGroup = 29F99F88194F382D00F5E5E8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				29F99F86194F382D00F5E5E8 /* Oauth2ClientTest */,
+				29F99F98194F382D00F5E5E8 /* Oauth2ClientTestTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		29F99F85194F382D00F5E5E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29F99F92194F382D00F5E5E8 /* Main.storyboard in Resources */,
+				29F99F94194F382D00F5E5E8 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29F99F97194F382D00F5E5E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		04C82396054E44BAB119E2D9 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		976B233F58FD434F96A1B025 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		29F99F83194F382D00F5E5E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29F99F8F194F382D00F5E5E8 /* ViewController.swift in Sources */,
+				29F99F8D194F382D00F5E5E8 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29F99F95194F382D00F5E5E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29F99FA0194F382D00F5E5E8 /* Oauth2ClientTestTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		29F99F9B194F382D00F5E5E8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29F99F86194F382D00F5E5E8 /* Oauth2ClientTest */;
+			targetProxy = 29F99F9A194F382D00F5E5E8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		29F99F90194F382D00F5E5E8 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29F99F91194F382D00F5E5E8 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		29F99FA1194F382D00F5E5E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		29F99FA2194F382D00F5E5E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		29F99FA4194F382D00F5E5E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D962451663514F5CB4309806 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = Oauth2ClientTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Oauth2ClientTest/Project-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		29F99FA5194F382D00F5E5E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D962451663514F5CB4309806 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = Oauth2ClientTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Oauth2ClientTest/Project-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		29F99FA7194F382D00F5E5E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Oauth2ClientTest.app/Oauth2ClientTest";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Oauth2ClientTestTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		29F99FA8194F382D00F5E5E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Oauth2ClientTest.app/Oauth2ClientTest";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Oauth2ClientTestTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		29F99F82194F382D00F5E5E8 /* Build configuration list for PBXProject "Oauth2ClientTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29F99FA1194F382D00F5E5E8 /* Debug */,
+				29F99FA2194F382D00F5E5E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29F99FA3194F382D00F5E5E8 /* Build configuration list for PBXNativeTarget "Oauth2ClientTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29F99FA4194F382D00F5E5E8 /* Debug */,
+				29F99FA5194F382D00F5E5E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29F99FA6194F382D00F5E5E8 /* Build configuration list for PBXNativeTarget "Oauth2ClientTestTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29F99FA7194F382D00F5E5E8 /* Debug */,
+				29F99FA8194F382D00F5E5E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29F99F7F194F382D00F5E5E8 /* Project object */;
+}
