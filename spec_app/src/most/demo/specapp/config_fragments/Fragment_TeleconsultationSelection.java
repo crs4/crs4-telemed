@@ -53,13 +53,8 @@ public class Fragment_TeleconsultationSelection extends ConfigFragment {
     
     private void initializeGUI(View view)
     {
-
-    
-  
-        ListView listView = (ListView)view.findViewById(R.id.listTeleconsultation);
-       
+        ListView listView = (ListView)view.findViewById(R.id.listTeleconsultation);  
         this.tcArray = new ArrayList<Teleconsultation>();
-        
         this.tcArrayAdapter =
                 new TcArrayAdapter(this, R.layout.tc_row, this.tcArray);
         listView.setAdapter(this.tcArrayAdapter);

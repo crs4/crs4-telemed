@@ -5,13 +5,28 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.app.AlertDialog;
+import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+import android.widget.Toast;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-
 
 import most.demo.specapp.TeleconsultationState;
 import most.demo.specapp.models.Teleconsultation;
@@ -23,7 +38,6 @@ import most.voip.api.VoipLibBackend;
 import most.voip.api.enums.CallState;
 import most.voip.api.enums.VoipEvent;
 import most.voip.api.enums.VoipEventType;
-import most.voip.api.interfaces.IBuddy;
 
 import org.crs4.most.streaming.IStream;
 import org.crs4.most.streaming.StreamingEventBundle;
@@ -42,38 +56,9 @@ import org.crs4.most.visualization.IPtzCommandReceiver;
 import org.crs4.most.visualization.IStreamFragmentCommandListener;
 import org.crs4.most.visualization.PTZ_ControllerFragment;
 import org.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
-
- 
 import org.crs4.most.visualization.StreamViewerFragment;
 import org.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
  
-
-
- 
-
-import android.app.AlertDialog;
-import android.app.FragmentTransaction;
- 
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
- 
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.View.OnClickListener;
-
-
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
-
-import android.widget.Toast;
-
 
 
 public class SpecTeleconsultationActivity extends ActionBarActivity implements Handler.Callback, 
@@ -97,9 +82,6 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	
 	private TeleconsultationState tcState = TeleconsultationState.IDLE;
 	private TcStateTextView txtTcState = null;
-	
-	
-
 	
 	private PTZ_ControllerFragment ptzControllerFragment = null;
 	private PTZ_Manager ptzManager =  null;
@@ -263,12 +245,6 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 					}
 	}
 	
-	
-
-
-	
-	
-    
     private void setupActionBar()
 	{
 		ActionBar actionBar = getSupportActionBar();
@@ -293,7 +269,6 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     {
     	 this.ptzPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,  this, true,true,true,100,100);
     	 //PopupWindow ptzPopupWindow = this.ptzPopupWindowController.getPopupWindow();
-    	
     }
     
     
@@ -536,9 +511,6 @@ private void notifyTeleconsultationStateChanched() {
 							Log.d(TAG,"Stream " + streamName + " deinitialized..");
 							exitFromApp();
 						}
-						
-					  
-						 
 					}
 				return false;
 	}
