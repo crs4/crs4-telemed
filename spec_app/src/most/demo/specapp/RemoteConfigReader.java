@@ -96,7 +96,37 @@ public class RemoteConfigReader {
 		this.rq.add(postReq);	 
 	}
 	
-	public void getAccessToken(final String clientId, final String clientSecret, final String username, final String pincode)
+	public void getAccessToken(final String clientId, final String clientSecret, final String username, final String pincode,  
+							 Response.Listener<String> listener, Response.ErrorListener errorListener)
+	{
+		String uri = this.urlPrefix + "oauth2/access_token/";
+		Log.d(TAG, "Called getAccessToken() on uri: " + uri);
+		Log.d(TAG, "client id: " + clientId);
+		Log.d(TAG, "client secret: " + clientSecret);
+		Log.d(TAG, "username: " + username);
+		Log.d(TAG, "pincode: " + pincode);
+		
+		StringRequest postReq = new StringRequest(Request.Method.POST, uri , listener, errorListener)
+			{
+	 			@Override
+	 		    protected Map<String, String> getParams() 
+	 		    {  
+		            Map<String, String>  params = new HashMap<String, String>();  
+		            params.put("client_id", clientId);
+	                params.put("client_secret", clientSecret); 
+	                params.put("grant_type", "pincode");
+	                params.put("username", username);
+	                params.put("pincode", pincode);
+		             
+		            return params;  
+	 		    }
+			};
+
+			this.rq.add(postReq);
+			Log.d(TAG, "Request added to the queue");
+	}
+	
+	public void getAccessTokenOld(final String clientId, final String clientSecret, final String username, final String pincode)
 	{
 		String uri = this.urlPrefix + "oauth2/access_token/";
 		Log.d(TAG, "Called getAccessToken() on uri: " + uri);

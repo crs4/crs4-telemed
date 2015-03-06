@@ -1,5 +1,6 @@
 package most.demo.specapp.config_fragments;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.android.volley.Response.ErrorListener;
@@ -13,6 +14,7 @@ import most.demo.specapp.models.SpecUser;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 
@@ -21,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -31,12 +34,14 @@ public class FragmentLogin extends ConfigFragment {
 	
 	// params to be moved in the configuration file 
 	
-	private String clientId = "";
-	private String clientSecret = "";
-	private String taskgroupID = "hdhtoz6ef4vixu3gk4s62knhncz6tmww"; // CRS4 taskgroup ID
+	private String clientId = "d67a0f2868956edece1a";
+	private String clientSecret = "29df85c27354579d87f026cb33007f350398a491";
+	//private String taskgroupID = "hdhtoz6ef4vixu3gk4s62knhncz6tmww"; // CRS4 taskgroup ID
+	private String taskgroupID = null;
+	private String username = null;
 	//PYTHONPATH=.. python manage.py runserver 0.0.0.0:8001
 
-	private String configServerIP="127.0.0.1"; 
+	private String configServerIP="156.148.33.226"; 
 	private int configServerPort = 8001;
 	
 	// --------------------------------------------------
@@ -45,6 +50,8 @@ public class FragmentLogin extends ConfigFragment {
 	private EditText editUsername;
 	private Button butLogin;
 	private ProgressDialog loadingConfigDialog;
+
+	protected String accessToken;
 		
 	private static String TAG = "FragmentLogin";
     // newInstance constructor for creating fragment with arguments
@@ -87,8 +94,7 @@ public class FragmentLogin extends ConfigFragment {
 		
 		@Override
 		public void onClick(View v) {
-		     doLogin();
-			
+		     retrieveAccessToken();
 		}
 	});
      
@@ -105,11 +111,11 @@ public class FragmentLogin extends ConfigFragment {
 		loadingConfigDialog.show();
 		
 		this.rcr = new RemoteConfigReader(this.getActivity(), this.configServerIP, configServerPort);
-		this.getTaskgroups();
+		this.retrieveTaskgroups();
 	}
     
     
-    private void getTaskgroups()
+    private void retrieveTaskgroups()
     {
     	this.rcr.getTaskgroups(new Listener<JSONObject>() {
 
@@ -117,7 +123,8 @@ public class FragmentLogin extends ConfigFragment {
 			public void onResponse(JSONObject taskgroups) {
 				loadingConfigDialog.setMessage("Taskgroups found for this device. Recovering Taskgroup applicants...");
 				Log.d(TAG, "Received taskgroups: " + taskgroups.toString());
-				getUsers(taskgroupID);
+				loadingConfigDialog.dismiss();
+				retrieveSelectedTaskgroup(taskgroups);
 			}
 		}, new ErrorListener() {
 
@@ -125,85 +132,210 @@ public class FragmentLogin extends ConfigFragment {
 			public void onErrorResponse(VolleyError arg0) {
 				Log.e(TAG,"Error retrieving the taskgroup: " + arg0);
 				loadingConfigDialog.setMessage("No taskgroups found for the current device: " + arg0);
+				loadingConfigDialog.dismiss();
 				// [TODO] Handle the error
 			}
 		});
     }
     
-    private void getUsers(String taskgroupId){
+    private void retrieveSelectedTaskgroup(JSONObject taskgroups_data)
+    {
+    	/*{"data":{"task_groups":[
+    	 *         {"description":"CRS4","name":"CRS4","uuid":"hdhtoz6ef4vixu3gk4s62knhncz6tmww"}
+    	 *         ]},
+    	 *         
+    	 *         "success":true}
+    	 */
+    
+ 
+    	try {
+			boolean success = (taskgroups_data!=null && taskgroups_data.getBoolean("success"));
+			if (!success) {
+				Log.e(TAG, "No valid taskgroups found for this device");
+				}
+			
+			// Alert Dialog for taskgroup selection
+			
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    getActivity());
+			builderSingle.setCancelable(false);
+            builderSingle.setIcon(R.drawable.ic_launcher);
+            builderSingle.setTitle("Select the taskgroup");
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.select_dialog_item);
+            
+            final JSONArray taskgroups = taskgroups_data.getJSONObject("data").getJSONArray("task_groups");
+             
+            for (int i=0;i<taskgroups.length();i++)
+            	{ arrayAdapter.add(taskgroups.getJSONObject(i).getString("name"));}
+            
+            builderSingle.setNeutralButton("cancel",
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        	dialog.dismiss();
+                        }
+                    });
+
+    
+            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+                    try {
+						// call the getUsers for the selected taskgroup
+						FragmentLogin.this.taskgroupID = taskgroups.getJSONObject(which).getString("uuid");
+						retrieveUsers(FragmentLogin.this.taskgroupID);
+						dialog.dismiss();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			});
+            
+            builderSingle.show();
+			
+			// -------------------------------------
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return;
+		}
+    }
+    
+    private void retrieveUsers(String taskgroupId){
     	this.rcr.getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
 
 			@Override
 			public void onResponse(JSONObject users) {
-				loadingConfigDialog.setMessage("Taskgroup applicants found");
 				Log.d(TAG, "Received taskgroup applicants: " + users.toString());
-				try {
-					String username = users.getJSONObject("data").getJSONArray("applicants").getJSONObject(0).getString("username");
-					editUsername.setText(username);
-					loadingConfigDialog.cancel();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				 
+			    retrieveSelectedUser(users); 
 			}
 		}, new ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError arg0) {
 				Log.e(TAG,"Error retrieving the taskgroup users: " + arg0);
-				loadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
+				//loadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
 				// [TODO] Handle the error
 			}
 		});
     }
     
-    private void getAccessToken()
-    {
+    private void retrieveSelectedUser(final JSONObject users_data){
+   	 // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
+     // String username = users.getJSONObject("data").getJSONArray("applicants").getJSONObject(0).getString("username");
+     //	editUsername.setText(username);
     	
-    	//rcr.getAccessToken("1f2138b9c94c388503fb", "fda712b6456c498c4e826e2942e30175d9a3c682", "admin", "12345");
-    	rcr.getAccessToken("d67a0f2868956edece1a", "29df85c27354579d87f026cb33007f350398a491", "admin", "12345");                                        
-    }
-    
-    
-    private void doLogin()
-    {
-    	if (checkForPassword())
-    	{
-    	}
-    	else
-    	{
-    		this.editUsername.setText("");
-    		this.editPass.setText("");
-    		
-    		AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(this.getActivity());
-    		loginErrorAlert.setTitle("Login Error");
-    		loginErrorAlert.setMessage("Invalid Username or password.\n Please retry.");
-			AlertDialog alert = loginErrorAlert.create();
-			alert.show();
-    	}
-    }
+    	try {
+			boolean success = (users_data!=null && users_data.getBoolean("success"));
+			if (!success) {
+				Log.e(TAG, "No valid users found for this taskgroup");
+				}
+			
+			// Alert Dialog for users selection
+			
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    getActivity());
+            builderSingle.setIcon(R.drawable.ic_launcher);
+            builderSingle.setTitle("Select the user");
+            builderSingle.setCancelable(false);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.select_dialog_item);
+            
+            final JSONArray users = users_data.getJSONObject("data").getJSONArray("applicants");
+             
+            for (int i=0;i<users.length();i++)
+            	{ arrayAdapter.add(String.format("%s %s", users.getJSONObject(i).getString("lastname"),users.getJSONObject(i).getString("firstname")));}
+            
+            builderSingle.setNeutralButton("cancel",
+                    new DialogInterface.OnClickListener() {
 
-    private boolean checkForPassword()
-    {
-    	String username =  this.editPass.getText().toString();
-    	String pwd = this.editPass.getText().toString();
-    	
-    	if (isValidUser(username, pwd))
-    	{
-    		config.setSpecUser(new SpecUser(username, pwd));
-    		return true;
-    	}
-    	
-    	return false;
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        	dialog.dismiss();
+                        }
+                    });
+
     
+            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+                    try {
+				
+                    	username = users_data.getJSONObject("data").getJSONArray("applicants").getJSONObject(which).getString("username");
+                    	editUsername.setText(username);
+                    	editUsername.setEnabled(false);
+						dialog.dismiss();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			});
+            
+            builderSingle.show();
+			
+			// -------------------------------------
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return;
+		}
+    	
     }
+    
+    private void retrieveAccessToken()
+    {
+    	String pinCode = this.editPass.getText().toString();
+    	rcr.getAccessToken(clientId, clientSecret, username, pinCode, new Listener<String>() {
+
+			@Override
+			public void onResponse(String response) {
+		    	Log.d(TAG, "Query Response:" + response);
+		    	try {
+					JSONObject  jsonresponse = new JSONObject(response);
+					Log.d(TAG,"ACCESS TOKEN: " + jsonresponse.getString("access_token"));
+					accessToken =  jsonresponse.getString("access_token");
+					
+					if (accessToken!=null)
+						config.setSpecUser(new SpecUser(username, taskgroupID, accessToken));
+					else showPinCodeErrorAlert();
+					
+				} catch (JSONException e) {
+					Log.e(TAG, "error parsing json response: " + e);
+					e.printStackTrace();
+				}
+		    
+				
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Log.e(TAG, "Error ["+error+"]");
+				accessToken = null;
+				showPinCodeErrorAlert();
+			}
+		});                                        
+    }
+    
+    private void showPinCodeErrorAlert(){
+    	AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(this.getActivity());
+		loginErrorAlert.setTitle("Login Error");
+		loginErrorAlert.setMessage("Invalid Pin code.\n Please retry.");
+		AlertDialog alert = loginErrorAlert.create();
+		alert.show();
+    }
+    
  
-    private boolean isValidUser(String username, String password)
-    {
-    	return (username.equalsIgnoreCase("most") && password.equalsIgnoreCase("most"));
-    }
-    
 	@Override
 	public void updateConfigFields() {
 	}

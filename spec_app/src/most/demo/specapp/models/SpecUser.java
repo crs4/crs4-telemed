@@ -6,38 +6,36 @@ public class SpecUser implements Serializable {
 	
 	private static final long serialVersionUID = -1438332811570855646L;
 
-	public String getUserpwd() {
-		return userpwd;
-	}
-
-	public void setUserpwd(String userpwd) {
-		this.userpwd = userpwd;
-	}
-
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	
 	private String username = null;
-	private String userpwd;
+    private String accessToken = null;
+    private String taskgroupId = null;
 
-	public SpecUser(String username, String userpwd)
+	public SpecUser(String username, String taskgroupId, String accessToken)
 	{
 		this.username = username;
-		this.userpwd = userpwd;
+		this.taskgroupId = taskgroupId;
+		this.accessToken = accessToken;	
+	}
+
+	public String getTaskgroupId() {
+		return taskgroupId;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 
 	public String getUsername() {
 		return username;
 	}
 	
-	public String getUserPwd() {
-		return userpwd;
+	public String getAccessToken() {
+		return this.accessToken;
 	}
-
+	
 }
