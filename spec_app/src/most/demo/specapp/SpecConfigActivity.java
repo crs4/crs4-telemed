@@ -22,6 +22,9 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 		                               "Teleconsultations"
 									   };
 	
+	private String configServerIP="127.0.0.1"; 
+	private int configServerPort = 8001;
+	
 	private static String TAG = "MostViewPager";
 	
 	private ConfigFragment [] configFragments = null;
@@ -31,10 +34,14 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 	
 	private MostViewPager vpPager  = null;
 
+	private RemoteConfigReader rcr;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort);
 		setupConfigFragments();
+		
 		setContentView(R.layout.config_activity_main);
 		vpPager = (MostViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(this,getSupportFragmentManager());
@@ -129,6 +136,12 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 	@Override
 	public Teleconsultation getTeleconsultation() {
 		return this.teleconsultation;
+	}
+
+
+	@Override
+	public RemoteConfigReader getRemoteConfigReader() {
+		return this.rcr;
 	}
 	
 }

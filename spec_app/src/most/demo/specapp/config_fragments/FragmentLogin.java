@@ -16,8 +16,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,9 +39,6 @@ public class FragmentLogin extends ConfigFragment {
 	private String username = null;
 	//PYTHONPATH=.. python manage.py runserver 0.0.0.0:8001
 
-	private String configServerIP="156.148.33.226"; 
-	private int configServerPort = 8001;
-	
 	// --------------------------------------------------
 	
 	private EditText editPass = null;
@@ -110,7 +105,7 @@ public class FragmentLogin extends ConfigFragment {
 		loadingConfigDialog.setCanceledOnTouchOutside(false);
 		loadingConfigDialog.show();
 		
-		this.rcr = new RemoteConfigReader(this.getActivity(), this.configServerIP, configServerPort);
+		this.rcr = config.getRemoteConfigReader();
 		this.retrieveTaskgroups();
 	}
     

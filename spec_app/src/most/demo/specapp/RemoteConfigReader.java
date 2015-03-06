@@ -84,6 +84,12 @@ public class RemoteConfigReader {
 		this.rq.add(postReq);	 
 	}
 	
+	public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+		String uri = String.format("%steleconsultation/list/?access_token=%s", this.urlPrefix, accessToken);
+		JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(postReq);	 
+	}
+	
 	/**
 	 * Retrieve the users associated to the specified TaskGroup ID
 	 * @param taskgroupId the id of the taskgroup
@@ -126,62 +132,7 @@ public class RemoteConfigReader {
 			Log.d(TAG, "Request added to the queue");
 	}
 	
-	public void getAccessTokenOld(final String clientId, final String clientSecret, final String username, final String pincode)
-	{
-		String uri = this.urlPrefix + "oauth2/access_token/";
-		Log.d(TAG, "Called getAccessToken() on uri: " + uri);
-		Log.d(TAG, "client id: " + clientId);
-		Log.d(TAG, "client secret: " + clientSecret);
-		Log.d(TAG, "username: " + username);
-		Log.d(TAG, "pincode: " + pincode);
-		
-		StringRequest postReq = new StringRequest(Request.Method.POST, uri , new Response.Listener<String>() {
-		    @Override
-		    public void onResponse(String response) {
-		    	Log.d(TAG, "Query Response:" + response);
-		    	try {
-					JSONObject  jsonresponse = new JSONObject(response);
-					Log.d(TAG,"ACCESS TOKEN: " + jsonresponse.getString("access_token"));
-					accessToken =  jsonresponse.getString("access_token");
-				} catch (JSONException e) {
-					Log.e(TAG, "error parsing json response: " + e);
-					e.printStackTrace();
-				}
-		    }
-		}, new Response.ErrorListener() {
-		    @Override
-		    public void onErrorResponse(VolleyError error) {
-		    	Log.e(TAG, "Error ["+error+"]");
 	
-		    }
-		})
-			{
-	 			@Override
-	 		    protected Map<String, String> getParams() 
-	 		    {  
-	 				
-	 		            Map<String, String>  params = new HashMap<String, String>();  
-	 		            /*
-		                params.put("client_id", "065eb628607f75cc4642"); // 9496f472018008dc2077
-		                params.put("client_secret", "c8d3e22618ad29f0ef4ca4aa0fac14d95d491497"); // 926795490a0638fa74d979e9d2ec53f2ae918688
-		                params.put("grant_type", "password");
-		                params.put("username", "specialista");
-		                params.put("password", "specialista");
-		                */
-	 		            
-		                params.put("client_id", clientId); //"b8aa684a2ed48cc3c1b0"); // 9496f472018008dc2077
-		                params.put("client_secret", clientSecret); // "a8375769fd0e528c0d42267ddcbbfc396a808a73"); // 926795490a0638fa74d979e9d2ec53f2ae918688
-		                params.put("grant_type", "pincode");
-		                params.put("username", username);
-		                params.put("pincode", pincode);
-	 		             
-	 		            return params;  
-	 		    }
-			};
-
-			this.rq.add(postReq);
-			Log.d(TAG, "Request added to the queue");
-	}
 	
 	public void doTestJsonRequest() 
 	{

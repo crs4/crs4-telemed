@@ -6,6 +6,8 @@ import most.demo.specapp.models.Teleconsultation;
 
 public interface IConfigBuilder {
 
+	public RemoteConfigReader getRemoteConfigReader();
+	
 	public void setSpecUser(SpecUser user);
 	public SpecUser getSpecUser();
 	
