@@ -11,6 +11,7 @@ import most.demo.ecoapp.config_fragments.Fragment_EnterPasscode;
 import most.demo.ecoapp.config_fragments.Fragment_PatientSelection;
 import most.demo.ecoapp.config_fragments.Fragment_Summary;
 import most.demo.ecoapp.config_fragments.Fragment_UserSelection;
+import most.demo.ecoapp.models.Device;
 import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Patient;
 import most.demo.ecoapp.models.Teleconsultation;
@@ -24,11 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.Toast;
-
 
 public class EcoConfigActivity extends ActionBarActivity implements IConfigBuilder {
    
@@ -46,17 +43,16 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	private EcoUser ecoUser = null;
 	private Patient patient = null;
 	private Teleconsultation teleconsultation = null;
+	private Device camera = null;
 
 	private Properties configProps;
 
 	private String configServerIP;
 	private int configServerPort;
 	private String clientId = null;
-	private String clientSecrret = null;
-
-	private most.demo.ecoapp.RemoteConfigReader rcr;
-
 	private String clientSecret;
+	
+	private most.demo.ecoapp.RemoteConfigReader rcr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -235,6 +231,16 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	@Override
 	public RemoteConfigReader getRemoteConfigReader() {
 		return this.rcr;
+	}
+
+	@Override
+	public Device getCamera() {
+		return this.camera;
+	}
+
+	@Override
+	public void setCamera(Device camera) {
+		this.camera = camera;
 	}
 	
 }
