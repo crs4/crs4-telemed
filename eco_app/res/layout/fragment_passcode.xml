@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:ems="10"
-        android:maxLength="4"
+        android:maxLength="5"
         android:inputType="numberPassword"
         android:text="@string/default_password" />
 

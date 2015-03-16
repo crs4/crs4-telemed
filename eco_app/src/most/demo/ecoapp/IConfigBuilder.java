@@ -3,9 +3,11 @@ package most.demo.ecoapp;
 import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Patient;
 import most.demo.ecoapp.models.Teleconsultation;
+import most.demo.ecoapp.RemoteConfigReader;
 
 public interface IConfigBuilder {
 	
+	public RemoteConfigReader getRemoteConfigReader();
 	public void listEcoUsers();
 	public void listPatients();
 	public void setEcoUser(EcoUser user);

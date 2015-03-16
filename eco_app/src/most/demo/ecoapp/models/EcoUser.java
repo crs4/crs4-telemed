@@ -4,19 +4,31 @@ import java.io.Serializable;
 
 public class EcoUser implements Serializable {
 	
-	 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6108801942060044140L;
-	public String getUserpwd() {
-		return userpwd;
+	
+	private String username = null;
+	private TaskGroup taskGroup = null;
+	private String firstName = null;
+	private String lastName = null;
+	
+	public EcoUser(String firstName, String lastName, String username, TaskGroup taskGroup)
+	{   
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.taskGroup = taskGroup;
+	}
+	
+
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setUserpwd(String userpwd) {
-		this.userpwd = userpwd;
+
+	public String getLastName() {
+		return lastName;
 	}
+
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -30,24 +42,14 @@ public class EcoUser implements Serializable {
 		this.taskGroup = taskGroup;
 	}
 
-	private String username = null;
-	private TaskGroup taskGroup = null;
-	private String userpwd;
+	
+	
 
-	public EcoUser(String username, String userpwd, TaskGroup taskGroup)
-	{
-		this.username = username;
-		this.taskGroup = taskGroup;
-		this.userpwd = userpwd;
-	}
 
 	public String getUsername() {
 		return username;
 	}
 	
-	public String getUserPwd() {
-		return userpwd;
-	}
 
 	public TaskGroup getTaskGroup() {
 		return taskGroup;

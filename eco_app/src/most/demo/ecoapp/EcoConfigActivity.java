@@ -2,6 +2,10 @@ package most.demo.ecoapp;
 
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import most.demo.ecoapp.config_fragments.ConfigFragment;
 import most.demo.ecoapp.config_fragments.Fragment_EnterPasscode;
 import most.demo.ecoapp.config_fragments.Fragment_PatientSelection;
@@ -10,7 +14,9 @@ import most.demo.ecoapp.config_fragments.Fragment_UserSelection;
 import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Patient;
 import most.demo.ecoapp.models.Teleconsultation;
+import most.demo.ecoapp.RemoteConfigReader;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -41,9 +47,28 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	private Patient patient = null;
 	private Teleconsultation teleconsultation = null;
 
+	private Properties configProps;
+
+	private String configServerIP;
+	private int configServerPort;
+	private String clientId = null;
+	private String clientSecrret = null;
+
+	private most.demo.ecoapp.RemoteConfigReader rcr;
+
+	private String clientSecret;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		this.configProps = loadProperties("uri.properties.default");
+		this.configServerIP = this.configProps.getProperty("configServerIp");
+		this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort")).intValue();
+		this.clientId = this.configProps.getProperty("clientId");
+		this.clientSecret = this.configProps.getProperty("clientSecret");
+		this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId,this.clientSecret);
+		
 		setupConfigFragments();
 		setContentView(R.layout.config_activity_main);
 		
@@ -78,6 +103,31 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	   this.configFragments[2] = Fragment_PatientSelection.newInstance(this, 3, "Patient Selection");
 	   this.configFragments[3] = Fragment_Summary.newInstance(this, 4, "Summary  ");
 	}
+    
+    private Properties loadProperties(String FileName) {
+		Properties properties = new Properties();
+        try {
+               /**
+                * getAssets() Return an AssetManager instance for your
+                * application's package. AssetManager Provides access to an
+                * application's raw asset files;
+                */
+               AssetManager assetManager = this.getAssets();
+               /**
+                * Open an asset using ACCESS_STREAMING mode. This
+                */
+               InputStream inputStream = assetManager.open(FileName);
+               /**
+                * Loads properties from the specified InputStream,
+                */
+               properties.load(inputStream);
+
+        } catch (IOException e) {
+               // TODO Auto-generated catch block
+               Log.e("AssetsPropertyReader",e.toString());
+        }
+        return properties;
+ }
 
 
 	private SmartFragmentStatePagerAdapter adapterViewPager;
@@ -180,6 +230,11 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 		i.putExtra("EcoUser", this.ecoUser);
 		i.putExtra("Teleconsultation" , this.teleconsultation);
 		startActivity(i);
+	}
+
+	@Override
+	public RemoteConfigReader getRemoteConfigReader() {
+		return this.rcr;
 	}
 	
 }
