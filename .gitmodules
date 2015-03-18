@@ -1,9 +1,0 @@
-[submodule "common_libs/most-streaming"]
-	path = common_libs/most-streaming
-	url = https://version.crs4.it/git/most-streaming
-[submodule "common_libs/most-voip"]
-	path = common_libs/most-voip
-	url = https://version.crs4.it/git/most-voip
-[submodule "common_libs/most-visualization"]
-	path = common_libs/most-visualization
-	url = https://version.crs4.it/git/most-visualization
