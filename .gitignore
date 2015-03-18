@@ -1,3 +1,11 @@
+#most libraries
+server/most/web/users
+server/most/web/authentication
+server/most/web/utils
+server/most/web/streaming
+server/most/web/voip
+libs
+
 #default configurations and logs
 *.default
 *log.txt
