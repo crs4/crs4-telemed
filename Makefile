@@ -7,7 +7,7 @@ devel:
 	@if ! [ -d libst/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b develop; fi
 
 	echo "link libs"
-	
+
 	cd server/most/web ; ln -s ../../../libs/most/src/most/web/utils utils; ln -s ../../../libs/most/src/most/web/users users ; \
 	ln -s ../../../libs/most/src/most/web/authentication authentication; \
 	ln -s ../../../libs/most-streaming/service/src/most/web/streaming streaming; \
@@ -55,3 +55,7 @@ runserver:
 shell: 
 
 	cd server/most; PYTHONPATH=.. python manage.py shell
+
+sync:
+
+	cd server/most; PYTHONPATH=.. python manage.py migrate
