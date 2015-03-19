@@ -688,6 +688,8 @@ class AccessToken(OAuthView, Mixin):
 
         import logging
         logging.error("IN ProviderView POST")
+        for r in request.REQUEST:
+            logging.error(r)
 
         if constants.ENFORCE_SECURE and not request.is_secure():
             return self.error_response({

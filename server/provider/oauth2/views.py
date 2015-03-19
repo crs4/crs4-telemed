@@ -24,6 +24,7 @@ class Authorize(Authorize):
     Implementation of :class:`provider.views.Authorize`.
     """
     def get_request_form(self, client, data):
+        import logging
         return AuthorizationRequestForm(data, client=client)
 
     def get_authorization_form(self, request, client, data, client_data):
@@ -106,6 +107,8 @@ class AccessTokenView(AccessTokenView):
 
     def get_access_token(self, request, user, scope, client, refreshable=True):
         try:
+            import logging
+            logging.error("In get access token")
             # Attempt to fetch an existing access token.
             at = AccessToken.objects.get(user=user, client=client,
                                          scope=scope, expires__gt=now())
@@ -117,10 +120,16 @@ class AccessTokenView(AccessTokenView):
         return at
 
     def create_access_token(self, request, user, scope, client):
+
+        taskgroup = ""
+        if 'taskgroup' in request.REQUEST:
+            taskgroup = request.REQUEST['taskgroup']
+
         return AccessToken.objects.create(
             user=user,
             client=client,
-            scope=scope
+            scope=scope,
+            taskgroup_uuid=taskgroup
         )
 
     def create_refresh_token(self, request, user, scope, access_token, client):

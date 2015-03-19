@@ -150,6 +150,10 @@ def get_teleconsultations(request):
     :param request:
     :return: a list of opened teleconsultation for device task-groups
     """
+
+    import logging
+    logging.error("Taskgroup from token: %s" % request.accesstoken.taskgroup_uuid)
+
     result = {
 
         "teleconsultations": [

@@ -151,6 +151,9 @@ class AccessToken(models.Model):
     created = models.DateTimeField(default=timezone.now, blank=True, editable=False)
     modified = models.DateTimeField(blank=True, editable=False)
 
+    taskgroup_uuid = models.CharField(max_length=40)
+
+
     objects = AccessTokenManager()
 
     def __unicode__(self):
