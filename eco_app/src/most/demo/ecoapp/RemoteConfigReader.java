@@ -48,12 +48,11 @@ public class RemoteConfigReader {
 	String serverIp = null;
 	int serverPort = -1;
 	Context ctx = null;
-	String accessToken = null;
+
 	String deviceID = null;
 	private String urlPrefix = "";
 
 	private String clientId;
-
 	private String clientSecret;
 	
     
@@ -74,12 +73,6 @@ public class RemoteConfigReader {
 		this.urlPrefix = "http://" + this.serverIp + ":" + String.valueOf(this.serverPort) + "/";
 		this.rq = Volley.newRequestQueue(this.ctx);
 	}
-	
-	public void setAccessToken(String accessToken)
-	{
-		this.accessToken = accessToken;
-	}
-	
 	
 	/**
 	 * Get the task groups associated to this specific device (i.e by its internal device id).
@@ -127,6 +120,20 @@ public class RemoteConfigReader {
 	}
 	
 	/**
+	 * Get the rooms json list by the taskgroup id
+	 * @param taskgroupId the taskgroup Id
+	 * @param accessToken tbe access token 
+	 * @param listener the listener where to receive the json room data
+	 * @param errorListener the listener used for error responses
+	 */
+	public void getRooms(String taskgroupId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+		String uri = String.format("%steleconsultation/rooms/%s/?access_token=%s", this.urlPrefix, taskgroupId, accessToken);
+		Log.d(TAG, "getRoomsDataUri: " + uri);
+		JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(postReq);	 
+	}
+	
+	/**
 	 * Get the access token needed for teleconsultation rest calls
 	 * @param username the user name  
 	 * @param pincode  the pin code of the user
@@ -160,11 +167,39 @@ public class RemoteConfigReader {
 			};
 
 			this.rq.add(postReq);
-			Log.d(TAG, "Request added to the queue");
 	}
 	
-	
+	/**
+	 * Create a new Teleconsultation
+	 * @param accessToken
+	 * @param listener
+	 * @param errorListener
+	 */
+	public void createNewTeleconsultation(final String description , 
+										  final String severity, 
+										  final String roomId,
+										String accessToken, Response.Listener<String> listener, Response.ErrorListener errorListener)  {
+		
+		String uri = String.format("%steleconsultation/create/?access_token=%s", this.urlPrefix, accessToken);
+		StringRequest postReq = new StringRequest(Request.Method.POST, uri , listener, errorListener)
+		{
+ 			@Override
+ 		    protected Map<String, String> getParams() 
+ 		    {  
+	            Map<String, String>  params = new HashMap<String, String>();  
+	            params.put("description", description);
+                params.put("severity", severity); 
+                params.put("room_uuid", roomId);
+             
+	   
+	            return params;  
+ 		    }
+		};
+
+		this.rq.add(postReq);
+	}
     
+	/*
 	public void  getAccounts(Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "accounts/?access_token=" + this.accessToken, null, listener, errorListener);
 		this.rq.add(postReq);	 
@@ -182,5 +217,5 @@ public class RemoteConfigReader {
 		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "buddies/" + String.valueOf(accountId)+"/?access_token=" + this.accessToken, null, listener, errorListener);
 		this.rq.add(postReq);
 	}
-
+  */
 }

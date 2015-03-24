@@ -10,6 +10,7 @@ public class EcoUser implements Serializable {
 	private TaskGroup taskGroup = null;
 	private String firstName = null;
 	private String lastName = null;
+	private String accessToken = null;
 	
 	public EcoUser(String firstName, String lastName, String username, TaskGroup taskGroup)
 	{   
@@ -53,5 +54,15 @@ public class EcoUser implements Serializable {
 
 	public TaskGroup getTaskGroup() {
 		return taskGroup;
+	}
+
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 }

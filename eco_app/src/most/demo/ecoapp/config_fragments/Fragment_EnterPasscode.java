@@ -10,8 +10,6 @@ import com.android.volley.Response.Listener;
 import most.demo.ecoapp.IConfigBuilder;
 import most.demo.ecoapp.R;
 import most.demo.ecoapp.RemoteConfigReader;
-import most.demo.ecoapp.models.EcoUser;
-
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -29,8 +27,7 @@ public class Fragment_EnterPasscode extends ConfigFragment {
 	private EditText editPass = null;
 	private RemoteConfigReader rcr;
 	private static int PASSCODE_LEN = 5;
-	private String accessToken;
-	
+
 	private static String TAG = "MostViewPager";
     // newInstance constructor for creating fragment with arguments
     public static Fragment_EnterPasscode newInstance(IConfigBuilder config, int page, String title) {
@@ -106,13 +103,17 @@ public class Fragment_EnterPasscode extends ConfigFragment {
 		    	try {
 					JSONObject  jsonresponse = new JSONObject(response);
 					Log.d(TAG,"ACCESS TOKEN: " + jsonresponse.getString("access_token"));
-					accessToken =  jsonresponse.getString("access_token");
+					String accessToken =  jsonresponse.getString("access_token");
 					
 					if (accessToken!=null)
+					{
+						config.getEcoUser().setAccessToken(accessToken);
 						config.listPatients();
+					}
 					else 
 					{
 						showPinCodeErrorAlert();
+						config.getEcoUser().setAccessToken(null);
 						config.listEcoUsers();
 					}
 					
@@ -128,7 +129,6 @@ public class Fragment_EnterPasscode extends ConfigFragment {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				Log.e(TAG, "Error ["+error+"]");
-				accessToken = null;
 				showPinCodeErrorAlert();
 				config.listEcoUsers();
 			}
@@ -143,13 +143,6 @@ public class Fragment_EnterPasscode extends ConfigFragment {
 		alert.show();
     }
   
-    private void checkPasscode(String passCode) {
-    	//if (!passCode.equals(config.getEcoUser().getUserPwd()))
-    	//	config.listEcoUsers();
-    	//else config.listPatients();
-    }
-    
-    
 	@Override
 	public void updateConfigFields() {
 	}
