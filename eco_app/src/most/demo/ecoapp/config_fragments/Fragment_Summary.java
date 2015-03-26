@@ -6,13 +6,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import most.demo.ecoapp.IConfigBuilder;
 import most.demo.ecoapp.R;
+import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Patient;
 import most.demo.ecoapp.models.Room;
+import most.demo.ecoapp.models.Device;
+import most.demo.ecoapp.models.Teleconsultation;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -74,7 +78,9 @@ public class Fragment_Summary extends ConfigFragment {
 			public void onClick(View v) {
 			
 				//config.setTeleconsultation(null);
+				// bug to be fixed on the remote server during teleconsultation creation
 				createNewTeleconsultation();
+			
 			}
 		});
    
@@ -87,6 +93,13 @@ public class Fragment_Summary extends ConfigFragment {
     	String severity =  severitySpinner.getSelectedItem().toString();
     	String roomId = ((Room)roomSpinner.getSelectedItem()).getId();
     	
+    	Teleconsultation tc = new Teleconsultation("N.A", description, roomId);
+    	retrieveRoomDevices(tc);
+    	// to be changed. added for ignoring the bug during the remote teleconsultation 
+    	if (tc!=null)
+    		return;
+    	
+    	// bug to be fixed on the remote server during teleconsultation creation
     	Log.d(TAG, String.format("Creating teleconsultation with room: %s and desc:%s", roomId, description));
     	this.config.getRemoteConfigReader().createNewTeleconsultation(description, severity, roomId, this.config.getEcoUser().getAccessToken(), new Listener<String>() {
 
@@ -103,6 +116,53 @@ public class Fragment_Summary extends ConfigFragment {
 				
 			}
 		});
+    }
+    
+    private void retrieveRoomDevices(final Teleconsultation selectedTc)
+    {
+    	EcoUser ecoUser = config.getEcoUser();
+    	Log.d(TAG, "using access token: " + ecoUser.getAccessToken());
+    	config.getRemoteConfigReader().getRoom(selectedTc.getRoomId(),ecoUser.getAccessToken(), new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject room) {
+				Log.d(TAG, "Room data: " + room);
+				selectedTc.setEncoder(getDevice(room, "encoder"));
+				selectedTc.setCamera(getDevice(room, "camera"));
+				Log.d(TAG, "TC Encoder: " + selectedTc.getEncoder());
+				Log.d(TAG, "TC Camera: " + selectedTc.getCamera());
+				config.setTeleconsultation(selectedTc);
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError e) {
+				Log.e(TAG, "Error retrieving device json data: " + e);
+				
+			}
+		});
+    }
+    
+    private Device getDevice(JSONObject room, String deviceName) {
+    	JSONObject jsonDevice;
+		try {
+			jsonDevice = room.getJSONObject("data").getJSONObject("room").getJSONObject("devices").getJSONObject(deviceName);
+			Device device = new Device(jsonDevice.getString("name"),
+									   jsonDevice.getJSONObject("capabilities").getString("streaming"),
+					                   jsonDevice.getJSONObject("capabilities").getString("shot"),
+					                   jsonDevice.getJSONObject("capabilities").getString("web"),
+					                   jsonDevice.getJSONObject("capabilities").getString("ptz"),
+					                   jsonDevice.getString("user"),
+					                   jsonDevice.getString("password")
+					                   );
+		    return device;
+		} catch (JSONException e) {
+			Log.e(TAG, "Error retrieving device data: " + e);
+			e.printStackTrace();
+		}
+    	
+    	
+    	return null;
     }
     
     private void setupTcSeveritySpinner(View view) {

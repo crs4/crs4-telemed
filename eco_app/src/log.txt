@@ -1,0 +1,195 @@
+03-25 14:55:44.965: D/MostFragmentSummary(29440): Trying to create a new teleconsultation...
+03-25 14:55:44.976: D/MostFragmentSummary(29440): using access token: 59d770479e782b9e5c6d4858eef7a62b9f083b1d
+03-25 14:55:44.976: D/REMOTE_CONFIG_READER(29440): getRoomDataUri: http://156.148.33.226:8001/teleconsultation/room/yytgsihw4vtm5tpceunnoyclwvbnwi53/?access_token=59d770479e782b9e5c6d4858eef7a62b9f083b1d
+03-25 14:55:45.126: D/MostFragmentSummary(29440): Room data: {"data":{"room":{"uuid":"yytgsihw4vtm5tpceunnoyclwvbnwi53","devices":{"encoder":{"model":"APTZ214","ip_address":"156.148.133.11","name":"Test Video Ufficio Stefano","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi"},"uuid":"ba2jc7za7vgsdzotpiqtk6yop3fluhms","type":"Audio Video","password":"speciali","user":"specialista"},"camera":{"model":"APTZ214","ip_address":"156.148.133.11","name":"Test Video Ufficio Stefano","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi"},"uuid":"ba2jc7za7vgsdzotpiqtk6yop3fluhms","type":"Audio Video","password":"speciali","user":"specialista"}},"task_group":{"description":"CRS4","name":"CRS4","uuid":"hdhtoz6ef4vixu3gk4s62knhncz6tmww"},"description":"Stanza di Test","name":"Ufficio Francesco"}},"success":true}
+03-25 14:55:45.126: D/MostFragmentSummary(29440): TC Encoder: [Device:Test Video Ufficio Stefano
+03-25 14:55:45.126: D/MostFragmentSummary(29440): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+03-25 14:55:45.126: D/MostFragmentSummary(29440): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+03-25 14:55:45.126: D/MostFragmentSummary(29440):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+03-25 14:55:45.126: D/MostFragmentSummary(29440):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+03-25 14:55:45.126: D/MostFragmentSummary(29440): TC Camera: [Device:Test Video Ufficio Stefano
+03-25 14:55:45.126: D/MostFragmentSummary(29440): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+03-25 14:55:45.126: D/MostFragmentSummary(29440): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+03-25 14:55:45.126: D/MostFragmentSummary(29440):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+03-25 14:55:45.126: D/MostFragmentSummary(29440):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+03-25 14:55:45.136: D/MostViewPager(29440): STARTING ACTIVITY WITH ECO USER:most.demo.ecoapp.models.EcoUser@41fe9b20
+03-25 14:55:45.206: D/dalvikvm(29440): GC_FOR_ALLOC freed 453K, 5% free 9753K/10264K, paused 27ms, total 27ms
+03-25 14:55:45.246: D/EcoTeleconsultationActivity(29440): Called IDLE:
+03-25 14:55:45.256: D/STREAMINGLIB_BACKEND(29440): Loading native libraries...
+03-25 14:55:45.256: D/STREAMINGLIB_BACKEND(29440): Loading gstreamer_android...
+03-25 14:55:45.256: D/dalvikvm(29440): Trying to load lib /data/app-lib/most.demo.ecoapp-2/libgstreamer_android.so 0x41f1afb0
+03-25 14:55:45.256: W/linker(29440): libgstreamer_android.so has text relocations. This is wasting memory and is a security risk. Please fix.
+03-25 14:55:45.276: D/dalvikvm(29440): Added shared lib /data/app-lib/most.demo.ecoapp-2/libgstreamer_android.so 0x41f1afb0
+03-25 14:55:45.606: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.656: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.706: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.756: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.756: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.766: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.766: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.766: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.766: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.776: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.776: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.786: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.786: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.786: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.786: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.796: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.796: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.796: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.806: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.806: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.806: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:45.816: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.856: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.906: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:45.956: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:46.007: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:46.017: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:46.017: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
+03-25 14:55:46.017: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
+03-25 14:55:46.017: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:46.017: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:46.017: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
+03-25 14:55:46.017: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
+03-25 14:55:46.027: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:46.027: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:46.027: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
+03-25 14:55:46.027: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
+03-25 14:55:46.027: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:46.037: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:46.037: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
+03-25 14:55:46.037: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
+03-25 14:55:46.037: I/OMXClient(29440): Using client-side OMX mux.
+03-25 14:55:46.037: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
+03-25 14:55:46.037: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
+03-25 14:55:46.037: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
+03-25 14:55:46.047: W/GStreamer+amcvideodec(29440): 0:00:00.778228761 0x779a3580 gstamcvideodec.c:304:create_sink_caps Unsupported mimetype 'video/x-vnd.on2.vp9'
+03-25 14:55:46.387: I/GStreamer(29440): GStreamer initialization complete
+03-25 14:55:46.387: W/System.err(29440): java.io.FileNotFoundException: fontconfig/fonts.conf
+03-25 14:55:46.387: W/System.err(29440): 	at android.content.res.AssetManager.openAsset(Native Method)
+03-25 14:55:46.387: W/System.err(29440): 	at android.content.res.AssetManager.open(AssetManager.java:316)
+03-25 14:55:46.387: W/System.err(29440): 	at android.content.res.AssetManager.open(AssetManager.java:290)
+03-25 14:55:46.387: W/System.err(29440): 	at com.gstreamer.GStreamer.copyFile(GStreamer.java:51)
+03-25 14:55:46.387: W/System.err(29440): 	at com.gstreamer.GStreamer.copyFonts(GStreamer.java:31)
+03-25 14:55:46.387: W/System.err(29440): 	at com.gstreamer.GStreamer.init(GStreamer.java:17)
+03-25 14:55:46.387: W/System.err(29440): 	at org.crs4.most.streaming.StreamingLibBackend.initLib(StreamingLibBackend.java:70)
+03-25 14:55:46.387: W/System.err(29440): 	at most.demo.ecoapp.EcoTeleconsultationActivity.prepareStream(EcoTeleconsultationActivity.java:218)
+03-25 14:55:46.387: W/System.err(29440): 	at most.demo.ecoapp.EcoTeleconsultationActivity.setupStreamLib(EcoTeleconsultationActivity.java:196)
+03-25 14:55:46.387: W/System.err(29440): 	at most.demo.ecoapp.EcoTeleconsultationActivity.onCreate(EcoTeleconsultationActivity.java:99)
+03-25 14:55:46.387: W/System.err(29440): 	at android.app.Activity.performCreate(Activity.java:5231)
+03-25 14:55:46.387: W/System.err(29440): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1087)
+03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2148)
+03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2233)
+03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.access$800(ActivityThread.java:135)
+03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1196)
+03-25 14:55:46.387: W/System.err(29440): 	at android.os.Handler.dispatchMessage(Handler.java:102)
+03-25 14:55:46.387: W/System.err(29440): 	at android.os.Looper.loop(Looper.java:136)
+03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
+03-25 14:55:46.387: W/System.err(29440): 	at java.lang.reflect.Method.invokeNative(Native Method)
+03-25 14:55:46.387: W/System.err(29440): 	at java.lang.reflect.Method.invoke(Method.java:515)
+03-25 14:55:46.387: W/System.err(29440): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+03-25 14:55:46.387: W/System.err(29440): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+03-25 14:55:46.387: W/System.err(29440): 	at dalvik.system.NativeStart.main(Native Method)
+03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Loading streaming lib backend native libraries..
+03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Loading most_streaming...
+03-25 14:55:46.387: D/dalvikvm(29440): Trying to load lib /data/app-lib/most.demo.ecoapp-2/libmost_streaming.so 0x41f1afb0
+03-25 14:55:46.387: D/dalvikvm(29440): Added shared lib /data/app-lib/most.demo.ecoapp-2/libmost_streaming.so 0x41f1afb0
+03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Libraries loaded.
+03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Loading native class and methods references...
+03-25 14:55:46.387: I/most_dual_streaming(29440): The calling class does implement all necessary interface methods. Ok
+03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): GStreamerBackend instance *****
+03-25 14:55:46.387: D/VoipLibUtils(29440): getResourcePathByAssetCopy on folder ** for file:test_hold.wav
+03-25 14:55:46.437: D/VoipLibUtils(29440): Found 8 files
+03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:images
+03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:ring_in_call.wav
+03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:ring_out_call.wav
+03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:sounds
+03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:test_hold.wav
+03-25 14:55:46.437: D/VoipLibUtils(29440): Found:test_hold.wav
+03-25 14:55:46.447: D/VoipLibUtils(29440): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+03-25 14:55:46.557: D/VoipLibUtils(29440): getResourcePathByAssetCopy on folder ** for file:ring_in_call.wav
+03-25 14:55:46.617: D/VoipLibUtils(29440): Found 8 files
+03-25 14:55:46.617: D/VoipLibUtils(29440): Found resource:images
+03-25 14:55:46.617: D/VoipLibUtils(29440): Found resource:ring_in_call.wav
+03-25 14:55:46.617: D/VoipLibUtils(29440): Found:ring_in_call.wav
+03-25 14:55:46.617: D/VoipLibUtils(29440): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_in_call.wav
+03-25 14:55:46.707: D/VoipLibUtils(29440): getResourcePathByAssetCopy on folder ** for file:ring_out_call.wav
+03-25 14:55:46.757: D/VoipLibUtils(29440): Found 8 files
+03-25 14:55:46.757: D/VoipLibUtils(29440): Found resource:images
+03-25 14:55:46.757: D/VoipLibUtils(29440): Found resource:ring_in_call.wav
+03-25 14:55:46.757: D/VoipLibUtils(29440): Found resource:ring_out_call.wav
+03-25 14:55:46.757: D/VoipLibUtils(29440): Found:ring_out_call.wav
+03-25 14:55:46.757: D/VoipLibUtils(29440): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_out_call.wav
+03-25 14:55:46.807: D/EcoTeleconsultationActivity(29440): OnHoldSoundPath:/storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+03-25 14:55:46.807: D/EcoTeleconsultationActivity(29440): Initializing the lib...
+03-25 14:55:46.807: D/EcoTeleconsultationActivity(29440): Voip null... Initialization.....
+03-25 14:55:46.807: I/System.out(29440): LOADING LIB...
+03-25 14:55:46.807: D/dalvikvm(29440): Trying to load lib /data/app-lib/most.demo.ecoapp-2/libpjsua2.so 0x41f1afb0
+03-25 14:55:46.807: D/dalvikvm(29440): Added shared lib /data/app-lib/most.demo.ecoapp-2/libpjsua2.so 0x41f1afb0
+03-25 14:55:46.807: D/dalvikvm(29440): No JNI_OnLoad found in /data/app-lib/most.demo.ecoapp-2/libpjsua2.so 0x41f1afb0, skipping init
+03-25 14:55:46.807: I/System.out(29440): Library loaded
+03-25 14:55:46.817: D/VoipLib(29440): VoipLib
+03-25 14:55:46.817: D/VoipLib(29440): initializing
+03-25 14:55:46.817: D/VoipLib(29440): notify state:LIB_INITIALIZING
+03-25 14:55:46.817: D/VoipLib(29440): New Current State:IDLE
+03-25 14:55:46.817: D/VoipLib(29440): Lib create...
+03-25 14:55:46.817: D/VoipLib(29440): Instancing EndPoint..
+03-25 14:55:46.817: D/VoipLib(29440): Load configuration...
+03-25 14:55:46.817: D/VoipLib(29440): Reading account config:::
+03-25 14:55:46.817: D/VoipLib(29440): Setting registrar uri to:  sip:192.168.1.100:5060;transport=tcp
+03-25 14:55:46.817: D/VoipLib(29440): Enabling turn server on 192.168.1.100:3478
+03-25 14:55:46.817: D/VoipLib(29440): Lib init......
+03-25 14:55:46.857: E/VoipLib(29440): Error Initializing the lib:java.lang.Exception: Title:       pjsua_transport_create(type, &tcfg, &tid)
+03-25 14:55:46.857: E/VoipLib(29440): Code:        120098
+03-25 14:55:46.857: E/VoipLib(29440): Description: Address already in use
+03-25 14:55:46.857: E/VoipLib(29440): Location:    ../src/pjsua2/endpoint.cpp:1466
+03-25 14:55:46.857: I/System.out(29440): ERROR IN INITIALIZATION:java.lang.Exception: Title:       pjsua_transport_create(type, &tcfg, &tid)
+03-25 14:55:46.857: I/System.out(29440): Code:        120098
+03-25 14:55:46.857: I/System.out(29440): Description: Address already in use
+03-25 14:55:46.857: I/System.out(29440): Location:    ../src/pjsua2/endpoint.cpp:1466
+03-25 14:55:46.857: D/VoipLib(29440): notify state:LIB_INITIALIZATION_FAILED
+03-25 14:55:46.857: D/VoipLib(29440): New Current State:IDLE
+03-25 14:55:46.857: D/StreamViewerFragment(29440): ON ATTACH STREAM VIEWER
+03-25 14:55:46.857: D/StreamViewerFragment(29440): ON CREATE STREAM VIEWER
+03-25 14:55:46.857: D/StreamViewerFragment(29440): ON CREATE_VIEW STREAM VIEWER
+03-25 14:55:46.857: D/StreamViewerFragment(29440): ON ACTIVITY_CREATED STREAM VIEWER
+03-25 14:55:46.857: D/EcoTeleconsultationActivity(29440): Surface View created: preparing surface for streamTeleconsultation Stream
+03-25 14:55:46.857: D/GSTREAMER_BACKEND(29440): preparing IStream instance...
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.589691162 0x779a3580 jni/most_streaming.c:534:gst_native_init Created CustomData at 0x7c0b6c10
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.589782715 0x779a3580 jni/most_streaming.c:537:gst_native_init Created GlobalRef for app object at 0x1d2004d2
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.589935303 0x779a3580 jni/most_streaming.c:542:gst_native_init STREAM COUNT: 1 
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.590728760 0x7bc39320 jni/most_streaming.c:443:app_function Creating pipeline in CustomData at 0x7c0b6c10
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.592620850 0x7bc39320 jni/most_streaming.c:494:app_function Entering main loop... (CustomData:0x7c0b6c10)
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.592987061 0x7bc39320 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.593353272 0x7bc39320 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x7bc39320
+03-25 14:55:46.867: E/GStreamer+most_streaming(29440): 0:00:01.593750000 0x7bc39320 jni/most_streaming.c:428:check_initialization_complete Initialization NOT completed...
+03-25 14:55:46.867: D/GSTREAMER_BACKEND(29440): Message from Gstreamer:State changed to READY
+03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.594268799 0x7bc39320 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+03-25 14:55:46.867: D/GSTREAMER_BACKEND(29440): onStreamStateChanged: state from state:1 to:2
+03-25 14:55:46.877: I/Choreographer(29440): Skipped 101 frames!  The application may be doing too much work on its main thread.
+03-25 14:55:46.937: D/GStreamer(29440): Surface created:::: Surface(name=null)/@0x41f96448
+03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662078858 0x779a3580 jni/most_streaming.c:782:gst_native_surface_init Received surface 0x3bd0001d (native window 0x7c1c6078)
+03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662139893 0x779a3580 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662200928 0x779a3580 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x779a3580
+03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662292481 0x779a3580 jni/most_streaming.c:414:check_initialization_complete Initialization completed... notifying application. native_window:0x7c1c6078 main_loop:0x7c0b7fd0
+03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): Called onGStreamerInitialized()
+03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): Stream initialized
+03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): Setting uri to:rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov
+03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662475587 0x779a3580 jni/most_streaming.c:672:gst_native_set_uri called gst_native_set_uri!!!!
+03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662536622 0x779a3580 jni/most_streaming.c:681:gst_native_set_uri Setting URI:::: rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov
+03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662597657 0x779a3580 jni/most_streaming.c:684:gst_native_set_uri Stream name is:Teleconsultation Stream 
+03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): uri updated to:rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov
+03-25 14:55:46.937: D/GStreamer(29440): Surface changed to format 4 width 1096 height 1338
+03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Called handleMessage with event info:Event:LIB_INITIALIZING: Type:LIB_EVENT : Voip Lib initialization
+03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZING
+03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Called handleMessage with event info:Event:LIB_INITIALIZATION_FAILED: Type:LIB_EVENT : Inizialization Failed:Title:       pjsua_transport_create(type, &tcfg, &tid)
+03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Code:        120098
+03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Description: Address already in use
+03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Location:    ../src/pjsua2/endpoint.cpp:1466
+03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZATION_FAILED
+03-25 14:55:46.967: D/EcoTeleconsultationActivity(29440): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Inizializating Stream Teleconsultation Stream
+03-25 14:55:46.967: D/EcoTeleconsultationActivity(29440): Stream State:INITIALIZED
+03-25 14:55:47.078: D/EcoTeleconsultationActivity(29440): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream Teleconsultation Stream initialized: (uri:rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov)
+03-25 14:55:47.078: D/EcoTeleconsultationActivity(29440): Stream State:INITIALIZED

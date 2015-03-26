@@ -10,8 +10,12 @@ import org.crs4.most.visualization.IStreamFragmentCommandListener;
 import org.crs4.most.visualization.StreamViewerFragment;
 
 import most.demo.ecoapp.models.EcoUser;
+import most.demo.ecoapp.models.Teleconsultation;
 import most.demo.ecoapp.ui.TcStateTextView;
 import most.demo.ecoapp.TeleconsultationState;
+
+
+
 import most.voip.api.Utils;
 import most.voip.api.VoipEventBundle;
 import most.voip.api.VoipLib;
@@ -26,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -38,6 +43,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 
@@ -78,6 +84,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private boolean accountRegistered = false;
 	private boolean exitFromAppRequest = false;
 	
+	private Teleconsultation teleconsultation = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,17 +99,23 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	       
 		   
 			this.handler = new Handler(this);
-			
+
 			this.setupActionBar();
 			this.setupCallPopupWindow();
 			this.setTeleconsultationState(TeleconsultationState.IDLE);
 			
+			this.setupTeleconsultationInfo();
 			this.setupStreamLib();
 			this.setupVoipLib();
 			
-			
 			 //this.waitForSpecialist();
 	}
+	
+	private void setupTeleconsultationInfo()
+    {
+    	  Intent i = getIntent();
+          this.teleconsultation =  (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+    }
     
 	
 	private void setTeleconsultationState(TeleconsultationState tcState)
@@ -188,10 +202,12 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				this.finish();
 			}
 		}
+	
+	
 	private void setupStreamLib()
 	{
 		String streamName = "Teleconsultation Stream"; 
-		String streamUri =  "rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov";
+		String streamUri =  this.teleconsultation.getCamera().getStreamUri();
 		
 		this.prepareStream(streamName,streamUri);
 		

@@ -175,7 +175,7 @@ public class RemoteConfigReader {
 	 * @param listener
 	 * @param errorListener
 	 */
-	public void createNewTeleconsultation(final String description , 
+	public void createNewTeleconsultation(final String description, 
 										  final String severity, 
 										  final String roomId,
 										String accessToken, Response.Listener<String> listener, Response.ErrorListener errorListener)  {
@@ -191,7 +191,6 @@ public class RemoteConfigReader {
                 params.put("severity", severity); 
                 params.put("room_uuid", roomId);
              
-	   
 	            return params;  
  		    }
 		};
