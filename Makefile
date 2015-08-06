@@ -4,7 +4,7 @@ devel:
 
 	@if ! [ -d libs/most ]; then git clone https://github.com/crs4/most libs/most -b develop; fi
 	@if ! [ -d libs/most-streaming ]; then git clone https://github.com/crs4/most-streaming libs/most-streaming -b develop; fi
-	@if ! [ -d libst/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b develop; fi
+	@if ! [ -d libs/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b develop; fi
 
 	echo "link libs"
 
@@ -13,7 +13,7 @@ devel:
 	ln -s ../../../libs/most-streaming/service/src/most/web/streaming streaming; \
 	ln -s ../../../libs/most-voip/service/src/most/web/voip voip
 
-
+	cd server; ln -s ../libs/most/src/provider provider;
 
 
 clean:
@@ -47,7 +47,7 @@ clean:
 	fi
 
 
-runserver:
+run:
 
 	cd server/most; PYTHONPATH=.. python manage.py runserver 0.0.0.0:8000
 
@@ -59,3 +59,11 @@ shell:
 sync:
 
 	cd server/most; PYTHONPATH=.. python manage.py migrate
+
+dump:
+	@cd examples/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions --exclude admin --natural-foreign
+
+test:
+
+	cd src/most/web/medicalrecords/; nosetests --logging-level=DEBUG -s
+
