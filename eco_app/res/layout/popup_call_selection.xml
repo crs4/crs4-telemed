@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical" >
+
+ <Button
+     android:id="@+id/butCallHangup"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/call_hangup"
+   />
+ 
+ <ToggleButton
+     android:id="@+id/butCallHold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textOn="@string/call_onHold"
+    android:textOff="@string/call_onLine"
+   />
+ 
+ <Button
+     android:id="@+id/butCallCancel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/cancel"
+   />
+
+</LinearLayout>

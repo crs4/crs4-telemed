@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DemoTestViewPagerFragment</string>
+    <string name="login_user">Username:</string>
+    <string name="login_password">Password:</string>
+    <string name="login_button">Login</string>
+    <string name="default_user">admin</string>
+    <string name="server_ip">192.168.1.1</string>
+    
+    <string name="lbl_ip_address">Ip Address</string>
+    <string name="lbl_enter_passcode">Enter your passcode:</string>
+    <string name="lbl_patients_title">Patient</string>
+    <string name="lbl_teleconsultation_title">Teleconsultation</string>
+    <string name="default_password"></string>
+    
+    <string name="title_activity_waiting">WaitingActivity</string>
+    <string name="action_call">Call</string>
+    <string name="title_activity_teleconsultation">TeleconsultationActivity</string>
+    <string name="hello_world">Hello world!</string>
+    
+     <string name="call_hangup">Hangup</string>
+
+     <string name="call_onHold">On Hold</string>
+     <string name="call_onLine">On Line</string>
+     <string name="cancel">Cancel</string>
+     
+     
+ 
+</resources>

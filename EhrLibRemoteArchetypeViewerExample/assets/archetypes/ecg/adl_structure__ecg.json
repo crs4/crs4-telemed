@@ -1,0 +1,40 @@
+{
+	"archetype_class":"openEHR-EHR-OBSERVATION.ecg.v1",
+	"archetype_details":{
+		"data":{
+			"at0001":[
+				{
+					"events":{
+						"at0002":{
+							"data":{
+								"at0005":[
+									{
+										"items":{
+											"at0006":{
+												"items":{
+													"at0013":"DATA_NODE::DV_QUANTITY",
+													"at0012":"DATA_NODE::DV_QUANTITY"
+												}
+												
+											},
+											"at0009":"DATA_NODE::DV_TEXT"
+										}
+										
+									}
+								]
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				
+			]
+			
+		}
+		
+	}
+	
+}
