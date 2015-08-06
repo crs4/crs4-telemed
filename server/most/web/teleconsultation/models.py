@@ -150,7 +150,8 @@ class TeleconsultationSession(models.Model):
     SESSION_STATE = (
         ('NEW', 'New Session'), #Created from applicant
         ('WAITING', 'Session waiting for specialist'), #Started from applicant
-        ('ACTIVE', 'Session in progress'), #Accepted by Specialist
+        ('READY', 'Session ready to start'), #Started from applicant
+        ('RUN', 'Session in progress'), #Accepted by Specialist
         ('CLOSE', 'Session is closed'), #Closed from applicant or specialist
         ('CANCELED', 'Session is canceled') #Canceled from applicant or specialist
     )
