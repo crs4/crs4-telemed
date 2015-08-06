@@ -14,6 +14,8 @@ from django.utils.translation import ugettext_lazy as _
 from most.web.users.models import MostUser, TaskGroup
 from most.web.streaming.models import StreamingDevice
 from most.web.utils import pkgen
+import time
+import calendar
 
 
 class Device(models.Model):
@@ -90,8 +92,7 @@ class Teleconsultation(models.Model):
 
     TELECONSULTATION_STATE = (
         ('NEW', 'New Teleconsultation'), #Created from applicant
-        ('OPEN', 'At Least one Session Open'),
-        ('WAITING', 'Last Session Waiting for Specialist'),
+        ('OPEN', 'At Least one Session Open - (SESSION WAITING STATE'),
         ('ACTIVE', 'Last Session in progress'),
         ('CLOSE', 'Last Session is closed')
     )
@@ -107,18 +108,51 @@ class Teleconsultation(models.Model):
     applicant = models.ForeignKey(MostUser, related_name="has_applicant", blank=True, null=True)
     specialist = models.ForeignKey(MostUser, related_name="has_specialist", blank=True, null=True)
     description = models.CharField(_('Description'), max_length=200)
+    task_group = models.ForeignKey(TaskGroup, related_name="teleconsultations")
     state = models.CharField(_('Teleconsultation State'), choices=TELECONSULTATION_STATE, max_length=20)
     severity = models.CharField(_('Severity State'), choices=URGENCY_STATE, max_length=20, default="NORMAL")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return '[Teleconsultation: {uuid} - {description} - Taskgroup: {tgname}]'.format(uuid=self.uuid, description=self.description, tgname=self.task_group.name)
+
+    def _get_json_dict(self):
+
+        result  = {
+            'uuid': self.uuid,
+            'description': self.description,
+            'created': calendar.timegm(self.created.timetuple())
+        }
+
+        #Check sessions
+        if self.sessions.count() > 0:
+            last_session = self.sessions.order_by('-created')[0]
+            result['last_session'] = last_session.json_dict
+
+        return result
+
+    json_dict = property(_get_json_dict)
+
+    def _get_full_json_dict(self):
+
+        return {
+            'uuid': self.uuid,
+            'description': self.description,
+            'task_group': self.task_group.json_dict,
+        }
+
+    full_json_dict = property(_get_full_json_dict)
 
 
 class TeleconsultationSession(models.Model):
 
     SESSION_STATE = (
         ('NEW', 'New Session'), #Created from applicant
-        ('ACTIVE', 'Session in progress'),
-        ('CLOSE', 'Session is closed')
+        ('WAITING', 'Session waiting for specialist'), #Started from applicant
+        ('ACTIVE', 'Session in progress'), #Accepted by Specialist
+        ('CLOSE', 'Session is closed'), #Closed from applicant or specialist
+        ('CANCELED', 'Session is canceled') #Canceled from applicant or specialist
     )
 
     uuid = models.CharField(max_length=40, unique=True, default=pkgen)
@@ -127,3 +161,29 @@ class TeleconsultationSession(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     room = models.ForeignKey(Room, related_name="sessions")
+
+    def __unicode__(self):
+        return '[Teleconsultation Session: {uuid}]'.format(uuid=self.uuid)
+
+    def _get_json_dict(self):
+
+        return {
+            'uuid': self.uuid,
+            'created': calendar.timegm(self.created.timetuple()),
+            'updated': calendar.timegm(self.created.timetuple()),
+            'state': self.state,
+        }
+
+    json_dict = property(_get_json_dict)
+
+    def _get_full_json_dict(self):
+
+        result = self.json_dict
+        result.update({
+            'teleconsultation': self.teleconsultation.full_json_dict,
+            'room': self.room.full_json_dict
+        })
+        return result
+
+    full_json_dict = property(_get_full_json_dict)
+
