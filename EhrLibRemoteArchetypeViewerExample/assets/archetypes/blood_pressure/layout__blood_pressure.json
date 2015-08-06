@@ -1,0 +1,30 @@
+{
+	"sections":[
+		"data", "state"
+	],
+	"items":{
+		"data[at0001]/events[at0006]/data[at0003]/items[at0004]":{
+			"priority":1
+		},
+		"data[at0001]/events[at0006]/data[at0003]/items[at0005]":{
+			"priority":2
+		},
+		"data[at0001]/events[at0006]/data[at0003]/items[at1006]":{
+			"priority":3
+		},
+		"data[at0001]/events[at0006]/data[at0003]/items[at1007]":{
+			"priority":4
+		},
+		"data[at0001]/events[at0006]/data[at0003]/items[at0033]":{
+			"priority":5
+		},
+		"data[at0001]/events[at0006]/state[at0007]/items[at0008]":{
+			"priority":1,
+			"widget2":"it.crs4.ehrlib.widgets.DvCodedTextAsListWidget"
+		},
+		"data[at0001]/events[at0006]/state[at0007]/items[at1052]":{
+			"priority":2,
+			"widget":null
+		}
+	}
+}

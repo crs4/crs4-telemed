@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RemoteEhrLibBloodPressureExample</string>
+    <string name="action_quit">Exit</string>
+    <string name ="but_json">Json</string>
+    <string name ="but_load">Load</string>
+    <string name ="but_export">Export</string>
+    <string name ="but_save">Save</string>
+    <string name ="but_reset">Reset</string>
+	<string name ="es">Español</string>
+	<string name ="en">English</string>
+</resources>

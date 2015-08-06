@@ -1,0 +1,713 @@
+06-25 18:18:11.350: I/dalvikvm(2877): Could not find method android.view.ViewGroup.onNestedScrollAccepted, referenced from method android.support.v7.internal.widget.ActionBarOverlayLayout.onNestedScrollAccepted
+06-25 18:18:11.350: W/dalvikvm(2877): VFY: unable to resolve virtual method 11392: Landroid/view/ViewGroup;.onNestedScrollAccepted (Landroid/view/View;Landroid/view/View;I)V
+06-25 18:18:11.350: D/dalvikvm(2877): VFY: replacing opcode 0x6f at 0x0000
+06-25 18:18:11.350: I/dalvikvm(2877): Could not find method android.view.ViewGroup.onStopNestedScroll, referenced from method android.support.v7.internal.widget.ActionBarOverlayLayout.onStopNestedScroll
+06-25 18:18:11.350: W/dalvikvm(2877): VFY: unable to resolve virtual method 11398: Landroid/view/ViewGroup;.onStopNestedScroll (Landroid/view/View;)V
+06-25 18:18:11.350: D/dalvikvm(2877): VFY: replacing opcode 0x6f at 0x0000
+06-25 18:18:11.350: I/dalvikvm(2877): Could not find method android.support.v7.internal.widget.ActionBarOverlayLayout.stopNestedScroll, referenced from method android.support.v7.internal.widget.ActionBarOverlayLayout.setHideOnContentScrollEnabled
+06-25 18:18:11.350: W/dalvikvm(2877): VFY: unable to resolve virtual method 9075: Landroid/support/v7/internal/widget/ActionBarOverlayLayout;.stopNestedScroll ()V
+06-25 18:18:11.350: D/dalvikvm(2877): VFY: replacing opcode 0x6e at 0x000e
+06-25 18:18:11.350: I/dalvikvm(2877): Could not find method android.content.res.TypedArray.getChangingConfigurations, referenced from method android.support.v7.internal.widget.TintTypedArray.getChangingConfigurations
+06-25 18:18:11.350: W/dalvikvm(2877): VFY: unable to resolve virtual method 382: Landroid/content/res/TypedArray;.getChangingConfigurations ()I
+06-25 18:18:11.350: D/dalvikvm(2877): VFY: replacing opcode 0x6e at 0x0002
+06-25 18:18:11.360: I/dalvikvm(2877): Could not find method android.content.res.TypedArray.getType, referenced from method android.support.v7.internal.widget.TintTypedArray.getType
+06-25 18:18:11.360: W/dalvikvm(2877): VFY: unable to resolve virtual method 404: Landroid/content/res/TypedArray;.getType (I)I
+06-25 18:18:11.360: D/dalvikvm(2877): VFY: replacing opcode 0x6e at 0x0002
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): --->>>> Activity:it.crs4.most.ehrlib.example.RemoteArchetypeViewerActivityExample@41ee7b68 DT:{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"title":"at0000",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"datatypes":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"data":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"at0006":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0006]",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_CLUSTER",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"datatype_ref":"ecg_parameters"
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"at0009":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0009]",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_TEXT",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"at0081":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0081]",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_TEXT",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"ecg_parameters":{	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"at0013":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0006]/items[at0013]",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_QUANTITY",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"unit_of_measure":"/min",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"precision":0,
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"range":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 						"min":0
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					}					
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			}	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"at0012":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0006]/items[at0012]",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_QUANTITY",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"unit_of_measure":"millisec",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"precision":0,
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"range":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 						"min":0
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					}					
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): }
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): ,ON:{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"en":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0000":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"ECG recording",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"An electrocardiograph (ECG) is an interpretation of the electrical activity of the heart over time, recorded non-invasively using external skin electrodes."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0006":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Global ECG Parameters",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Details about the entire ECG."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0007":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"QT interval",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Interval from the onset of the QRS complex to the end of the T wave."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0009":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Automatic interpretation",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Interpretative comment on this recording originating from the device."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0012":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"PR interval",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Measured interval from onset of P wave to QRS."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0013":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"RR Rate",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Frequency of electrical ventricular contractions (measured from R wave to R wave) and indicative of the mechanical heart rate."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0081":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Overall interpretation",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"An overall interpretative comment on this recording."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"es-ar":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0000":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"ECG recording",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"An electrocardiograph (ECG) is an interpretation of the electrical activity of the heart over time, recorded non-invasively using external skin electrodes."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0006":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Global ECG Parameters",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Details about the entire ECG."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0007":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"QT interval",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Interval from the onset of the QRS complex to the end of the T wave."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0009":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Automatic interpretation",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Interpretative comment on this recording originating from the device."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0012":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"PR interval",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Measured interval from onset of P wave to QRS."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0013":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"RR Rate",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Frequency of electrical ventricular contractions (measured from R wave to R wave) and indicative of the mechanical heart rate."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"at0081":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Overall interpretation",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"An overall interpretative comment on this recording."
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): }, IN:{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"archetype_class":"openEHR-EHR-OBSERVATION.ecg.v1",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"archetype_details":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"data":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"at0001":[
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					"events":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 						"at0002":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 							"data":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 								"at0005":[
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 									{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 										"items":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 											"at0006":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 												"items":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 													"at0013":"DATA_NODE::DV_QUANTITY",
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 													"at0012":"DATA_NODE::DV_QUANTITY"
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 												}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 												
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 											},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 											"at0009":"DATA_NODE::DV_TEXT"
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 										}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 										
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 									}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 								]
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 								
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 							}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 							
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 						}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 						
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 					
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			]
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	}
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): }. SC: {
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"sections":[
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"data"
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	],
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 	"items":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"data[at0001]/events[at0002]/data[at0005]/items[at0006]":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"priority":1
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"data[at0001]/events[at0002]/data[at0005]/items[at0009]":{
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 			"priority":2
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		
+06-25 18:18:11.390: D/RemoteArchetypeViewerActivityExample(2877): 		"data[at0001]/events[at0002]/data[at0005]/items[at000
+06-25 18:18:11.390: D/WidgetProvider(2877): Reading ontology: {
+06-25 18:18:11.390: D/WidgetProvider(2877): 	"en":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0000":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"ECG recording",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"An electrocardiograph (ECG) is an interpretation of the electrical activity of the heart over time, recorded non-invasively using external skin electrodes."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0006":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"Global ECG Parameters",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Details about the entire ECG."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0007":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"QT interval",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Interval from the onset of the QRS complex to the end of the T wave."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0009":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"Automatic interpretation",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Interpretative comment on this recording originating from the device."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0012":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"PR interval",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Measured interval from onset of P wave to QRS."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0013":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"RR Rate",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Frequency of electrical ventricular contractions (measured from R wave to R wave) and indicative of the mechanical heart rate."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0081":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"Overall interpretation",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"An overall interpretative comment on this recording."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		}
+06-25 18:18:11.390: D/WidgetProvider(2877): 		
+06-25 18:18:11.390: D/WidgetProvider(2877): 	},
+06-25 18:18:11.390: D/WidgetProvider(2877): 	
+06-25 18:18:11.390: D/WidgetProvider(2877): 	"es-ar":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0000":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"ECG recording",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"An electrocardiograph (ECG) is an interpretation of the electrical activity of the heart over time, recorded non-invasively using external skin electrodes."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0006":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"Global ECG Parameters",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Details about the entire ECG."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0007":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"QT interval",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Interval from the onset of the QRS complex to the end of the T wave."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0009":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"Automatic interpretation",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Interpretative comment on this recording originating from the device."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0012":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"PR interval",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Measured interval from onset of P wave to QRS."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0013":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"RR Rate",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"Frequency of electrical ventricular contractions (measured from R wave to R wave) and indicative of the mechanical heart rate."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		},
+06-25 18:18:11.390: D/WidgetProvider(2877): 		"at0081":{
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"text":"Overall interpretation",
+06-25 18:18:11.390: D/WidgetProvider(2877): 			"description":"An overall interpretative comment on this recording."
+06-25 18:18:11.390: D/WidgetProvider(2877): 		}
+06-25 18:18:11.390: D/WidgetProvider(2877): 		
+06-25 18:18:11.390: D/WidgetProvider(2877): 	}
+06-25 18:18:11.390: D/WidgetProvider(2877): 	
+06-25 18:18:11.390: D/WidgetProvider(2877): 	
+06-25 18:18:11.390: D/WidgetProvider(2877): 	
+06-25 18:18:11.390: D/WidgetProvider(2877): 	
+06-25 18:18:11.390: D/WidgetProvider(2877): 	
+06-25 18:18:11.390: D/WidgetProvider(2877): }
+06-25 18:18:11.390: D/WidgetProvider(2877): Ontology read ok 
+06-25 18:18:11.390: D/WidgetProvider(2877): item data path:data[at0001]/events[at0002]/data[at0005]/items[at0006]/items[at0013]
+06-25 18:18:11.390: D/TestAdlParser(2877): JSON IN getObjectByPath:{"data":{"at0001":[{"events":{"at0002":{"data":{"at0005":[{"items":{"at0006":{"items":{"at0013":"DATA_NODE::DV_QUANTITY","at0012":"DATA_NODE::DV_QUANTITY"}},"at0009":"DATA_NODE::DV_TEXT"}}]}}}}]}}
+06-25 18:18:11.390: D/WidgetProvider(2877): creating datatype widgets...
+06-25 18:18:11.390: D/WidgetProvider(2877): Found Form Widget: it.crs4.most.ehrlib.widgets.DvQuantityWidget
+06-25 18:18:11.390: D/WidgetProvider(2877): Instancing widget it.crs4.most.ehrlib.widgets.DvQuantityWidget for datatype: DV_QUANTITY parentIndex: 0
+06-25 18:18:11.390: D/DvQuantity(2877): ISTANZIATA DV QUANTITY con path:data[at0001]/events[at0002]/data[at0005]/items[at0006]/items[at0013]
+06-25 18:18:11.390: D/DvQuantity(2877): Setting datatype attributes: {"range":{"min":0},"unit_of_measure":"\/min","precision":0}
+06-25 18:18:11.390: D/DvQuantity(2877): Set unity:/min
+06-25 18:18:11.390: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f36298 return: /min
+06-25 18:18:11.390: D/DvQuantity(2877): Calling get unit from it.crs4.most.ehrlib.datatypes.DvQuantity@41f36298 return: /min
+06-25 18:18:11.410: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f36298 return: /min
+06-25 18:18:11.410: D/DvQuantityWidget(2877): DV QUANTITY VALUE: 0.0
+06-25 18:18:11.410: E/DvQuantityFilter(2877): Invalid double:java.lang.NumberFormatException: Invalid double: ""
+06-25 18:18:11.410: D/DvQuantityWidget(2877): CALLED updateWidgetContents with DV QUANTITY VALUE: 0.0
+06-25 18:18:11.410: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f36298 return: /min
+06-25 18:18:11.420: D/WidgetProvider(2877): Found Form Widget: it.crs4.most.ehrlib.widgets.DvQuantityWidget
+06-25 18:18:11.420: D/WidgetProvider(2877): Instancing widget it.crs4.most.ehrlib.widgets.DvQuantityWidget for datatype: DV_QUANTITY parentIndex: 0
+06-25 18:18:11.420: D/DvQuantity(2877): ISTANZIATA DV QUANTITY con path:data[at0001]/events[at0002]/data[at0005]/items[at0006]/items[at0012]
+06-25 18:18:11.420: D/DvQuantity(2877): Setting datatype attributes: {"range":{"min":0},"unit_of_measure":"millisec","precision":0}
+06-25 18:18:11.420: D/DvQuantity(2877): Set unity:millisec
+06-25 18:18:11.420: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f4a200 return: millisec
+06-25 18:18:11.420: D/DvQuantity(2877): Calling get unit from it.crs4.most.ehrlib.datatypes.DvQuantity@41f4a200 return: millisec
+06-25 18:18:11.420: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f4a200 return: millisec
+06-25 18:18:11.420: D/DvQuantityWidget(2877): DV QUANTITY VALUE: 0.0
+06-25 18:18:11.420: E/DvQuantityFilter(2877): Invalid double:java.lang.NumberFormatException: Invalid double: ""
+06-25 18:18:11.420: D/DvQuantityWidget(2877): CALLED updateWidgetContents with DV QUANTITY VALUE: 0.0
+06-25 18:18:11.440: D/dalvikvm(2877): GC_FOR_ALLOC freed 274K, 4% free 9287K/9592K, paused 15ms, total 15ms
+06-25 18:18:11.440: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f4a200 return: millisec
+06-25 18:18:11.440: D/WidgetProvider(2877): item data path:data[at0001]/events[at0002]/data[at0005]/items[at0081]
+06-25 18:18:11.440: D/TestAdlParser(2877): JSON IN getObjectByPath:{"data":{"at0001":[{"events":{"at0002":{"data":{"at0005":[{"items":{"at0006":{"items":{"at0013":"DATA_NODE::DV_QUANTITY","at0012":"DATA_NODE::DV_QUANTITY"}},"at0009":"DATA_NODE::DV_TEXT"}}]}}}}]}}
+06-25 18:18:11.440: D/WidgetProvider(2877): creating datatype widgets...
+06-25 18:18:11.440: D/WidgetProvider(2877): Found Form Widget: it.crs4.most.ehrlib.widgets.DvClusterWidget
+06-25 18:18:11.440: D/WidgetProvider(2877): Instancing widget it.crs4.most.ehrlib.widgets.DvClusterWidget for datatype: DV_CLUSTER parentIndex: 0
+06-25 18:18:11.450: D/WidgetProvider(2877): ITEM CONTENT FOR ITEM 0: null
+06-25 18:18:11.450: D/WidgetProvider(2877): Found Form Widget: it.crs4.most.ehrlib.widgets.DvTextWidget
+06-25 18:18:11.450: D/WidgetProvider(2877): Instancing widget it.crs4.most.ehrlib.widgets.DvTextWidget for datatype: DV_TEXT parentIndex: 0
+06-25 18:18:11.450: D/WidgetProvider(2877): Generating form....
+06-25 18:18:11.460: D/WidgetProvider(2877): Resetting all widgets...
+06-25 18:18:11.460: D/DvQuantityWidget(2877): CALLED updateWidgetContents with DV QUANTITY VALUE: 0.0
+06-25 18:18:11.460: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f36298 return: /min
+06-25 18:18:11.460: D/DvQuantityWidget(2877): CALLED updateWidgetContents with DV QUANTITY VALUE: 0.0
+06-25 18:18:11.460: D/DvQuantity(2877): Calling get unity() from it.crs4.most.ehrlib.datatypes.DvQuantity@41f4a200 return: millisec
+06-25 18:18:11.460: D/DvTextWidget(2877): CALLED updateWidgetContents with DV TEXT VALUE: 
+06-25 18:18:11.510: I/Adreno-EGL(2877): <qeglDrvAPI_eglInitialize:320>: EGL 1.4 QUALCOMM Build: I0404c4692afb8623f95c43aeb6d5e13ed4b30ddbDate: 11/06/13
+06-25 18:18:11.530: D/OpenGLRenderer(2877): Enabling debug mode 0
+06-25 18:18:13.733: D/dalvikvm(2877): GC_FOR_ALLOC freed 342K, 4% free 9460K/9832K, paused 19ms, total 19ms
+06-25 18:18:13.733: D/REMOTE_CONFIG_READER(2877): Called getAccessToken() on uri: http://156.148.132.223:8000/oauth2/access_token/
+06-25 18:18:13.733: D/REMOTE_CONFIG_READER(2877): client id: 8c96bf8cea26fa555fa8
+06-25 18:18:13.733: D/REMOTE_CONFIG_READER(2877): client secret: 4fd1f508b7b03fba6509da4c193157d7a2b20838
+06-25 18:18:13.733: D/REMOTE_CONFIG_READER(2877): username: admin
+06-25 18:18:13.733: D/REMOTE_CONFIG_READER(2877): password: admin
+06-25 18:18:13.733: D/REMOTE_CONFIG_READER(2877): taskgroup:5dw2x3jfkftxue5a5izw6yiplbbn4dlo
+06-25 18:18:13.733: D/REMOTE_CONFIG_READER(2877): Request added to the queue
+06-25 18:18:14.033: D/dalvikvm(2877): GC_FOR_ALLOC freed 413K, 5% free 9560K/10004K, paused 17ms, total 17ms
+06-25 18:18:14.063: D/dalvikvm(2877): GC_FOR_ALLOC freed 51K, 5% free 9627K/10044K, paused 14ms, total 14ms
+06-25 18:18:16.665: D/dalvikvm(2877): GC_FOR_ALLOC freed 166K, 5% free 9743K/10172K, paused 26ms, total 26ms
+06-25 18:18:16.866: D/Volley(2877): [1] Request.finish: 3139 ms: [ ] http://156.148.132.223:8000/oauth2/access_token/ 0x59877580 NORMAL 1
+06-25 18:18:17.096: D/dalvikvm(2877): GC_FOR_ALLOC freed 441K, 6% free 9735K/10288K, paused 36ms, total 36ms
+06-25 18:18:17.146: D/RemoteArchetypeViewerActivityExample(2877): MC RESPONSE:{"SUCCESS":true,"RECORD":{"creation_time":1.435063745061928E9,"active":true,"last_update":1.435246909036607E9,"ehr_records":[{"active":true,"creation_time":1.435063745079973E9,"last_update":1.435063745079973E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"9a7fea03036b404b9b447d6f8b4eb61e","version":1},{"active":true,"creation_time":1.435063745080134E9,"last_update":1.435063745080134E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"9635eb6f62514cbdaebb59722c573378","version":1},{"active":true,"creation_time":1.435063745080192E9,"last_update":1.435063745080192E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"393c9438592b4b75990c348053eb6ff6","version":1},{"active":true,"creation_time":1.435063745080236E9,"last_update":1.435063745080236E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"16685e7c269b4adaaf4f31d890045a90","version":1},{"active":true,"creation_time":1.435063745080277E9,"last_update":1.435063745080277E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"d76d465e205545acb8e93c037ae7a47d","version":1},{"active":true,"creation_time":1.435063745080317E9,"last_update":1.435063745080317E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"6d61c79c71c94579b2f28f31aeca3988","version":1},{"active":true,"creation_time":1.435063745080496E9,"last_update":1.435063745080496E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"4e7d2c71f4194260a506d405e77661f6","version":1},{"active":true,"creation_time":1.435063745080592E9,"last_update":1.435063745080592E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"4734d2aa34a94601ba8447cf12bf122f","version":1},{"active":true,"creation_time":1.435063745080634E9,"last_update":1.435063745080634E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"ea13337f474b463f9b04086464bbadb5","version":1},{"active":true,"creation_time":1.435063745080678E9,"last_update":1.435063745080678E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"302f3e7e3a2c43f9a07f46486fe109b0","version":1},{"active":true,"creation_time":1.435238572224031E9,"last_update":1.435238572224031E9,"ehr_data":{"archetype_class":"openEHR.TEST-EVALUATION.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"2b327e60b0324863be20f7929952410d","version":1},{"active":true,"creation_time":1.435238604671797E9,"last_update":1.435238604671797E9,"ehr_data":{"archetype_class":"openEHR.TEST-EVALUATION.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"bdcc599d9a674004bded85dce8306f96","version":1},{"active":true,"creation_time":1.435238648599843E9,"last_update":1.435238648599843E9,"ehr_data":{"archetype_class":"openEHR.TEST-EVALUATION.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"1e749676ca354eb692f9d8977a0b1014","version":1},{"active":true,"creation_time":1.435239036364574E9,"last_update":1.435239036364574E9,"ehr_data":{"archetype_class":"openEHR.TEST-EVALUATION.v1","archetype_details":{}},"patient_id":"PATIENT_00","record_id":"2a070c48b00242dbbf7764676ed25626","version":1},{"active":true,"creation_time":1.435239220570636E9,"last_update":1.435239220570636E9,"ehr_data":{"archetype_class":"openEHR.TEST-EVALUATION.v1","archetype_details":{}},"patient_id":"PATIENT_00",
+06-25 18:18:17.196: D/dalvikvm(2877): GC_FOR_ALLOC freed 347K, 6% free 9742K/10288K, paused 17ms, total 17ms
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877): Mrecord RESPONSE:{"SUCCESS":true,"RECORD":{"active":true,"creation_time":1.435063745079973E9,"last_update":1.435063745079973E9,"ehr_data":{"archetype_class":"openEHR-EHR-OBSERVATION.blood_pressure.v1","archetype_details":{"data":{"at0001":[{"events":[{"at0006":{"data":{"at0003":[{"items":{"at0004":{"value":{"magnitude":57,"units":"mm[Hg]"}},"at0005":{"value":{"magnitude":101,"units":"mm[Hg]"}}}}]}}}]}]}}},"patient_id":"PATIENT_00","version":1,"record_id":"9a7fea03036b404b9b447d6f8b4eb61e"}}
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877): INSTANCE:
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877): {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):   "archetype_class": "openEHR-EHR-OBSERVATION.blood_pressure.v1",
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):   "archetype_details": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):     "data": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):       "at0001": [
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):         {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):           "events": [
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):             {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):               "at0006": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                 "data": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                   "at0003": [
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                     {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                       "items": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                         "at0004": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                           "value": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                             "magnitude": 57,
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                             "units": "mm[Hg]"
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                           }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                         },
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                         "at0005": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                           "value": {
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                             "magnitude": 101,
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                             "units": "mm[Hg]"
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                           }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                         }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                       }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                     }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                   ]
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):                 }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):               }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):             }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):           ]
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):         }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):       ]
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):     }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877):   }
+06-25 18:18:17.296: D/RemoteArchetypeViewerActivityExample(2877): }
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): Replacing the fragment....
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): --->>>> Activity:it.crs4.most.ehrlib.example.RemoteArchetypeViewerActivityExample@41ee7b68 DT:{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 	"title":"at0000",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 	"datatypes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"data":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"at0004":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0006]/data[at0003]/items[at0004]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_QUANTITY",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"unit_of_measure":"mm[Hg]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"precision":2,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"range":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"min":10,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"max":180
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"at0005":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0006]/data[at0003]/items[at0005]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_QUANTITY",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"unit_of_measure":"mm[Hg]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"precision":2,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"range":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"min":10,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"max":180
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"at1006":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0006]/data[at0003]/items[at1006]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_QUANTITY",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"unit_of_measure":"mm[Hg]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"precision":2,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"range":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"min":10,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"max":180
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"at1007":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0006]/data[at0003]/items[at1007]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_QUANTITY",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"unit_of_measure":"mm[Hg]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"precision":2,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"range":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"min":10,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"max":180
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"at0033":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0006]/data[at0003]/items[at0033]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_TEXT",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"state":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"at0008":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0006]/state[at0007]/items[at0008]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_CODED_TEXT",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"terminology":"local",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"options":[
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"at1000",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"at1001",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"at1002",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"at1003",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 						"at1014"
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					],
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					"default":"at1001"
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			,
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"at1052":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"path":"data[at0001]/events[at0006]/state[at0007]/items[at1052]",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"type":"DV_TEXT",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				"attributes":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 					
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 				
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 	}
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): },ON:{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 	"en":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0000":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Blood Pressure",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"The local measurement of arterial blood pressure which is a surrogate for arterial. pressure in the systemic circulation. Most commonly, use of the term 'blood pressure' refers to measurement of brachial artery pressure in the upper arm."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0001":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"history",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"History Structural node."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0003":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"blood pressure",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"internal"
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0004":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Systolic",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Peak systemic arterial blood pressure  - measured in systolic or contraction phase of the heart cycle."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0005":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Diastolic",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Minimum systemic arterial blood pressure - measured in the diastolic or relaxation phase of the heart cycle."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0006":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"any event",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Default event."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0007":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"state structure",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"internal"
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0008":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Position",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"The position of the subject at the time of measurement."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0011":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Tree",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"List Structure"
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0013":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Cuff Size",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"The size of the cuff used for blood pressure measurement."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0033":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Comment",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Comment on blood pressure measurement."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at1006":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Mean Arterial Pressure",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"The average arterial pressure that occurs over the entire course of the heart contraction and relaxation cycle."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at1007":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Pulse Pressure",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"The difference between the systolic and diastolic pressure."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at0033":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Comment",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Comment on blood pressure measurement."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at1000":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Standing",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Standing at the time of blood pressure measurement."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at1001":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Sitting",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Sitting (for example on bed or chair) at the time of blood pressure measurement."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at1002":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Reclining",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Reclining at the time of blood pressure measurement."
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		},
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 		"at1003":{
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"text":"Lying",
+06-25 18:18:17.306: D/RemoteArchetypeViewerActivityExample(2877): 			"description":"Lying flat at the time of blood pressure measurem
+06-25 18:18:17.306: D/WidgetProvider(2877): Reading ontology: {
+06-25 18:18:17.306: D/WidgetProvider(2877): 	"en":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0000":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Blood Pressure",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"The local measurement of arterial blood pressure which is a surrogate for arterial. pressure in the systemic circulation. Most commonly, use of the term 'blood pressure' refers to measurement of brachial artery pressure in the upper arm."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0001":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"history",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"History Structural node."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0003":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"blood pressure",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"internal"
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0004":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Systolic",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Peak systemic arterial blood pressure  - measured in systolic or contraction phase of the heart cycle."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0005":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Diastolic",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Minimum systemic arterial blood pressure - measured in the diastolic or relaxation phase of the heart cycle."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0006":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"any event",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Default event."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0007":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"state structure",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"internal"
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0008":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Position",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"The position of the subject at the time of measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0011":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Tree",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"List Structure"
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0013":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Cuff Size",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"The size of the cuff used for blood pressure measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0033":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Comment",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Comment on blood pressure measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1006":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Mean Arterial Pressure",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"The average arterial pressure that occurs over the entire course of the heart contraction and relaxation cycle."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1007":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Pulse Pressure",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"The difference between the systolic and diastolic pressure."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0033":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Comment",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Comment on blood pressure measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1000":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Standing",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Standing at the time of blood pressure measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1001":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Sitting",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Sitting (for example on bed or chair) at the time of blood pressure measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1002":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Reclining",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Reclining at the time of blood pressure measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1003":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Lying",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Lying flat at the time of blood pressure measurement."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1014":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Lying with tilt to left",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Lying flat with some lateral tilt, usually angled towards the left side.   Commonly required in the last trimester of pregnancy to relieve aortocaval compression."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at1052":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Confounding factors",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Comment on and record other incidental factors that may be contributing to the blood pressure measurement.  For example, level of anxiety or 'white coat syndrome'; pain or fever; changes in atmospheric pressure etc."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		}
+06-25 18:18:17.306: D/WidgetProvider(2877): 		
+06-25 18:18:17.306: D/WidgetProvider(2877): 	},
+06-25 18:18:17.306: D/WidgetProvider(2877): 	
+06-25 18:18:17.306: D/WidgetProvider(2877): 	"es-ar":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0000":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Presión Arterial",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"La medición local de la tensión arterial que deriva de la medida de la presión arterial en la circulación sistémica. Comúnmente el uso de 'presión arterial' se refiere a la medida de la presión de la arteria braquial por encima del pliegue del codo."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0001":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"historia",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"historia Nodo estructural"
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0003":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"blood pressure",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"internal"
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0004":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Sistólica",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Presión arterial sistólica pico - medido en sístole o la fase de contracción del ciclo cardíaco."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0005":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Diástole",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Presión arterial sistémica mínima - medido durante la diástole o fase de relajación del ciclo cardíaco."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0006":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"cualquier evento",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"Evento por defecto."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0007":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"state structure",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"internal"
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0008":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Posición",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"La posición del individuo en el momento del registro."
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0011":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"estructura de lista",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"estructura tipo lista"
+06-25 18:18:17.306: D/WidgetProvider(2877): 		},
+06-25 18:18:17.306: D/WidgetProvider(2877): 		"at0013":{
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"text":"Tamaño del manguito",
+06-25 18:18:17.306: D/WidgetProvider(2877): 			"description":"El tamaño del m
+06-25 18:18:17.316: D/WidgetProvider(2877): Ontology read ok 
+06-25 18:18:17.316: D/WidgetProvider(2877): item data path:data[at0001]/events[at0006]/state[at0007]/items[at1052]
+06-25 18:18:17.316: D/TestAdlParser(2877): JSON IN getObjectByPath:{"data":{"at0001":[{"events":[{"at0006":{"data":{"at0003":[{"items":{"at0004":{"value":{"magnitude":57,"units":"mm[Hg]"}},"at0005":{"value":{"magnitude":101,"units":"mm[Hg]"}}}}]}}}]}]}}
+06-25 18:18:17.316: W/System.err(2877): org.json.JSONException: No value for state
+06-25 18:18:17.316: W/System.err(2877): 	at org.json.JSONObject.get(JSONObject.java:355)
+06-25 18:18:17.316: W/System.err(2877): 	at it.crs4.most.ehrlib.parser.AdlParser.getObjectByPath(AdlParser.java:108)
+06-25 18:18:17.316: W/System.err(2877): 	at it.crs4.most.ehrlib.parser.AdlParser.getObjectByPath(AdlParser.java:79)
+06-25 18:18:17.316: W/System.err(2877): 	at it.crs4.most.ehrlib.parser.AdlParser.getItemsContainer(AdlParser.java:146)
+06-25 18:18:17.316: W/System.err(2877): 	at it.crs4.most.ehrlib.WidgetProvider.buildSectionWidgets(WidgetProvider.java:461)
+06-25 18:18:17.316: W/System.err(2877): 	at it.crs4.most.ehrlib.WidgetProvider.buildSectionWidgetsMap(WidgetProvider.java:280)
+06-25 18:18:17.316: W/System.err(2877): 	at it.crs4.most.ehrlib.WidgetProvider.<init>(WidgetProvider.java:138)
+06-25 18:18:17.316: W/System.err(2877): 	at it.crs4.most.ehrlib.example.RemoteArchetypeViewerActivityExample$ArchetypeViewerFragment.onCreateView(RemoteArchetypeViewerActivityExample.java:209)
+06-25 18:18:17.316: W/System.err(2877): 	at android.support.v4.app.Fragment.performCreateView(Fragment.java:1786)
+06-25 18:18:17.316: W/System.err(2877): 	at android.support.v4.app.FragmentManagerImpl.moveToState(FragmentManager.java:947)
+06-25 18:18:17.316: W/System.err(2877): 	at android.support.v4.app.FragmentManagerImpl.moveToState(FragmentManager.java:1126)
+06-25 18:18:17.316: W/System.err(2877): 	at android.support.v4.app.BackStackRecord.run(BackStackRecord.java:739)
+06-25 18:18:17.326: W/System.err(2877): 	at android.support.v4.app.FragmentManagerImpl.execPendingActions(FragmentManager.java:1489)
+06-25 18:18:17.326: W/System.err(2877): 	at android.support.v4.app.FragmentManagerImpl$1.run(FragmentManager.java:454)
+06-25 18:18:17.326: W/System.err(2877): 	at android.os.Handler.handleCallback(Handler.java:733)
+06-25 18:18:17.326: W/System.err(2877): 	at android.os.Handler.dispatchMessage(Handler.java:95)
+06-25 18:18:17.326: W/System.err(2877): 	at android.os.Looper.loop(Looper.java:136)
+06-25 18:18:17.326: W/System.err(2877): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
+06-25 18:18:17.326: W/System.err(2877): 	at java.lang.reflect.Method.invokeNative(Native Method)
+06-25 18:18:17.326: W/System.err(2877): 	at java.lang.reflect.Method.invoke(Method.java:515)
+06-25 18:18:17.326: W/System.err(2877): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+06-25 18:18:17.326: W/System.err(2877): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+06-25 18:18:17.326: W/System.err(2877): 	at dalvik.system.NativeStart.main(Native Method)
+06-25 18:18:17.326: E/TestAdlParser(2877): Exception getting object by path: No value for state
+06-25 18:18:17.326: D/WidgetProvider(2877): creating datatype widgets...
+06-25 18:18:17.326: D/AndroidRuntime(2877): Shutting down VM
+06-25 18:18:17.326: W/dalvikvm(2877): threadid=1: thread exiting with uncaught exception (group=0x41602ba8)
+06-25 18:18:17.326: E/AndroidRuntime(2877): FATAL EXCEPTION: main
+06-25 18:18:17.326: E/AndroidRuntime(2877): Process: it.crs4.ehrlib.example, PID: 2877
+06-25 18:18:17.326: E/AndroidRuntime(2877): java.lang.NullPointerException
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at it.crs4.most.ehrlib.parser.AdlStructure.getStructure(AdlStructure.java:109)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at it.crs4.most.ehrlib.WidgetProvider.buildDatatypeWidgets(WidgetProvider.java:495)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at it.crs4.most.ehrlib.WidgetProvider.buildSectionWidgets(WidgetProvider.java:462)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at it.crs4.most.ehrlib.WidgetProvider.buildSectionWidgetsMap(WidgetProvider.java:280)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at it.crs4.most.ehrlib.WidgetProvider.<init>(WidgetProvider.java:138)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at it.crs4.most.ehrlib.example.RemoteArchetypeViewerActivityExample$ArchetypeViewerFragment.onCreateView(RemoteArchetypeViewerActivityExample.java:209)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.support.v4.app.Fragment.performCreateView(Fragment.java:1786)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.support.v4.app.FragmentManagerImpl.moveToState(FragmentManager.java:947)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.support.v4.app.FragmentManagerImpl.moveToState(FragmentManager.java:1126)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.support.v4.app.BackStackRecord.run(BackStackRecord.java:739)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.support.v4.app.FragmentManagerImpl.execPendingActions(FragmentManager.java:1489)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.support.v4.app.FragmentManagerImpl$1.run(FragmentManager.java:454)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.os.Handler.handleCallback(Handler.java:733)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.os.Handler.dispatchMessage(Handler.java:95)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.os.Looper.loop(Looper.java:136)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at java.lang.reflect.Method.invokeNative(Native Method)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at java.lang.reflect.Method.invoke(Method.java:515)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+06-25 18:18:17.326: E/AndroidRuntime(2877): 	at dalvik.system.NativeStart.main(Native Method)
