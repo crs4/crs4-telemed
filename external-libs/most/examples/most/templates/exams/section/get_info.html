@@ -1,0 +1,99 @@
+{% extends "base_modal.html" %}
+{% block modal_body %}
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <form class="form-horizontal" role="form" id="modal_form">
+        <div class="ui-widget form-group" id="section_field">
+          <label for="select_section" class="control-label">Select section</label>
+             <input id="select_section_id" type="hidden" />
+             <input class="form-control" id="select_section" type="text" />
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-4 col-sm-8">
+             <button type="submit" class="btn btn-default">Get section info</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    $(function() {
+        $( "#select_section" ).autocomplete({
+            source: function( request, response ) {
+                $.ajax({
+                    url: "/exams/section/search/",
+                    dataType: "json",
+                    data: {
+                        query_string: request.term
+                    },
+                    success: function( data ) {
+                        response( $.map( data.data, function( item ) {
+                            return {
+                                label: item.name,
+                                value: item.id,
+                                name: item.name,
+                                is_active: item.is_active
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function( event, ui ) {
+                $( "#select_section" ).val( ui.item.label );
+                $( "#select_section_id" ).val( ui.item.value );
+                return false;
+            },
+            open: function() {
+                $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+            },
+            close: function() {
+                $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+            }});
+        $( "#select_section" ).autocomplete( "option", "appendTo", "#section_field" );
+
+        $( "#modal_form").submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/exams/section/' + $( "#select_section_id" ).val() + '/get_info/',
+                type: 'GET',
+                dataType: 'text',
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    var beautifiedData = JSON.stringify(jsonData, null, 4);
+                    $('#section_results_body').html('<div><pre class="pre-scrollable">' + beautifiedData + '</pre></div>');
+                    if (jsonData.success) {
+                        if ($('#section_results').hasClass('panel-danger')) {
+                            $('#section_results').removeClass('panel-danger');
+                        }
+                        if (!$('#section_results').hasClass('panel-success')) {
+                            $('#section_results').addClass('panel-success');
+                        }
+                    }
+                    else {
+                        $('#section_results_body').html('<div>' + jsonData.errors + '</div>');
+                        if ($('#section_results').hasClass('panel-success')) {
+                            $('#section_results').removeClass('panel-success');
+                        }
+                        if (!$('#section_results').hasClass('panel-danger')) {
+                            $('#section_results').addClass('panel-danger');
+                        }
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#section_results_body').html('<div>' + textStatus + ': ' + errorThrown + '</div>');
+                    if ($('#section_results').hasClass('panel-success')) {
+                        $('#section_results').removeClass('panel-success');
+                    }
+                    if (!$('#section_results').hasClass('panel-danger')) {
+                        $('#section_results').addClass('panel-danger');
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                }
+            });
+            return false;
+        });
+    });
+  </script>
+{% endblock %}

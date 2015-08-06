@@ -1,0 +1,130 @@
+{% extends "base_modal.html" %}
+{% block modal_body %}
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <form class="form-horizontal" role="form" id="modal_form">
+        <div class="ui-widget form-group" id="exam_field">
+          <label for="select_exam" class="control-label">Select exam</label>  <!--col-sm-4-->
+            <input id="select_exam_id" type="hidden" />
+            <input class="form-control" id="select_exam" type="text" />
+        </div>
+        <table class="table table-hover table-striped table-hover table-condensed" id="exam_sections">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>name</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </form>
+    </div>
+  </div>
+  <script>
+    $(function() {
+        $( "#select_exam" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax({
+                url: "/exams/exam/search/",
+                dataType: "json",
+                data: {
+                    query_string: request.term
+                },
+                success: function( data ) {
+                    response( $.map( data.data, function( item ) {
+                        return {
+                            label: (item.start_datetime ? ' [' + item.start_datetime : '') +
+                                   (item.end_datetime ? ' - ' + item.end_datetime + '] ' : '] ') +
+                                   item.clinician + item.medical_service.value + ' ' + item.speciality + ' ' +
+                                   item.urgency.value + ' ' + item.state.value + ' ' +
+                                   (item.is_remote ? 'REMOTE ' : ' '),
+                            value: item.id,
+                            medical_service: item.medical_service,
+                            speciality: item.speciality,
+                            urgency: item.urgency,
+                            state: item.state,
+                            summary: item.summary,
+                            start_datetime: item.start_datetime,
+                            end_datetime: item.end_datetime,
+                            clinician: item.clinician,
+                            is_active: item.is_active,
+                            is_remote: item.is_remote
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            $( "#select_exam" ).val( ui.item.label );
+            $( "#select_exam_id" ).val( ui.item.value );
+            $.ajax({
+                url: "/exams/exam/" + ui.item.value + "/list_sections/",
+                type: 'GET',
+                dataType: "json",
+                success: function( data ) {
+                    for (section in data.data) {
+                        $('#exam_sections tbody').append("<tr>" +
+                            "<td>" + data.id + "</td>" +
+                            "<td>" + data.name + "</td>" +
+                            "<td>" + data.is_active + "</td>" +
+                            "<button class="btn btn-danger" onclick="remove_section(" + ui.item.value + ", " + data.id + ")">Remove section</button>" +
+                            "</tr>"
+                        );
+                    }
+                }
+            });
+            return false;
+        },
+        open: function() {
+            $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }});
+        $( "#select_exam" ).autocomplete( "option", "appendTo", "#exam_field" );
+
+        function remove_section(exam_id, section_id) {
+            $.ajax({
+                url: '/exams/exam/' + exam_id + '/remove_section/' + section_id + '/',
+                type: 'POST',
+                dataType: 'text',
+                success: function (data, textStatus, jqXHR) {
+                    var jsonData = JSON.parse(data);
+                    var beautifiedData = JSON.stringify(jsonData, null, 4);
+                    $('#exam_results_body').html('<div><pre class="pre-scrollable">' + beautifiedData + '</pre></div>');
+                    if (jsonData.success) {
+                        if ($('#exam_results').hasClass('panel-danger')) {
+                            $('#exam_results').removeClass('panel-danger');
+                        }
+                        if (!$('#exam_results').hasClass('panel-success')) {
+                            $('#exam_results').addClass('panel-success');
+                        }
+                    }
+                    else {
+                        $('#exam_results_body').html('<div>' + jsonData.errors + '</div>');
+                        if ($('#exam_results').hasClass('panel-success')) {
+                            $('#exam_results').removeClass('panel-success');
+                        }
+                        if (!$('#exam_results').hasClass('panel-danger')) {
+                            $('#exam_results').addClass('panel-danger');
+                        }
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#exam_result_body').html('<div>' + textStatus + ': ' + errorThrown + '</div>');
+                    if ($('#exam_results').hasClass('panel-success')) {
+                        $('#exam_results').removeClass('panel-success');
+                    }
+                    if (!$('#exam_results').hasClass('panel-danger')) {
+                        $('#exam_results').addClass('panel-danger');
+                    }
+                    $( '#api-launcher' ).modal('hide');
+                }
+            });
+        }
+    });
+  </script>
+{% endblock %}

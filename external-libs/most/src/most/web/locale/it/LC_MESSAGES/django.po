@@ -1,0 +1,414 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-09-18 17:55+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: users/forms.py:29
+msgid "Only health care facilities have related task group."
+msgstr "Solamente le unita' operative sanitarie possono avere unita' operative connesse."
+
+#: users/models.py:43
+msgid "Title"
+msgstr "Titolo"
+
+#: users/models.py:44
+msgid "Description"
+msgstr "Descrizione"
+
+#: users/models.py:44
+msgid "e.g. \"Pediatric Cardiology\""
+msgstr "p.e. \"Cardiologia Pediatrica\""
+
+#: users/models.py:45
+msgid "Task group type"
+msgstr "Tipo di unita' operativa"
+
+#: users/models.py:46
+msgid "Hospital"
+msgstr "Ospedale"
+
+#: users/models.py:48
+msgid "MOST Users"
+msgstr "Utente MOST"
+
+#: users/models.py:49 users/models.py:280
+msgid "Is health care provider?"
+msgstr "Fornisce assistenza sanitaria?"
+
+#: users/models.py:50
+msgid "Is active?"
+msgstr "E' attivo?"
+
+#: users/models.py:60
+msgid "Only health care facilities can provide health care service."
+msgstr "Solamente le unita' operative sanitarie possono fornire assistenza sanitaria."
+
+#: users/models.py:95
+msgid "Task Group"
+msgstr "Unita' Operativa"
+
+#: users/models.py:96
+msgid "Task Groups"
+msgstr "Unita' Operative"
+
+#: users/models.py:146
+msgid "Administrative"
+msgstr "Amministrativo"
+
+#: users/models.py:147
+msgid "Technician"
+msgstr "Tecnico"
+
+#: users/models.py:148
+msgid "Clinician"
+msgstr "Clinico"
+
+#: users/models.py:149
+msgid "Student"
+msgstr "Studente"
+
+#: users/models.py:152
+msgid "Male"
+msgstr "Maschio"
+
+#: users/models.py:153
+msgid "Female"
+msgstr "Femmina"
+
+#: users/models.py:154
+msgid "Unknown"
+msgstr "Sconosciuto"
+
+#: users/models.py:157
+msgid "Username"
+msgstr "Username"
+
+#: users/models.py:158
+msgid "User first name"
+msgstr "Nome dell'utente"
+
+#: users/models.py:159
+msgid "User last name"
+msgstr "Cognome dell'utente"
+
+#: users/models.py:160
+msgid "User email address"
+msgstr "Indirizzo email dell'utente"
+
+#: users/models.py:161
+msgid "User birth date"
+msgstr "Data di nascita dell'utente"
+
+#: users/models.py:162
+msgid "Is the user staff?"
+msgstr "L'utente e' membro dello staff?"
+
+#: users/models.py:163
+msgid "Is the user active?"
+msgstr "L'utente e' attivo?"
+
+#: users/models.py:165
+msgid "Is the user superuser?"
+msgstr "L'utente e' superuser?"
+
+#: users/models.py:168
+msgid "Numeric password"
+msgstr "Password numerica"
+
+#: users/models.py:169
+msgid "4 numbers code"
+msgstr "Codice a 4 cifre"
+
+#: users/models.py:170
+msgid "User type"
+msgstr "Tipo di utente"
+
+#: users/models.py:171
+msgid "Gender"
+msgstr "Genere"
+
+#: users/models.py:172
+msgid "Phone"
+msgstr "Telefono"
+
+#: users/models.py:173
+msgid "Mobile phone"
+msgstr "Telefono cellulare"
+
+#: users/models.py:174
+msgid "Certified email"
+msgstr "Indirizzo di posta elettronica certificata"
+
+#: users/models.py:255
+msgid "Students could not be admin users"
+msgstr "Gli studenti non possono essereutenti amministratori"
+
+#: users/models.py:259
+msgid "MOST user"
+msgstr "Utente MOST"
+
+#: users/models.py:260
+msgid "MOST users"
+msgstr "Utenti MOST"
+
+#: users/models.py:272
+msgid "Doctor"
+msgstr "Medico"
+
+#: users/models.py:273
+msgid "Operator"
+msgstr "Operatore"
+
+#: users/models.py:277
+msgid "Clinician type"
+msgstr "Tipo di clinico"
+
+#: users/models.py:278
+msgid "Clinical specialization"
+msgstr "Specializzazione clinica"
+
+#: users/models.py:312
+msgid "Related user type must be \"clinician\"."
+msgstr "Gli utenti connessi devono essere di tipo \"clinico\""
+
+#: users/models.py:315
+msgid "Only doctors can provide health care service"
+msgstr "Solo i medici possono fornire servizi di assistenza sanitaria"
+
+#: users/models.py:319
+msgid "Clinician User"
+msgstr "Utente Clinico"
+
+#: users/models.py:320
+msgid "Clinician Users"
+msgstr "Utenti Clinici"
+
+#: users/views/clinician_user.py:34
+#, python-format
+msgid "Clinician user %s successfully created."
+msgstr "L'utente clinico %s e' stato creato con successo."
+
+#: users/views/clinician_user.py:38
+msgid "Unable to create clinician user."
+msgstr "Impossibile creare l'utente clinico."
+
+#: users/views/clinician_user.py:58
+#, python-format
+msgid "Clinician user %s successfully updated."
+msgstr "L'utente clinico %s e' stato aggiornato con successo."
+
+#: users/views/clinician_user.py:62
+msgid "Unable to update clinician user."
+msgstr "Impossibile aggiornare l'utente clinico."
+
+#: users/views/clinician_user.py:78
+#, python-format
+msgid "User %s is health care provider"
+msgstr "L'utente %s fornisce assistenza sanitaria."
+
+#: users/views/clinician_user.py:80
+#, python-format
+msgid "User %s not health care provider"
+msgstr "L'utente %s non fornisce assistenza sanitaria."
+
+#: users/views/clinician_user.py:98
+#, python-format
+msgid "User %s is now health care provider."
+msgstr "L'utente %s ora fornisce assistenza sanitaria."
+
+#: users/views/clinician_user.py:130
+#, python-format
+msgid ""
+"%(clinician_users_count)s users found for query string: '%(query_string)s'"
+msgstr "Trovati %(clinician_users_count)s utenti con la stringa di ricerca '%(query_string)s'"
+
+#: users/views/clinician_user.py:134
+#, python-format
+msgid "No clinician users found for query string: '%s'"
+msgstr "Nessun utente clinico trovato con la stringa di ricerca '%s'"
+
+#: users/views/clinician_user.py:148
+#, python-format
+msgid "Clinician user %s found."
+msgstr "Utente clinico %s trovato."
+
+#: users/views/most_user.py:35
+#, python-format
+msgid "MOST User %s successfully created."
+msgstr "Utente MOST %s creato con successo."
+
+#: users/views/most_user.py:39
+msgid "Unable to create MOST user."
+msgstr "Impossibile creare l'utente MOST."
+
+#: users/views/most_user.py:59
+#, python-format
+msgid "MOST User %s successfully updated."
+msgstr "Utente MOST %s aggiornato con successo."
+
+#: users/views/most_user.py:63
+msgid "Unable to edit MOST user %s."
+msgstr "Impossibile aggiornare l'utente MOST %s."
+
+#: users/views/most_user.py:85
+#, python-format
+msgid "Welcome %s."
+msgstr "Benvenuto %s."
+
+#: users/views/most_user.py:88
+#, python-format
+msgid "User %s disabled."
+msgstr "L'utente %s e' disabilitato"
+
+#: users/views/most_user.py:92
+msgid "Invalid login."
+msgstr "Login non valido."
+
+#: users/views/most_user.py:99
+msgid "POST method required.\n"
+msgstr "POST method required.\n"
+
+#: users/views/most_user.py:123
+#, python-format
+msgid "User %s found."
+msgstr "Utente %s trovato"
+
+#: users/views/most_user.py:154
+#, python-format
+msgid "%(users_count)s users found for query string: '%(query_string)s'"
+msgstr "Trovati %(users_count)s utenti con la stringa di ricerca: '%(query_string)s'"
+
+#: users/views/most_user.py:158
+#, python-format
+msgid "No users found for query string: '%s'"
+msgstr "Nessun utente trovato con la stringa di ricerca: '%s'"
+
+#: users/views/most_user.py:178 users/views/most_user.py:198
+#, python-format
+msgid "User %s deactivated"
+msgstr "l'utente %s e' stato disattivato"
+
+#: users/views/task_group.py:44
+#, python-format
+msgid ""
+"%(count_task_groups)s task groups found for query string: '%(query_string)s'"
+msgstr "Trovate %(count_task_groups)s unita' operative con la stringa di ricerca: '%(query_string)s'"
+
+#: users/views/task_group.py:48
+#, python-format
+msgid "No task groups found for query string: '%s'"
+msgstr "Nessun unita' operativa trovato con la stringa di ricerca: '%s'"
+
+#: users/views/task_group.py:67
+#, python-format
+msgid "Task group %s successfully created."
+msgstr "Unita' operativa %s creata con successo."
+
+#: users/views/task_group.py:71 users/views/task_group.py:97
+msgid "Unable to create task group."
+msgstr "Impossibile creare l'unita' operativa."
+
+#: users/views/task_group.py:93
+#, python-format
+msgid "Task group %s successfully updated."
+msgstr "Unita' operativa %s aggiornata con successo."
+
+#: users/views/task_group.py:112
+#, python-format
+msgid "Task group %s found."
+msgstr "Unita' operativa %s trovata."
+
+#: users/views/task_group.py:125
+msgid "Available activation states found."
+msgstr "Sono stati travati gli stati di attivazione disponibili."
+
+#: users/views/task_group.py:144
+#, python-format
+msgid "Task group %(task_group_id)s has %(active_state)s activation state"
+msgstr "L'unita' operativa %(task_group_id)s ha lo stato di attivazione %(active_state)s"
+
+#: users/views/task_group.py:160
+#, python-format
+msgid "Task group %s is health care provider"
+msgstr "L'unita' operativa %s fornisce assistenza sanitaria"
+
+#: users/views/task_group.py:162
+#, python-format
+msgid "Task group %s not health care provider"
+msgstr "L'unita' operativa %s non fornisce assistenza sanitaria"
+
+#: users/views/task_group.py:180
+#, python-format
+msgid "Task group %s is now health care provider"
+msgstr "L'unita' operativa %s ora fornisce assistenza sanitaria"
+
+#: users/views/task_group.py:201
+#, python-format
+msgid "User %(user_id)s added to task group %(task_group_id)s"
+msgstr "L'utente %(user_id)s aggiunto all'unita' operativa %(task_group_id)s"
+
+#: users/views/task_group.py:223
+#, python-format
+msgid "User %(user_id)s no more in task group %(task_group_id)s"
+msgstr "L'utente %(user_id)s non appartiene piu' all'unita' operativa %(task_group_id)s"
+
+#: users/views/task_group.py:241
+#, python-format
+msgid "Users of task group %(task_group_id)s found."
+msgstr "Trovati utenti appartenenti all'unita' operativa %(task_group_id)s."
+
+#: users/views/task_group.py:263
+#, python-format
+msgid ""
+"Task group %(related_task_group)s related to task groups of %(task_group_id)s"
+msgstr "L'unita' operativa %(related_task_group)s e' connessa all'unita' operativa %(task_group_id)s"
+
+#: users/views/task_group.py:285
+#, python-format
+msgid ""
+"Task group %(related_task_group_id)s no more in related task groups of "
+"%(task_group_id)s"
+msgstr "L'unita' operativa %(related_task_group_id)s non e' piu' connessa all'unita' operativa %(task_group_id)s"
+
+#: users/views/task_group.py:304
+#, python-format
+msgid "Related task groups of task group %(task_group_id)s found."
+msgstr "Trovate unita' operative connesse all'unita' operativa %(task_group_id)s."
+
+#: users/views/task_group.py:321
+#, python-format
+msgid "Task group %(task_group_id)s has %(clinicians_count)s clinician users."
+msgstr "L'unita' operativa %(task_group_id)s ha %(clinicians_count)s utenti clinici."
+
+#: users/views/task_group.py:339
+#, python-format
+msgid "Clinician users of task group %(task_group_id)s found."
+msgstr "Trovati utenti clinici nell'unita' operativa %(task_group_id)s."
+
+#: users/views/task_group.py:357
+#, python-format
+msgid ""
+"Task group %(task_group_id)s has %(clinician_providers_count)s clinician "
+"provider users."
+msgstr "L'unita' operativa %(task_group_id)s ha %(clinician_providers_count)s utenti clinici "
+"che forniscono assistenza sanitaria."
+
+#: users/views/task_group.py:376
+#, python-format
+msgid "Clinician provider users of task group %(task_group_id)s found."
+msgstr "Trovati utenti clinici che forniscono assistenza sanitaria nell'unita' operativa %(task_group_id)s."

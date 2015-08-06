@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}MOST WEB EXAMPLES{% endblock %}
+{% block content %}
+<h1>WEB API EXAMPLE</h1>
+<div class="panel-group" id="accordion">
+  <!-- Nav tabs -->
+  <ul class="nav nav-pills">
+    <li class="active"><a href="#home" data-toggle="pill">Home</a></li>
+    <li><a href="#task_group" data-toggle="pill">Task Group</a></li>
+    <li><a href="#most_user" data-toggle="pill">Most User</a></li>
+    <li><a href="#clinician_user" data-toggle="pill">Clinician User</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane fade in active" id="home">
+      <div class="row clearfix">
+        <div class="col-md-12 column">
+          <div class="panel">
+            <div class="panel-body">
+              To access to API do login
+              <a class="btn btn-default btn-lg" href="#api-launcher" data-toggle="modal" id="login" role="button">/user/login/</a>
+              <a class="btn btn-default btn-lg" href="#api-launcher" data-toggle="modal" id="logout" role="button">/user/logout/</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="task_group">
+      <div class="row clearfix">
+        <div class="col-md-6 column">
+          <div class="panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">Task Group API</h3>
+            </div>
+            <div class="panel-body">
+              <div class=" btn-group-vertical">
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_15" role="button">/task_group/search/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_16" role="button">/task_group/new/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_17" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/edit/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_18" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/is_provider/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_2" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/set_provider/</a>
+                <a class="btn btn-default btn-api" href="#" id="task_group_func_3" role="button">/task_group/list_available_states/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_4" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/set_active_state/(?P&lt;active_state&gt;\d+)/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_5" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/add_user/(?P&lt;user_id&gt;\d+)/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_6" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/remove_user/(?P&lt;user_id&gt;\d+)/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_7" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/list_users/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_8" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/add_related_task_group/(?P&lt;related_task_group_id&gt;\d+)/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_9" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/remove_related_task_group/(?P&lt;related_task_group_id&gt;\d+)/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_10" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/list_related_task_groups/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_11" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/has_clinicians/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_12" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/list_clinicians/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_13" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/has_clinician_provider/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="task_group_func_14" role="button">/task_group/(?P&lt;task_group_id&gt;\d+)/list_clinician_providers/</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 column">
+          <div class="panel panel-success" id="task_group_results">
+            <div class="panel-heading">
+              <h3 class="panel-title">Results</h3>
+            </div>
+            <div class="panel-body" id="task_group_results_body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="most_user">
+      <div class="row clearfix">
+        <div class="col-md-6 column">
+          <div class="panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">Most User API</h3>
+            </div>
+            <div class="panel-body">
+              <div class=" btn-group-vertical">
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="most_user_func_1" role="button" >/user/new/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="most_user_func_2" role="button">/user/(?P&lt;user_id&gt;\d+)/get_user_info/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="most_user_func_3" role="button">/user/search/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="most_user_func_4" role="button">/user/(?P&lt;user_id&gt;\d+)/edit/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="most_user_func_5" role="button">/user/(?P&lt;user_id&gt;\d+)/deactivate/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="most_user_func_6" role="button">/user/(?P&lt;user_id&gt;\d+)/activate/</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 column">
+          <div class="panel panel-success" id="most_user_results">
+            <div class="panel-heading">
+              <h3 class="panel-title">Results</h3>
+            </div>
+            <div class="panel-body" id="most_user_results_body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="clinician_user">
+      <div class="row clearfix">
+        <div class="col-md-6 column">
+          <div class="panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">Clinician User API</h3>
+            </div>
+            <div class="panel-body">
+              <div class=" btn-group-vertical">
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="clinician_user_func_3" role="button">/clinician/search/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="clinician_user_func_5" role="button">/clinician/new/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="clinician_user_func_4" role="button">/clinician/(?P&lt;user_id&gt;\d+)/get_user_info/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="clinician_user_func_1" role="button">/clinician/(?P&lt;user_id&gt;\d+)/is_provider/</a>
+                <a class="btn btn-default btn-api" href="#api-launcher" data-toggle="modal" id="clinician_user_func_2" role="button">/clinician/(?P&lt;user_id&gt;\d+)/set_provider/</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 column">
+          <div class="panel panel-success" id="clinician_user_results">
+            <div class="panel-heading">
+              <h3 class="panel-title">Results</h3>
+            </div>
+            <div class="panel-body" id="clinician_user_results_body">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 column">
+    <div class="modal fade" id="api-launcher" role="dialog" aria-labelledby="API Launcher" aria-hidden="true">
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="/static/js/demo/task_group.js"></script>
+<script src="/static/js/demo/most_user.js"></script>
+<script src="/static/js/demo/clinician_user.js"></script>
+<script src="/static/js/demo/demo.js"></script>
+{% endblock %}
