@@ -332,9 +332,9 @@ def get_open_teleconsultations(request):
     taskgroups = set()
     for taskgroup in request.user.task_group_related.all():
         for relatedTaskgroup in taskgroup.related_task_groups.all():
-            taskgroups.add(taskgroup)
+            taskgroups.add(relatedTaskgroup) # taskgroup
 
-        taskgroups.add(relatedTaskgroup)
+        taskgroups.add(taskgroup) # relatedTaskgroup
 
     logging.error("Taskgroup from token: %s" % request.accesstoken.taskgroup)
 

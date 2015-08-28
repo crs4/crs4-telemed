@@ -32,8 +32,8 @@ public class FragmentLogin extends ConfigFragment {
 	
 	// params to be moved in the configuration file 
 	
-	private String clientId = "d67a0f2868956edece1a";
-	private String clientSecret = "29df85c27354579d87f026cb33007f350398a491";
+	private String clientId = "9db4f27b3d9c8e352b5c" ; //"d67a0f2868956edece1a";
+	private String clientSecret = "00ea399c013349a716ea3e47d8f8002502e2e982"; //"29df85c27354579d87f026cb33007f350398a491";
 	//private String taskgroupID = "hdhtoz6ef4vixu3gk4s62knhncz6tmww"; // CRS4 taskgroup ID
 	private String taskgroupID = null;
 	private String username = null;
@@ -263,8 +263,10 @@ public class FragmentLogin extends ConfigFragment {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
                     try {
-				
+				       
                     	username = users_data.getJSONObject("data").getJSONArray("applicants").getJSONObject(which).getString("username");
+                    	Log.d(TAG, "Selected user:" + username);
+                    	
                     	editUsername.setText(username);
                     	editUsername.setEnabled(false);
 						dialog.dismiss();
@@ -289,8 +291,8 @@ public class FragmentLogin extends ConfigFragment {
     
     private void retrieveAccessToken()
     {
-    	String pinCode = this.editPass.getText().toString();
-    	rcr.getAccessToken(clientId, clientSecret, username, pinCode, new Listener<String>() {
+    	String password = this.editPass.getText().toString();
+    	rcr.getAccessToken(username, password, FragmentLogin.this.taskgroupID,  new Listener<String>() {
 
 			@Override
 			public void onResponse(String response) {
@@ -302,7 +304,7 @@ public class FragmentLogin extends ConfigFragment {
 					
 					if (accessToken!=null)
 						config.setSpecUser(new SpecUser(username, taskgroupID, accessToken));
-					else showPinCodeErrorAlert();
+					else showWrongPasswordAlert();
 					
 				} catch (JSONException e) {
 					Log.e(TAG, "error parsing json response: " + e);
@@ -316,16 +318,17 @@ public class FragmentLogin extends ConfigFragment {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				Log.e(TAG, "Error ["+error+"]");
+				Log.e(TAG, "Network response: " + error.getMessage());
 				accessToken = null;
-				showPinCodeErrorAlert();
+				showWrongPasswordAlert();
 			}
 		});                                        
     }
     
-    private void showPinCodeErrorAlert(){
+    private void showWrongPasswordAlert(){
     	AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(this.getActivity());
 		loginErrorAlert.setTitle("Login Error");
-		loginErrorAlert.setMessage("Invalid Pin code.\n Please retry.");
+		loginErrorAlert.setMessage("Invalid password.\n Please retry.");
 		AlertDialog alert = loginErrorAlert.create();
 		alert.show();
     }

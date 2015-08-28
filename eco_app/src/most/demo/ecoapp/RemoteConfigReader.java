@@ -72,6 +72,8 @@ public class RemoteConfigReader {
 		this.deviceID = Secure.getString(ctx.getContentResolver(), Secure.ANDROID_ID); 
 		this.urlPrefix = "http://" + this.serverIp + ":" + String.valueOf(this.serverPort) + "/";
 		this.rq = Volley.newRequestQueue(this.ctx);
+		
+		Log.d(TAG, "Device ID: " + this.deviceID);
 	}
 	
 	/**
@@ -126,8 +128,8 @@ public class RemoteConfigReader {
 	 * @param listener the listener where to receive the json room data
 	 * @param errorListener the listener used for error responses
 	 */
-	public void getRooms(String taskgroupId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-		String uri = String.format("%steleconsultation/rooms/%s/?access_token=%s", this.urlPrefix, taskgroupId, accessToken);
+	public void getRooms(String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+		String uri = String.format("%steleconsultation/rooms/?access_token=%s", this.urlPrefix, accessToken);
 		Log.d(TAG, "getRoomsDataUri: " + uri);
 		JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
 		this.rq.add(postReq);	 
@@ -137,38 +139,41 @@ public class RemoteConfigReader {
 	 * Get the access token needed for teleconsultation rest calls
 	 * @param username the user name  
 	 * @param pincode  the pin code of the user
+	 * @param taskgroup the taskgroup id
 	 * @param listener the listener where to receive the access token
 	 * @param errorListener the listener where to receive remote server error responses
 	 */
-	public void getAccessToken(final String username, final String pincode,  
-							 Response.Listener<String> listener, Response.ErrorListener errorListener)
-	{
+	public void getAccessToken(final String username, final String pincode,  final String taskgroup,
+			 Response.Listener<String> listener, Response.ErrorListener errorListener)
+		{
 		String uri = this.urlPrefix + "oauth2/access_token/";
 		Log.d(TAG, "Called getAccessToken() on uri: " + uri);
 		Log.d(TAG, "client id: " + clientId);
 		Log.d(TAG, "client secret: " + clientSecret);
+		Log.d(TAG, "device ID: " + deviceID);
 		Log.d(TAG, "username: " + username);
 		Log.d(TAG, "pincode: " + pincode);
+		Log.d(TAG, "taskgroup: " + taskgroup);
 		
 		StringRequest postReq = new StringRequest(Request.Method.POST, uri , listener, errorListener)
-			{
-	 			@Override
-	 		    protected Map<String, String> getParams() 
-	 		    {  
-		            Map<String, String>  params = new HashMap<String, String>();  
-		            params.put("client_id", clientId);
-	                params.put("client_secret", clientSecret); 
-	                params.put("grant_type", "pincode");
-	                params.put("username", username);
-	                params.put("pincode", pincode);
-		             
-		            return params;  
-	 		    }
-			};
+		{
+		@Override
+		protected Map<String, String> getParams() 
+		{  
+		   Map<String, String>  params = new HashMap<String, String>();  
+		   params.put("client_id", clientId);
+		   params.put("client_secret", clientSecret); 
+		   params.put("grant_type", "pincode");
+		   params.put("username", username);
+		   params.put("pincode", pincode);
+		   params.put("taskgroup", taskgroup); // "h52job6mlgqpym5f57djdtbsw3u5kfyf"
+		   return params;  
+		}
+		};
 
-			this.rq.add(postReq);
-	}
-	
+this.rq.add(postReq);
+Log.d(TAG, "Request added to the queue");
+}
 	/**
 	 * Create a new Teleconsultation
 	 * @param accessToken
@@ -189,6 +194,34 @@ public class RemoteConfigReader {
 	            Map<String, String>  params = new HashMap<String, String>();  
 	            params.put("description", description);
                 params.put("severity", severity); 
+                params.put("room_uuid", roomId);
+             
+	            return params;  
+ 		    }
+		};
+
+		this.rq.add(postReq);
+	}
+	
+	/**
+	 * Create a new Teleconsultation Session
+	 * @param teleconsultationUUID the teleconsultation ID
+	 * @param roomId
+	 * @param accessToken
+	 * @param listener
+	 * @param errorListener
+	 */
+	public void createNewTeleconsultationSession(final String teleconsultationUUID, final String roomId,
+										String accessToken, Response.Listener<String> listener, Response.ErrorListener errorListener)  {
+		
+		String uri = String.format("%steleconsultation/%s/session/create/?access_token=%s", this.urlPrefix, teleconsultationUUID, accessToken);
+		StringRequest postReq = new StringRequest(Request.Method.POST, uri , listener, errorListener)
+		{
+ 			@Override
+ 		    protected Map<String, String> getParams() 
+ 		    {  
+	            Map<String, String>  params = new HashMap<String, String>();  
+	         
                 params.put("room_uuid", roomId);
              
 	            return params;  

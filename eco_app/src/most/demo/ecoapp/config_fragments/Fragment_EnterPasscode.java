@@ -92,8 +92,9 @@ public class Fragment_EnterPasscode extends ConfigFragment {
     private void retrieveAccessToken(String pincode)
     {
     	String username = this.config.getEcoUser().getUsername();
+    	String taskgroupId = this.config.getEcoUser().getTaskGroup().getId();
     	Log.d(TAG, "GET ACCESS TOKEN WITH PIN CODE: " + pincode); 
-    	this.rcr.getAccessToken(username, pincode, new Listener<String>() {
+    	this.rcr.getAccessToken(username, pincode, taskgroupId, new Listener<String>() {
 
 			
 

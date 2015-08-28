@@ -25,6 +25,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class EcoConfigActivity extends ActionBarActivity implements IConfigBuilder {
@@ -77,9 +80,26 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
         
         //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         //actionBar.setDisplayHomeAsUpEnabled(true);
-
-
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.config, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_exit:
+			finish();
+			break;
+		
+		}
+		return true;
+	}
+	
 
 	private void setupActionBar()
 	{

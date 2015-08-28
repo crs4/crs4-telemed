@@ -5,13 +5,14 @@ devel:
 	@if ! [ -d libs/most ]; then git clone https://github.com/crs4/most libs/most -b develop; fi
 	@if ! [ -d libs/most-streaming ]; then git clone https://github.com/crs4/most-streaming libs/most-streaming -b develop; fi
 	@if ! [ -d libs/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b develop; fi
+	@if ! [ -d libs/most-visualization ]; then git clone https://github.com/crs4/most-visualization libs/most-visualization -b master; fi
 
 	echo "link libs"
 
 	cd server/most/web ; ln -s ../../../libs/most/src/most/web/utils utils; ln -s ../../../libs/most/src/most/web/users users ; \
 	ln -s ../../../libs/most/src/most/web/authentication authentication; \
 	ln -s ../../../libs/most-streaming/service/src/most/web/streaming streaming; \
-	ln -s ../../../libs/most-voip/service/src/most/web/voip voip
+	ln -s ../../../libs/most-voip/service/src/most/web/voip voip; \
 
 	cd server; ln -s ../libs/most/src/provider provider;
 
@@ -45,6 +46,16 @@ clean:
 			rm -fr libs/most-voip; \
 			rm -f server/most/web/voip; \
 	fi
+
+
+	@if [[ `git -C libs/most-visualization status --porcelain` ]]; then \
+				echo "CHANGES - most visualization repository not removed"; \
+			else \
+				echo "NO CHANGES - remove most visualization repository"; \
+				rm -fr libs/most-visualization; \
+		fi
+
+	
 
 
 run:

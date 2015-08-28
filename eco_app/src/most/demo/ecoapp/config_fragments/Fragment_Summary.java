@@ -91,13 +91,11 @@ public class Fragment_Summary extends ConfigFragment {
     	Log.d(TAG, "Trying to create a new teleconsultation...");
     	String description = "new Test Teleconsultation";
     	String severity =  severitySpinner.getSelectedItem().toString();
-    	String roomId = ((Room)roomSpinner.getSelectedItem()).getId();
+    	final String roomId = ((Room)roomSpinner.getSelectedItem()).getId();
     	
     	Teleconsultation tc = new Teleconsultation("N.A", description, roomId);
     	retrieveRoomDevices(tc);
-    	// to be changed. added for ignoring the bug during the remote teleconsultation 
-    	if (tc!=null)
-    		return;
+    	//if (tc!=null) return; to be removed. (temporaly added for ignoring the bug during the remote teleconsultation creation) 
     	
     	// bug to be fixed on the remote server during teleconsultation creation
     	Log.d(TAG, String.format("Creating teleconsultation with room: %s and desc:%s", roomId, description));
@@ -106,6 +104,15 @@ public class Fragment_Summary extends ConfigFragment {
 			@Override
 			public void onResponse(String teleconsultationData) {
 				Log.d(TAG, "Created teleconsultation: " + teleconsultationData);
+				try {
+					JSONObject tcData = new JSONObject(teleconsultationData);
+					String uuid = tcData.getJSONObject("data").getJSONObject("teleconsultation").getString("uuid");
+					String roomUUIO = roomId;
+					createTeleconsultationSession(uuid, roomId);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}
 		}, new Response.ErrorListener() {
@@ -116,6 +123,25 @@ public class Fragment_Summary extends ConfigFragment {
 				
 			}
 		});
+    }
+    
+    private void createTeleconsultationSession(String teleconsultationUUID, String roomId)
+    {
+    	EcoUser ecoUser = config.getEcoUser();
+    	config.getRemoteConfigReader().createNewTeleconsultationSession(teleconsultationUUID, roomId, ecoUser.getAccessToken(), new Listener<String>()  {
+
+			@Override
+			public void onResponse(String tcSessionData) {
+				Log.d(TAG, "Created teleconsultation session: " + tcSessionData);
+				
+			}},
+    			new Response.ErrorListener(){
+
+					@Override
+					public void onErrorResponse(VolleyError err) {
+						Log.e(TAG, "Error creating the new teleconsultation session: " + err);
+						
+					}});
     }
     
     private void retrieveRoomDevices(final Teleconsultation selectedTc)
@@ -180,14 +206,13 @@ public class Fragment_Summary extends ConfigFragment {
     private void setupTcRoomSpinner(View view) {
     	this.roomSpinner = (Spinner) view.findViewById(R.id.spinnerRoom);
     	this.retrieveRooms();
-   
     }
     
     
     private void retrieveRooms() {
     	String accessToken = this.config.getEcoUser().getAccessToken();
-    	String taskgroupId = this.config.getEcoUser().getTaskGroup().getId();
-    	this.config.getRemoteConfigReader().getRooms(taskgroupId, accessToken, new Response.Listener<JSONObject>() {
+    	
+    	this.config.getRemoteConfigReader().getRooms(accessToken, new Response.Listener<JSONObject>() {
 
 			
 			@Override

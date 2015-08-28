@@ -16,6 +16,7 @@
     
     <string name="title_activity_waiting">WaitingActivity</string>
     <string name="action_call">Call</string>
+    <string name="action_exit">Exit</string>
     <string name="title_activity_teleconsultation">TeleconsultationActivity</string>
     <string name="hello_world">Hello world!</string>
     

@@ -1,18 +1,28 @@
 package most.demo.specapp;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+
+import most.demo.specapp.RemoteConfigReader;
 import most.demo.specapp.config_fragments.ConfigFragment;
 import most.demo.specapp.config_fragments.FragmentLogin;
 import most.demo.specapp.config_fragments.Fragment_TeleconsultationSelection;
 import most.demo.specapp.models.SpecUser;
 import most.demo.specapp.models.Teleconsultation;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 
@@ -22,8 +32,8 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 		                               "Teleconsultations"
 									   };
 	
-	private String configServerIP="127.0.0.1"; 
-	private int configServerPort = 8001;
+	private String configServerIP="156.148.132.223"; 
+	private int configServerPort = 8000;
 	
 	private static String TAG = "MostViewPager";
 	
@@ -33,13 +43,27 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 	private Teleconsultation teleconsultation = null;
 	
 	private MostViewPager vpPager  = null;
+	
+	private Properties configProps;
 
 	private RemoteConfigReader rcr;
+
+	private String clientId;
+
+	private String clientSecret;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort);
+		
+		this.configProps = loadProperties("uri.properties.default");
+		this.configServerIP = this.configProps.getProperty("configServerIp");
+		this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort")).intValue();
+		this.clientId = this.configProps.getProperty("clientId");
+		this.clientSecret = this.configProps.getProperty("clientSecret");
+		this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId,this.clientSecret);
+		
+		
 		setupConfigFragments();
 		
 		setContentView(R.layout.config_activity_main);
@@ -49,6 +73,49 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
         vpPager.setOnPageListener(pages);
     
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.config, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_exit:
+			finish();
+			break;
+		
+		}
+		return true;
+	}
+	
+    private Properties loadProperties(String FileName) {
+		Properties properties = new Properties();
+        try {
+               /**
+                * getAssets() Return an AssetManager instance for your
+                * application's package. AssetManager Provides access to an
+                * application's raw asset files;
+                */
+               AssetManager assetManager = this.getAssets();
+               /**
+                * Open an asset using ACCESS_STREAMING mode. This
+                */
+               InputStream inputStream = assetManager.open(FileName);
+               /**
+                * Loads properties from the specified InputStream,
+                */
+               properties.load(inputStream);
+
+        } catch (IOException e) {
+               // TODO Auto-generated catch block
+               Log.e("AssetsPropertyReader",e.toString());
+        }
+        return properties;
+ }
 
 	
     private void setupConfigFragments() {

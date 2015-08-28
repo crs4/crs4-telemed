@@ -1,195 +1,1156 @@
-03-25 14:55:44.965: D/MostFragmentSummary(29440): Trying to create a new teleconsultation...
-03-25 14:55:44.976: D/MostFragmentSummary(29440): using access token: 59d770479e782b9e5c6d4858eef7a62b9f083b1d
-03-25 14:55:44.976: D/REMOTE_CONFIG_READER(29440): getRoomDataUri: http://156.148.33.226:8001/teleconsultation/room/yytgsihw4vtm5tpceunnoyclwvbnwi53/?access_token=59d770479e782b9e5c6d4858eef7a62b9f083b1d
-03-25 14:55:45.126: D/MostFragmentSummary(29440): Room data: {"data":{"room":{"uuid":"yytgsihw4vtm5tpceunnoyclwvbnwi53","devices":{"encoder":{"model":"APTZ214","ip_address":"156.148.133.11","name":"Test Video Ufficio Stefano","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi"},"uuid":"ba2jc7za7vgsdzotpiqtk6yop3fluhms","type":"Audio Video","password":"speciali","user":"specialista"},"camera":{"model":"APTZ214","ip_address":"156.148.133.11","name":"Test Video Ufficio Stefano","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi"},"uuid":"ba2jc7za7vgsdzotpiqtk6yop3fluhms","type":"Audio Video","password":"speciali","user":"specialista"}},"task_group":{"description":"CRS4","name":"CRS4","uuid":"hdhtoz6ef4vixu3gk4s62knhncz6tmww"},"description":"Stanza di Test","name":"Ufficio Francesco"}},"success":true}
-03-25 14:55:45.126: D/MostFragmentSummary(29440): TC Encoder: [Device:Test Video Ufficio Stefano
-03-25 14:55:45.126: D/MostFragmentSummary(29440): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
-03-25 14:55:45.126: D/MostFragmentSummary(29440): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
-03-25 14:55:45.126: D/MostFragmentSummary(29440):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
-03-25 14:55:45.126: D/MostFragmentSummary(29440):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
-03-25 14:55:45.126: D/MostFragmentSummary(29440): TC Camera: [Device:Test Video Ufficio Stefano
-03-25 14:55:45.126: D/MostFragmentSummary(29440): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
-03-25 14:55:45.126: D/MostFragmentSummary(29440): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
-03-25 14:55:45.126: D/MostFragmentSummary(29440):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
-03-25 14:55:45.126: D/MostFragmentSummary(29440):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
-03-25 14:55:45.136: D/MostViewPager(29440): STARTING ACTIVITY WITH ECO USER:most.demo.ecoapp.models.EcoUser@41fe9b20
-03-25 14:55:45.206: D/dalvikvm(29440): GC_FOR_ALLOC freed 453K, 5% free 9753K/10264K, paused 27ms, total 27ms
-03-25 14:55:45.246: D/EcoTeleconsultationActivity(29440): Called IDLE:
-03-25 14:55:45.256: D/STREAMINGLIB_BACKEND(29440): Loading native libraries...
-03-25 14:55:45.256: D/STREAMINGLIB_BACKEND(29440): Loading gstreamer_android...
-03-25 14:55:45.256: D/dalvikvm(29440): Trying to load lib /data/app-lib/most.demo.ecoapp-2/libgstreamer_android.so 0x41f1afb0
-03-25 14:55:45.256: W/linker(29440): libgstreamer_android.so has text relocations. This is wasting memory and is a security risk. Please fix.
-03-25 14:55:45.276: D/dalvikvm(29440): Added shared lib /data/app-lib/most.demo.ecoapp-2/libgstreamer_android.so 0x41f1afb0
-03-25 14:55:45.606: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.656: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.706: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.756: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.756: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.766: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.766: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.766: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.766: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.776: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.776: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.786: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.786: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.786: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.786: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.796: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.796: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.796: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.806: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.806: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.806: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:45.816: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.856: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.906: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:45.956: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:46.007: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:46.017: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:46.017: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
-03-25 14:55:46.017: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
-03-25 14:55:46.017: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:46.017: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:46.017: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
-03-25 14:55:46.017: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
-03-25 14:55:46.027: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:46.027: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:46.027: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
-03-25 14:55:46.027: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
-03-25 14:55:46.027: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:46.037: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:46.037: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
-03-25 14:55:46.037: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
-03-25 14:55:46.037: I/OMXClient(29440): Using client-side OMX mux.
-03-25 14:55:46.037: E/OMXMaster(29440): A component of name 'OMX.qcom.audio.decoder.aac' already exists, ignoring this one.
-03-25 14:55:46.037: E/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.storeMetaDataInBuffers failed
-03-25 14:55:46.037: W/OMXNodeInstance(29440): OMX_GetExtensionIndex OMX.google.android.index.prepareForAdaptivePlayback failed
-03-25 14:55:46.047: W/GStreamer+amcvideodec(29440): 0:00:00.778228761 0x779a3580 gstamcvideodec.c:304:create_sink_caps Unsupported mimetype 'video/x-vnd.on2.vp9'
-03-25 14:55:46.387: I/GStreamer(29440): GStreamer initialization complete
-03-25 14:55:46.387: W/System.err(29440): java.io.FileNotFoundException: fontconfig/fonts.conf
-03-25 14:55:46.387: W/System.err(29440): 	at android.content.res.AssetManager.openAsset(Native Method)
-03-25 14:55:46.387: W/System.err(29440): 	at android.content.res.AssetManager.open(AssetManager.java:316)
-03-25 14:55:46.387: W/System.err(29440): 	at android.content.res.AssetManager.open(AssetManager.java:290)
-03-25 14:55:46.387: W/System.err(29440): 	at com.gstreamer.GStreamer.copyFile(GStreamer.java:51)
-03-25 14:55:46.387: W/System.err(29440): 	at com.gstreamer.GStreamer.copyFonts(GStreamer.java:31)
-03-25 14:55:46.387: W/System.err(29440): 	at com.gstreamer.GStreamer.init(GStreamer.java:17)
-03-25 14:55:46.387: W/System.err(29440): 	at org.crs4.most.streaming.StreamingLibBackend.initLib(StreamingLibBackend.java:70)
-03-25 14:55:46.387: W/System.err(29440): 	at most.demo.ecoapp.EcoTeleconsultationActivity.prepareStream(EcoTeleconsultationActivity.java:218)
-03-25 14:55:46.387: W/System.err(29440): 	at most.demo.ecoapp.EcoTeleconsultationActivity.setupStreamLib(EcoTeleconsultationActivity.java:196)
-03-25 14:55:46.387: W/System.err(29440): 	at most.demo.ecoapp.EcoTeleconsultationActivity.onCreate(EcoTeleconsultationActivity.java:99)
-03-25 14:55:46.387: W/System.err(29440): 	at android.app.Activity.performCreate(Activity.java:5231)
-03-25 14:55:46.387: W/System.err(29440): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1087)
-03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2148)
-03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2233)
-03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.access$800(ActivityThread.java:135)
-03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1196)
-03-25 14:55:46.387: W/System.err(29440): 	at android.os.Handler.dispatchMessage(Handler.java:102)
-03-25 14:55:46.387: W/System.err(29440): 	at android.os.Looper.loop(Looper.java:136)
-03-25 14:55:46.387: W/System.err(29440): 	at android.app.ActivityThread.main(ActivityThread.java:5001)
-03-25 14:55:46.387: W/System.err(29440): 	at java.lang.reflect.Method.invokeNative(Native Method)
-03-25 14:55:46.387: W/System.err(29440): 	at java.lang.reflect.Method.invoke(Method.java:515)
-03-25 14:55:46.387: W/System.err(29440): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
-03-25 14:55:46.387: W/System.err(29440): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
-03-25 14:55:46.387: W/System.err(29440): 	at dalvik.system.NativeStart.main(Native Method)
-03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Loading streaming lib backend native libraries..
-03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Loading most_streaming...
-03-25 14:55:46.387: D/dalvikvm(29440): Trying to load lib /data/app-lib/most.demo.ecoapp-2/libmost_streaming.so 0x41f1afb0
-03-25 14:55:46.387: D/dalvikvm(29440): Added shared lib /data/app-lib/most.demo.ecoapp-2/libmost_streaming.so 0x41f1afb0
-03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Libraries loaded.
-03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): Loading native class and methods references...
-03-25 14:55:46.387: I/most_dual_streaming(29440): The calling class does implement all necessary interface methods. Ok
-03-25 14:55:46.387: D/GSTREAMER_BACKEND(29440): GStreamerBackend instance *****
-03-25 14:55:46.387: D/VoipLibUtils(29440): getResourcePathByAssetCopy on folder ** for file:test_hold.wav
-03-25 14:55:46.437: D/VoipLibUtils(29440): Found 8 files
-03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:images
-03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:ring_in_call.wav
-03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:ring_out_call.wav
-03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:sounds
-03-25 14:55:46.437: D/VoipLibUtils(29440): Found resource:test_hold.wav
-03-25 14:55:46.437: D/VoipLibUtils(29440): Found:test_hold.wav
-03-25 14:55:46.447: D/VoipLibUtils(29440): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
-03-25 14:55:46.557: D/VoipLibUtils(29440): getResourcePathByAssetCopy on folder ** for file:ring_in_call.wav
-03-25 14:55:46.617: D/VoipLibUtils(29440): Found 8 files
-03-25 14:55:46.617: D/VoipLibUtils(29440): Found resource:images
-03-25 14:55:46.617: D/VoipLibUtils(29440): Found resource:ring_in_call.wav
-03-25 14:55:46.617: D/VoipLibUtils(29440): Found:ring_in_call.wav
-03-25 14:55:46.617: D/VoipLibUtils(29440): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_in_call.wav
-03-25 14:55:46.707: D/VoipLibUtils(29440): getResourcePathByAssetCopy on folder ** for file:ring_out_call.wav
-03-25 14:55:46.757: D/VoipLibUtils(29440): Found 8 files
-03-25 14:55:46.757: D/VoipLibUtils(29440): Found resource:images
-03-25 14:55:46.757: D/VoipLibUtils(29440): Found resource:ring_in_call.wav
-03-25 14:55:46.757: D/VoipLibUtils(29440): Found resource:ring_out_call.wav
-03-25 14:55:46.757: D/VoipLibUtils(29440): Found:ring_out_call.wav
-03-25 14:55:46.757: D/VoipLibUtils(29440): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_out_call.wav
-03-25 14:55:46.807: D/EcoTeleconsultationActivity(29440): OnHoldSoundPath:/storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
-03-25 14:55:46.807: D/EcoTeleconsultationActivity(29440): Initializing the lib...
-03-25 14:55:46.807: D/EcoTeleconsultationActivity(29440): Voip null... Initialization.....
-03-25 14:55:46.807: I/System.out(29440): LOADING LIB...
-03-25 14:55:46.807: D/dalvikvm(29440): Trying to load lib /data/app-lib/most.demo.ecoapp-2/libpjsua2.so 0x41f1afb0
-03-25 14:55:46.807: D/dalvikvm(29440): Added shared lib /data/app-lib/most.demo.ecoapp-2/libpjsua2.so 0x41f1afb0
-03-25 14:55:46.807: D/dalvikvm(29440): No JNI_OnLoad found in /data/app-lib/most.demo.ecoapp-2/libpjsua2.so 0x41f1afb0, skipping init
-03-25 14:55:46.807: I/System.out(29440): Library loaded
-03-25 14:55:46.817: D/VoipLib(29440): VoipLib
-03-25 14:55:46.817: D/VoipLib(29440): initializing
-03-25 14:55:46.817: D/VoipLib(29440): notify state:LIB_INITIALIZING
-03-25 14:55:46.817: D/VoipLib(29440): New Current State:IDLE
-03-25 14:55:46.817: D/VoipLib(29440): Lib create...
-03-25 14:55:46.817: D/VoipLib(29440): Instancing EndPoint..
-03-25 14:55:46.817: D/VoipLib(29440): Load configuration...
-03-25 14:55:46.817: D/VoipLib(29440): Reading account config:::
-03-25 14:55:46.817: D/VoipLib(29440): Setting registrar uri to:  sip:192.168.1.100:5060;transport=tcp
-03-25 14:55:46.817: D/VoipLib(29440): Enabling turn server on 192.168.1.100:3478
-03-25 14:55:46.817: D/VoipLib(29440): Lib init......
-03-25 14:55:46.857: E/VoipLib(29440): Error Initializing the lib:java.lang.Exception: Title:       pjsua_transport_create(type, &tcfg, &tid)
-03-25 14:55:46.857: E/VoipLib(29440): Code:        120098
-03-25 14:55:46.857: E/VoipLib(29440): Description: Address already in use
-03-25 14:55:46.857: E/VoipLib(29440): Location:    ../src/pjsua2/endpoint.cpp:1466
-03-25 14:55:46.857: I/System.out(29440): ERROR IN INITIALIZATION:java.lang.Exception: Title:       pjsua_transport_create(type, &tcfg, &tid)
-03-25 14:55:46.857: I/System.out(29440): Code:        120098
-03-25 14:55:46.857: I/System.out(29440): Description: Address already in use
-03-25 14:55:46.857: I/System.out(29440): Location:    ../src/pjsua2/endpoint.cpp:1466
-03-25 14:55:46.857: D/VoipLib(29440): notify state:LIB_INITIALIZATION_FAILED
-03-25 14:55:46.857: D/VoipLib(29440): New Current State:IDLE
-03-25 14:55:46.857: D/StreamViewerFragment(29440): ON ATTACH STREAM VIEWER
-03-25 14:55:46.857: D/StreamViewerFragment(29440): ON CREATE STREAM VIEWER
-03-25 14:55:46.857: D/StreamViewerFragment(29440): ON CREATE_VIEW STREAM VIEWER
-03-25 14:55:46.857: D/StreamViewerFragment(29440): ON ACTIVITY_CREATED STREAM VIEWER
-03-25 14:55:46.857: D/EcoTeleconsultationActivity(29440): Surface View created: preparing surface for streamTeleconsultation Stream
-03-25 14:55:46.857: D/GSTREAMER_BACKEND(29440): preparing IStream instance...
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.589691162 0x779a3580 jni/most_streaming.c:534:gst_native_init Created CustomData at 0x7c0b6c10
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.589782715 0x779a3580 jni/most_streaming.c:537:gst_native_init Created GlobalRef for app object at 0x1d2004d2
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.589935303 0x779a3580 jni/most_streaming.c:542:gst_native_init STREAM COUNT: 1 
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.590728760 0x7bc39320 jni/most_streaming.c:443:app_function Creating pipeline in CustomData at 0x7c0b6c10
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.592620850 0x7bc39320 jni/most_streaming.c:494:app_function Entering main loop... (CustomData:0x7c0b6c10)
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.592987061 0x7bc39320 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.593353272 0x7bc39320 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x7bc39320
-03-25 14:55:46.867: E/GStreamer+most_streaming(29440): 0:00:01.593750000 0x7bc39320 jni/most_streaming.c:428:check_initialization_complete Initialization NOT completed...
-03-25 14:55:46.867: D/GSTREAMER_BACKEND(29440): Message from Gstreamer:State changed to READY
-03-25 14:55:46.867: D/GStreamer+most_streaming(29440): 0:00:01.594268799 0x7bc39320 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
-03-25 14:55:46.867: D/GSTREAMER_BACKEND(29440): onStreamStateChanged: state from state:1 to:2
-03-25 14:55:46.877: I/Choreographer(29440): Skipped 101 frames!  The application may be doing too much work on its main thread.
-03-25 14:55:46.937: D/GStreamer(29440): Surface created:::: Surface(name=null)/@0x41f96448
-03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662078858 0x779a3580 jni/most_streaming.c:782:gst_native_surface_init Received surface 0x3bd0001d (native window 0x7c1c6078)
-03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662139893 0x779a3580 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
-03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662200928 0x779a3580 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x779a3580
-03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662292481 0x779a3580 jni/most_streaming.c:414:check_initialization_complete Initialization completed... notifying application. native_window:0x7c1c6078 main_loop:0x7c0b7fd0
-03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): Called onGStreamerInitialized()
-03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): Stream initialized
-03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): Setting uri to:rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov
-03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662475587 0x779a3580 jni/most_streaming.c:672:gst_native_set_uri called gst_native_set_uri!!!!
-03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662536622 0x779a3580 jni/most_streaming.c:681:gst_native_set_uri Setting URI:::: rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov
-03-25 14:55:46.937: D/GStreamer+most_streaming(29440): 0:00:01.662597657 0x779a3580 jni/most_streaming.c:684:gst_native_set_uri Stream name is:Teleconsultation Stream 
-03-25 14:55:46.937: D/GSTREAMER_BACKEND(29440): uri updated to:rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov
-03-25 14:55:46.937: D/GStreamer(29440): Surface changed to format 4 width 1096 height 1338
-03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Called handleMessage with event info:Event:LIB_INITIALIZING: Type:LIB_EVENT : Voip Lib initialization
-03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZING
-03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Called handleMessage with event info:Event:LIB_INITIALIZATION_FAILED: Type:LIB_EVENT : Inizialization Failed:Title:       pjsua_transport_create(type, &tcfg, &tid)
-03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Code:        120098
-03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Description: Address already in use
-03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): Location:    ../src/pjsua2/endpoint.cpp:1466
-03-25 14:55:46.947: D/EcoTeleconsultationActivity(29440): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZATION_FAILED
-03-25 14:55:46.967: D/EcoTeleconsultationActivity(29440): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Inizializating Stream Teleconsultation Stream
-03-25 14:55:46.967: D/EcoTeleconsultationActivity(29440): Stream State:INITIALIZED
-03-25 14:55:47.078: D/EcoTeleconsultationActivity(29440): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream Teleconsultation Stream initialized: (uri:rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov)
-03-25 14:55:47.078: D/EcoTeleconsultationActivity(29440): Stream State:INITIALIZED
+08-28 17:05:54.883: D/REMOTE_CONFIG_READER(9552): Device ID: 4234433ea5631d24
+08-28 17:05:54.970: D/OpenGLRenderer(9552): Render dirty regions requested: true
+08-28 17:05:54.975: D/Atlas(9552): Validating map...
+08-28 17:05:54.999: D/MostViewPager(9552): Selected Page Item at pos:0
+08-28 17:05:55.002: D/MostViewPager(9552): Selected Page Item at pos:1
+08-28 17:05:55.062: I/Adreno-EGL(9552): <qeglDrvAPI_eglInitialize:410>: QUALCOMM Build: 10/24/14, 167c270, I68fa98814b
+08-28 17:05:55.062: I/OpenGLRenderer(9552): Initialized EGL, version 1.4
+08-28 17:05:55.075: D/OpenGLRenderer(9552): Enabling debug mode 0
+08-28 17:05:55.235: D/Fragment_UserSelectionFragment(9552): Received taskgroups: {"data":{"task_groups":[{"description":"Crs4 testing","uuid":"h52job6mlgqpym5f57djdtbsw3u5kfyf","name":"Crs4"}]},"success":true}
+08-28 17:05:55.302: V/RenderScript(9552): Application requested CPU execution
+08-28 17:05:55.307: V/RenderScript(9552): 0xa1c31000 Launching thread(s), CPUs 4
+08-28 17:05:57.803: D/Fragment_UserSelectionFragment(9552): Received taskgroup applicants: {"data":{"applicants":[{"username":"admin","lastname":"admin","firstname":"admin"}]},"success":true}
+08-28 17:06:01.078: D/MostViewPager(9552): Manual Page Enabled:true target_position:1 permitted:0
+08-28 17:06:01.078: D/MostViewPager(9552): Selected Page Item at pos:1
+08-28 17:06:01.082: D/MostViewPager(9552): Selected Page Item at pos:2
+08-28 17:06:01.094: D/MostViewPager(9552): Page selected:1 Permitted position;0
+08-28 17:06:01.094: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:06:01.094: D/MostViewPager(9552): Child:0 -> PER:User Selection
+08-28 17:06:01.094: D/MostViewPager(9552): Child:1 ->User Selection PER:User Selection
+08-28 17:06:01.094: D/MostViewPager(9552): Title to be changed in blu: User Selection
+08-28 17:06:01.094: D/MostViewPager(9552): Child:2 ->Pass Code PER:User Selection
+08-28 17:06:01.096: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:06:01.096: D/MostViewPager(9552): Child:0 ->User Selection PER:User Selection
+08-28 17:06:01.096: D/MostViewPager(9552): Title to be changed in blu: User Selection
+08-28 17:06:01.096: D/MostViewPager(9552): Child:1 ->Pass Code PER:User Selection
+08-28 17:06:01.096: D/MostViewPager(9552): Child:2 ->Emergency Patient Selection PER:User Selection
+08-28 17:06:05.985: D/MostViewPager(9552): PASSCODE:1 LEN:1
+08-28 17:06:06.221: D/MostViewPager(9552): PASSCODE:12 LEN:2
+08-28 17:06:06.550: D/MostViewPager(9552): PASSCODE:123 LEN:3
+08-28 17:06:07.447: D/MostViewPager(9552): PASSCODE:1234 LEN:4
+08-28 17:06:07.785: D/MostViewPager(9552): PASSCODE:12345 LEN:5
+08-28 17:06:07.785: D/MostViewPager(9552): GET ACCESS TOKEN WITH PIN CODE: 12345
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): Called getAccessToken() on uri: http://156.148.132.223:8000/oauth2/access_token/
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): client id: 9db4f27b3d9c8e352b5c
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): client secret: 00ea399c013349a716ea3e47d8f8002502e2e982
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): device ID: 4234433ea5631d24
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): username: admin
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): pincode: 12345
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): taskgroup: h52job6mlgqpym5f57djdtbsw3u5kfyf
+08-28 17:06:07.786: D/REMOTE_CONFIG_READER(9552): Request added to the queue
+08-28 17:06:07.791: D/MostViewPager(9552): PASSCODE: LEN:0
+08-28 17:06:07.838: D/MostViewPager(9552): Query Response:{"access_token": "81667292dd20c6335e8806efa3df0ad864d60822", "token_type": "Bearer", "expires_in": 2591999, "scope": "read"}
+08-28 17:06:07.838: D/MostViewPager(9552): ACCESS TOKEN: 81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:06:07.838: D/MostViewPager(9552): Manual Page Enabled:true target_position:2 permitted:0
+08-28 17:06:07.838: D/MostViewPager(9552): Selected Page Item at pos:2
+08-28 17:06:07.841: D/MostViewPager(9552): Selected Page Item at pos:3
+08-28 17:06:07.862: D/REMOTE_CONFIG_READER(9552): getRoomsDataUri: http://156.148.132.223:8000/teleconsultation/rooms/?access_token=81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:06:07.867: D/MostViewPager(9552): Page selected:2 Permitted position;0
+08-28 17:06:07.868: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:06:07.868: D/MostViewPager(9552): Child:0 ->User Selection PER:User Selection
+08-28 17:06:07.868: D/MostViewPager(9552): Title to be changed in blu: User Selection
+08-28 17:06:07.868: D/MostViewPager(9552): Child:1 ->Pass Code PER:User Selection
+08-28 17:06:07.868: D/MostViewPager(9552): Child:2 ->Emergency Patient Selection PER:User Selection
+08-28 17:06:07.869: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:06:07.869: D/MostViewPager(9552): Child:0 ->Pass Code PER:User Selection
+08-28 17:06:07.869: D/MostViewPager(9552): Child:1 ->Emergency Patient Selection PER:User Selection
+08-28 17:06:07.869: D/MostViewPager(9552): Child:2 ->Summary PER:User Selection
+08-28 17:06:08.025: D/MostFragmentSummary(9552): Received rooms:
+08-28 17:06:08.025: D/MostFragmentSummary(9552): {"data":{"rooms":[{"description":"Stanza di Test","uuid":"ak3ce6bomyxlirkvjqx54htq3ghvb6gi","name":"Ufficio Francesco"}]},"success":true}
+08-28 17:06:09.621: D/MostViewPager(9552): Manual Page Enabled:true target_position:3 permitted:2
+08-28 17:06:09.621: D/MostViewPager(9552): Selected Page Item at pos:3
+08-28 17:06:09.636: D/MostViewPager(9552): Page selected:3 Permitted position;2
+08-28 17:06:09.636: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:06:09.636: D/MostViewPager(9552): Child:0 ->Pass Code PER:Emergency Patient Selection
+08-28 17:06:09.636: D/MostViewPager(9552): Child:1 ->Emergency Patient Selection PER:Emergency Patient Selection
+08-28 17:06:09.637: D/MostViewPager(9552): Title to be changed in blu: Emergency Patient Selection
+08-28 17:06:09.637: D/MostViewPager(9552): Child:2 ->Summary PER:Emergency Patient Selection
+08-28 17:06:09.638: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:06:09.638: D/MostViewPager(9552): Child:0 ->Emergency Patient Selection PER:Emergency Patient Selection
+08-28 17:06:09.638: D/MostViewPager(9552): Title to be changed in blu: Emergency Patient Selection
+08-28 17:06:09.638: D/MostViewPager(9552): Child:1 ->Summary PER:Emergency Patient Selection
+08-28 17:06:09.638: D/MostViewPager(9552): Child:2 -> PER:Emergency Patient Selection
+08-28 17:06:15.356: D/MostFragmentSummary(9552): Trying to create a new teleconsultation...
+08-28 17:06:15.356: D/MostFragmentSummary(9552): using access token: 81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:06:15.356: D/REMOTE_CONFIG_READER(9552): getRoomDataUri: http://156.148.132.223:8000/teleconsultation/room/ak3ce6bomyxlirkvjqx54htq3ghvb6gi/?access_token=81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:06:15.492: D/MostFragmentSummary(9552): Room data: {"data":{"room":{"task_group":{"description":"Crs4 testing","uuid":"h52job6mlgqpym5f57djdtbsw3u5kfyf","name":"Crs4"},"description":"Stanza di Test","uuid":"ak3ce6bomyxlirkvjqx54htq3ghvb6gi","devices":{"camera":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"},"encoder":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"}},"name":"Ufficio Francesco"}},"success":true}
+08-28 17:06:15.492: D/MostFragmentSummary(9552): TC Encoder: [Device:Test Video Ufficio Stefano
+08-28 17:06:15.492: D/MostFragmentSummary(9552): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:06:15.492: D/MostFragmentSummary(9552): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:06:15.492: D/MostFragmentSummary(9552):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:06:15.492: D/MostFragmentSummary(9552):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:06:15.493: D/MostFragmentSummary(9552): TC Camera: [Device:Test Video Ufficio Stefano
+08-28 17:06:15.493: D/MostFragmentSummary(9552): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:06:15.493: D/MostFragmentSummary(9552): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:06:15.493: D/MostFragmentSummary(9552):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:06:15.493: D/MostFragmentSummary(9552):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:06:15.500: D/MostViewPager(9552): STARTING ACTIVITY WITH ECO USER:most.demo.ecoapp.models.EcoUser@ea77ca0
+08-28 17:06:15.583: D/EcoTeleconsultationActivity(9552): Called IDLE:
+08-28 17:06:15.599: D/STREAMINGLIB_BACKEND(9552): Loading native libraries...
+08-28 17:06:15.599: D/STREAMINGLIB_BACKEND(9552): Loading gstreamer_android...
+08-28 17:06:15.615: W/linker(9552): libgstreamer_android.so has text relocations. This is wasting memory and prevents security hardening. Please fix.
+08-28 17:06:15.936: E/GStreamer+amc(9552): 0:00:00.308970833 0x9c7e1980 gstamc.c:200:initialize_java_vm Failed to load libdvm: dlopen failed: library "libdvm.so" not found
+08-28 17:06:15.936: W/GStreamer+GST_PLUGIN_LOADING(9552): 0:00:00.309076198 0x9c7e1980 gstplugin.c:525:gst_plugin_register_func plugin "(NULL)" failed to initialise
+08-28 17:06:16.168: I/GStreamer(9552): GStreamer initialization complete
+08-28 17:06:16.168: W/System.err(9552): java.io.FileNotFoundException: fontconfig/fonts.conf
+08-28 17:06:16.173: W/System.err(9552): 	at android.content.res.AssetManager.openAsset(Native Method)
+08-28 17:06:16.173: W/System.err(9552): 	at android.content.res.AssetManager.open(AssetManager.java:313)
+08-28 17:06:16.173: W/System.err(9552): 	at android.content.res.AssetManager.open(AssetManager.java:287)
+08-28 17:06:16.173: W/System.err(9552): 	at com.gstreamer.GStreamer.copyFile(GStreamer.java:51)
+08-28 17:06:16.173: W/System.err(9552): 	at com.gstreamer.GStreamer.copyFonts(GStreamer.java:31)
+08-28 17:06:16.173: W/System.err(9552): 	at com.gstreamer.GStreamer.init(GStreamer.java:17)
+08-28 17:06:16.173: W/System.err(9552): 	at org.crs4.most.streaming.StreamingLibBackend.initLib(StreamingLibBackend.java:70)
+08-28 17:06:16.173: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.prepareStream(EcoTeleconsultationActivity.java:234)
+08-28 17:06:16.173: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.setupStreamLib(EcoTeleconsultationActivity.java:212)
+08-28 17:06:16.173: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.onCreate(EcoTeleconsultationActivity.java:108)
+08-28 17:06:16.173: W/System.err(9552): 	at android.app.Activity.performCreate(Activity.java:5933)
+08-28 17:06:16.173: W/System.err(9552): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1105)
+08-28 17:06:16.173: W/System.err(9552): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2251)
+08-28 17:06:16.173: W/System.err(9552): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2360)
+08-28 17:06:16.173: W/System.err(9552): 	at android.app.ActivityThread.access$800(ActivityThread.java:144)
+08-28 17:06:16.173: W/System.err(9552): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1278)
+08-28 17:06:16.173: W/System.err(9552): 	at android.os.Handler.dispatchMessage(Handler.java:102)
+08-28 17:06:16.173: W/System.err(9552): 	at android.os.Looper.loop(Looper.java:135)
+08-28 17:06:16.173: W/System.err(9552): 	at android.app.ActivityThread.main(ActivityThread.java:5221)
+08-28 17:06:16.173: W/System.err(9552): 	at java.lang.reflect.Method.invoke(Native Method)
+08-28 17:06:16.173: W/System.err(9552): 	at java.lang.reflect.Method.invoke(Method.java:372)
+08-28 17:06:16.173: W/System.err(9552): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:899)
+08-28 17:06:16.173: W/System.err(9552): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:694)
+08-28 17:06:16.174: D/GSTREAMER_BACKEND(9552): Loading streaming lib backend native libraries..
+08-28 17:06:16.174: D/GSTREAMER_BACKEND(9552): Loading most_streaming...
+08-28 17:06:16.175: D/GSTREAMER_BACKEND(9552): Libraries loaded.
+08-28 17:06:16.175: D/GSTREAMER_BACKEND(9552): Loading native class and methods references...
+08-28 17:06:16.175: I/most_dual_streaming(9552): The calling class does implement all necessary interface methods. Ok
+08-28 17:06:16.175: D/GSTREAMER_BACKEND(9552): GStreamerBackend instance *****
+08-28 17:06:16.177: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:test_hold.wav
+08-28 17:06:16.231: D/VoipLibUtils(9552): Found 8 files
+08-28 17:06:16.231: D/VoipLibUtils(9552): Found resource:images
+08-28 17:06:16.231: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:06:16.231: D/VoipLibUtils(9552): Found resource:ring_out_call.wav
+08-28 17:06:16.231: D/VoipLibUtils(9552): Found resource:sounds
+08-28 17:06:16.231: D/VoipLibUtils(9552): Found resource:test_hold.wav
+08-28 17:06:16.231: D/VoipLibUtils(9552): Found:test_hold.wav
+08-28 17:06:16.231: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:06:16.299: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:ring_in_call.wav
+08-28 17:06:16.325: D/VoipLibUtils(9552): Found 8 files
+08-28 17:06:16.325: D/VoipLibUtils(9552): Found resource:images
+08-28 17:06:16.325: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:06:16.325: D/VoipLibUtils(9552): Found:ring_in_call.wav
+08-28 17:06:16.325: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_in_call.wav
+08-28 17:06:16.385: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:ring_out_call.wav
+08-28 17:06:16.410: D/VoipLibUtils(9552): Found 8 files
+08-28 17:06:16.410: D/VoipLibUtils(9552): Found resource:images
+08-28 17:06:16.410: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:06:16.410: D/VoipLibUtils(9552): Found resource:ring_out_call.wav
+08-28 17:06:16.410: D/VoipLibUtils(9552): Found:ring_out_call.wav
+08-28 17:06:16.410: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_out_call.wav
+08-28 17:06:16.436: D/EcoTeleconsultationActivity(9552): OnHoldSoundPath:/storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:06:16.436: D/EcoTeleconsultationActivity(9552): Initializing the lib...
+08-28 17:06:16.436: D/EcoTeleconsultationActivity(9552): Voip null... Initialization.....
+08-28 17:06:16.436: I/System.out(9552): LOADING LIB...
+08-28 17:06:16.439: I/System.out(9552): Library loaded
+08-28 17:06:16.454: D/VoipLib(9552): VoipLib
+08-28 17:06:16.454: D/VoipLib(9552): initializing
+08-28 17:06:16.456: D/VoipLib(9552): notify state:LIB_INITIALIZING
+08-28 17:06:16.456: D/VoipLib(9552): New Current State:IDLE
+08-28 17:06:16.456: D/VoipLib(9552): Lib create...
+08-28 17:06:16.456: D/VoipLib(9552): Instancing EndPoint..
+08-28 17:06:16.461: D/VoipLib(9552): Load configuration...
+08-28 17:06:16.461: D/VoipLib(9552): Reading account config:::
+08-28 17:06:16.465: D/VoipLib(9552): Setting registrar uri to:  sip:192.168.1.100:5060;transport=tcp
+08-28 17:06:16.474: D/VoipLib(9552): Enabling turn server on 192.168.1.100:3478
+08-28 17:06:16.482: D/VoipLib(9552): Lib init......
+08-28 17:06:16.508: D/VoipLib(9552): transport create with TCP Transport
+08-28 17:06:16.508: D/VoipLib(9552): Lib starting....
+08-28 17:06:16.515: D/VoipLib(9552): Lib initialized and started
+08-28 17:06:16.515: D/VoipLib(9552): notify state:LIB_INITIALIZED
+08-28 17:06:16.515: D/VoipLib(9552): New Current State:IDLE
+08-28 17:06:16.515: D/StreamViewerFragment(9552): ON ATTACH STREAM VIEWER
+08-28 17:06:16.515: D/StreamViewerFragment(9552): ON CREATE STREAM VIEWER
+08-28 17:06:16.515: D/StreamViewerFragment(9552): ON CREATE_VIEW STREAM VIEWER
+08-28 17:06:16.521: D/StreamViewerFragment(9552): ON ACTIVITY_CREATED STREAM VIEWER
+08-28 17:06:16.521: D/EcoTeleconsultationActivity(9552): Surface View created: preparing surface for streamTeleconsultation Stream
+08-28 17:06:16.521: D/GSTREAMER_BACKEND(9552): preparing IStream instance...
+08-28 17:06:16.522: D/GStreamer+most_streaming(9552): 0:00:00.894285938 0x9c7e1980 jni/most_streaming.c:534:gst_native_init Created CustomData at 0x9c422740
+08-28 17:06:16.522: D/GStreamer+most_streaming(9552): 0:00:00.894356511 0x9c7e1980 jni/most_streaming.c:537:gst_native_init Created GlobalRef for app object at 0x10049e
+08-28 17:06:16.522: D/GStreamer+most_streaming(9552): 0:00:00.894524479 0x9c7e1980 jni/most_streaming.c:542:gst_native_init STREAM COUNT: 1 
+08-28 17:06:16.526: D/GStreamer+most_streaming(9552): 0:00:00.898293594 0x9c41f460 jni/most_streaming.c:443:app_function Creating pipeline in CustomData at 0x9c422740
+08-28 17:06:16.527: D/GStreamer+most_streaming(9552): 0:00:00.899256979 0x9c41f460 jni/most_streaming.c:494:app_function Entering main loop... (CustomData:0x9c422740)
+08-28 17:06:16.527: D/GStreamer+most_streaming(9552): 0:00:00.899310521 0x9c41f460 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:06:16.527: D/GStreamer+most_streaming(9552): 0:00:00.899362864 0x9c41f460 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x9c41f460
+08-28 17:06:16.527: E/GStreamer+most_streaming(9552): 0:00:00.899967708 0x9c41f460 jni/most_streaming.c:428:check_initialization_complete Initialization NOT completed...
+08-28 17:06:16.528: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to READY
+08-28 17:06:16.528: I/Choreographer(9552): Skipped 59 frames!  The application may be doing too much work on its main thread.
+08-28 17:06:16.530: D/GStreamer+most_streaming(9552): 0:00:00.902312032 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:16.530: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:1 to:2
+08-28 17:06:16.582: D/GStreamer(9552): Surface created:::: Surface(name=null)/@0xf1042b4
+08-28 17:06:16.582: D/GStreamer+most_streaming(9552): 0:00:00.954618906 0x9c7e1980 jni/most_streaming.c:782:gst_native_surface_init Received surface 0xbeb5bdb0 (native window 0x9f631b08)
+08-28 17:06:16.582: D/GStreamer+most_streaming(9552): 0:00:00.954693698 0x9c7e1980 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:06:16.582: D/GStreamer+most_streaming(9552): 0:00:00.954764427 0x9c7e1980 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x9c7e1980
+08-28 17:06:16.582: D/GStreamer+most_streaming(9552): 0:00:00.954839740 0x9c7e1980 jni/most_streaming.c:414:check_initialization_complete Initialization completed... notifying application. native_window:0x9f631b08 main_loop:0xa320d720
+08-28 17:06:16.582: D/GSTREAMER_BACKEND(9552): Called onGStreamerInitialized()
+08-28 17:06:16.582: D/GSTREAMER_BACKEND(9552): Stream initialized
+08-28 17:06:16.582: D/GSTREAMER_BACKEND(9552): Setting uri to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:06:16.583: D/GStreamer+most_streaming(9552): 0:00:00.955125521 0x9c7e1980 jni/most_streaming.c:672:gst_native_set_uri called gst_native_set_uri!!!!
+08-28 17:06:16.583: D/GStreamer+most_streaming(9552): 0:00:00.955205521 0x9c7e1980 jni/most_streaming.c:681:gst_native_set_uri Setting URI:::: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:06:16.583: D/GStreamer+most_streaming(9552): 0:00:00.955275938 0x9c7e1980 jni/most_streaming.c:684:gst_native_set_uri Stream name is:Teleconsultation Stream 
+08-28 17:06:16.583: D/GSTREAMER_BACKEND(9552): uri updated to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:06:16.583: D/GStreamer(9552): Surface changed to format 4 width 924 height 1059
+08-28 17:06:16.588: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_INITIALIZING: Type:LIB_EVENT : Voip Lib initialization
+08-28 17:06:16.588: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZING
+08-28 17:06:16.588: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_INITIALIZED: Type:LIB_EVENT : Inizialization Ok
+08-28 17:06:16.588: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZED
+08-28 17:06:16.595: D/VoipLib(9552): notify state:ACCOUNT_REGISTERING
+08-28 17:06:16.595: D/VoipLib(9552): New Current State:IDLE
+08-28 17:06:16.598: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Inizializating Stream Teleconsultation Stream
+08-28 17:06:16.598: D/EcoTeleconsultationActivity(9552): Stream State:INITIALIZED
+08-28 17:06:16.627: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream Teleconsultation Stream initialized: (uri:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp)
+08-28 17:06:16.627: D/EcoTeleconsultationActivity(9552): Stream State:INITIALIZED
+08-28 17:06:16.627: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:ACCOUNT_REGISTERING: Type:ACCOUNT_EVENT : Account Registration request sent
+08-28 17:06:16.627: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:ACCOUNT_REGISTERING
+08-28 17:06:20.043: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:06:20.043: D/GStreamer+most_streaming(9552): 0:00:04.415530832 0x9c7e1980 jni/most_streaming.c:726:gst_native_play Setting state to PLAYING for stream:Teleconsultation Stream
+08-28 17:06:20.044: D/GStreamer+most_streaming(9552): 0:00:04.416951353 0x9c7e1980 jni/most_streaming.c:312:playbinNotifySource Called playbinNotifySource; Stream is in state: 2 target:2
+08-28 17:06:20.044: D/GStreamer+most_streaming(9552): 0:00:04.417052916 0x9c7e1980 jni/most_streaming.c:322:playbinNotifySource Source Latency Property set to: 200 for stream:Teleconsultation Stream
+08-28 17:06:20.045: D/GStreamer+most_streaming(9552): 0:00:04.417119166 0x9c7e1980 jni/most_streaming.c:332:playbinNotifySource Source Latency Property Get VALUE: 200 for Stream: Teleconsultation Stream
+08-28 17:06:20.045: D/GStreamer+most_streaming(9552): 0:00:04.417169843 0x9c7e1980 jni/most_streaming.c:336:playbinNotifySource Data Latency successfully updated
+08-28 17:06:20.046: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:06:20.046: D/GStreamer+most_streaming(9552): 0:00:04.418251405 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:20.046: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:2 to:3
+08-28 17:06:20.046: D/GStreamer+most_streaming(9552): 0:00:04.418342759 0x9c41f460 jni/most_streaming.c:348:check_media_size DENTRO CHECK_MEDIA SIZE...
+08-28 17:06:20.046: D/GStreamer+most_streaming(9552): 0:00:04.418501978 0x9c41f460 jni/most_streaming.c:359:check_media_size DENTRO CHECK_MEDIA SIZE -> dopo gst_pad_get_current_caps
+08-28 17:06:20.046: E/GLib(9552): gst_video_info_from_caps: assertion 'caps != NULL' failed
+08-28 17:06:20.046: D/GStreamer+most_streaming(9552): 0:00:04.418605572 0x9c41f460 jni/most_streaming.c:372:check_media_size DENTRO CHECK_MEDIA SIZE: IMPOSSIBILE RECUPERARE VIDEO INFO FROM CAPS!!
+08-28 17:06:20.048: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:06:20.048: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING_REQUEST
+08-28 17:06:20.666: W/GStreamer+rtpjitterbuffer(9552): 0:00:05.038908592 0xaf64fa30 rtpjitterbuffer.c:183:rtp_jitter_buffer_set_clock_rate Clock rate changed from 0 to 90000
+08-28 17:06:20.671: W/GStreamer+rtpjitterbuffer(9552): 0:00:05.043557083 0xaf64fa30 rtpjitterbuffer.c:492:calculate_skew delta - skew: 4:56:59.289904253 too big, reset skew
+08-28 17:06:20.969: W/GStreamer+bufferpool(9552): 0:00:05.342057186 0xaf650180 gstbufferpool.c:632:gst_buffer_pool_set_config:<eglimagebufferpool0> can't change config, we are active
+08-28 17:06:20.970: W/GStreamer+bufferpool(9552): 0:00:05.342181196 0xaf650180 gstbufferpool.c:632:gst_buffer_pool_set_config:<eglimagebufferpool0> can't change config, we are active
+08-28 17:06:21.002: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PLAYING
+08-28 17:06:21.002: D/GStreamer+most_streaming(9552): 0:00:05.374969425 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:21.002: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:4
+08-28 17:06:21.003: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PLAYING
+08-28 17:06:21.003: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING
+08-28 17:06:30.511: D/GSTREAMER_BACKEND(9552): Trying to pause stream...
+08-28 17:06:30.511: D/GStreamer+most_streaming(9552): 0:00:14.883962338 0x9c7e1980 jni/most_streaming.c:735:gst_native_pause Setting state to PAUSED for stream:Teleconsultation Stream
+08-28 17:06:30.514: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:06:30.514: D/GStreamer+most_streaming(9552): 0:00:14.886854161 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:30.514: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:4 to:3
+08-28 17:06:30.516: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PAUSED
+08-28 17:06:30.516: D/EcoTeleconsultationActivity(9552): Stream State:PAUSED
+08-28 17:06:31.686: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:06:31.688: D/GStreamer+most_streaming(9552): 0:00:16.060136348 0x9c7e1980 jni/most_streaming.c:726:gst_native_play Setting state to PLAYING for stream:Teleconsultation Stream
+08-28 17:06:31.691: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:06:31.691: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING_REQUEST
+08-28 17:06:31.846: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PLAYING
+08-28 17:06:31.846: D/GStreamer+most_streaming(9552): 0:00:16.219051661 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:31.847: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:4
+08-28 17:06:31.847: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PLAYING
+08-28 17:06:31.847: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING
+08-28 17:06:31.851: W/GStreamer+rtpjitterbuffer(9552): 0:00:16.223633744 0xaf64fa30 rtpjitterbuffer.c:492:calculate_skew delta - skew: 0:00:01.181448207 too big, reset skew
+08-28 17:06:31.962: W/GStreamer+videodecoder(9552): 0:00:16.334317442 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.629850047 < 0:00:11.531287143)
+08-28 17:06:32.011: W/GStreamer+videodecoder(9552): 0:00:16.383416713 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.709850047 < 0:00:11.531287143)
+08-28 17:06:32.045: W/GStreamer+videodecoder(9552): 0:00:16.417409942 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.749850047 < 0:00:11.531287143)
+08-28 17:06:32.102: W/GStreamer+videodecoder(9552): 0:00:16.474317546 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.789850047 < 0:00:11.531287143)
+08-28 17:06:32.969: W/GStreamer+videodecoder(9552): 0:00:17.341710984 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.829850047 < 0:00:11.531287143)
+08-28 17:06:32.974: W/GStreamer+videodecoder(9552): 0:00:17.346193640 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.869850047 < 0:00:11.531287143)
+08-28 17:06:32.979: W/GStreamer+videodecoder(9552): 0:00:17.351491609 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.949850047 < 0:00:11.531287143)
+08-28 17:06:32.983: W/GStreamer+videodecoder(9552): 0:00:17.355545723 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:10.989854676 < 0:00:11.531287143)
+08-28 17:06:32.987: W/GStreamer+videodecoder(9552): 0:00:17.359619890 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:11.029846933 < 0:00:11.531287143)
+08-28 17:06:32.991: W/GStreamer+videodecoder(9552): 0:00:17.363472703 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:11.069826828 < 0:00:11.531287143)
+08-28 17:06:32.995: W/GStreamer+videodecoder(9552): 0:00:17.367518848 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:11.109827753 < 0:00:11.531287143)
+08-28 17:06:32.999: W/GStreamer+videodecoder(9552): 0:00:17.371310828 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:11.149805376 < 0:00:11.531287143)
+08-28 17:06:33.003: W/GStreamer+videodecoder(9552): 0:00:17.375362338 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:11.229791391 < 0:00:11.531287143)
+08-28 17:06:33.007: W/GStreamer+videodecoder(9552): 0:00:17.379888431 0xaf650180 gstvideodecoder.c:2365:gst_video_decoder_prepare_finish_frame:<avdec_mpeg4-0> decreasing timestamp (0:00:11.269788022 < 0:00:11.531287143)
+08-28 17:06:35.902: D/GSTREAMER_BACKEND(9552): Trying to pause stream...
+08-28 17:06:35.902: D/GStreamer+most_streaming(9552): 0:00:20.274921295 0x9c7e1980 jni/most_streaming.c:735:gst_native_pause Setting state to PAUSED for stream:Teleconsultation Stream
+08-28 17:06:35.906: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:06:35.906: D/GStreamer+most_streaming(9552): 0:00:20.279049836 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:35.906: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:4 to:3
+08-28 17:06:35.909: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PAUSED
+08-28 17:06:35.909: D/EcoTeleconsultationActivity(9552): Stream State:PAUSED
+08-28 17:06:36.528: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:06:36.528: D/GStreamer+most_streaming(9552): 0:00:20.900768742 0x9c7e1980 jni/most_streaming.c:726:gst_native_play Setting state to PLAYING for stream:Teleconsultation Stream
+08-28 17:06:36.531: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:06:36.531: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING_REQUEST
+08-28 17:06:36.610: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PLAYING
+08-28 17:06:36.612: D/GStreamer+most_streaming(9552): 0:00:20.984218690 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:36.612: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:4
+08-28 17:06:36.613: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PLAYING
+08-28 17:06:36.613: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING
+08-28 17:06:38.675: D/GSTREAMER_BACKEND(9552): Trying to pause stream...
+08-28 17:06:38.675: D/GStreamer+most_streaming(9552): 0:00:23.047934523 0x9c7e1980 jni/most_streaming.c:735:gst_native_pause Setting state to PAUSED for stream:Teleconsultation Stream
+08-28 17:06:38.680: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:06:38.681: D/GStreamer+most_streaming(9552): 0:00:23.053157023 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:38.681: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:4 to:3
+08-28 17:06:38.686: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PAUSED
+08-28 17:06:38.689: D/EcoTeleconsultationActivity(9552): Stream State:PAUSED
+08-28 17:06:39.285: D/GSTREAMER_BACKEND(9552): Trying to pause stream...
+08-28 17:06:39.285: D/GStreamer+most_streaming(9552): 0:00:23.657337491 0x9c7e1980 jni/most_streaming.c:735:gst_native_pause Setting state to PAUSED for stream:Teleconsultation Stream
+08-28 17:06:44.151: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:06:44.151: D/GStreamer+most_streaming(9552): 0:00:28.523293218 0x9c7e1980 jni/most_streaming.c:726:gst_native_play Setting state to PLAYING for stream:Teleconsultation Stream
+08-28 17:06:44.154: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:06:44.154: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING_REQUEST
+08-28 17:06:44.264: W/GStreamer+rtpjitterbuffer(9552): 0:00:28.636941499 0xaf64fa30 rtpjitterbuffer.c:492:calculate_skew delta - skew: 0:00:01.523011279 too big, reset skew
+08-28 17:06:44.286: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PLAYING
+08-28 17:06:44.286: D/GStreamer+most_streaming(9552): 0:00:28.658532385 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:06:44.286: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:4
+08-28 17:06:44.286: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PLAYING
+08-28 17:06:44.286: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING
+08-28 17:06:44.293: W/GStreamer+rtpjitterbuffer(9552): 0:00:28.665552333 0xaf64fa30 rtpjitterbuffer.c:492:calculate_skew delta - skew: 0:00:04.491468959 too big, reset skew
+08-28 17:06:46.230: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:06:46.231: D/GSTREAMER_BACKEND(9552): The stream is already playing...request ignored
+08-28 17:06:48.641: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:06:48.643: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:06:48.643: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:06:48.643: D/VoipLib(9552): New Current State:IDLE
+08-28 17:06:48.643: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:06:48.643: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:07:19.755: D/VoipLib(9552): onRegState Code:PJSIP_SC_SERVICE_UNAVAILABLE: Reg Expire:-1 Reason:Connection timed out
+08-28 17:07:19.756: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:07:19.756: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:07:19.756: D/VoipLib(9552): New Current State:IDLE
+08-28 17:07:19.777: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:503 Connection timed out
+08-28 17:07:19.778: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:09:33.827: E/GStreamer+libav(9552): 0:03:18.199068779 0xaf650180 :0: slice end not reached but screenspace end (18372 left 7A2378, score= -103081)
+08-28 17:09:33.851: E/GStreamer+libav(9552): 0:03:18.223723623 0xaf650180 :0: header damaged
+08-28 17:10:38.491: E/GStreamer+libav(9552): 0:04:22.863970577 0xaf650180 :0: slice end not reached but screenspace end (55636 left 7A2DBA, score= -145630)
+08-28 17:10:38.516: E/GStreamer+libav(9552): 0:04:22.888544379 0xaf650180 :0: header damaged
+08-28 17:12:57.370: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:12:57.371: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:12:57.371: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:12:57.371: D/VoipLib(9552): New Current State:IDLE
+08-28 17:12:57.372: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:12:57.372: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:18:12.208: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:18:13.516: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:18:14.251: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:18:16.025: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:18:16.025: D/GSTREAMER_BACKEND(9552): The stream is already playing...request ignored
+08-28 17:18:17.285: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:18:17.285: D/GSTREAMER_BACKEND(9552): The stream is already playing...request ignored
+08-28 17:18:24.257: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:18:24.257: D/GSTREAMER_BACKEND(9552): The stream is already playing...request ignored
+08-28 17:19:02.653: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:19:02.653: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:19:02.653: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:19:02.653: D/VoipLib(9552): New Current State:IDLE
+08-28 17:19:02.653: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:19:02.653: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:25:07.261: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:25:07.261: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:25:07.261: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:25:07.261: D/VoipLib(9552): New Current State:IDLE
+08-28 17:25:07.262: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:25:07.262: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:31:14.593: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:31:14.593: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:31:14.593: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:31:14.593: D/VoipLib(9552): New Current State:IDLE
+08-28 17:31:14.599: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:31:14.599: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:32:26.873: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:32:28.747: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:32:29.356: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:32:30.239: D/EcoTeleconsultationActivity(9552): Called exitFromApp()
+08-28 17:32:30.239: D/VoipLib(9552): notify state:LIB_DEINITIALIZING
+08-28 17:32:30.239: D/VoipLib(9552): New Current State:IDLE
+08-28 17:32:30.239: D/VoipLib(9552): Deleting account...
+08-28 17:32:30.241: D/VoipLib(9552): Account deleted
+08-28 17:32:30.241: D/VoipLib(9552): Deleting audio players...
+08-28 17:32:30.243: D/VoipLib(9552): Audio players deleted
+08-28 17:32:30.278: I/art(9552): Explicit concurrent mark sweep GC freed 31871(1904KB) AllocSpace objects, 2(28KB) LOS objects, 40% free, 17MB/29MB, paused 1.189ms total 29.535ms
+08-28 17:32:30.278: D/VoipLib(9552): Destroying lib...
+08-28 17:32:31.344: D/VoipLib(9552): LibDestroy successfully called
+08-28 17:32:31.346: D/VoipLib(9552): Endpoint deleted
+08-28 17:32:31.346: D/VoipLib(9552): Endpoint set to null
+08-28 17:32:31.346: D/VoipLib(9552): Lib destroyed
+08-28 17:32:31.346: D/VoipLib(9552): notify state:LIB_DEINITIALIZED
+08-28 17:32:31.346: D/VoipLib(9552): New Current State:IDLE
+08-28 17:32:31.347: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_DEINITIALIZING: Type:LIB_EVENT : Voip Lib destroying
+08-28 17:32:31.347: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_DEINITIALIZING
+08-28 17:32:31.347: I/Choreographer(9552): Skipped 65 frames!  The application may be doing too much work on its main thread.
+08-28 17:32:31.352: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_DEINITIALIZED: Type:LIB_EVENT : Voip Lib destroyed
+08-28 17:32:31.352: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_DEINITIALIZED
+08-28 17:32:31.352: D/EcoTeleconsultationActivity(9552): Setting to null MyVoipLib
+08-28 17:32:31.354: D/EcoTeleconsultationActivity(9552): Called IDLE:
+08-28 17:32:31.355: D/EcoTeleconsultationActivity(9552): Called exitFromApp()
+08-28 17:32:31.355: D/EcoTeleconsultationActivity(9552): Voip Library deinitialized. Exiting the app
+08-28 17:32:31.359: D/EcoTeleconsultationActivity(9552): Called exitFromApp()
+08-28 17:32:31.359: D/EcoTeleconsultationActivity(9552): Voip Library deinitialized. Exiting the app
+08-28 17:32:31.476: D/GStreamer(9552): Surface destroyed::::
+08-28 17:32:31.476: D/GStreamer+most_streaming(9552): 0:26:15.848458097 0x9c7e1980 jni/most_streaming.c:806:gst_native_surface_finalize Releasing Native Window 0x9f631b08
+08-28 17:32:31.479: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:32:31.479: D/GStreamer+most_streaming(9552): 0:26:15.851819868 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:32:31.479: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:4 to:3
+08-28 17:32:31.519: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to READY
+08-28 17:32:31.519: D/GStreamer+most_streaming(9552): 0:26:15.891947681 0x9c41f460 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:32:31.519: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:2
+08-28 17:32:31.520: D/GSTREAMER_BACKEND(9552): Called destroy() in GSTEREAMER BACKEND
+08-28 17:32:31.520: D/GStreamer+most_streaming(9552): 0:26:15.892247472 0x9c7e1980 jni/most_streaming.c:556:gst_native_finalize Quitting main loop...
+08-28 17:32:31.520: D/GStreamer+most_streaming(9552): 0:26:15.892340649 0x9c41f460 jni/most_streaming.c:501:app_function Exited main loop
+08-28 17:32:31.523: W/art(9552): Native thread exiting without having called DetachCurrentThread (maybe it's going to use a pthread_key_create destructor?): Thread[29,tid=9750,Native,Thread*=0xa32eb400,peer=0x1301b080,"Thread-647"]
+08-28 17:32:31.523: D/GStreamer+most_streaming(9552): 0:26:15.895622108 0x9c41f460 jni/most_streaming.c:105:detach_current_thread Detaching thread 0x9c41f460
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896117628 0x9c7e1980 jni/most_streaming.c:558:gst_native_finalize Waiting for thread to finish...
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896181847 0x9c7e1980 jni/most_streaming.c:561:gst_native_finalize STREAM COUNT: 0 
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896236118 0x9c7e1980 jni/most_streaming.c:564:gst_native_finalize NOTIFYING STATE CHANGE...
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896289868 0x9c7e1980 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:32:31.524: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:2 to:1
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896411066 0x9c7e1980 jni/most_streaming.c:570:gst_native_finalize STREAM COUNT <=0: Deallocate global variables!! 
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896463982 0x9c7e1980 jni/most_streaming.c:572:gst_native_finalize IN gst_native_finalize_globals 
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896528149 0x9c7e1980 jni/most_streaming.c:575:gst_native_finalize Deleting GlobalRef for app object at 0x10049e
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896585753 0x9c7e1980 jni/most_streaming.c:577:gst_native_finalize Freeing CustomData at 0x9c422740
+08-28 17:32:31.524: D/GStreamer+most_streaming(9552): 0:26:15.896647107 0x9c7e1980 jni/most_streaming.c:581:gst_native_finalize Done finalizing
+08-28 17:32:31.526: D/OpenGLRenderer(9552): endAllStagingAnimators on 0x9c4abb00 (RippleDrawable) with handle 0xa1571420
+08-28 17:32:31.543: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PAUSED
+08-28 17:32:31.543: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:32:31.543: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:32:31.543: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:32:31.543: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:DEINITIALIZED
+08-28 17:32:31.543: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:32:31.588: W/art(9552): Before Android 4.1, method int android.support.v7.internal.widget.ListViewCompat.lookForSelectablePosition(int, boolean) would have incorrectly overridden the package-private method in android.widget.ListView
+08-28 17:32:31.839: D/StreamViewerFragment(9552): ON DETACH STREAM VIEWER
+08-28 17:32:31.840: D/GSTREAMER_BACKEND(9552): Called destroy() in GSTEREAMER BACKEND
+08-28 17:32:31.840: D/GSTREAMER_BACKEND(9552): Stream Teleconsultation Stream already deinitialized...
+08-28 17:32:33.469: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:32:34.398: D/MostFragmentSummary(9552): Trying to create a new teleconsultation...
+08-28 17:32:34.398: D/MostFragmentSummary(9552): using access token: 81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:32:34.398: D/REMOTE_CONFIG_READER(9552): getRoomDataUri: http://156.148.132.223:8000/teleconsultation/room/ak3ce6bomyxlirkvjqx54htq3ghvb6gi/?access_token=81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:32:34.528: D/MostFragmentSummary(9552): Room data: {"data":{"room":{"task_group":{"description":"Crs4 testing","uuid":"h52job6mlgqpym5f57djdtbsw3u5kfyf","name":"Crs4"},"description":"Stanza di Test","uuid":"ak3ce6bomyxlirkvjqx54htq3ghvb6gi","devices":{"camera":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"},"encoder":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"}},"name":"Ufficio Francesco"}},"success":true}
+08-28 17:32:34.528: D/MostFragmentSummary(9552): TC Encoder: [Device:Test Video Ufficio Stefano
+08-28 17:32:34.528: D/MostFragmentSummary(9552): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:32:34.528: D/MostFragmentSummary(9552): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:32:34.528: D/MostFragmentSummary(9552):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:32:34.528: D/MostFragmentSummary(9552):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:32:34.528: D/MostFragmentSummary(9552): TC Camera: [Device:Test Video Ufficio Stefano
+08-28 17:32:34.528: D/MostFragmentSummary(9552): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:32:34.528: D/MostFragmentSummary(9552): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:32:34.528: D/MostFragmentSummary(9552):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:32:34.528: D/MostFragmentSummary(9552):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:32:34.528: D/MostViewPager(9552): STARTING ACTIVITY WITH ECO USER:most.demo.ecoapp.models.EcoUser@ea77ca0
+08-28 17:32:34.585: D/EcoTeleconsultationActivity(9552): Called IDLE:
+08-28 17:32:34.588: I/GStreamer(9552): GStreamer already initialized
+08-28 17:32:34.589: W/System.err(9552): java.io.FileNotFoundException: fontconfig/fonts.conf
+08-28 17:32:34.589: W/System.err(9552): 	at android.content.res.AssetManager.openAsset(Native Method)
+08-28 17:32:34.589: W/System.err(9552): 	at android.content.res.AssetManager.open(AssetManager.java:313)
+08-28 17:32:34.589: W/System.err(9552): 	at android.content.res.AssetManager.open(AssetManager.java:287)
+08-28 17:32:34.589: W/System.err(9552): 	at com.gstreamer.GStreamer.copyFile(GStreamer.java:51)
+08-28 17:32:34.589: W/System.err(9552): 	at com.gstreamer.GStreamer.copyFonts(GStreamer.java:31)
+08-28 17:32:34.589: W/System.err(9552): 	at com.gstreamer.GStreamer.init(GStreamer.java:17)
+08-28 17:32:34.589: W/System.err(9552): 	at org.crs4.most.streaming.StreamingLibBackend.initLib(StreamingLibBackend.java:70)
+08-28 17:32:34.589: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.prepareStream(EcoTeleconsultationActivity.java:234)
+08-28 17:32:34.589: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.setupStreamLib(EcoTeleconsultationActivity.java:212)
+08-28 17:32:34.590: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.onCreate(EcoTeleconsultationActivity.java:108)
+08-28 17:32:34.590: W/System.err(9552): 	at android.app.Activity.performCreate(Activity.java:5933)
+08-28 17:32:34.590: W/System.err(9552): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1105)
+08-28 17:32:34.590: W/System.err(9552): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2251)
+08-28 17:32:34.590: W/System.err(9552): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2360)
+08-28 17:32:34.590: W/System.err(9552): 	at android.app.ActivityThread.access$800(ActivityThread.java:144)
+08-28 17:32:34.590: W/System.err(9552): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1278)
+08-28 17:32:34.590: W/System.err(9552): 	at android.os.Handler.dispatchMessage(Handler.java:102)
+08-28 17:32:34.590: W/System.err(9552): 	at android.os.Looper.loop(Looper.java:135)
+08-28 17:32:34.590: W/System.err(9552): 	at android.app.ActivityThread.main(ActivityThread.java:5221)
+08-28 17:32:34.590: W/System.err(9552): 	at java.lang.reflect.Method.invoke(Native Method)
+08-28 17:32:34.590: W/System.err(9552): 	at java.lang.reflect.Method.invoke(Method.java:372)
+08-28 17:32:34.590: W/System.err(9552): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:899)
+08-28 17:32:34.590: W/System.err(9552): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:694)
+08-28 17:32:34.590: D/GSTREAMER_BACKEND(9552): GStreamerBackend instance *****
+08-28 17:32:34.591: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:test_hold.wav
+08-28 17:32:34.637: D/VoipLibUtils(9552): Found 8 files
+08-28 17:32:34.637: D/VoipLibUtils(9552): Found resource:images
+08-28 17:32:34.637: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:32:34.637: D/VoipLibUtils(9552): Found resource:ring_out_call.wav
+08-28 17:32:34.637: D/VoipLibUtils(9552): Found resource:sounds
+08-28 17:32:34.637: D/VoipLibUtils(9552): Found resource:test_hold.wav
+08-28 17:32:34.637: D/VoipLibUtils(9552): Found:test_hold.wav
+08-28 17:32:34.638: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:32:34.714: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:ring_in_call.wav
+08-28 17:32:34.756: D/VoipLibUtils(9552): Found 8 files
+08-28 17:32:34.756: D/VoipLibUtils(9552): Found resource:images
+08-28 17:32:34.756: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:32:34.756: D/VoipLibUtils(9552): Found:ring_in_call.wav
+08-28 17:32:34.756: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_in_call.wav
+08-28 17:32:34.811: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:ring_out_call.wav
+08-28 17:32:34.837: D/VoipLibUtils(9552): Found 8 files
+08-28 17:32:34.837: D/VoipLibUtils(9552): Found resource:images
+08-28 17:32:34.837: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:32:34.837: D/VoipLibUtils(9552): Found resource:ring_out_call.wav
+08-28 17:32:34.837: D/VoipLibUtils(9552): Found:ring_out_call.wav
+08-28 17:32:34.837: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_out_call.wav
+08-28 17:32:34.868: D/EcoTeleconsultationActivity(9552): OnHoldSoundPath:/storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:32:34.868: D/EcoTeleconsultationActivity(9552): Initializing the lib...
+08-28 17:32:34.868: D/EcoTeleconsultationActivity(9552): Voip null... Initialization.....
+08-28 17:32:34.868: D/VoipLib(9552): VoipLib
+08-28 17:32:34.869: D/VoipLib(9552): initializing
+08-28 17:32:34.869: D/VoipLib(9552): notify state:LIB_INITIALIZING
+08-28 17:32:34.869: D/VoipLib(9552): New Current State:IDLE
+08-28 17:32:34.869: D/VoipLib(9552): Lib create...
+08-28 17:32:34.869: D/VoipLib(9552): Instancing EndPoint..
+08-28 17:32:34.871: D/VoipLib(9552): Load configuration...
+08-28 17:32:34.871: D/VoipLib(9552): Reading account config:::
+08-28 17:32:34.871: D/VoipLib(9552): Setting registrar uri to:  sip:192.168.1.100:5060;transport=tcp
+08-28 17:32:34.871: D/VoipLib(9552): Enabling turn server on 192.168.1.100:3478
+08-28 17:32:34.871: D/VoipLib(9552): Lib init......
+08-28 17:32:34.891: D/VoipLib(9552): transport create with TCP Transport
+08-28 17:32:34.891: D/VoipLib(9552): Lib starting....
+08-28 17:32:34.893: D/VoipLib(9552): Lib initialized and started
+08-28 17:32:34.893: D/VoipLib(9552): notify state:LIB_INITIALIZED
+08-28 17:32:34.893: D/VoipLib(9552): New Current State:IDLE
+08-28 17:32:34.894: D/StreamViewerFragment(9552): ON ATTACH STREAM VIEWER
+08-28 17:32:34.894: D/StreamViewerFragment(9552): ON CREATE STREAM VIEWER
+08-28 17:32:34.894: D/StreamViewerFragment(9552): ON CREATE_VIEW STREAM VIEWER
+08-28 17:32:34.896: D/StreamViewerFragment(9552): ON ACTIVITY_CREATED STREAM VIEWER
+08-28 17:32:34.896: D/EcoTeleconsultationActivity(9552): Surface View created: preparing surface for streamTeleconsultation Stream
+08-28 17:32:34.896: D/GSTREAMER_BACKEND(9552): preparing IStream instance...
+08-28 17:32:34.896: D/GStreamer+most_streaming(9552): 0:26:19.269016325 0x9c7e1980 jni/most_streaming.c:526:gst_native_init Assigned Stream name:Teleconsultation Stream
+08-28 17:32:34.897: D/GStreamer+most_streaming(9552): 0:26:19.269367054 0x9c7e1980 jni/most_streaming.c:534:gst_native_init Created CustomData at 0x9c4a4740
+08-28 17:32:34.897: D/GStreamer+most_streaming(9552): 0:26:19.269431950 0x9c7e1980 jni/most_streaming.c:537:gst_native_init Created GlobalRef for app object at 0x70041a
+08-28 17:32:34.897: D/GStreamer+most_streaming(9552): 0:26:19.269735387 0x9c7e1980 jni/most_streaming.c:542:gst_native_init STREAM COUNT: 1 
+08-28 17:32:34.897: D/GStreamer+most_streaming(9552): 0:26:19.269890544 0xaf6f77a0 jni/most_streaming.c:443:app_function Creating pipeline in CustomData at 0x9c4a4740
+08-28 17:32:34.900: D/GStreamer+most_streaming(9552): 0:26:19.273041586 0xaf6f77a0 jni/most_streaming.c:494:app_function Entering main loop... (CustomData:0x9c4a4740)
+08-28 17:32:34.901: D/GStreamer+most_streaming(9552): 0:26:19.273108461 0xaf6f77a0 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:32:34.901: D/GStreamer+most_streaming(9552): 0:26:19.273163200 0xaf6f77a0 jni/most_streaming.c:90:attach_current_thread Attaching thread 0xaf6f77a0
+08-28 17:32:34.904: E/GStreamer+most_streaming(9552): 0:26:19.276958096 0xaf6f77a0 jni/most_streaming.c:428:check_initialization_complete Initialization NOT completed...
+08-28 17:32:34.905: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to READY
+08-28 17:32:34.905: D/GStreamer+most_streaming(9552): 0:26:19.277207315 0xaf6f77a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:32:34.905: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:1 to:2
+08-28 17:32:34.943: D/GStreamer(9552): Surface created:::: Surface(name=null)/@0x144b80e2
+08-28 17:32:34.943: D/GStreamer+most_streaming(9552): 0:26:19.315958617 0x9c7e1980 jni/most_streaming.c:782:gst_native_surface_init Received surface 0xbeb5bdb0 (native window 0x9c4d2b08)
+08-28 17:32:34.943: D/GStreamer+most_streaming(9552): 0:26:19.316024033 0x9c7e1980 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:32:34.943: D/GStreamer+most_streaming(9552): 0:26:19.316081950 0x9c7e1980 jni/most_streaming.c:414:check_initialization_complete Initialization completed... notifying application. native_window:0x9c4d2b08 main_loop:0xa320d720
+08-28 17:32:34.944: D/GSTREAMER_BACKEND(9552): Called onGStreamerInitialized()
+08-28 17:32:34.944: D/GSTREAMER_BACKEND(9552): Stream initialized
+08-28 17:32:34.944: D/GSTREAMER_BACKEND(9552): Setting uri to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:32:34.944: D/GStreamer+most_streaming(9552): 0:26:19.316223669 0x9c7e1980 jni/most_streaming.c:672:gst_native_set_uri called gst_native_set_uri!!!!
+08-28 17:32:34.944: D/GStreamer+most_streaming(9552): 0:26:19.316408304 0x9c7e1980 jni/most_streaming.c:681:gst_native_set_uri Setting URI:::: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:32:34.944: D/GStreamer+most_streaming(9552): 0:26:19.316470492 0x9c7e1980 jni/most_streaming.c:684:gst_native_set_uri Stream name is:Teleconsultation Stream 
+08-28 17:32:34.944: D/GSTREAMER_BACKEND(9552): uri updated to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:32:34.944: D/GStreamer(9552): Surface changed to format 4 width 924 height 1059
+08-28 17:32:34.948: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_INITIALIZING: Type:LIB_EVENT : Voip Lib initialization
+08-28 17:32:34.948: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZING
+08-28 17:32:34.948: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_INITIALIZED: Type:LIB_EVENT : Inizialization Ok
+08-28 17:32:34.948: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZED
+08-28 17:32:34.951: D/VoipLib(9552): notify state:ACCOUNT_REGISTERING
+08-28 17:32:34.951: D/VoipLib(9552): New Current State:IDLE
+08-28 17:32:34.951: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Inizializating Stream Teleconsultation Stream
+08-28 17:32:34.951: D/EcoTeleconsultationActivity(9552): Stream State:INITIALIZED
+08-28 17:32:34.974: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream Teleconsultation Stream initialized: (uri:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp)
+08-28 17:32:34.974: D/EcoTeleconsultationActivity(9552): Stream State:INITIALIZED
+08-28 17:32:34.974: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:ACCOUNT_REGISTERING: Type:ACCOUNT_EVENT : Account Registration request sent
+08-28 17:32:34.974: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:ACCOUNT_REGISTERING
+08-28 17:32:35.017: D/OpenGLRenderer(9552): endAllStagingAnimators on 0xa09e0b00 (RippleDrawable) with handle 0xa1571080
+08-28 17:33:06.955: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:33:06.956: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:33:06.956: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:33:06.956: D/VoipLib(9552): New Current State:IDLE
+08-28 17:33:06.966: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:33:06.966: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:33:19.457: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:33:20.357: D/GSTREAMER_BACKEND(9552): Trying to pause stream...
+08-28 17:33:20.357: D/GStreamer+most_streaming(9552): 0:27:04.729709641 0x9c7e1980 jni/most_streaming.c:735:gst_native_pause Setting state to PAUSED for stream:Teleconsultation Stream
+08-28 17:33:20.359: D/GStreamer+most_streaming(9552): 0:27:04.731162715 0x9c7e1980 jni/most_streaming.c:312:playbinNotifySource Called playbinNotifySource; Stream is in state: 2 target:2
+08-28 17:33:20.359: D/GStreamer+most_streaming(9552): 0:27:04.731269017 0x9c7e1980 jni/most_streaming.c:322:playbinNotifySource Source Latency Property set to: 200 for stream:Teleconsultation Stream
+08-28 17:33:20.359: D/GStreamer+most_streaming(9552): 0:27:04.731592298 0x9c7e1980 jni/most_streaming.c:332:playbinNotifySource Source Latency Property Get VALUE: 200 for Stream: Teleconsultation Stream
+08-28 17:33:20.359: D/GStreamer+most_streaming(9552): 0:27:04.731645475 0x9c7e1980 jni/most_streaming.c:336:playbinNotifySource Data Latency successfully updated
+08-28 17:33:20.360: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:33:20.360: D/GStreamer+most_streaming(9552): 0:27:04.732471100 0xaf6f77a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:20.360: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:2 to:3
+08-28 17:33:20.360: D/GStreamer+most_streaming(9552): 0:27:04.732560892 0xaf6f77a0 jni/most_streaming.c:348:check_media_size DENTRO CHECK_MEDIA SIZE...
+08-28 17:33:20.360: D/GStreamer+most_streaming(9552): 0:27:04.732707558 0xaf6f77a0 jni/most_streaming.c:359:check_media_size DENTRO CHECK_MEDIA SIZE -> dopo gst_pad_get_current_caps
+08-28 17:33:20.360: E/GLib(9552): gst_video_info_from_caps: assertion 'caps != NULL' failed
+08-28 17:33:20.360: D/GStreamer+most_streaming(9552): 0:27:04.732808808 0xaf6f77a0 jni/most_streaming.c:372:check_media_size DENTRO CHECK_MEDIA SIZE: IMPOSSIBILE RECUPERARE VIDEO INFO FROM CAPS!!
+08-28 17:33:20.815: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:33:20.815: D/GStreamer+most_streaming(9552): 0:27:05.187229589 0x9c7e1980 jni/most_streaming.c:726:gst_native_play Setting state to PLAYING for stream:Teleconsultation Stream
+08-28 17:33:20.816: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:33:20.816: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING_REQUEST
+08-28 17:33:21.559: W/GStreamer+rtpjitterbuffer(9552): 0:27:05.931484953 0xa0621430 rtpjitterbuffer.c:183:rtp_jitter_buffer_set_clock_rate Clock rate changed from 0 to 90000
+08-28 17:33:21.578: W/GStreamer+rtpjitterbuffer(9552): 0:27:05.951024275 0xa0621430 rtpjitterbuffer.c:492:calculate_skew delta - skew: 0:00:49.010258159 too big, reset skew
+08-28 17:33:21.772: D/EcoTeleconsultationActivity(9552): Called exitFromApp()
+08-28 17:33:21.772: D/VoipLib(9552): notify state:LIB_DEINITIALIZING
+08-28 17:33:21.772: D/VoipLib(9552): New Current State:IDLE
+08-28 17:33:21.772: D/VoipLib(9552): Deleting account...
+08-28 17:33:21.773: D/VoipLib(9552): Account deleted
+08-28 17:33:21.773: D/VoipLib(9552): Deleting audio players...
+08-28 17:33:21.778: D/VoipLib(9552): Audio players deleted
+08-28 17:33:21.807: I/art(9552): Explicit concurrent mark sweep GC freed 20078(1207KB) AllocSpace objects, 1(81KB) LOS objects, 39% free, 17MB/29MB, paused 488us total 20.185ms
+08-28 17:33:21.807: D/VoipLib(9552): Destroying lib...
+08-28 17:33:21.873: W/GStreamer+bufferpool(9552): 0:27:06.245152713 0xa32c9bb0 gstbufferpool.c:632:gst_buffer_pool_set_config:<eglimagebufferpool1> can't change config, we are active
+08-28 17:33:21.873: W/GStreamer+bufferpool(9552): 0:27:06.245297348 0xa32c9bb0 gstbufferpool.c:632:gst_buffer_pool_set_config:<eglimagebufferpool1> can't change config, we are active
+08-28 17:33:21.913: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PLAYING
+08-28 17:33:21.913: D/GStreamer+most_streaming(9552): 0:27:06.285390473 0xaf6f77a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:21.913: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:4
+08-28 17:33:22.888: D/VoipLib(9552): LibDestroy successfully called
+08-28 17:33:22.888: D/VoipLib(9552): Endpoint deleted
+08-28 17:33:22.888: D/VoipLib(9552): Endpoint set to null
+08-28 17:33:22.888: D/VoipLib(9552): Lib destroyed
+08-28 17:33:22.888: D/VoipLib(9552): notify state:LIB_DEINITIALIZED
+08-28 17:33:22.888: D/VoipLib(9552): New Current State:IDLE
+08-28 17:33:22.889: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_DEINITIALIZING: Type:LIB_EVENT : Voip Lib destroying
+08-28 17:33:22.889: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_DEINITIALIZING
+08-28 17:33:22.889: I/Choreographer(9552): Skipped 66 frames!  The application may be doing too much work on its main thread.
+08-28 17:33:22.897: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PLAYING
+08-28 17:33:22.897: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING
+08-28 17:33:22.897: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_DEINITIALIZED: Type:LIB_EVENT : Voip Lib destroyed
+08-28 17:33:22.897: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_DEINITIALIZED
+08-28 17:33:22.897: D/EcoTeleconsultationActivity(9552): Setting to null MyVoipLib
+08-28 17:33:22.898: D/EcoTeleconsultationActivity(9552): Called IDLE:
+08-28 17:33:22.898: D/EcoTeleconsultationActivity(9552): Called exitFromApp()
+08-28 17:33:22.898: D/EcoTeleconsultationActivity(9552): Voip Library deinitialized. Exiting the app
+08-28 17:33:22.904: D/EcoTeleconsultationActivity(9552): Called exitFromApp()
+08-28 17:33:22.904: D/EcoTeleconsultationActivity(9552): Voip Library deinitialized. Exiting the app
+08-28 17:33:22.992: D/GStreamer(9552): Surface destroyed::::
+08-28 17:33:22.992: D/GStreamer+most_streaming(9552): 0:27:07.364578650 0x9c7e1980 jni/most_streaming.c:806:gst_native_surface_finalize Releasing Native Window 0x9c4d2b08
+08-28 17:33:22.995: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:33:22.995: D/GStreamer+most_streaming(9552): 0:27:07.367236879 0xaf6f77a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:22.995: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:4 to:3
+08-28 17:33:23.033: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to READY
+08-28 17:33:23.033: D/GStreamer+most_streaming(9552): 0:27:07.405653025 0xaf6f77a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:23.033: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:2
+08-28 17:33:23.033: D/GSTREAMER_BACKEND(9552): Called destroy() in GSTEREAMER BACKEND
+08-28 17:33:23.033: D/GStreamer+most_streaming(9552): 0:27:07.405888494 0x9c7e1980 jni/most_streaming.c:556:gst_native_finalize Quitting main loop...
+08-28 17:33:23.033: D/GStreamer+most_streaming(9552): 0:27:07.405988598 0xaf6f77a0 jni/most_streaming.c:501:app_function Exited main loop
+08-28 17:33:23.034: D/GStreamer+most_streaming(9552): 0:27:07.406944535 0x9c7e1980 jni/most_streaming.c:558:gst_native_finalize Waiting for thread to finish...
+08-28 17:33:23.037: W/art(9552): Native thread exiting without having called DetachCurrentThread (maybe it's going to use a pthread_key_create destructor?): Thread[29,tid=10400,Native,Thread*=0xa32d8c00,peer=0x12dbc080,"Thread-675"]
+08-28 17:33:23.037: D/GStreamer+most_streaming(9552): 0:27:07.409372712 0xaf6f77a0 jni/most_streaming.c:105:detach_current_thread Detaching thread 0xaf6f77a0
+08-28 17:33:23.039: D/GStreamer+most_streaming(9552): 0:27:07.411196098 0x9c7e1980 jni/most_streaming.c:561:gst_native_finalize STREAM COUNT: 0 
+08-28 17:33:23.039: D/GStreamer+most_streaming(9552): 0:27:07.411259744 0x9c7e1980 jni/most_streaming.c:564:gst_native_finalize NOTIFYING STATE CHANGE...
+08-28 17:33:23.039: D/GStreamer+most_streaming(9552): 0:27:07.411310890 0x9c7e1980 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:23.039: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:2 to:1
+08-28 17:33:23.039: D/GStreamer+most_streaming(9552): 0:27:07.411458182 0x9c7e1980 jni/most_streaming.c:570:gst_native_finalize STREAM COUNT <=0: Deallocate global variables!! 
+08-28 17:33:23.040: D/GStreamer+most_streaming(9552): 0:27:07.413047817 0x9c7e1980 jni/most_streaming.c:572:gst_native_finalize IN gst_native_finalize_globals 
+08-28 17:33:23.041: D/GStreamer+most_streaming(9552): 0:27:07.413141827 0x9c7e1980 jni/most_streaming.c:575:gst_native_finalize Deleting GlobalRef for app object at 0x70041a
+08-28 17:33:23.042: D/GStreamer+most_streaming(9552): 0:27:07.414222140 0x9c7e1980 jni/most_streaming.c:577:gst_native_finalize Freeing CustomData at 0x9c4a4740
+08-28 17:33:23.042: D/GStreamer+most_streaming(9552): 0:27:07.414303494 0x9c7e1980 jni/most_streaming.c:581:gst_native_finalize Done finalizing
+08-28 17:33:23.046: D/OpenGLRenderer(9552): endAllStagingAnimators on 0x9c4aef80 (RippleDrawable) with handle 0xa4077b30
+08-28 17:33:23.060: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PAUSED
+08-28 17:33:23.060: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:33:23.060: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:33:23.060: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:33:23.060: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:DEINITIALIZED
+08-28 17:33:23.060: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:33:23.319: D/StreamViewerFragment(9552): ON DETACH STREAM VIEWER
+08-28 17:33:23.319: D/GSTREAMER_BACKEND(9552): Called destroy() in GSTEREAMER BACKEND
+08-28 17:33:23.319: D/GSTREAMER_BACKEND(9552): Stream Teleconsultation Stream already deinitialized...
+08-28 17:33:25.596: W/InputEventReceiver(9552): Attempted to finish an input event but the input event receiver has already been disposed.
+08-28 17:33:26.743: D/MostViewPager(9552): Page selected:2 Permitted position;2
+08-28 17:33:26.743: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:33:26.743: D/MostViewPager(9552): Child:0 ->Emergency Patient Selection PER:Emergency Patient Selection
+08-28 17:33:26.743: D/MostViewPager(9552): Child:1 ->Summary PER:Emergency Patient Selection
+08-28 17:33:26.743: D/MostViewPager(9552): Child:2 -> PER:Emergency Patient Selection
+08-28 17:33:26.744: D/MostViewPager(9552): Selected Page Item at pos:1
+08-28 17:33:26.749: D/MostViewPager(9552): PASSCODE: LEN:0
+08-28 17:33:28.908: D/MostViewPager(9552): Manual Page Enabled:true target_position:3 permitted:2
+08-28 17:33:28.908: D/MostViewPager(9552): Selected Page Item at pos:3
+08-28 17:33:28.917: D/MostViewPager(9552): Page selected:3 Permitted position;2
+08-28 17:33:28.917: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:33:28.917: D/MostViewPager(9552): Child:0 ->Pass Code PER:Emergency Patient Selection
+08-28 17:33:28.917: D/MostViewPager(9552): Child:1 ->Emergency Patient Selection PER:Emergency Patient Selection
+08-28 17:33:28.917: D/MostViewPager(9552): Title to be changed in blu: Emergency Patient Selection
+08-28 17:33:28.917: D/MostViewPager(9552): Child:2 ->Summary PER:Emergency Patient Selection
+08-28 17:33:28.919: D/MostViewPager(9552): Num Pages:4 Num Childs:3
+08-28 17:33:28.919: D/MostViewPager(9552): Child:0 ->Emergency Patient Selection PER:Emergency Patient Selection
+08-28 17:33:28.919: D/MostViewPager(9552): Title to be changed in blu: Emergency Patient Selection
+08-28 17:33:28.919: D/MostViewPager(9552): Child:1 ->Summary PER:Emergency Patient Selection
+08-28 17:33:28.919: D/MostViewPager(9552): Child:2 -> PER:Emergency Patient Selection
+08-28 17:33:30.282: D/MostFragmentSummary(9552): Trying to create a new teleconsultation...
+08-28 17:33:30.282: D/MostFragmentSummary(9552): using access token: 81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:33:30.283: D/REMOTE_CONFIG_READER(9552): getRoomDataUri: http://156.148.132.223:8000/teleconsultation/room/ak3ce6bomyxlirkvjqx54htq3ghvb6gi/?access_token=81667292dd20c6335e8806efa3df0ad864d60822
+08-28 17:33:30.397: D/MostFragmentSummary(9552): Room data: {"data":{"room":{"task_group":{"description":"Crs4 testing","uuid":"h52job6mlgqpym5f57djdtbsw3u5kfyf","name":"Crs4"},"description":"Stanza di Test","uuid":"ak3ce6bomyxlirkvjqx54htq3ghvb6gi","devices":{"camera":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"},"encoder":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"}},"name":"Ufficio Francesco"}},"success":true}
+08-28 17:33:30.397: D/MostFragmentSummary(9552): TC Encoder: [Device:Test Video Ufficio Stefano
+08-28 17:33:30.397: D/MostFragmentSummary(9552): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:33:30.397: D/MostFragmentSummary(9552): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:33:30.397: D/MostFragmentSummary(9552):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:33:30.397: D/MostFragmentSummary(9552):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:33:30.397: D/MostFragmentSummary(9552): TC Camera: [Device:Test Video Ufficio Stefano
+08-28 17:33:30.397: D/MostFragmentSummary(9552): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:33:30.397: D/MostFragmentSummary(9552): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:33:30.397: D/MostFragmentSummary(9552):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:33:30.397: D/MostFragmentSummary(9552):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:33:30.397: D/MostViewPager(9552): STARTING ACTIVITY WITH ECO USER:most.demo.ecoapp.models.EcoUser@ea77ca0
+08-28 17:33:30.470: D/EcoTeleconsultationActivity(9552): Called IDLE:
+08-28 17:33:30.475: I/GStreamer(9552): GStreamer already initialized
+08-28 17:33:30.477: W/System.err(9552): java.io.FileNotFoundException: fontconfig/fonts.conf
+08-28 17:33:30.478: W/System.err(9552): 	at android.content.res.AssetManager.openAsset(Native Method)
+08-28 17:33:30.478: W/System.err(9552): 	at android.content.res.AssetManager.open(AssetManager.java:313)
+08-28 17:33:30.478: W/System.err(9552): 	at android.content.res.AssetManager.open(AssetManager.java:287)
+08-28 17:33:30.478: W/System.err(9552): 	at com.gstreamer.GStreamer.copyFile(GStreamer.java:51)
+08-28 17:33:30.478: W/System.err(9552): 	at com.gstreamer.GStreamer.copyFonts(GStreamer.java:31)
+08-28 17:33:30.478: W/System.err(9552): 	at com.gstreamer.GStreamer.init(GStreamer.java:17)
+08-28 17:33:30.478: W/System.err(9552): 	at org.crs4.most.streaming.StreamingLibBackend.initLib(StreamingLibBackend.java:70)
+08-28 17:33:30.478: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.prepareStream(EcoTeleconsultationActivity.java:234)
+08-28 17:33:30.478: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.setupStreamLib(EcoTeleconsultationActivity.java:212)
+08-28 17:33:30.478: W/System.err(9552): 	at most.demo.ecoapp.EcoTeleconsultationActivity.onCreate(EcoTeleconsultationActivity.java:108)
+08-28 17:33:30.478: W/System.err(9552): 	at android.app.Activity.performCreate(Activity.java:5933)
+08-28 17:33:30.482: W/System.err(9552): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1105)
+08-28 17:33:30.482: W/System.err(9552): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2251)
+08-28 17:33:30.482: W/System.err(9552): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2360)
+08-28 17:33:30.482: W/System.err(9552): 	at android.app.ActivityThread.access$800(ActivityThread.java:144)
+08-28 17:33:30.483: W/System.err(9552): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1278)
+08-28 17:33:30.483: W/System.err(9552): 	at android.os.Handler.dispatchMessage(Handler.java:102)
+08-28 17:33:30.483: W/System.err(9552): 	at android.os.Looper.loop(Looper.java:135)
+08-28 17:33:30.483: W/System.err(9552): 	at android.app.ActivityThread.main(ActivityThread.java:5221)
+08-28 17:33:30.483: W/System.err(9552): 	at java.lang.reflect.Method.invoke(Native Method)
+08-28 17:33:30.483: W/System.err(9552): 	at java.lang.reflect.Method.invoke(Method.java:372)
+08-28 17:33:30.483: W/System.err(9552): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:899)
+08-28 17:33:30.483: W/System.err(9552): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:694)
+08-28 17:33:30.483: D/GSTREAMER_BACKEND(9552): GStreamerBackend instance *****
+08-28 17:33:30.483: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:test_hold.wav
+08-28 17:33:30.528: D/VoipLibUtils(9552): Found 8 files
+08-28 17:33:30.528: D/VoipLibUtils(9552): Found resource:images
+08-28 17:33:30.528: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:33:30.528: D/VoipLibUtils(9552): Found resource:ring_out_call.wav
+08-28 17:33:30.528: D/VoipLibUtils(9552): Found resource:sounds
+08-28 17:33:30.528: D/VoipLibUtils(9552): Found resource:test_hold.wav
+08-28 17:33:30.528: D/VoipLibUtils(9552): Found:test_hold.wav
+08-28 17:33:30.529: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:33:30.606: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:ring_in_call.wav
+08-28 17:33:30.631: D/VoipLibUtils(9552): Found 8 files
+08-28 17:33:30.631: D/VoipLibUtils(9552): Found resource:images
+08-28 17:33:30.631: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:33:30.631: D/VoipLibUtils(9552): Found:ring_in_call.wav
+08-28 17:33:30.631: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_in_call.wav
+08-28 17:33:30.697: D/VoipLibUtils(9552): getResourcePathByAssetCopy on folder ** for file:ring_out_call.wav
+08-28 17:33:30.735: D/VoipLibUtils(9552): Found 8 files
+08-28 17:33:30.735: D/VoipLibUtils(9552): Found resource:images
+08-28 17:33:30.735: D/VoipLibUtils(9552): Found resource:ring_in_call.wav
+08-28 17:33:30.735: D/VoipLibUtils(9552): Found resource:ring_out_call.wav
+08-28 17:33:30.735: D/VoipLibUtils(9552): Found:ring_out_call.wav
+08-28 17:33:30.735: D/VoipLibUtils(9552): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_out_call.wav
+08-28 17:33:30.764: D/EcoTeleconsultationActivity(9552): OnHoldSoundPath:/storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:33:30.764: D/EcoTeleconsultationActivity(9552): Initializing the lib...
+08-28 17:33:30.764: D/EcoTeleconsultationActivity(9552): Voip null... Initialization.....
+08-28 17:33:30.764: D/VoipLib(9552): VoipLib
+08-28 17:33:30.764: D/VoipLib(9552): initializing
+08-28 17:33:30.764: D/VoipLib(9552): notify state:LIB_INITIALIZING
+08-28 17:33:30.764: D/VoipLib(9552): New Current State:IDLE
+08-28 17:33:30.764: D/VoipLib(9552): Lib create...
+08-28 17:33:30.764: D/VoipLib(9552): Instancing EndPoint..
+08-28 17:33:30.766: D/VoipLib(9552): Load configuration...
+08-28 17:33:30.766: D/VoipLib(9552): Reading account config:::
+08-28 17:33:30.766: D/VoipLib(9552): Setting registrar uri to:  sip:192.168.1.100:5060;transport=tcp
+08-28 17:33:30.767: D/VoipLib(9552): Enabling turn server on 192.168.1.100:3478
+08-28 17:33:30.767: D/VoipLib(9552): Lib init......
+08-28 17:33:30.801: D/VoipLib(9552): transport create with TCP Transport
+08-28 17:33:30.801: D/VoipLib(9552): Lib starting....
+08-28 17:33:30.805: D/VoipLib(9552): Lib initialized and started
+08-28 17:33:30.805: D/VoipLib(9552): notify state:LIB_INITIALIZED
+08-28 17:33:30.805: D/VoipLib(9552): New Current State:IDLE
+08-28 17:33:30.806: D/StreamViewerFragment(9552): ON ATTACH STREAM VIEWER
+08-28 17:33:30.806: D/StreamViewerFragment(9552): ON CREATE STREAM VIEWER
+08-28 17:33:30.806: D/StreamViewerFragment(9552): ON CREATE_VIEW STREAM VIEWER
+08-28 17:33:30.809: D/StreamViewerFragment(9552): ON ACTIVITY_CREATED STREAM VIEWER
+08-28 17:33:30.809: D/EcoTeleconsultationActivity(9552): Surface View created: preparing surface for streamTeleconsultation Stream
+08-28 17:33:30.809: D/GSTREAMER_BACKEND(9552): preparing IStream instance...
+08-28 17:33:30.809: D/GStreamer+most_streaming(9552): 0:27:15.181756042 0x9c7e1980 jni/most_streaming.c:526:gst_native_init Assigned Stream name:Teleconsultation Stream
+08-28 17:33:30.809: D/GStreamer+most_streaming(9552): 0:27:15.181955105 0x9c7e1980 jni/most_streaming.c:534:gst_native_init Created CustomData at 0x9c4a4880
+08-28 17:33:30.809: D/GStreamer+most_streaming(9552): 0:27:15.182017032 0x9c7e1980 jni/most_streaming.c:537:gst_native_init Created GlobalRef for app object at 0x1004be
+08-28 17:33:30.810: D/GStreamer+most_streaming(9552): 0:27:15.182165678 0x9c7e1980 jni/most_streaming.c:542:gst_native_init STREAM COUNT: 1 
+08-28 17:33:30.810: D/GStreamer+most_streaming(9552): 0:27:15.182352396 0xa061f6a0 jni/most_streaming.c:443:app_function Creating pipeline in CustomData at 0x9c4a4880
+08-28 17:33:30.811: D/GStreamer+most_streaming(9552): 0:27:15.183188646 0xa061f6a0 jni/most_streaming.c:494:app_function Entering main loop... (CustomData:0x9c4a4880)
+08-28 17:33:30.811: D/GStreamer+most_streaming(9552): 0:27:15.183251719 0xa061f6a0 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:33:30.811: D/GStreamer+most_streaming(9552): 0:27:15.183306146 0xa061f6a0 jni/most_streaming.c:90:attach_current_thread Attaching thread 0xa061f6a0
+08-28 17:33:30.811: E/GStreamer+most_streaming(9552): 0:27:15.184018438 0xa061f6a0 jni/most_streaming.c:428:check_initialization_complete Initialization NOT completed...
+08-28 17:33:30.813: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to READY
+08-28 17:33:30.813: D/GStreamer+most_streaming(9552): 0:27:15.185424063 0xa061f6a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:30.813: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:1 to:2
+08-28 17:33:30.863: D/GStreamer(9552): Surface created:::: Surface(name=null)/@0x25dc4444
+08-28 17:33:30.863: D/GStreamer+most_streaming(9552): 0:27:15.235989792 0x9c7e1980 jni/most_streaming.c:782:gst_native_surface_init Received surface 0xbeb5bdb0 (native window 0x9c4d3908)
+08-28 17:33:30.863: D/GStreamer+most_streaming(9552): 0:27:15.236046823 0x9c7e1980 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:33:30.864: D/GStreamer+most_streaming(9552): 0:27:15.236102969 0x9c7e1980 jni/most_streaming.c:414:check_initialization_complete Initialization completed... notifying application. native_window:0x9c4d3908 main_loop:0xa320d720
+08-28 17:33:30.864: D/GSTREAMER_BACKEND(9552): Called onGStreamerInitialized()
+08-28 17:33:30.864: D/GSTREAMER_BACKEND(9552): Stream initialized
+08-28 17:33:30.864: D/GSTREAMER_BACKEND(9552): Setting uri to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:33:30.864: D/GStreamer+most_streaming(9552): 0:27:15.236227032 0x9c7e1980 jni/most_streaming.c:672:gst_native_set_uri called gst_native_set_uri!!!!
+08-28 17:33:30.864: D/GStreamer+most_streaming(9552): 0:27:15.236289271 0x9c7e1980 jni/most_streaming.c:681:gst_native_set_uri Setting URI:::: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:33:30.864: D/GStreamer+most_streaming(9552): 0:27:15.236342813 0x9c7e1980 jni/most_streaming.c:684:gst_native_set_uri Stream name is:Teleconsultation Stream 
+08-28 17:33:30.864: D/GSTREAMER_BACKEND(9552): uri updated to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:33:30.864: D/GStreamer(9552): Surface changed to format 4 width 924 height 1059
+08-28 17:33:30.870: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_INITIALIZING: Type:LIB_EVENT : Voip Lib initialization
+08-28 17:33:30.870: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZING
+08-28 17:33:30.870: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_INITIALIZED: Type:LIB_EVENT : Inizialization Ok
+08-28 17:33:30.870: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZED
+08-28 17:33:30.874: D/VoipLib(9552): notify state:ACCOUNT_REGISTERING
+08-28 17:33:30.874: D/VoipLib(9552): New Current State:IDLE
+08-28 17:33:30.874: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Inizializating Stream Teleconsultation Stream
+08-28 17:33:30.874: D/EcoTeleconsultationActivity(9552): Stream State:INITIALIZED
+08-28 17:33:30.905: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream Teleconsultation Stream initialized: (uri:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp)
+08-28 17:33:30.905: D/EcoTeleconsultationActivity(9552): Stream State:INITIALIZED
+08-28 17:33:30.905: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:ACCOUNT_REGISTERING: Type:ACCOUNT_EVENT : Account Registration request sent
+08-28 17:33:30.905: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:ACCOUNT_REGISTERING
+08-28 17:33:30.950: D/OpenGLRenderer(9552): endAllStagingAnimators on 0xa09e0b00 (RippleDrawable) with handle 0xa1547390
+08-28 17:33:38.846: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:33:38.846: D/GStreamer+most_streaming(9552): 0:27:23.218459634 0x9c7e1980 jni/most_streaming.c:726:gst_native_play Setting state to PLAYING for stream:Teleconsultation Stream
+08-28 17:33:38.848: D/GStreamer+most_streaming(9552): 0:27:23.220731874 0x9c7e1980 jni/most_streaming.c:312:playbinNotifySource Called playbinNotifySource; Stream is in state: 2 target:2
+08-28 17:33:38.849: D/GStreamer+most_streaming(9552): 0:27:23.221422916 0x9c7e1980 jni/most_streaming.c:322:playbinNotifySource Source Latency Property set to: 200 for stream:Teleconsultation Stream
+08-28 17:33:38.849: D/GStreamer+most_streaming(9552): 0:27:23.221495572 0x9c7e1980 jni/most_streaming.c:332:playbinNotifySource Source Latency Property Get VALUE: 200 for Stream: Teleconsultation Stream
+08-28 17:33:38.849: D/GStreamer+most_streaming(9552): 0:27:23.221547499 0x9c7e1980 jni/most_streaming.c:336:playbinNotifySource Data Latency successfully updated
+08-28 17:33:38.850: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:33:38.850: D/GStreamer+most_streaming(9552): 0:27:23.222970937 0xa061f6a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:38.850: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:2 to:3
+08-28 17:33:38.850: D/GStreamer+most_streaming(9552): 0:27:23.223062135 0xa061f6a0 jni/most_streaming.c:348:check_media_size DENTRO CHECK_MEDIA SIZE...
+08-28 17:33:38.851: D/GStreamer+most_streaming(9552): 0:27:23.223209530 0xa061f6a0 jni/most_streaming.c:359:check_media_size DENTRO CHECK_MEDIA SIZE -> dopo gst_pad_get_current_caps
+08-28 17:33:38.851: E/GLib(9552): gst_video_info_from_caps: assertion 'caps != NULL' failed
+08-28 17:33:38.851: D/GStreamer+most_streaming(9552): 0:27:23.223293385 0xa061f6a0 jni/most_streaming.c:372:check_media_size DENTRO CHECK_MEDIA SIZE: IMPOSSIBILE RECUPERARE VIDEO INFO FROM CAPS!!
+08-28 17:33:38.854: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:33:38.854: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING_REQUEST
+08-28 17:33:39.031: W/GStreamer+rtpjitterbuffer(9552): 0:27:23.403283020 0xaffe9a30 rtpjitterbuffer.c:183:rtp_jitter_buffer_set_clock_rate Clock rate changed from 0 to 90000
+08-28 17:33:39.059: W/GStreamer+rtpjitterbuffer(9552): 0:27:23.431262916 0xaffe9a30 rtpjitterbuffer.c:492:calculate_skew delta - skew: 0:00:14.929422239 too big, reset skew
+08-28 17:33:39.408: W/GStreamer+bufferpool(9552): 0:27:23.780339321 0xaf6f7cf0 gstbufferpool.c:632:gst_buffer_pool_set_config:<eglimagebufferpool2> can't change config, we are active
+08-28 17:33:39.408: W/GStreamer+bufferpool(9552): 0:27:23.780467915 0xaf6f7cf0 gstbufferpool.c:632:gst_buffer_pool_set_config:<eglimagebufferpool2> can't change config, we are active
+08-28 17:33:39.433: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PLAYING
+08-28 17:33:39.433: D/GStreamer+most_streaming(9552): 0:27:23.805894061 0xa061f6a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:33:39.433: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:4
+08-28 17:33:39.434: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PLAYING
+08-28 17:33:39.434: D/EcoTeleconsultationActivity(9552): Stream State:PLAYING
+08-28 17:33:40.377: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:33:40.377: D/GSTREAMER_BACKEND(9552): The stream is already playing...request ignored
+08-28 17:33:43.280: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:33:43.280: D/GSTREAMER_BACKEND(9552): The stream is already playing...request ignored
+08-28 17:33:44.209: D/GSTREAMER_BACKEND(9552): Trying to play stream...
+08-28 17:33:44.209: D/GSTREAMER_BACKEND(9552): The stream is already playing...request ignored
+08-28 17:33:50.622: W/GStreamer+rtpjitterbuffer(9552): 0:27:34.994740515 0xaf6f7cc0 rtpjitterbuffer.c:764:rtp_jitter_buffer_insert duplicate packet 23807 found
+08-28 17:33:50.658: E/GStreamer+libav(9552): 0:27:35.030124785 0xaf6f7cf0 :0: slice end not reached but screenspace end (246452 left 7C0C1C, score= -3551)
+08-28 17:33:50.687: E/GStreamer+libav(9552): 0:27:35.059168275 0xaf6f7cf0 :0: header damaged
+08-28 17:34:02.875: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:34:02.875: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:34:02.875: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:34:02.875: D/VoipLib(9552): New Current State:IDLE
+08-28 17:34:02.877: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:34:02.877: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:34:34.070: D/VoipLib(9552): onRegState Code:PJSIP_SC_SERVICE_UNAVAILABLE: Reg Expire:-1 Reason:Connection timed out
+08-28 17:34:34.070: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:34:34.070: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:34:34.070: D/VoipLib(9552): New Current State:IDLE
+08-28 17:34:34.071: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:503 Connection timed out
+08-28 17:34:34.071: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:38:16.822: E/GStreamer+libav(9552): 0:32:01.194494216 0xaf6f7cf0 :0: slice end not reached but screenspace end (72471 left 7FBABA, score= -174897)
+08-28 17:38:16.853: E/GStreamer+libav(9552): 0:32:01.225513799 0xaf6f7cf0 :0: header damaged
+08-28 17:38:59.979: E/GStreamer+libav(9552): 0:32:44.351348574 0xaf6f7cf0 :0: slice end not reached but screenspace end (11299 left 7A3EDE, score= -202498)
+08-28 17:39:00.004: E/GStreamer+libav(9552): 0:32:44.376328626 0xaf6f7cf0 :0: header damaged
+08-28 17:39:56.301: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:39:56.302: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:39:56.302: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:39:56.302: D/VoipLib(9552): New Current State:IDLE
+08-28 17:39:56.303: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:39:56.303: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:42:30.521: E/GStreamer+libav(9552): 0:36:14.893508858 0xaf6f7cf0 :0: slice end not reached but screenspace end (45672 left 7F9612, score= -341358)
+08-28 17:42:30.552: E/GStreamer+libav(9552): 0:36:14.924031826 0xaf6f7cf0 :0: header damaged
+08-28 17:45:50.774: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:45:50.774: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:45:50.774: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:45:50.774: D/VoipLib(9552): New Current State:IDLE
+08-28 17:45:50.775: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:45:50.775: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:47:26.677: E/GStreamer+libav(9552): 0:41:11.049877599 0xaf6f7cf0 :0: slice end not reached but screenspace end (7327 left 7E2AFB, score= -534460)
+08-28 17:47:26.704: E/GStreamer+libav(9552): 0:41:11.076468798 0xaf6f7cf0 :0: header damaged
+08-28 17:51:50.258: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:51:50.258: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:51:50.258: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:51:50.258: D/VoipLib(9552): New Current State:IDLE
+08-28 17:51:50.261: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:51:50.261: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:54:51.610: E/GStreamer+libav(9552): 0:48:35.982115502 0xaf6f7cf0 :0: slice end not reached but screenspace end (34571 left 64FC51, score= -826426)
+08-28 17:54:51.635: E/GStreamer+libav(9552): 0:48:36.007158679 0xaf6f7cf0 :0: header damaged
+08-28 17:57:36.238: E/GStreamer+libav(9552): 0:51:20.610427836 0xaf6f7cf0 :0: slice end not reached but screenspace end (17078 left 7FD8FA, score= -933355)
+08-28 17:57:36.241: E/GStreamer+libav(9552): 0:51:20.613981273 0xaf6f7cf0 :0: header damaged
+08-28 17:57:37.850: E/GStreamer+libav(9552): 0:51:22.223049607 0xaf6f7cf0 :0: slice end not reached but screenspace end (33887 left 10B49C, score= -934353)
+08-28 17:57:37.855: E/GStreamer+libav(9552): 0:51:22.227875908 0xaf6f7cf0 :0: header damaged
+08-28 17:57:37.995: E/GStreamer+libav(9552): 0:51:22.367899554 0xaf6f7cf0 :0: slice end not reached but screenspace end (29076 left 765844, score= -934463)
+08-28 17:57:38.000: E/GStreamer+libav(9552): 0:51:22.372645232 0xaf6f7cf0 :0: header damaged
+08-28 17:57:38.698: D/GStreamer(9552): Surface destroyed::::
+08-28 17:57:38.698: D/GStreamer+most_streaming(9552): 0:51:23.070828668 0x9c7e1980 jni/most_streaming.c:806:gst_native_surface_finalize Releasing Native Window 0x9c4d3908
+08-28 17:57:38.710: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to PAUSED
+08-28 17:57:38.710: D/GStreamer+most_streaming(9552): 0:51:23.082802783 0xa061f6a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:57:38.710: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:4 to:3
+08-28 17:57:38.803: D/GSTREAMER_BACKEND(9552): Message from Gstreamer:State changed to READY
+08-28 17:57:38.803: D/GStreamer+most_streaming(9552): 0:51:23.175469189 0xa061f6a0 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:57:38.803: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:3 to:2
+08-28 17:57:38.803: D/GSTREAMER_BACKEND(9552): Called destroy() in GSTEREAMER BACKEND
+08-28 17:57:38.803: D/GStreamer+most_streaming(9552): 0:51:23.175856324 0x9c7e1980 jni/most_streaming.c:556:gst_native_finalize Quitting main loop...
+08-28 17:57:38.803: D/GStreamer+most_streaming(9552): 0:51:23.175972418 0xa061f6a0 jni/most_streaming.c:501:app_function Exited main loop
+08-28 17:57:38.807: D/GStreamer+most_streaming(9552): 0:51:23.179125647 0x9c7e1980 jni/most_streaming.c:558:gst_native_finalize Waiting for thread to finish...
+08-28 17:57:38.808: W/art(9552): Native thread exiting without having called DetachCurrentThread (maybe it's going to use a pthread_key_create destructor?): Thread[29,tid=10590,Native,Thread*=0xa32d8c00,peer=0x12e64080,"Thread-678"]
+08-28 17:57:38.809: D/GStreamer+most_streaming(9552): 0:51:23.181090179 0xa061f6a0 jni/most_streaming.c:105:detach_current_thread Detaching thread 0xa061f6a0
+08-28 17:57:38.809: D/GStreamer+most_streaming(9552): 0:51:23.181979345 0x9c7e1980 jni/most_streaming.c:561:gst_native_finalize STREAM COUNT: 0 
+08-28 17:57:38.809: D/GStreamer+most_streaming(9552): 0:51:23.182051429 0x9c7e1980 jni/most_streaming.c:564:gst_native_finalize NOTIFYING STATE CHANGE...
+08-28 17:57:38.810: D/GStreamer+most_streaming(9552): 0:51:23.182120491 0x9c7e1980 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:57:38.810: D/GSTREAMER_BACKEND(9552): onStreamStateChanged: state from state:2 to:1
+08-28 17:57:38.810: D/GStreamer+most_streaming(9552): 0:51:23.182257314 0x9c7e1980 jni/most_streaming.c:570:gst_native_finalize STREAM COUNT <=0: Deallocate global variables!! 
+08-28 17:57:38.810: D/GStreamer+most_streaming(9552): 0:51:23.182318252 0x9c7e1980 jni/most_streaming.c:572:gst_native_finalize IN gst_native_finalize_globals 
+08-28 17:57:38.810: D/GStreamer+most_streaming(9552): 0:51:23.182394658 0x9c7e1980 jni/most_streaming.c:575:gst_native_finalize Deleting GlobalRef for app object at 0x1004be
+08-28 17:57:38.810: D/GStreamer+most_streaming(9552): 0:51:23.182459710 0x9c7e1980 jni/most_streaming.c:577:gst_native_finalize Freeing CustomData at 0x9c4a4880
+08-28 17:57:38.810: D/GStreamer+most_streaming(9552): 0:51:23.182526845 0x9c7e1980 jni/most_streaming.c:581:gst_native_finalize Done finalizing
+08-28 17:57:38.860: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:PAUSED
+08-28 17:57:38.860: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:57:38.860: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:57:38.860: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:57:38.860: D/EcoTeleconsultationActivity(9552): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:DEINITIALIZED
+08-28 17:57:38.860: D/EcoTeleconsultationActivity(9552): Stream State:DEINITIALIZED
+08-28 17:57:51.778: D/VoipLib(9552): onRegState Code:PJSIP_SC_REQUEST_TIMEOUT: Reg Expire:-1 Reason:Request Timeout
+08-28 17:57:51.779: D/VoipLib(9552): onRegState ACCOUNT REG ACTIVE ? : false
+08-28 17:57:51.779: D/VoipLib(9552): notify state:LIB_CONNECTION_FAILED
+08-28 17:57:51.779: D/VoipLib(9552): New Current State:IDLE
+08-28 17:57:51.791: D/EcoTeleconsultationActivity(9552): Called handleMessage with event info:Event:LIB_CONNECTION_FAILED: Type:ACCOUNT_EVENT : Connection Failed: Code:408 Request Timeout
+08-28 17:57:51.791: D/EcoTeleconsultationActivity(9552): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:LIB_CONNECTION_FAILED
+08-28 17:58:06.951: D/REMOTE_CONFIG_READER(11342): Device ID: 4234433ea5631d24
+08-28 17:58:07.051: D/OpenGLRenderer(11342): Render dirty regions requested: true
+08-28 17:58:07.057: D/Atlas(11342): Validating map...
+08-28 17:58:07.077: D/MostViewPager(11342): Selected Page Item at pos:0
+08-28 17:58:07.080: D/MostViewPager(11342): Selected Page Item at pos:1
+08-28 17:58:07.141: I/Adreno-EGL(11342): <qeglDrvAPI_eglInitialize:410>: QUALCOMM Build: 10/24/14, 167c270, I68fa98814b
+08-28 17:58:07.141: I/OpenGLRenderer(11342): Initialized EGL, version 1.4
+08-28 17:58:07.155: D/OpenGLRenderer(11342): Enabling debug mode 0
+08-28 17:58:07.299: D/Fragment_UserSelectionFragment(11342): Received taskgroups: {"data":{"task_groups":[{"description":"Crs4 testing","uuid":"h52job6mlgqpym5f57djdtbsw3u5kfyf","name":"Crs4"}]},"success":true}
+08-28 17:58:07.431: V/RenderScript(11342): Application requested CPU execution
+08-28 17:58:07.436: V/RenderScript(11342): 0xa1c31000 Launching thread(s), CPUs 4
+08-28 17:58:09.434: D/Fragment_UserSelectionFragment(11342): Received taskgroup applicants: {"data":{"applicants":[{"username":"admin","lastname":"admin","firstname":"admin"}]},"success":true}
+08-28 17:58:11.890: D/MostViewPager(11342): Manual Page Enabled:true target_position:1 permitted:0
+08-28 17:58:11.890: D/MostViewPager(11342): Selected Page Item at pos:1
+08-28 17:58:11.892: D/MostViewPager(11342): Selected Page Item at pos:2
+08-28 17:58:11.904: D/MostViewPager(11342): Page selected:1 Permitted position;0
+08-28 17:58:11.904: D/MostViewPager(11342): Num Pages:4 Num Childs:3
+08-28 17:58:11.904: D/MostViewPager(11342): Child:0 -> PER:User Selection
+08-28 17:58:11.905: D/MostViewPager(11342): Child:1 ->User Selection PER:User Selection
+08-28 17:58:11.905: D/MostViewPager(11342): Title to be changed in blu: User Selection
+08-28 17:58:11.905: D/MostViewPager(11342): Child:2 ->Pass Code PER:User Selection
+08-28 17:58:11.906: D/MostViewPager(11342): Num Pages:4 Num Childs:3
+08-28 17:58:11.906: D/MostViewPager(11342): Child:0 ->User Selection PER:User Selection
+08-28 17:58:11.906: D/MostViewPager(11342): Title to be changed in blu: User Selection
+08-28 17:58:11.906: D/MostViewPager(11342): Child:1 ->Pass Code PER:User Selection
+08-28 17:58:11.906: D/MostViewPager(11342): Child:2 ->Emergency Patient Selection PER:User Selection
+08-28 17:58:14.523: D/MostViewPager(11342): PASSCODE:1 LEN:1
+08-28 17:58:14.764: D/MostViewPager(11342): PASSCODE:12 LEN:2
+08-28 17:58:15.060: D/MostViewPager(11342): PASSCODE:123 LEN:3
+08-28 17:58:15.475: D/MostViewPager(11342): PASSCODE:1234 LEN:4
+08-28 17:58:15.712: D/MostViewPager(11342): PASSCODE:12345 LEN:5
+08-28 17:58:15.712: D/MostViewPager(11342): GET ACCESS TOKEN WITH PIN CODE: 12345
+08-28 17:58:15.712: D/REMOTE_CONFIG_READER(11342): Called getAccessToken() on uri: http://156.148.132.223:8000/oauth2/access_token/
+08-28 17:58:15.712: D/REMOTE_CONFIG_READER(11342): client id: 9db4f27b3d9c8e352b5c
+08-28 17:58:15.712: D/REMOTE_CONFIG_READER(11342): client secret: 00ea399c013349a716ea3e47d8f8002502e2e982
+08-28 17:58:15.713: D/REMOTE_CONFIG_READER(11342): device ID: 4234433ea5631d24
+08-28 17:58:15.713: D/REMOTE_CONFIG_READER(11342): username: admin
+08-28 17:58:15.713: D/REMOTE_CONFIG_READER(11342): pincode: 12345
+08-28 17:58:15.713: D/REMOTE_CONFIG_READER(11342): taskgroup: h52job6mlgqpym5f57djdtbsw3u5kfyf
+08-28 17:58:15.713: D/REMOTE_CONFIG_READER(11342): Request added to the queue
+08-28 17:58:15.721: D/MostViewPager(11342): PASSCODE: LEN:0
+08-28 17:58:15.781: D/MostViewPager(11342): Query Response:{"access_token": "31e748154054b7e81106c75cd39be675335ee373", "token_type": "Bearer", "expires_in": 2591999, "scope": "read"}
+08-28 17:58:15.781: D/MostViewPager(11342): ACCESS TOKEN: 31e748154054b7e81106c75cd39be675335ee373
+08-28 17:58:15.781: D/MostViewPager(11342): Manual Page Enabled:true target_position:2 permitted:0
+08-28 17:58:15.781: D/MostViewPager(11342): Selected Page Item at pos:2
+08-28 17:58:15.783: D/MostViewPager(11342): Selected Page Item at pos:3
+08-28 17:58:15.805: D/REMOTE_CONFIG_READER(11342): getRoomsDataUri: http://156.148.132.223:8000/teleconsultation/rooms/?access_token=31e748154054b7e81106c75cd39be675335ee373
+08-28 17:58:15.811: D/MostViewPager(11342): Page selected:2 Permitted position;0
+08-28 17:58:15.811: D/MostViewPager(11342): Num Pages:4 Num Childs:3
+08-28 17:58:15.811: D/MostViewPager(11342): Child:0 ->User Selection PER:User Selection
+08-28 17:58:15.811: D/MostViewPager(11342): Title to be changed in blu: User Selection
+08-28 17:58:15.811: D/MostViewPager(11342): Child:1 ->Pass Code PER:User Selection
+08-28 17:58:15.811: D/MostViewPager(11342): Child:2 ->Emergency Patient Selection PER:User Selection
+08-28 17:58:15.812: D/MostViewPager(11342): Num Pages:4 Num Childs:3
+08-28 17:58:15.812: D/MostViewPager(11342): Child:0 ->Pass Code PER:User Selection
+08-28 17:58:15.813: D/MostViewPager(11342): Child:1 ->Emergency Patient Selection PER:User Selection
+08-28 17:58:15.813: D/MostViewPager(11342): Child:2 ->Summary PER:User Selection
+08-28 17:58:15.967: D/MostFragmentSummary(11342): Received rooms:
+08-28 17:58:15.967: D/MostFragmentSummary(11342): {"data":{"rooms":[{"description":"Stanza di Test","uuid":"ak3ce6bomyxlirkvjqx54htq3ghvb6gi","name":"Ufficio Francesco"}]},"success":true}
+08-28 17:58:17.366: D/MostViewPager(11342): Manual Page Enabled:true target_position:3 permitted:2
+08-28 17:58:17.366: D/MostViewPager(11342): Selected Page Item at pos:3
+08-28 17:58:17.375: D/MostViewPager(11342): Page selected:3 Permitted position;2
+08-28 17:58:17.375: D/MostViewPager(11342): Num Pages:4 Num Childs:3
+08-28 17:58:17.375: D/MostViewPager(11342): Child:0 ->Pass Code PER:Emergency Patient Selection
+08-28 17:58:17.375: D/MostViewPager(11342): Child:1 ->Emergency Patient Selection PER:Emergency Patient Selection
+08-28 17:58:17.375: D/MostViewPager(11342): Title to be changed in blu: Emergency Patient Selection
+08-28 17:58:17.375: D/MostViewPager(11342): Child:2 ->Summary PER:Emergency Patient Selection
+08-28 17:58:17.376: D/MostViewPager(11342): Num Pages:4 Num Childs:3
+08-28 17:58:17.376: D/MostViewPager(11342): Child:0 ->Emergency Patient Selection PER:Emergency Patient Selection
+08-28 17:58:17.376: D/MostViewPager(11342): Title to be changed in blu: Emergency Patient Selection
+08-28 17:58:17.376: D/MostViewPager(11342): Child:1 ->Summary PER:Emergency Patient Selection
+08-28 17:58:17.376: D/MostViewPager(11342): Child:2 -> PER:Emergency Patient Selection
+08-28 17:58:29.581: D/MostFragmentSummary(11342): Trying to create a new teleconsultation...
+08-28 17:58:29.581: D/MostFragmentSummary(11342): using access token: 31e748154054b7e81106c75cd39be675335ee373
+08-28 17:58:29.582: D/REMOTE_CONFIG_READER(11342): getRoomDataUri: http://156.148.132.223:8000/teleconsultation/room/ak3ce6bomyxlirkvjqx54htq3ghvb6gi/?access_token=31e748154054b7e81106c75cd39be675335ee373
+08-28 17:58:29.582: D/MostFragmentSummary(11342): Creating teleconsultation with room: ak3ce6bomyxlirkvjqx54htq3ghvb6gi and desc:new Test Teleconsultation
+08-28 17:58:29.713: D/MostFragmentSummary(11342): Created teleconsultation: {"data": {"teleconsultation": {"created": 1440777509, "uuid": "f6dol52h3euarjby7nssfb7oaapssrir", "description": "new Test Teleconsultation"}}, "success": true}
+08-28 17:58:30.698: D/MostFragmentSummary(11342): Room data: {"data":{"room":{"task_group":{"description":"Crs4 testing","uuid":"h52job6mlgqpym5f57djdtbsw3u5kfyf","name":"Crs4"},"description":"Stanza di Test","uuid":"ak3ce6bomyxlirkvjqx54htq3ghvb6gi","devices":{"camera":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"},"encoder":{"uuid":"wicpckbwrj6obxloszd7tqhcp4nzv33m","type":"Audio Video","user":"specialista","password":"speciali","ip_address":"156.148.133.11","model":"APTZ214","capabilities":{"streaming":"rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp","shot":"http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]","ptz":"http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi","web":"http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},"name":"Test Video Ufficio Stefano"}},"name":"Ufficio Francesco"}},"success":true}
+08-28 17:58:30.699: D/MostFragmentSummary(11342): TC Encoder: [Device:Test Video Ufficio Stefano
+08-28 17:58:30.699: D/MostFragmentSummary(11342): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:58:30.699: D/MostFragmentSummary(11342): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:58:30.699: D/MostFragmentSummary(11342):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:58:30.699: D/MostFragmentSummary(11342):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:58:30.699: D/MostFragmentSummary(11342): TC Camera: [Device:Test Video Ufficio Stefano
+08-28 17:58:30.699: D/MostFragmentSummary(11342): Stream: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:58:30.699: D/MostFragmentSummary(11342): Shot: http://156.148.133.11/axis-cgi/jpg/image.cgi?resolution=[width]x[height]
+08-28 17:58:30.699: D/MostFragmentSummary(11342):  Web: http://specialista:speciali@156.148.133.11/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]
+08-28 17:58:30.699: D/MostFragmentSummary(11342):  PTZ: http://156.148.133.11/axis-cgi/com/ptz.cgi]
+08-28 17:58:30.701: D/MostViewPager(11342): STARTING ACTIVITY WITH ECO USER:most.demo.ecoapp.models.EcoUser@9090059
+08-28 17:58:30.751: D/EcoTeleconsultationActivity(11342): Called IDLE:
+08-28 17:58:30.757: D/STREAMINGLIB_BACKEND(11342): Loading native libraries...
+08-28 17:58:30.757: D/STREAMINGLIB_BACKEND(11342): Loading gstreamer_android...
+08-28 17:58:30.762: W/linker(11342): libgstreamer_android.so has text relocations. This is wasting memory and prevents security hardening. Please fix.
+08-28 17:58:31.087: E/GStreamer+amc(11342): 0:00:00.315081927 0x9c447b80 gstamc.c:200:initialize_java_vm Failed to load libdvm: dlopen failed: library "libdvm.so" not found
+08-28 17:58:31.087: W/GStreamer+GST_PLUGIN_LOADING(11342): 0:00:00.315209792 0x9c447b80 gstplugin.c:525:gst_plugin_register_func plugin "(NULL)" failed to initialise
+08-28 17:58:31.360: I/GStreamer(11342): GStreamer initialization complete
+08-28 17:58:31.361: W/System.err(11342): java.io.FileNotFoundException: fontconfig/fonts.conf
+08-28 17:58:31.361: W/System.err(11342): 	at android.content.res.AssetManager.openAsset(Native Method)
+08-28 17:58:31.361: W/System.err(11342): 	at android.content.res.AssetManager.open(AssetManager.java:313)
+08-28 17:58:31.361: W/System.err(11342): 	at android.content.res.AssetManager.open(AssetManager.java:287)
+08-28 17:58:31.361: W/System.err(11342): 	at com.gstreamer.GStreamer.copyFile(GStreamer.java:51)
+08-28 17:58:31.361: W/System.err(11342): 	at com.gstreamer.GStreamer.copyFonts(GStreamer.java:31)
+08-28 17:58:31.361: W/System.err(11342): 	at com.gstreamer.GStreamer.init(GStreamer.java:17)
+08-28 17:58:31.362: W/System.err(11342): 	at org.crs4.most.streaming.StreamingLibBackend.initLib(StreamingLibBackend.java:70)
+08-28 17:58:31.362: W/System.err(11342): 	at most.demo.ecoapp.EcoTeleconsultationActivity.prepareStream(EcoTeleconsultationActivity.java:234)
+08-28 17:58:31.362: W/System.err(11342): 	at most.demo.ecoapp.EcoTeleconsultationActivity.setupStreamLib(EcoTeleconsultationActivity.java:212)
+08-28 17:58:31.362: W/System.err(11342): 	at most.demo.ecoapp.EcoTeleconsultationActivity.onCreate(EcoTeleconsultationActivity.java:108)
+08-28 17:58:31.362: W/System.err(11342): 	at android.app.Activity.performCreate(Activity.java:5933)
+08-28 17:58:31.362: W/System.err(11342): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1105)
+08-28 17:58:31.362: W/System.err(11342): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2251)
+08-28 17:58:31.362: W/System.err(11342): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2360)
+08-28 17:58:31.362: W/System.err(11342): 	at android.app.ActivityThread.access$800(ActivityThread.java:144)
+08-28 17:58:31.362: W/System.err(11342): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1278)
+08-28 17:58:31.362: W/System.err(11342): 	at android.os.Handler.dispatchMessage(Handler.java:102)
+08-28 17:58:31.362: W/System.err(11342): 	at android.os.Looper.loop(Looper.java:135)
+08-28 17:58:31.362: W/System.err(11342): 	at android.app.ActivityThread.main(ActivityThread.java:5221)
+08-28 17:58:31.362: W/System.err(11342): 	at java.lang.reflect.Method.invoke(Native Method)
+08-28 17:58:31.362: W/System.err(11342): 	at java.lang.reflect.Method.invoke(Method.java:372)
+08-28 17:58:31.362: W/System.err(11342): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:899)
+08-28 17:58:31.362: W/System.err(11342): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:694)
+08-28 17:58:31.363: D/GSTREAMER_BACKEND(11342): Loading streaming lib backend native libraries..
+08-28 17:58:31.363: D/GSTREAMER_BACKEND(11342): Loading most_streaming...
+08-28 17:58:31.364: D/GSTREAMER_BACKEND(11342): Libraries loaded.
+08-28 17:58:31.364: D/GSTREAMER_BACKEND(11342): Loading native class and methods references...
+08-28 17:58:31.364: I/most_dual_streaming(11342): The calling class does implement all necessary interface methods. Ok
+08-28 17:58:31.365: D/GSTREAMER_BACKEND(11342): GStreamerBackend instance *****
+08-28 17:58:31.366: D/VoipLibUtils(11342): getResourcePathByAssetCopy on folder ** for file:test_hold.wav
+08-28 17:58:31.397: D/VoipLibUtils(11342): Found 8 files
+08-28 17:58:31.397: D/VoipLibUtils(11342): Found resource:images
+08-28 17:58:31.397: D/VoipLibUtils(11342): Found resource:ring_in_call.wav
+08-28 17:58:31.397: D/VoipLibUtils(11342): Found resource:ring_out_call.wav
+08-28 17:58:31.397: D/VoipLibUtils(11342): Found resource:sounds
+08-28 17:58:31.397: D/VoipLibUtils(11342): Found resource:test_hold.wav
+08-28 17:58:31.397: D/VoipLibUtils(11342): Found:test_hold.wav
+08-28 17:58:31.398: D/VoipLibUtils(11342): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:58:31.483: D/VoipLibUtils(11342): getResourcePathByAssetCopy on folder ** for file:ring_in_call.wav
+08-28 17:58:31.514: D/VoipLibUtils(11342): Found 8 files
+08-28 17:58:31.514: D/VoipLibUtils(11342): Found resource:images
+08-28 17:58:31.514: D/VoipLibUtils(11342): Found resource:ring_in_call.wav
+08-28 17:58:31.514: D/VoipLibUtils(11342): Found:ring_in_call.wav
+08-28 17:58:31.514: D/VoipLibUtils(11342): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_in_call.wav
+08-28 17:58:31.583: D/VoipLibUtils(11342): getResourcePathByAssetCopy on folder ** for file:ring_out_call.wav
+08-28 17:58:31.614: D/VoipLibUtils(11342): Found 8 files
+08-28 17:58:31.614: D/VoipLibUtils(11342): Found resource:images
+08-28 17:58:31.614: D/VoipLibUtils(11342): Found resource:ring_in_call.wav
+08-28 17:58:31.614: D/VoipLibUtils(11342): Found resource:ring_out_call.wav
+08-28 17:58:31.614: D/VoipLibUtils(11342): Found:ring_out_call.wav
+08-28 17:58:31.614: D/VoipLibUtils(11342): Copying asset to /storage/emulated/0/Android/data/most.demo.ecoapp/files/ring_out_call.wav
+08-28 17:58:31.647: D/EcoTeleconsultationActivity(11342): OnHoldSoundPath:/storage/emulated/0/Android/data/most.demo.ecoapp/files/test_hold.wav
+08-28 17:58:31.647: D/EcoTeleconsultationActivity(11342): Initializing the lib...
+08-28 17:58:31.647: D/EcoTeleconsultationActivity(11342): Voip null... Initialization.....
+08-28 17:58:31.648: I/System.out(11342): LOADING LIB...
+08-28 17:58:31.651: I/System.out(11342): Library loaded
+08-28 17:58:31.671: D/VoipLib(11342): VoipLib
+08-28 17:58:31.671: D/VoipLib(11342): initializing
+08-28 17:58:31.673: D/VoipLib(11342): notify state:LIB_INITIALIZING
+08-28 17:58:31.673: D/VoipLib(11342): New Current State:IDLE
+08-28 17:58:31.673: D/VoipLib(11342): Lib create...
+08-28 17:58:31.673: D/VoipLib(11342): Instancing EndPoint..
+08-28 17:58:31.678: D/VoipLib(11342): Load configuration...
+08-28 17:58:31.679: D/VoipLib(11342): Reading account config:::
+08-28 17:58:31.682: D/VoipLib(11342): Setting registrar uri to:  sip:192.168.1.100:5060;transport=tcp
+08-28 17:58:31.696: D/VoipLib(11342): Enabling turn server on 192.168.1.100:3478
+08-28 17:58:31.707: D/VoipLib(11342): Lib init......
+08-28 17:58:31.740: D/VoipLib(11342): transport create with TCP Transport
+08-28 17:58:31.740: D/VoipLib(11342): Lib starting....
+08-28 17:58:31.748: D/VoipLib(11342): Lib initialized and started
+08-28 17:58:31.748: D/VoipLib(11342): notify state:LIB_INITIALIZED
+08-28 17:58:31.748: D/VoipLib(11342): New Current State:IDLE
+08-28 17:58:31.749: D/StreamViewerFragment(11342): ON ATTACH STREAM VIEWER
+08-28 17:58:31.749: D/StreamViewerFragment(11342): ON CREATE STREAM VIEWER
+08-28 17:58:31.749: D/StreamViewerFragment(11342): ON CREATE_VIEW STREAM VIEWER
+08-28 17:58:31.755: D/StreamViewerFragment(11342): ON ACTIVITY_CREATED STREAM VIEWER
+08-28 17:58:31.755: D/EcoTeleconsultationActivity(11342): Surface View created: preparing surface for streamTeleconsultation Stream
+08-28 17:58:31.755: D/GSTREAMER_BACKEND(11342): preparing IStream instance...
+08-28 17:58:31.756: D/GStreamer+most_streaming(11342): 0:00:00.984688333 0x9c447b80 jni/most_streaming.c:534:gst_native_init Created CustomData at 0x9c229650
+08-28 17:58:31.756: D/GStreamer+most_streaming(11342): 0:00:00.984773541 0x9c447b80 jni/most_streaming.c:537:gst_native_init Created GlobalRef for app object at 0x500442
+08-28 17:58:31.756: D/GStreamer+most_streaming(11342): 0:00:00.984939948 0x9c447b80 jni/most_streaming.c:542:gst_native_init STREAM COUNT: 1 
+08-28 17:58:31.757: D/GStreamer+most_streaming(11342): 0:00:00.985164375 0x9c3a1660 jni/most_streaming.c:443:app_function Creating pipeline in CustomData at 0x9c229650
+08-28 17:58:31.761: I/Choreographer(11342): Skipped 61 frames!  The application may be doing too much work on its main thread.
+08-28 17:58:31.764: D/GStreamer+most_streaming(11342): 0:00:00.992168906 0x9c3a1660 jni/most_streaming.c:494:app_function Entering main loop... (CustomData:0x9c229650)
+08-28 17:58:31.764: D/GStreamer+most_streaming(11342): 0:00:00.992256042 0x9c3a1660 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:58:31.764: D/GStreamer+most_streaming(11342): 0:00:00.992325573 0x9c3a1660 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x9c3a1660
+08-28 17:58:31.769: E/GStreamer+most_streaming(11342): 0:00:00.997548229 0x9c3a1660 jni/most_streaming.c:428:check_initialization_complete Initialization NOT completed...
+08-28 17:58:31.769: D/GSTREAMER_BACKEND(11342): Message from Gstreamer:State changed to READY
+08-28 17:58:31.769: D/GStreamer+most_streaming(11342): 0:00:00.997935260 0x9c3a1660 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:58:31.770: D/GSTREAMER_BACKEND(11342): onStreamStateChanged: state from state:1 to:2
+08-28 17:58:31.809: D/GStreamer(11342): Surface created:::: Surface(name=null)/@0x29776edd
+08-28 17:58:31.809: D/GStreamer+most_streaming(11342): 0:00:01.037314688 0x9c447b80 jni/most_streaming.c:782:gst_native_surface_init Received surface 0xbeb5bdb0 (native window 0x9f636208)
+08-28 17:58:31.809: D/GStreamer+most_streaming(11342): 0:00:01.037395000 0x9c447b80 jni/most_streaming.c:410:check_initialization_complete CALLED CHECK_INITIALIZATION_COMPLETE!!!!
+08-28 17:58:31.809: D/GStreamer+most_streaming(11342): 0:00:01.037464427 0x9c447b80 jni/most_streaming.c:90:attach_current_thread Attaching thread 0x9c447b80
+08-28 17:58:31.809: D/GStreamer+most_streaming(11342): 0:00:01.037541719 0x9c447b80 jni/most_streaming.c:414:check_initialization_complete Initialization completed... notifying application. native_window:0x9f636208 main_loop:0xa320d720
+08-28 17:58:31.809: D/GSTREAMER_BACKEND(11342): Called onGStreamerInitialized()
+08-28 17:58:31.809: D/GSTREAMER_BACKEND(11342): Stream initialized
+08-28 17:58:31.809: D/GSTREAMER_BACKEND(11342): Setting uri to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:58:31.809: D/GStreamer+most_streaming(11342): 0:00:01.037839219 0x9c447b80 jni/most_streaming.c:672:gst_native_set_uri called gst_native_set_uri!!!!
+08-28 17:58:31.809: D/GStreamer+most_streaming(11342): 0:00:01.037920260 0x9c447b80 jni/most_streaming.c:681:gst_native_set_uri Setting URI:::: rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:58:31.809: D/GStreamer+most_streaming(11342): 0:00:01.037990365 0x9c447b80 jni/most_streaming.c:684:gst_native_set_uri Stream name is:Teleconsultation Stream 
+08-28 17:58:31.810: D/GSTREAMER_BACKEND(11342): uri updated to:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp
+08-28 17:58:31.810: D/GStreamer(11342): Surface changed to format 4 width 924 height 1059
+08-28 17:58:31.811: D/EcoTeleconsultationActivity(11342): Called handleMessage with event info:Event:LIB_INITIALIZING: Type:LIB_EVENT : Voip Lib initialization
+08-28 17:58:31.811: D/EcoTeleconsultationActivity(11342): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZING
+08-28 17:58:31.811: D/EcoTeleconsultationActivity(11342): Called handleMessage with event info:Event:LIB_INITIALIZED: Type:LIB_EVENT : Inizialization Ok
+08-28 17:58:31.811: D/EcoTeleconsultationActivity(11342): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_INITIALIZED
+08-28 17:58:31.818: D/VoipLib(11342): notify state:ACCOUNT_REGISTERING
+08-28 17:58:31.818: D/VoipLib(11342): New Current State:IDLE
+08-28 17:58:31.818: D/EcoTeleconsultationActivity(11342): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Inizializating Stream Teleconsultation Stream
+08-28 17:58:31.818: D/EcoTeleconsultationActivity(11342): Stream State:INITIALIZED
+08-28 17:58:31.849: D/EcoTeleconsultationActivity(11342): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream Teleconsultation Stream initialized: (uri:rtsp://specialista:speciali@156.148.133.11/mpeg4/media.amp)
+08-28 17:58:31.849: D/EcoTeleconsultationActivity(11342): Stream State:INITIALIZED
+08-28 17:58:31.850: D/EcoTeleconsultationActivity(11342): Called handleMessage with event info:Event:ACCOUNT_REGISTERING: Type:ACCOUNT_EVENT : Account Registration request sent
+08-28 17:58:31.850: D/EcoTeleconsultationActivity(11342): HANDLE EVENT TYPE:ACCOUNT_EVENT EVENT:ACCOUNT_REGISTERING
+08-28 17:59:02.490: D/EcoTeleconsultationActivity(11342): Called exitFromApp()
+08-28 17:59:02.490: D/VoipLib(11342): notify state:LIB_DEINITIALIZING
+08-28 17:59:02.490: D/VoipLib(11342): New Current State:IDLE
+08-28 17:59:02.490: D/VoipLib(11342): Deleting account...
+08-28 17:59:02.492: D/VoipLib(11342): Account deleted
+08-28 17:59:02.492: D/VoipLib(11342): Deleting audio players...
+08-28 17:59:02.495: D/VoipLib(11342): Audio players deleted
+08-28 17:59:02.532: I/art(11342): Explicit concurrent mark sweep GC freed 24815(1453KB) AllocSpace objects, 2(28KB) LOS objects, 40% free, 17MB/29MB, paused 707us total 34.446ms
+08-28 17:59:02.532: D/VoipLib(11342): Destroying lib...
+08-28 17:59:03.722: D/VoipLib(11342): LibDestroy successfully called
+08-28 17:59:03.723: D/VoipLib(11342): Endpoint deleted
+08-28 17:59:03.723: D/VoipLib(11342): Endpoint set to null
+08-28 17:59:03.723: D/VoipLib(11342): Lib destroyed
+08-28 17:59:03.723: D/VoipLib(11342): notify state:LIB_DEINITIALIZED
+08-28 17:59:03.723: D/VoipLib(11342): New Current State:IDLE
+08-28 17:59:03.723: D/EcoTeleconsultationActivity(11342): Called handleMessage with event info:Event:LIB_DEINITIALIZING: Type:LIB_EVENT : Voip Lib destroying
+08-28 17:59:03.724: D/EcoTeleconsultationActivity(11342): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_DEINITIALIZING
+08-28 17:59:03.724: I/Choreographer(11342): Skipped 73 frames!  The application may be doing too much work on its main thread.
+08-28 17:59:03.726: D/EcoTeleconsultationActivity(11342): Called handleMessage with event info:Event:LIB_DEINITIALIZED: Type:LIB_EVENT : Voip Lib destroyed
+08-28 17:59:03.726: D/EcoTeleconsultationActivity(11342): HANDLE EVENT TYPE:LIB_EVENT EVENT:LIB_DEINITIALIZED
+08-28 17:59:03.726: D/EcoTeleconsultationActivity(11342): Setting to null MyVoipLib
+08-28 17:59:03.727: D/EcoTeleconsultationActivity(11342): Called IDLE:
+08-28 17:59:03.735: D/EcoTeleconsultationActivity(11342): Called exitFromApp()
+08-28 17:59:03.735: D/EcoTeleconsultationActivity(11342): Voip Library deinitialized. Exiting the app
+08-28 17:59:03.819: D/GStreamer(11342): Surface destroyed::::
+08-28 17:59:03.819: D/GStreamer+most_streaming(11342): 0:00:33.047578061 0x9c447b80 jni/most_streaming.c:806:gst_native_surface_finalize Releasing Native Window 0x9f636208
+08-28 17:59:03.819: D/GSTREAMER_BACKEND(11342): Called destroy() in GSTEREAMER BACKEND
+08-28 17:59:03.819: D/GStreamer+most_streaming(11342): 0:00:33.047899623 0x9c447b80 jni/most_streaming.c:556:gst_native_finalize Quitting main loop...
+08-28 17:59:03.821: D/GStreamer+most_streaming(11342): 0:00:33.049432696 0x9c3a1660 jni/most_streaming.c:501:app_function Exited main loop
+08-28 17:59:03.823: D/GStreamer+most_streaming(11342): 0:00:33.051558373 0x9c447b80 jni/most_streaming.c:558:gst_native_finalize Waiting for thread to finish...
+08-28 17:59:03.824: W/art(11342): Native thread exiting without having called DetachCurrentThread (maybe it's going to use a pthread_key_create destructor?): Thread[29,tid=11682,Native,Thread*=0xa32f0400,peer=0x13032080,"Thread-682"]
+08-28 17:59:03.824: D/GStreamer+most_streaming(11342): 0:00:33.052371759 0x9c3a1660 jni/most_streaming.c:105:detach_current_thread Detaching thread 0x9c3a1660
+08-28 17:59:03.825: D/GStreamer+most_streaming(11342): 0:00:33.053490248 0x9c447b80 jni/most_streaming.c:561:gst_native_finalize STREAM COUNT: 0 
+08-28 17:59:03.825: D/GStreamer+most_streaming(11342): 0:00:33.053559154 0x9c447b80 jni/most_streaming.c:564:gst_native_finalize NOTIFYING STATE CHANGE...
+08-28 17:59:03.825: D/GStreamer+most_streaming(11342): 0:00:33.053769831 0x9c447b80 jni/most_streaming.c:122:send_on_stream_state_changed_notification Calling send_on_stream_state_changed_notifications
+08-28 17:59:03.825: D/GSTREAMER_BACKEND(11342): onStreamStateChanged: state from state:2 to:1
+08-28 17:59:03.825: D/GStreamer+most_streaming(11342): 0:00:33.053966186 0x9c447b80 jni/most_streaming.c:570:gst_native_finalize STREAM COUNT <=0: Deallocate global variables!! 
+08-28 17:59:03.826: D/GStreamer+most_streaming(11342): 0:00:33.054023686 0x9c447b80 jni/most_streaming.c:572:gst_native_finalize IN gst_native_finalize_globals 
+08-28 17:59:03.826: D/GStreamer+most_streaming(11342): 0:00:33.054091759 0x9c447b80 jni/most_streaming.c:575:gst_native_finalize Deleting GlobalRef for app object at 0x500442
+08-28 17:59:03.826: D/GStreamer+most_streaming(11342): 0:00:33.054314519 0x9c447b80 jni/most_streaming.c:577:gst_native_finalize Freeing CustomData at 0x9c229650
+08-28 17:59:03.826: D/GStreamer+most_streaming(11342): 0:00:33.054377644 0x9c447b80 jni/most_streaming.c:581:gst_native_finalize Done finalizing
+08-28 17:59:03.831: D/OpenGLRenderer(11342): endAllStagingAnimators on 0x9c2b8b00 (RippleDrawable) with handle 0xac4f30b0
+08-28 17:59:03.844: D/EcoTeleconsultationActivity(11342): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Teleconsultation Stream
+08-28 17:59:03.844: D/EcoTeleconsultationActivity(11342): Stream State:DEINITIALIZED
+08-28 17:59:03.844: D/EcoTeleconsultationActivity(11342): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:DEINITIALIZED
+08-28 17:59:03.844: D/EcoTeleconsultationActivity(11342): Stream State:DEINITIALIZED
+08-28 17:59:04.079: D/StreamViewerFragment(11342): ON DETACH STREAM VIEWER
+08-28 17:59:04.079: D/GSTREAMER_BACKEND(11342): Called destroy() in GSTEREAMER BACKEND
+08-28 17:59:04.080: D/GSTREAMER_BACKEND(11342): Stream Teleconsultation Stream already deinitialized...
