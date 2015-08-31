@@ -84,15 +84,22 @@ public class RemoteConfigReader {
 	 */
 	public void getTaskgroups(Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		String uri = String.format("%steleconsultation/taskgroups/%s/", this.urlPrefix, this.deviceID);
-		JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
-		this.rq.add(postReq);	 
+		JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(req);	 
 	}
 	
 	
 	public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		String uri = String.format("%steleconsultation/list/?access_token=%s", this.urlPrefix, accessToken);
-		JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
-		this.rq.add(postReq);	 
+		JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(req);	 
+	}
+	
+	
+	public void startSession(String sessionId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+		String uri = String.format("%steleconsultation/session/%s/start?access_token=%s", this.urlPrefix, sessionId, accessToken);
+		JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(req);	 
 	}
 	
 	/**

@@ -107,7 +107,7 @@ public class Fragment_TeleconsultationSelection extends ConfigFragment {
 		            	String tcId = teleconsultations.getJSONObject(i).getString("uuid");
 		            	String tcInfo = teleconsultations.getJSONObject(i).getString("description");
 		            	
-		            	Log.d(TAG, "Adding tecleconsultation " + i + " -> ID: " + tcId );
+		            	Log.d(TAG, "Adding teleconsultation " + i + " -> ID: " + tcId );
 		            			 
 		            	tcArrayAdapter.add(new Teleconsultation(tcId, tcInfo));
 		            	}

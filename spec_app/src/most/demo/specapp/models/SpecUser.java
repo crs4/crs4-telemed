@@ -14,6 +14,8 @@ public class SpecUser implements Serializable {
 	private String username = null;
     private String accessToken = null;
     private String taskgroupId = null;
+ 
+ 
 
 	public SpecUser(String username, String taskgroupId, String accessToken)
 	{

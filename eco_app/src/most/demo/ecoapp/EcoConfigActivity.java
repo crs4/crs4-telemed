@@ -211,8 +211,6 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	}
 
 
-	
-
 	@Override
 	public void listPatients() {
 		this.vpPager.setInternalCurrentItem(2,0);

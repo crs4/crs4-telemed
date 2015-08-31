@@ -133,6 +133,13 @@ public class Fragment_Summary extends ConfigFragment {
 			@Override
 			public void onResponse(String tcSessionData) {
 				Log.d(TAG, "Created teleconsultation session: " + tcSessionData);
+				try {
+					String sessionUUID = new JSONObject(tcSessionData).getJSONObject("data").getJSONObject("session").getString("uuid");
+					startSession(sessionUUID);
+				} catch (JSONException e) {
+					Log.e(TAG, "Error parsing the new teleconsultation session creation response: " + e);
+					e.printStackTrace();
+				}
 				
 			}},
     			new Response.ErrorListener(){
@@ -142,6 +149,25 @@ public class Fragment_Summary extends ConfigFragment {
 						Log.e(TAG, "Error creating the new teleconsultation session: " + err);
 						
 					}});
+    }
+    
+    
+    private void startSession(String sessionId)
+    {
+    	EcoUser ecoUser = config.getEcoUser();
+    	config.getRemoteConfigReader().startSession(sessionId, ecoUser.getAccessToken(), new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject arg0) {
+				Log.d(TAG, "Session started: " + arg0);
+				
+			}},new ErrorListener() {
+
+				@Override
+				public void onErrorResponse(VolleyError arg0) {
+					Log.e(TAG, "Error startung session: " + arg0);
+					
+				}});
     }
     
     private void retrieveRoomDevices(final Teleconsultation selectedTc)

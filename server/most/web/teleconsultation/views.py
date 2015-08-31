@@ -60,8 +60,8 @@ def get_applicants_for_taskgroups(request, taskgroup_uuid):
         taskgroup = TaskGroup.objects.get(uuid=taskgroup_uuid)
         applicants = []
         for applicant in taskgroup.users.exclude(user_type='ST').exclude(user_type="TE"):
-            applicants.append({"firstname": applicant.first_name, "lastname" : applicant.last_name, "username": applicant.username})
-            return HttpResponse(json.dumps({'success': True, 'data': {'applicants': applicants}}), content_type="application/json")
+            applicants.append({"firstname": applicant.first_name, "lastname" : applicant.last_name, "username": applicant.username, "voip_extension" : applicant.voip_extension})
+        return HttpResponse(json.dumps({'success': True, 'data': {'applicants': applicants}}), content_type="application/json")
 
     except TaskGroup.DoesNotExist:
         return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid taskgroup uuid'}}), content_type="application/json")
@@ -240,7 +240,7 @@ def start_session(request, session_uuid):
 
 @csrf_exempt
 @oauth2_required
-def join_session(request):
+def join_session(request,session_uuid):
    # Check and Retrieve session
     session = None
     try:
@@ -261,7 +261,7 @@ def join_session(request):
 
 @csrf_exempt
 @oauth2_required
-def run_session(request):
+def run_session(request,session_uuid):
    # Check and Retrieve session
     session = None
     try:
@@ -283,7 +283,7 @@ def run_session(request):
 
 @csrf_exempt
 @oauth2_required
-def close_session(request):
+def close_session(request,session_uuid):
    # Check and Retrieve session
     session = None
     try:
