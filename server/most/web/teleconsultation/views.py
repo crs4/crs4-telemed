@@ -60,7 +60,7 @@ def get_applicants_for_taskgroups(request, taskgroup_uuid):
         taskgroup = TaskGroup.objects.get(uuid=taskgroup_uuid)
         applicants = []
         for applicant in taskgroup.users.exclude(user_type='ST').exclude(user_type="TE"):
-            applicants.append({"firstname": applicant.first_name, "lastname" : applicant.last_name, "username": applicant.username, "voip_extension" : applicant.voip_extension})
+            applicants.append({"firstname": applicant.first_name, "lastname" : applicant.last_name, "username": applicant.username})
         return HttpResponse(json.dumps({'success': True, 'data': {'applicants': applicants}}), content_type="application/json")
 
     except TaskGroup.DoesNotExist:
@@ -300,15 +300,17 @@ def close_session(request,session_uuid):
 
     return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.json_dict}}), content_type="application/json")    
     
-
+    
+@csrf_exempt
 @oauth2_required
 def get_session_data(request, session_uuid):
 
     # Check and Retrieve session
     session = None
     try:
-        session = TeleconsultationSession.objects.get(session_uuid)
-
+        logger.info('SESSION UUID: %s' % session_uuid)
+        session = TeleconsultationSession.objects.get(uuid=session_uuid)
+        logger.info('SESSION RECOVERED: %s' % session)
     except TeleconsultationSession.DoesNotExist:
         return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid session uuid'}}), content_type="application/json")
 

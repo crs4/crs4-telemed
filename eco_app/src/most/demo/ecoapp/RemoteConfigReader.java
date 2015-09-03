@@ -102,6 +102,12 @@ public class RemoteConfigReader {
 		this.rq.add(req);	 
 	}
 	
+	public void getSessionState(String sessionId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+		String uri = String.format("%steleconsultation/session/%s/?access_token=%s", this.urlPrefix, sessionId, accessToken);
+		JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(req);	 
+	}
+	
 	/**
 	 * Retrieve the users associated to the specified TaskGroup ID
 	 * @param taskgroupId the id of the taskgroup
@@ -159,6 +165,7 @@ public class RemoteConfigReader {
 		Log.d(TAG, "client secret: " + clientSecret);
 		Log.d(TAG, "device ID: " + deviceID);
 		Log.d(TAG, "username: " + username);
+		Log.d(TAG, "grant_type: " + "pincode");
 		Log.d(TAG, "pincode: " + pincode);
 		Log.d(TAG, "taskgroup: " + taskgroup);
 		

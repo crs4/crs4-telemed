@@ -29,7 +29,7 @@ import com.android.volley.toolbox.Volley;
  * 
  * curl -X POST -d "client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=password&username=YOUR_USERNAME&password=YOUR_PASSWORD" http://localhost:8000/oauth2/access_token/
  * 
- * curl -X POST -d "client_id=1f2138b9c94c388503fb&client_secret=fda712b6456c498c4e826e2942e30175d9a3c682&grant_type=password&username=admin&password=12345" http://localhost:8001/oauth2/access_token/
+ * curl -X POST -d "client_id=9db4f27b3d9c8e352b5c&client_secret=00ea399c013349a716ea3e47d8f8002502e2e982&grant_type=password&username=admin&password=admin" http://localhost:8000/oauth2/access_token/
  *                            1f2138b9c94c388503fb               fda712b6456c498c4e826e2942e30175d9a3c682
  * curl -X POST -d "client_id=d67a0f2868956edece1a&client_secret=29df85c27354579d87f026cb33007f350398a491&grant_type=password&username=admin&password=admin" http://localhost:8001/oauth2/access_token/
  * 

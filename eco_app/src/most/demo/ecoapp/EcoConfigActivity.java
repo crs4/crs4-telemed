@@ -33,7 +33,7 @@ import android.widget.Toast;
 public class EcoConfigActivity extends ActionBarActivity implements IConfigBuilder {
    
 	private static String [] pages = { "User Selection",
-									  "Pass Code",
+									   "Pass Code",
 									   "Emergency Patient Selection", 
 									   "Summary",
 									   };
@@ -189,6 +189,7 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 
     }
 
+   
     @Override
 	public void listEcoUsers() {
 		this.vpPager.setInternalCurrentItem(0,0);
@@ -197,7 +198,7 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	@Override
 	public void setEcoUser(EcoUser user) {
 		this.ecoUser = user;
-		
+		Log.d(TAG, "User selected:" + String.format("%s %s ", user.getFirstName() , user.getLastName()));
 		if (this.ecoUser!=null)
 		{   
 			this.vpPager.setInternalCurrentItem(1,0);

@@ -6,6 +6,8 @@ public class Room {
 	private String name;
 	private String description;
 	
+	private Device encoder;
+	private Device camera;
 	
 	public String getId() {
 		return id;
@@ -26,6 +28,23 @@ public class Room {
 		this.id = id;
 		this.name = name;
 		this.description = description;
+	}
+	
+	public Device getEncoder() {
+		return encoder;
+	}
+	
+	
+	public void setEncoder(Device encoder) {
+		this.encoder = encoder;
+	}
+	
+	public Device getCamera() {
+		return camera;
+	}
+	
+	public void setCamera(Device camera) {
+		this.camera = camera;
 	}
 
 	@Override

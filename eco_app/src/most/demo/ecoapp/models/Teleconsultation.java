@@ -10,12 +10,34 @@ public class Teleconsultation implements Serializable {
 	private static final long serialVersionUID = -1408055529735190987L;
 	private String id;
 	private String info;
-	private String roomId;
-	private Device encoder;
-	private Device camera;
+	private Room room;
+	
+	private String severity;
+	private EcoUser applicant;
+	private String name;
+	
+	
+    
+	public Teleconsultation(String id, String name, String info, String severity, Room room, EcoUser applicant)
+	{
+		this.id = id;
+		this.name = name;
+		this.info = info;
+		this.severity = severity;
+	    this.room = room;
+	    this.applicant = applicant;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	
 	public String getId() {
 		return id;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
     public String getInfo()
@@ -23,31 +45,18 @@ public class Teleconsultation implements Serializable {
     	return this.info;
     }
     
-	public Teleconsultation(String id, String info, String roomId)
-	{
-		this.id = id;
-		this.info = info;
-	    this.roomId = roomId;
+
+	public String getSeverity() {
+		return severity;
 	}
 
-	public String getRoomId() {
-		return roomId;
+	public EcoUser getApplicant() {
+		return applicant;
 	}
 
-	public Device getEncoder() {
-		return encoder;
+	public Room getRoom() {
+		return room;
 	}
+
 	
-	
-	public void setEncoder(Device encoder) {
-		this.encoder = encoder;
-	}
-	
-	public Device getCamera() {
-		return camera;
-	}
-	
-	public void setCamera(Device camera) {
-		this.camera = camera;
-	}
 }

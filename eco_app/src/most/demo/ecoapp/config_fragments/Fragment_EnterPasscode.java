@@ -20,12 +20,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class Fragment_EnterPasscode extends ConfigFragment {
 	
 	private EditText editPass = null;
 	private RemoteConfigReader rcr;
+	private TextView txtUser;
 	private static int PASSCODE_LEN = 5;
 
 	private static String TAG = "MostViewPager";
@@ -45,6 +47,8 @@ public class Fragment_EnterPasscode extends ConfigFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.rcr = config.getRemoteConfigReader();
+        Log.d(TAG, "Config: " + config);
+        Log.d(TAG, "Eco Config: " + config.getEcoUser());
     }
 
     // Inflate the view for the fragment based on layout XML
@@ -55,9 +59,15 @@ public class Fragment_EnterPasscode extends ConfigFragment {
         return view;
     }
     
+    
+  
     private void initializeGUI(View view)
     {
      this.editPass = (EditText) view.findViewById(R.id.editPasscode);
+     this.txtUser = (TextView) view.findViewById(R.id.textEcoUsername);
+     Log.d(TAG, "INIT VIEW FOR TEXT VIEW " + this.txtUser);
+     Log.d(TAG, "Config:::: " + config);
+  
      editPass.addTextChangedListener(new TextWatcher() {
 		
 		@Override
@@ -146,5 +156,7 @@ public class Fragment_EnterPasscode extends ConfigFragment {
   
 	@Override
 	public void updateConfigFields() {
+		Log.d(TAG, String.format("Config fields for %s %s" , config.getEcoUser().getFirstName() , config.getEcoUser().getLastName()));
+	     this.txtUser.setText(String.format("%s %s" , config.getEcoUser().getFirstName() , config.getEcoUser().getLastName()));
 	}
 }

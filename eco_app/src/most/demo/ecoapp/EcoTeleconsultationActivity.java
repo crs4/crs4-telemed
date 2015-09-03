@@ -207,7 +207,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private void setupStreamLib()
 	{
 		String streamName = "Teleconsultation Stream"; 
-		String streamUri =  this.teleconsultation.getCamera().getStreamUri();
+		String streamUri =  this.teleconsultation.getRoom().getCamera().getStreamUri();
 		
 		this.prepareStream(streamName,streamUri);
 		
