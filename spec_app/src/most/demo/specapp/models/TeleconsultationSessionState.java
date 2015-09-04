@@ -1,4 +1,4 @@
-package most.demo.ecoapp.models;
+package most.demo.specapp.models;
 
 
 public enum TeleconsultationSessionState {
@@ -27,7 +27,7 @@ public enum TeleconsultationSessionState {
         return state;
     }
     
-    public TeleconsultationSessionState  getState(String state)
+    public static TeleconsultationSessionState  getState(String state)
     {
     	for (TeleconsultationSessionState st : TeleconsultationSessionState.values())
     	{

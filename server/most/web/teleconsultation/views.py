@@ -16,7 +16,7 @@ from django.http import HttpResponse
 from most.web.authentication.decorators import oauth2_required
 from most.web.voip.models import Account, Buddy
 from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room
-from most.web.users.models import TaskGroup
+from most.web.users.models import TaskGroup, MostUser
 from django.utils.translation import ugettext_lazy as _
 import logging
 from datetime import datetime, timedelta, time
@@ -245,13 +245,19 @@ def join_session(request,session_uuid):
     session = None
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
-
+        
     except TeleconsultationSession.DoesNotExist:
         return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid session uuid'}}), content_type="application/json")
 
     if session.state != "WAITING":
         return HttpResponse(json.dumps({'success': False, 'error': {'code': 502, 'message': 'invalid session state'}}), content_type="application/json")
-
+    
+    try:
+        session.teleconsultation.specialist = request.user # MostUser.objects.get(uuid=request.REQUEST['specialist_uuid'])
+    except Exception:
+        return HttpResponse(json.dumps({'success': False, 'error': {'code': 503, 'message': 'specialist not found'}}), content_type="application/json")
+        
+    
     session.state = 'READY'
     session.teleconsultation.save()
     session.save()

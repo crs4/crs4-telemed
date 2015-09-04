@@ -17,6 +17,8 @@ import most.demo.specapp.R;
 import most.demo.specapp.RemoteConfigReader;
 import most.demo.specapp.models.SpecUser;
 import most.demo.specapp.models.Teleconsultation;
+import most.demo.specapp.models.TeleconsultationSession;
+import most.demo.specapp.models.TeleconsultationSessionState;
 
 
 
@@ -99,6 +101,15 @@ public class Fragment_TeleconsultationSelection extends ConfigFragment {
 			public void onResponse(JSONObject response) {
 				try {
 					Log.d(TAG, "Teleconsultation list response: " + response);
+					/**
+					 * {"data":
+							 {"teleconsultations":
+							 [{"created":1441369186,"description":"new Test Teleconsultation",
+							      "last_session":{"state":"WAITING","created":1441369186,"updated":1441369186,"uuid":"bbcmerfivua2mnqzymji2gpy6kaiwytc"},
+							      "uuid":"4afnydvlc5qb7rf4r7psldtlbckgnoqm"}
+							 ]},"success":true}
+					 */
+					
 					final JSONArray teleconsultations = response.getJSONObject("data").getJSONArray("teleconsultations");
 	             
 		            for (int i=0;i<teleconsultations.length();i++)
@@ -106,10 +117,14 @@ public class Fragment_TeleconsultationSelection extends ConfigFragment {
 		            	
 		            	String tcId = teleconsultations.getJSONObject(i).getString("uuid");
 		            	String tcInfo = teleconsultations.getJSONObject(i).getString("description");
+		            	JSONObject lastSession = teleconsultations.getJSONObject(i).getJSONObject("last_session");
+		            	String lastSessionId = lastSession.getString("uuid");
+		            	String lastSessionState = lastSession.getString("state");
 		            	
+		            	TeleconsultationSession tcs = new TeleconsultationSession(lastSessionId, TeleconsultationSessionState.getState(lastSessionState));
 		            	Log.d(TAG, "Adding teleconsultation " + i + " -> ID: " + tcId );
 		            			 
-		            	tcArrayAdapter.add(new Teleconsultation(tcId, tcInfo));
+		            	tcArrayAdapter.add(new Teleconsultation(tcId, tcInfo, tcs));
 		            	}
 					} catch (JSONException e) {
 							// TODO Auto-generated catch block

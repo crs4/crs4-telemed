@@ -118,11 +118,13 @@ class Teleconsultation(models.Model):
         return '[Teleconsultation: {uuid} - {description} - Taskgroup: {tgname}]'.format(uuid=self.uuid, description=self.description, tgname=self.task_group.name)
 
     def _get_json_dict(self):
-
+        
         result  = {
             'uuid': self.uuid,
             'description': self.description,
-            'created': calendar.timegm(self.created.timetuple())
+            'created': calendar.timegm(self.created.timetuple()),
+            'applicant' : { 'username' : self.applicant.get_full_name() , 'voip_data' : self.applicant.account_set.all()[0].json_dict},
+            'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() , 'voip_data' : self.specialist.account_set.all()[0].json_dict}
         }
 
         #Check sessions
@@ -173,6 +175,7 @@ class TeleconsultationSession(models.Model):
             'created': calendar.timegm(self.created.timetuple()),
             'updated': calendar.timegm(self.created.timetuple()),
             'state': self.state,
+           
         }
 
     json_dict = property(_get_json_dict)

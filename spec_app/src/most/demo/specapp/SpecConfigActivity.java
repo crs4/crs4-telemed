@@ -6,12 +6,21 @@ import java.io.InputStream;
 import java.util.Properties;
 
 
+
+import org.json.JSONObject;
+
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+
+
 import most.demo.specapp.RemoteConfigReader;
 import most.demo.specapp.config_fragments.ConfigFragment;
 import most.demo.specapp.config_fragments.FragmentLogin;
 import most.demo.specapp.config_fragments.Fragment_TeleconsultationSelection;
 import most.demo.specapp.models.SpecUser;
 import most.demo.specapp.models.Teleconsultation;
+import most.demo.specapp.models.TeleconsultationSessionState;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -196,7 +205,28 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 	@Override
 	public void setTeleconsultation(Teleconsultation selectedTc) {
 		this.teleconsultation = selectedTc;
-		this.startTeleconsultationActivity();
+		//this.startTeleconsultationActivity();
+		this.joinTeleconsultationSession(selectedTc);
+	}
+	
+	private void joinTeleconsultationSession(Teleconsultation selectedTc)
+	{
+	 if (selectedTc.getLastSession().getState()== TeleconsultationSessionState.WAITING)
+		 this.rcr.joinSession(selectedTc.getLastSession().getId(), getSpecUser().getAccessToken(), new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject response) {
+				Log.d(TAG, "Session Join Response:" + response);
+				//setTeleconsultation(selectedTc)
+			}
+		}, new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError err) {
+				Log.d(TAG, "Error in Session Join Response:" + err);
+				
+			}
+		});
 	}
 
 
