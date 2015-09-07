@@ -121,11 +121,11 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private void setTeleconsultationState(TeleconsultationState tcState)
 	{
 		this.tcState = tcState; 
-		notifyTeleconsultationStateChanched();
+		notifyTeleconsultationStateChanged();
 		
 	}
 	
-	private void notifyTeleconsultationStateChanched() {
+	private void notifyTeleconsultationStateChanged() {
 		
 		txtTcState.setTeleconsultationState(this.tcState);
 		if (this.tcState==TeleconsultationState.IDLE)

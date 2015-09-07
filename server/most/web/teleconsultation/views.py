@@ -241,7 +241,7 @@ def start_session(request, session_uuid):
 @csrf_exempt
 @oauth2_required
 def join_session(request,session_uuid):
-   # Check and Retrieve session
+    # Check and Retrieve session
     session = None
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
@@ -262,7 +262,7 @@ def join_session(request,session_uuid):
     session.teleconsultation.save()
     session.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.full_json_dict}}), content_type="application/json")
 
 
 @csrf_exempt
@@ -284,7 +284,7 @@ def run_session(request,session_uuid):
     session.teleconsultation.save()
     session.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.full_json_dict}}), content_type="application/json")
 
 
 @csrf_exempt

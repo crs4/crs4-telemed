@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Properties;
 
 import most.demo.specapp.TeleconsultationState;
+import most.demo.specapp.models.Device;
 import most.demo.specapp.models.Teleconsultation;
 import most.demo.specapp.ui.TcStateTextView;
 import most.voip.api.Utils;
@@ -89,13 +90,13 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	private String streamingUri;
 	private String streamingEchoUri;
 	
-	private Properties uriProps = null;
+	//private Properties uriProps = null;
 	
 	// VOIP
 	
 	private String sipServerIp;
 	private String sipServerPort;
-	private String accountName;
+	
 	private VoipLib myVoip;
 	private CallHandler voipHandler;
 
@@ -157,8 +158,9 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     {
     	try {
             
-        	this.uriProps = getUriProperties("uri.properties.default");
+        	//this.uriProps = getUriProperties("uri.properties.default");
         	
+    		Device camera = teleconsultation.getLastSession().getCamera();
         	
         	// Instance and initialize the Streaming Library
         	StreamingLib streamingLib = new StreamingLibBackend();
@@ -166,14 +168,18 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 			streamingLib.initLib(this.getApplicationContext());
 			
 			this.ptzControllerFragment = PTZ_ControllerFragment.newInstance(true,true,true);
-            this.ptzManager = new PTZ_Manager(this, uriProps.getProperty("uri_ptz") , uriProps.getProperty("username_ptz"), uriProps.getProperty("password_ptz"));
+            this.ptzManager = new PTZ_Manager(this, 
+            		camera.getPtzUri(), //     uriProps.getProperty("uri_ptz") , 
+            		camera.getUser(), //  uriProps.getProperty("username_ptz"), 
+            		camera.getPwd() //  uriProps.getProperty("password_ptz")
+            		);
             
             // Instance the first stream
 	    	HashMap<String,String> stream1_params = new HashMap<String,String>();
 	    	stream1_params.put("name", MAIN_STREAM);
 	    	
 	    	
-       	    this.streamingUri =  uriProps.getProperty("uri_stream");  
+       	    this.streamingUri =  camera.getStreamUri(); //    uriProps.getProperty("uri_stream");  
 	    	stream1_params.put("uri", this.streamingUri);
 	    	    	 
 	    	this.stream1 = streamingLib.createStream(stream1_params, this.handler);
@@ -186,12 +192,13 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	    	
 	    	// Instance the Echo Stream
 	    	
+	    	Device encoder = teleconsultation.getLastSession().getEncoder();
 	    	
 	    	HashMap<String,String> stream_echo_params = new HashMap<String,String>();
 	    	stream_echo_params.put("name", ECHO_STREAM);
 	    	
 	    	
-       	    this.streamingEchoUri =  uriProps.getProperty("uri_echo");  
+       	    this.streamingEchoUri = encoder.getStreamUri(); //     uriProps.getProperty("uri_echo");  
        	    stream_echo_params.put("uri", this.streamingEchoUri);
 	    	    	 
 	    	this.streamEcho = streamingLib.createStream(stream_echo_params, this.handler);
@@ -304,11 +311,11 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     private void setTeleconsultationState(TeleconsultationState tcState)
 	{
 		this.tcState = tcState; 
-		notifyTeleconsultationStateChanched();
+		notifyTeleconsultationStateChanged();
 		
 	}
     
-private void notifyTeleconsultationStateChanched() {
+private void notifyTeleconsultationStateChanged() {
 		
 	if (txtTcState==null)
 		txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
@@ -438,7 +445,7 @@ private void notifyTeleconsultationStateChanched() {
 
 	@Override
 	public void onGoHome() {
-		String homePreset = this.uriProps.getProperty("home_preset_ptz");
+		String homePreset = "home"; // this.uriProps.getProperty("home_preset_ptz");
 		this.ptzManager.goTo(homePreset);
 		
 	}
@@ -477,8 +484,13 @@ private void notifyTeleconsultationStateChanched() {
 				
 			}
 		};
-		ImageDownloader imageDownloader = new ImageDownloader(receiver, this, uriProps.getProperty("username_ptz"), uriProps.getProperty("password_ptz"));
-		imageDownloader.downloadImage(uriProps.getProperty("uri_still_image"));
+		
+	    Device camera = teleconsultation.getLastSession().getCamera();
+		ImageDownloader imageDownloader = new ImageDownloader(receiver, this, 
+				camera.getUser(), //   uriProps.getProperty("username_ptz"), 
+				camera.getPwd()); // uriProps.getProperty("password_ptz"));
+		
+		imageDownloader.downloadImage(camera.getShotUri()); //    uriProps.getProperty("uri_still_image"));
 	}
 
 	@Override
@@ -669,27 +681,14 @@ private void notifyTeleconsultationStateChanched() {
 
 	private HashMap<String,String> getVoipSetupParams()
 	    { 
-		   Properties props = getProperties("uri.properties.default");
-		    this.sipServerIp = props.getProperty("sipServerIp");
-		    this.sipServerPort=props.getProperty("sipServerPort");
-	    	HashMap<String,String> params = new HashMap<String,String>();
-			params.put("sipServerIp",sipServerIp); 
-			params.put("sipServerPort",sipServerPort); // default 5060
-			params.put("turnServerIp",  sipServerIp);
-			params.put("sipServerTransport","tcp"); 
-			
-			// used by the app for calling the specified extension, not used directly by the VoipLib
-			params.put("ecoExtension","MOST0002"); 
-
-			// specialista	
-			accountName =  props.getProperty("sipUserName");
-			params.put("sipUserPwd",props.getProperty("sipUserPwd")); // 
-			params.put("sipUserName",accountName); // specialista
-			
-			Log.d(TAG,"Sip User:" + params.get("sipUserName")+  " PWD:" + params.get("sipUserPwd"));
-			params.put("turnServerUser",accountName);  // specialista
-			params.put("turnServerPwd",accountName);  // specialista
 		 
+		    HashMap<String,String> params = teleconsultation.getLastSession().getVoipParams();
+			
+		    this.sipServerIp = params.get("sipServerIp");
+		    this.sipServerPort = params.get("sipServerPort");
+		   
+		    		
+			// ------------------------------------------------------------------------------------------------------------------
 			
 			String onHoldSoundPath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "test_hold.wav");
 			String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_in_call.wav");

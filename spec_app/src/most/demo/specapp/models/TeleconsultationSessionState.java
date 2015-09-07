@@ -27,7 +27,7 @@ public enum TeleconsultationSessionState {
         return state;
     }
     
-    public static TeleconsultationSessionState  getState(String state)
+    public static TeleconsultationSessionState getState(String state)
     {
     	for (TeleconsultationSessionState st : TeleconsultationSessionState.values())
     	{

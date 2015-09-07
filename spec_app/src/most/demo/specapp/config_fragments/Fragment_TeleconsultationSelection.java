@@ -82,6 +82,7 @@ public class Fragment_TeleconsultationSelection extends ConfigFragment {
 					int position, long id) {
 				
 				Teleconsultation selectedTc= tcArray.get(position);
+				Log.d(TAG, "Teleconsultation selected....");
 				config.setTeleconsultation(selectedTc);
 				
 			}});

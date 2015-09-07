@@ -16,8 +16,11 @@ public class Teleconsultation implements Serializable {
 	private EcoUser applicant;
 	private String name;
 	
+	private TeleconsultationSession session;
 	
     
+
+
 	public Teleconsultation(String id, String name, String info, String severity, Room room, EcoUser applicant)
 	{
 		this.id = id;
@@ -58,5 +61,14 @@ public class Teleconsultation implements Serializable {
 		return room;
 	}
 
+	public TeleconsultationSession getLastSession() {
+		return session;
+	}
+
+	public void setLastSession(TeleconsultationSession session) {
+		this.session = session;
+	}
+	
+ 
 	
 }

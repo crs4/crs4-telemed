@@ -123,8 +123,9 @@ class Teleconsultation(models.Model):
             'uuid': self.uuid,
             'description': self.description,
             'created': calendar.timegm(self.created.timetuple()),
-            'applicant' : { 'username' : self.applicant.get_full_name() , 'voip_data' : self.applicant.account_set.all()[0].json_dict},
-            'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() , 'voip_data' : self.specialist.account_set.all()[0].json_dict}
+            'applicant' : { 'username' : self.applicant.get_full_name() , 'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
+            'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() ,
+                                         'voip_data' : None if len(self.specialist.account_set.all())<1  else self.specialist.account_set.all()[0].json_dict}
         }
 
         #Check sessions
@@ -142,6 +143,9 @@ class Teleconsultation(models.Model):
             'uuid': self.uuid,
             'description': self.description,
             'task_group': self.task_group.json_dict,
+            'applicant' : { 'username' : self.applicant.get_full_name() , 'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
+            'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() ,
+                                         'voip_data' : None if len(self.specialist.account_set.all())<1  else self.specialist.account_set.all()[0].json_dict}
         }
 
     full_json_dict = property(_get_full_json_dict)

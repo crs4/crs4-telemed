@@ -142,8 +142,9 @@ public class Fragment_Summary extends ConfigFragment {
 				try {
 					String sessionUUID = new JSONObject(tcSessionData).getJSONObject("data").getJSONObject("session").getString("uuid");
 					
-					TeleconsultationSession ts = new TeleconsultationSession(sessionUUID,teleconsultation, TeleconsultationSessionState.NEW);
-					startSession(ts);
+					TeleconsultationSession ts = new TeleconsultationSession(sessionUUID, TeleconsultationSessionState.NEW);
+					teleconsultation.setLastSession(ts);
+					startSession(teleconsultation);
 					
 				} catch (JSONException e) {
 					Log.e(TAG, "Error parsing the new teleconsultation session creation response: " + e);
@@ -161,15 +162,15 @@ public class Fragment_Summary extends ConfigFragment {
     }
     
     
-    private void startSession(final TeleconsultationSession ts)
+    private void startSession(final Teleconsultation tc)
     {
     	EcoUser ecoUser = config.getEcoUser();
-    	config.getRemoteConfigReader().startSession(ts.getId(), ecoUser.getAccessToken(), new Listener<JSONObject>() {
+    	config.getRemoteConfigReader().startSession(tc.getLastSession().getId(), ecoUser.getAccessToken(), new Listener<JSONObject>() {
 
 			@Override
 			public void onResponse(JSONObject arg0) {
 				Log.d(TAG, "Session started: " + arg0);
-				 waitForSpecialist(ts);
+				 waitForSpecialist(tc);
 			}},new ErrorListener() {
 				@Override
 				public void onErrorResponse(VolleyError arg0) {
@@ -204,7 +205,7 @@ public class Fragment_Summary extends ConfigFragment {
     }
     
     
-    private void waitForSpecialist(TeleconsultationSession ts)
+    private void waitForSpecialist(Teleconsultation tc)
 	{
 		//Toast.makeText(EcoConfigActivity.this, "Connecting to:" + deviceName + "(" + macAddress +")" , Toast.LENGTH_LONG).show();
     	 ProgressDialog waitForSpecialistDialog = new ProgressDialog(getActivity());
@@ -215,10 +216,10 @@ public class Fragment_Summary extends ConfigFragment {
 		waitForSpecialistDialog.show();
 		
 		 
-		this.pollForSpecialist(waitForSpecialistDialog , ts);
+		this.pollForSpecialist(waitForSpecialistDialog , tc);
 	}
     
-    private void pollForSpecialist(final ProgressDialog wfsd, final TeleconsultationSession ts)
+    private void pollForSpecialist(final ProgressDialog wfsd, final Teleconsultation tc)
     {
     	final Timer t = new Timer();
     	
@@ -227,7 +228,7 @@ public class Fragment_Summary extends ConfigFragment {
 			@Override
 			public void run() {
 				
-				config.getRemoteConfigReader().getSessionState(ts.getId(), ts.getTeleconsultation().getApplicant().getAccessToken(), new Listener<JSONObject>() {
+				config.getRemoteConfigReader().getSessionState(tc.getLastSession().getId(), tc.getApplicant().getAccessToken(), new Listener<JSONObject>() {
 
 					@Override
 					public void onResponse(JSONObject res) {
@@ -243,8 +244,11 @@ public class Fragment_Summary extends ConfigFragment {
 						
 						t.cancel();
 						wfsd.dismiss();
+						runSession(tc);
 						
 					}
+
+					
 				}, new ErrorListener() {
 
 					@Override
@@ -257,6 +261,25 @@ public class Fragment_Summary extends ConfigFragment {
 				// config.setTeleconsultation(selectedTc);
 			}
 		}, 0, 10000);
+    }
+    
+    
+    private void runSession(final Teleconsultation tc)
+    {
+    	EcoUser ecoUser = config.getEcoUser();
+    	config.getRemoteConfigReader().runSession(tc.getLastSession().getId(), ecoUser.getAccessToken(), new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject sessionData) {
+				Log.d(TAG, "Session running: " + sessionData);
+			    tc.getLastSession().setVoipParams(sessionData);
+				config.setTeleconsultation(tc);
+			}},new ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError arg0) {
+					Log.e(TAG, "Error running the session: " + arg0);
+					
+				}});
     }
     
     private Device getDevice(JSONObject room, String deviceName) {

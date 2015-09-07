@@ -209,15 +209,17 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 		this.joinTeleconsultationSession(selectedTc);
 	}
 	
-	private void joinTeleconsultationSession(Teleconsultation selectedTc)
+	private void joinTeleconsultationSession(final Teleconsultation selectedTc)
 	{
+		Log.d(TAG, "joining teleconsultation session...");
 	 if (selectedTc.getLastSession().getState()== TeleconsultationSessionState.WAITING)
 		 this.rcr.joinSession(selectedTc.getLastSession().getId(), getSpecUser().getAccessToken(), new Listener<JSONObject>() {
 
 			@Override
 			public void onResponse(JSONObject response) {
 				Log.d(TAG, "Session Join Response:" + response);
-				//setTeleconsultation(selectedTc)
+				selectedTc.getLastSession().setupSessionData(response);
+				startTeleconsultationActivity();
 			}
 		}, new ErrorListener() {
 
