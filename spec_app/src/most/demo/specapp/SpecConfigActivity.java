@@ -185,6 +185,9 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 		Log.d(TAG,"STARTING ACTIVITY WITH TELECONSULTATION:" + this.teleconsultation.getInfo());
 		i.putExtra("Teleconsultation", this.teleconsultation);
 		startActivity(i);
+		
+		// this activity is no longer used.
+		this.finish();
 	}
 
 

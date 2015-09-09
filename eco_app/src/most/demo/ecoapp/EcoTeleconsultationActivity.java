@@ -1,13 +1,22 @@
 package most.demo.ecoapp;
 
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Properties;
+
 import org.crs4.most.streaming.IStream;
 import org.crs4.most.streaming.StreamingEventBundle;
 import org.crs4.most.streaming.StreamingLib;
 import org.crs4.most.streaming.StreamingLibBackend;
 import org.crs4.most.visualization.IStreamFragmentCommandListener;
 import org.crs4.most.visualization.StreamViewerFragment;
+import org.json.JSONObject;
+
+import com.android.volley.VolleyError;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 
 import most.demo.ecoapp.models.EcoUser;
 import most.demo.ecoapp.models.Teleconsultation;
@@ -31,6 +40,7 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -55,7 +65,7 @@ import android.os.Message;
 public class EcoTeleconsultationActivity extends ActionBarActivity implements Handler.Callback, IStreamFragmentCommandListener {
 
 	private static final String TAG = "EcoTeleconsultationActivity";
-	private EcoUser ecoUser = null;
+	 
 	private StreamViewerFragment stream1Fragment = null;
 	private IStream stream1 = null;
 	private Handler handler;
@@ -66,9 +76,11 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private TeleconsultationState tcState = TeleconsultationState.IDLE;
 	private TcStateTextView txtTcState = null;
 	private ImageButton butCall;
+	private Button butCloseSession;
+	
 	private String sipServerIp;
 	private String sipServerPort;
-	private String accountName;
+ 
 	private VoipLib myVoip;
 	private CallHandler voipHandler;
 	private PopupWindow popupWindow;
@@ -85,6 +97,12 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	private boolean exitFromAppRequest = false;
 	
 	private Teleconsultation teleconsultation = null;
+	private Properties configProps;
+	private String configServerIP;
+	private int configServerPort;
+	private String  clientId;
+	private String  clientSecret;
+	private RemoteConfigReader rcr;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +110,12 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		
 		// Intent i = getIntent();
 		//this.ecoUser =  (EcoUser) i.getExtras().getSerializable("EcoUser");
-		
+		this.configProps = loadProperties("uri.properties.default");
+		this.configServerIP = this.configProps.getProperty("configServerIp");
+		this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort")).intValue();
+		this.clientId = this.configProps.getProperty("clientId");
+		this.clientSecret = this.configProps.getProperty("clientSecret");
+		this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId,this.clientSecret);
 		
 		    setContentView(R.layout.activity_teleconsultation);
 		    txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
@@ -111,10 +134,41 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			 //this.waitForSpecialist();
 	}
 	
+	private Properties loadProperties(String FileName) {
+		Properties properties = new Properties();
+        try {
+               /**
+                * getAssets() Return an AssetManager instance for your
+                * application's package. AssetManager Provides access to an
+                * application's raw asset files;
+                */
+               AssetManager assetManager = this.getAssets();
+               /**
+                * Open an asset using ACCESS_STREAMING mode. This
+                */
+               InputStream inputStream = assetManager.open(FileName);
+               /**
+                * Loads properties from the specified InputStream,
+                */
+               properties.load(inputStream);
+
+        } catch (IOException e) {
+               // TODO Auto-generated catch block
+               Log.e("AssetsPropertyReader",e.toString());
+        }
+        return properties;
+		}
+	
 	private void setupTeleconsultationInfo()
     {
     	  Intent i = getIntent();
           this.teleconsultation =  (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+          
+          TextView txtEcoUser = (TextView) findViewById(R.id.txtEcoUser);
+          
+          txtEcoUser.setText(String.format("%s %s",  this.teleconsultation.getApplicant().getFirstName(),
+        		        this.teleconsultation.getApplicant().getLastName()));
+								 
     }
     
 	
@@ -131,6 +185,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		if (this.tcState==TeleconsultationState.IDLE)
 		{
 			butCall.setEnabled(false);
+			butCloseSession.setEnabled(false);
 			popupCancelButton.setEnabled(true);
 	
 			popupHoldButton.setEnabled(false);
@@ -143,6 +198,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		else if (tcState==TeleconsultationState.READY)
 			{
 				butCall.setEnabled(false);
+				butCloseSession.setEnabled(true);
 				popupCancelButton.setEnabled(true);
 	
 				popupHoldButton.setEnabled(false);
@@ -157,6 +213,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		else if (this.tcState==TeleconsultationState.CALLING)
 		{
 			butCall.setEnabled(true);
+			butCloseSession.setEnabled(false);
 			popupCancelButton.setEnabled(true);
 			popupHoldButton.setEnabled(true);
 
@@ -168,6 +225,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		else if (this.tcState==TeleconsultationState.HOLDING)
 		{
 			butCall.setEnabled(true);
+			butCloseSession.setEnabled(false);
 			popupCancelButton.setEnabled(true);
 			popupHoldButton.setEnabled(true);
 			popupHangupButton.setEnabled(true);
@@ -178,6 +236,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		else if (this.tcState==TeleconsultationState.REMOTE_HOLDING)
 		{
 			butCall.setEnabled(true);
+			butCloseSession.setEnabled(false);
 			popupCancelButton.setEnabled(true);
 			popupHoldButton.setEnabled(true);
 			popupHangupButton.setEnabled(true);
@@ -268,6 +327,17 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				
 			}});
 	    
+	    
+	    butCloseSession = (Button) actionBar.getCustomView().findViewById(R.id.butCloseSession);
+	    
+	    butCloseSession.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				closeSession();
+				
+			}});
+	    
 	    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
 	        | ActionBar.DISPLAY_SHOW_HOME);
 		
@@ -294,6 +364,26 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		return super.onOptionsItemSelected(item);
 	}
 	*/
+
+
+	
+	private void closeSession()
+    {
+    	EcoUser ecoUser = this.teleconsultation.getApplicant();
+    	this.rcr.closeSession(this.teleconsultation.getLastSession().getId(), ecoUser.getAccessToken(), new Listener<JSONObject>() {
+
+			@Override
+			public void onResponse(JSONObject sessionData) {
+				Log.d(TAG, "Session closed: " + sessionData);
+			    
+			
+			}},new ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError err) {
+					Log.e(TAG, "Error closing the session: " + err);
+					
+				}});
+    }
 
 	private void showCallPopupWindow()
 	{
@@ -498,8 +588,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				 
 			}
 			
-            else if (myEventBundle.getEvent()==VoipEvent.CALL_INCOMING)  handleIncomingCallRequest();
-
+            else if (myEventBundle.getEvent()==VoipEvent.CALL_INCOMING)  answerCall(); //handleIncomingCallRequest();
+            /*
             else if (myEventBundle.getEvent()==VoipEvent.CALL_READY)
             {
                     if (incoming_call_request)
@@ -508,7 +598,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
                             answerCall();
                     }
             }
-
+            */
 			else if  (myEventBundle.getEvent()==VoipEvent.CALL_ACTIVE)    {
 				if (remoteHold)
 				{
@@ -639,6 +729,12 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	
 	private HashMap<String,String> getVoipSetupParams()
     { 
+		 HashMap<String,String> params = teleconsultation.getLastSession().getVoipParams();
+			
+		    this.sipServerIp = params.get("sipServerIp");
+		    this.sipServerPort = params.get("sipServerPort");
+		    
+		 /**
 	    this.sipServerIp = "192.168.1.100";
 	    this.sipServerPort="5060";
     	HashMap<String,String> params = new HashMap<String,String>();
@@ -649,22 +745,12 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		
 		// used by the app for calling the specified extension, not used directly by the VoipLib
 		params.put("specExtension","MOST0001"); 
-					
+	
+		*/
+		    
 		/* ecografista 	*/
-		accountName = "ecografista";
-		params.put("userPwd","sha1$fdcad$659da6841c6d8538b7a10ca12aae");
-
-		
-		/* specialista	
-		accountName = "specialista";
-		params.put("userPwd","sha1$40fcf$4718177db1b6966f64d2d436f212"); // 
-	*/
-		
-		params.put("userName",accountName); // specialista
-		params.put("turnServerUser",accountName);  // specialista
-		params.put("turnServerPwd",accountName);  // specialista
-	 
-		
+		//accountName = params.get("sipUserName");
+		 
 		String onHoldSoundPath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "test_hold.wav");
 		String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_in_call.wav");
 		String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(this.getApplicationContext(), "", "ring_out_call.wav");

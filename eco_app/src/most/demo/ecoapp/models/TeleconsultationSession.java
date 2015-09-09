@@ -1,15 +1,19 @@
 package most.demo.ecoapp.models;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TeleconsultationSession {
+public class TeleconsultationSession implements Serializable {
 
+
+	private static final long serialVersionUID = -6277133365800493720L;
+	
 	private String id;
 	private TeleconsultationSessionState tss;
-	private HashMap<String,String> voipData;
+	private HashMap<String,String> voipParams;
 
 
 	public TeleconsultationSession(String id , TeleconsultationSessionState tss)
@@ -34,19 +38,19 @@ public class TeleconsultationSession {
 		    String sipUserPwd = applicantVoipData.getString("sip_password");
 		    String specExtension = sessionData.getJSONObject("teleconsultation").getJSONObject("specialist").getJSONObject("voip_data").getString("extension");
 		    
-		    this.voipData = new HashMap<String,String>();
+		    this.voipParams = new HashMap<String,String>();
 			
-	    	voipData.put("sipServerIp",sipServerIp); 
-			voipData.put("sipServerPort",sipServerPort); // default 5060
-			voipData.put("sipServerTransport",sipServerTransport); 
+	    	voipParams.put("sipServerIp",sipServerIp); 
+			voipParams.put("sipServerPort",sipServerPort); // default 5060
+			voipParams.put("sipServerTransport",sipServerTransport); 
 			
 			
 			// used by the app for calling the specified extension, not used directly by the VoipLib (TO CHECK)
-			voipData.put("specExtension",specExtension); 
+			voipParams.put("specExtension",specExtension); 
 
 			// specialista	
-			voipData.put("sipUserPwd", sipUserPwd); // 
-			voipData.put("sipUserName",sipUserName); // specialista
+			voipParams.put("sipUserPwd", sipUserPwd); // 
+			voipParams.put("sipUserName",sipUserName); // specialista
 			
 			//params.put("turnServerIp",  sipServerIp);
 			//params.put("turnServerUser",sipUserName);   
@@ -61,8 +65,8 @@ public class TeleconsultationSession {
     }
 	
 
-	public HashMap<String, String> getVoipData() {
-		return voipData;
+	public HashMap<String, String> getVoipParams() {
+		return voipParams;
 	}
 
 

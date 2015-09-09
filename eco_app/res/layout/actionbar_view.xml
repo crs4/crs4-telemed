@@ -5,8 +5,16 @@
     android:gravity="right"
     android:orientation="horizontal" >
 
+     <Button
+    android:id="@+id/butCloseSession"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    android:text="@string/close_session"
+    
+   />
+     
  <ImageButton
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/butCallActionBar"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -16,7 +24,6 @@
    />
  
  <ImageButton
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/butExit"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

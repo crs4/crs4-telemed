@@ -290,7 +290,7 @@ def run_session(request,session_uuid):
 @csrf_exempt
 @oauth2_required
 def close_session(request,session_uuid):
-   # Check and Retrieve session
+    # Check and Retrieve session
     session = None
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)

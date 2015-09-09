@@ -187,8 +187,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	    	
 	    	// Instance the first StreamViewer fragment where to render the first stream by passing the stream name as its ID.
 	    	this.stream1Fragment = StreamViewerFragment.newInstance(stream1.getName());
-	    	
-	    	
+	    	this.stream1Fragment.setPlayerButtonsVisible(false);
+			
 	    	
 	    	// Instance the Echo Stream
 	    	
@@ -206,6 +206,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	    	
 	    	// Instance the echo StreamViewer fragment where to render the echo stream by passing the stream name as its ID.
 	    	this.streamEchoFragment = StreamViewerFragment.newInstance(streamEcho.getName());
+	    	this.streamEchoFragment.setPlayerButtonsVisible(false);
 	    	
 	    	 
 		} catch (Exception e) {
@@ -219,6 +220,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 		fragmentTransaction.add(R.id.container_stream_1, stream1Fragment);
 		fragmentTransaction.add(R.id.container_stream_echo, streamEchoFragment);
 		fragmentTransaction.commit();
+		
 		
 		streaming_ready = true;
     }
@@ -329,6 +331,7 @@ private void notifyTeleconsultationStateChanged() {
 			localHold = false;
 			remoteHold = false;
 			accountRegistered = false;
+			pauseStreams();
 
 		}
 		else if (this.tcState==TeleconsultationState.READY)
@@ -339,6 +342,7 @@ private void notifyTeleconsultationStateChanged() {
 			localHold = false;
 			remoteHold = false;
 			accountRegistered = true;
+			pauseStreams();
 		}
 		
 		else if (this.tcState==TeleconsultationState.CALLING)
@@ -348,6 +352,7 @@ private void notifyTeleconsultationStateChanged() {
 			butHoldCall.setEnabled(true);
 			localHold = false;
 			remoteHold = false;
+			playStreams();
  
 		}
 		
@@ -357,6 +362,7 @@ private void notifyTeleconsultationStateChanged() {
 			butMakeCall.setText("Hangup");
 			butHoldCall.setEnabled(true);
 			localHold = true;
+			pauseStreams();
 		}
 		else if (this.tcState==TeleconsultationState.REMOTE_HOLDING)
 		{
@@ -364,36 +370,11 @@ private void notifyTeleconsultationStateChanged() {
 			butMakeCall.setText("Hangup");
 			butHoldCall.setEnabled(true);
 			remoteHold = true;
+			pauseStreams();
 		}
-		 
-		 
 	}
     
-    private Properties getUriProperties(String FileName) {
-		Properties properties = new Properties();
-        try {
-               /**
-                * getAssets() Return an AssetManager instance for your
-                * application's package. AssetManager Provides access to an
-                * application's raw asset files;
-                */
-               AssetManager assetManager = this.getAssets();
-               /**
-                * Open an asset using ACCESS_STREAMING mode. This
-                */
-               InputStream inputStream = assetManager.open(FileName);
-               /**
-                * Loads properties from the specified InputStream,
-                */
-               properties.load(inputStream);
-
-        } catch (IOException e) {
-               // TODO Auto-generated catch block
-               Log.e("AssetsPropertyReader",e.toString());
-        }
-        return properties;
-
- }
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -545,7 +526,39 @@ private void notifyTeleconsultationStateChanged() {
 			}
 		}
 		    
-
+    
+	private void playStreams()
+	{ 
+		if (this.stream1!=null && this.stream1.getState() != StreamState.PLAYING) 
+		{
+			this.stream1.play();
+		}
+		
+		if (this.streamEcho!=null  && this.streamEcho.getState() != StreamState.PLAYING)
+		{	
+			this.streamEcho.play();
+		}
+		
+	}
+	
+	private void pauseStreams()
+	{
+		 
+		
+		if (this.stream1!=null && this.stream1.getState() == StreamState.PLAYING)
+		{	
+			this.stream1.pause();
+		
+		}
+		
+		if (this.streamEcho!=null && this.streamEcho.getState() == StreamState.PLAYING)
+		{
+			this.streamEcho.pause();
+			
+		}
+		
+		 
+	}
 
 	@Override
 	public void onPlay(String streamId) {
@@ -566,8 +579,10 @@ private void notifyTeleconsultationStateChanged() {
 
 	@Override
 	public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
+		 
 		if (streamId.equals(MAIN_STREAM))
 			this.stream1.prepare(surfaceView);
+		   
 		else if (streamId.equals(ECHO_STREAM))
 			this.streamEcho.prepare(surfaceView);
 	}

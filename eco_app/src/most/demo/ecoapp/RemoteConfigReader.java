@@ -108,6 +108,12 @@ public class RemoteConfigReader {
 		this.rq.add(req);	 
 	}
 	
+	public void closeSession(String sessionId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+		String uri = String.format("%steleconsultation/session/%s/close?access_token=%s", this.urlPrefix, sessionId, accessToken);
+		JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(req);	 
+	}
+	
 	public void getSessionState(String sessionId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		String uri = String.format("%steleconsultation/session/%s/?access_token=%s", this.urlPrefix, sessionId, accessToken);
 		JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);

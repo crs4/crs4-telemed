@@ -1,0 +1,19 @@
+09-09 10:50:48.849: D/GSTREAMER_BACKEND(16453): Trying to play stream...
+09-09 10:50:48.850: D/GStreamer+most_streaming(16453): 0:01:00.989434300 0xa1d13980 jni/most_streaming.c:726:gst_native_play Setting state to PLAYING for stream:Stream_1
+09-09 10:50:48.850: D/GStreamer+most_streaming(16453): 0:01:00.990363310 0xa1d13980 jni/most_streaming.c:312:playbinNotifySource Called playbinNotifySource; Stream is in state: 2 target:2
+09-09 10:50:48.851: W/GLib+GLib-GObject(16453): g_object_set_property: object class 'GstSoupHTTPSrc' has no property named 'latency'
+09-09 10:50:48.851: D/GStreamer+most_streaming(16453): 0:01:00.990486227 0xa1d13980 jni/most_streaming.c:322:playbinNotifySource Source Latency Property set to: 200 for stream:Stream_1
+09-09 10:50:48.851: W/GLib+GLib-GObject(16453): g_object_get_property: object class 'GstSoupHTTPSrc' has no property named 'latency'
+09-09 10:50:48.851: D/GStreamer+most_streaming(16453): 0:01:00.990580238 0xa1d13980 jni/most_streaming.c:332:playbinNotifySource Source Latency Property Get VALUE: 0 for Stream: Stream_1
+09-09 10:50:48.851: E/GStreamer+most_streaming(16453): 0:01:00.990636071 0xa1d13980 jni/most_streaming.c:339:playbinNotifySource Problems updating the latency: current value: 0 Expected: 200
+09-09 10:50:48.857: D/MostStreamingViewerExample(16453): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Deinizializating Stremm Stream_1
+09-09 10:50:54.239: W/GStreamer+souphttpsrc(16453): 0:01:06.378691797 0xa1c19890 gstsouphttpsrc.c:1151:gst_soup_http_src_parse_status:<source> error: Secure connection setup failed.
+09-09 10:50:54.239: W/GStreamer+souphttpsrc(16453): 0:01:06.378831433 0xa1c19890 gstsouphttpsrc.c:1151:gst_soup_http_src_parse_status:<source> error: TLS/SSL support not available; install glib-networking (6), URL: http://www.vimeo.com/1084537
+09-09 10:50:54.239: D/GSTREAMER_BACKEND(16453): Message from Gstreamer:Error received from element source: Secure connection setup failed.
+09-09 10:50:54.239: E/GSTREAMER_BACKEND(16453): Stream Error:Error received from element source: Secure connection setup failed.
+09-09 10:50:54.243: W/GStreamer+souphttpsrc(16453): 0:01:06.382661433 0xa1c19890 gstsouphttpsrc.c:1151:gst_soup_http_src_parse_status:<source> error: Secure connection setup failed.
+09-09 10:50:54.243: W/GStreamer+souphttpsrc(16453): 0:01:06.382777214 0xa1c19890 gstsouphttpsrc.c:1151:gst_soup_http_src_parse_status:<source> error: TLS/SSL support not available; install glib-networking (6), URL: http://www.vimeo.com/1084537
+09-09 10:50:54.243: W/GStreamer+basesrc(16453): 0:01:06.383132006 0xa1c19890 gstbasesrc.c:2865:gst_base_src_loop:<source> error: Internal data flow error.
+09-09 10:50:54.243: D/MostStreamingViewerExample(16453): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_ERROR:Stream_1:Error received from element source: Secure connection setup failed.
+09-09 10:50:54.243: W/GStreamer+basesrc(16453): 0:01:06.383231381 0xa1c19890 gstbasesrc.c:2865:gst_base_src_loop:<source> error: streaming task paused, reason error (-5)
+09-09 10:50:54.248: D/MostStreamingViewerExample(16453): handleMessage: Current Event:Event Type:STREAM_EVENT ->STREAM_STATE_CHANGED:Stream state changed to:ERROR
