@@ -12,6 +12,17 @@
     <string name="action_exit">Exit</string>
     <string name="lblUsername">Username</string>
     <string name="lblPassword">Password</string>
+    
+    <string name="action_quit">Exit</string>
+    <string name="title_activity_template_viewer">TemplateViewerActivity</string>
+    <string name ="es">Español</string>
+	<string name ="en">English</string>
+	<string name ="it">Italiano</string>
+	<string name ="but_json">JSon</string>
+	<string name ="but_save">Save</string>
+	<string name ="but_reset">Reset</string>
+	<string name ="inner_archetype_demo">Report Compiler</string>
+	
      
 
 </resources>

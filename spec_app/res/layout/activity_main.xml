@@ -1,78 +1,59 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-  
-    android:orientation="vertical"
-    tools:context="most.demo.specapp.SpecTeleconsultationActivity" 
+    android:background="#faffffff"
     >
 
-    <LinearLayout 
-	    android:orientation="horizontal" 
-	    android:layout_width="match_parent"
-	    android:layout_height="0px"
-	    android:layout_weight="5"
-	    >
-
-	          <FrameLayout android:id="@+id/container_stream_1"
-		            android:layout_width="0px"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            />
-
-		    
-		     <FrameLayout
-		            android:id="@+id/container_stream_echo"
-		            android:layout_width="0px"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            />
-  </LinearLayout>
-  
+   
+ <LinearLayout  
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#23232323"
+    android:gravity="center_horizontal"
+    >
     
-  <LinearLayout 
-	    android:orientation="horizontal" 
-	    android:layout_width="match_parent"
-	    
-	    android:layout_height="0px"
-	    android:layout_weight="1"
-      >
-	    <TextView 
-	        android:id="@+id/txtTeleconsultation"
-	        android:text="Teleconsultation 0001"
-	        android:layout_width="wrap_content"
-	        android:layout_height="match_parent"
-	        /> 
+     <Button
+     android:id="@+id/butJson"
+     android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+     android:text="@string/but_json"
+    />
     
-          
-         <most.demo.specapp.ui.TcStateTextView
-	        android:id="@+id/txtTcState"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center" 
-	        android:layout_weight="1"
-	        android:text="N.A" />
-                       
-                  <Button
-			              android:id="@+id/but_make_call"
-			              android:text="@string/makeCall"
-			              android:layout_width="wrap_content"
-			              android:layout_height="match_parent"
-			               />
-			          
-           <ToggleButton
-              android:id="@+id/but_hold_call"
-              android:textOn="@string/onHoldCall"
-              android:textOff="@string/onHoldCall"
-              android:layout_width="wrap_content"
-              android:layout_height="match_parent"
-               />
-          
-           </LinearLayout>
-		
-	   
-      </LinearLayout>
-          
+    <Button
+     android:id="@+id/butSave"
+     android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+     android:text="@string/but_save"
+    />
+    
+     <Button
+     android:id="@+id/butReset"
+     android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+     android:text="@string/but_reset"
+    />
+     
+    </LinearLayout>
+    
+    
+    
+    
+<ScrollView 
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical">
 
+<LinearLayout 
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    />
+
+ </ScrollView>
+ 
+
+    
+ </LinearLayout>

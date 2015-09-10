@@ -1,0 +1,13 @@
+{
+	"id":"observations_template_id",
+	"name":"Observations Template",
+	"definition":[
+
+		{
+			"archetype_class":"openEHR-EHR-SECTION.report_demo_most.v1",
+			"exclude":[]
+		}
+		
+	]
+	
+}
