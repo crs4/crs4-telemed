@@ -8,20 +8,31 @@
 				"attributes":{
 					"datatype_ref":"ecg_parameters"
 				}
+				
 			},
 			"at0009":{
 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0009]",
 				"type":"DV_TEXT",
-				"attributes":{}
+				"attributes":{
+					
+				}
+				
 			},
 			"at0081":{
 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0081]",
 				"type":"DV_TEXT",
-				"attributes":{}
+				"attributes":{
+					
+				}
+				
 			}
-		},
+			
+		}
 		
-		"ecg_parameters":{	
+	},
+	
+	"clusters":{
+		"ecg_parameters":{
 			"at0013":{
 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0006]/items[at0013]",
 				"type":"DV_QUANTITY",
@@ -30,10 +41,11 @@
 					"precision":0,
 					"range":{
 						"min":0
-					}					
-			}	
+					}
+					
+				}
+				
 			},
-			
 			"at0012":{
 				"path":"data[at0001]/events[at0002]/data[at0005]/items[at0006]/items[at0012]",
 				"type":"DV_QUANTITY",
@@ -42,9 +54,13 @@
 					"precision":0,
 					"range":{
 						"min":0
-					}					
+					}
+					
 				}
+				
 			}
+			
 		}
+		
 	}
 }

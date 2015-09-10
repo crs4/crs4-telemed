@@ -43,7 +43,7 @@ public class TcStateTextView extends TextView {
        		break;
        		
        	case READY:
-       		this.setTextColor(Color.GREEN);
+       		this.setTextColor(Color.DKGRAY);
        		//this.setBackgroundColor(Color.GREEN);
        		break;
        		
@@ -54,7 +54,7 @@ public class TcStateTextView extends TextView {
        		
        	default:
        		Log.d(TAG,"Called DEFAULT:");
-       		this.setTextColor(Color.WHITE);
+       		this.setTextColor(Color.BLACK);
        		//this.setBackgroundColor(Color.WHITE);
        		break;
        		 

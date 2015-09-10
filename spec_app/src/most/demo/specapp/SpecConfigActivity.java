@@ -208,8 +208,8 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 	@Override
 	public void setTeleconsultation(Teleconsultation selectedTc) {
 		this.teleconsultation = selectedTc;
-		//this.startTeleconsultationActivity();
-		this.joinTeleconsultationSession(selectedTc);
+		this.teleconsultation.setSpecialist(getSpecUser());
+		this.joinTeleconsultationSession(this.teleconsultation);
 	}
 	
 	private void joinTeleconsultationSession(final Teleconsultation selectedTc)

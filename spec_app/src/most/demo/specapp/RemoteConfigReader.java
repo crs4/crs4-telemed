@@ -105,6 +105,12 @@ public class RemoteConfigReader {
 		this.rq.add(postReq);	 
 	}
 	
+	public void getSessionState(String sessionId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+		String uri = String.format("%steleconsultation/session/%s/?access_token=%s", this.urlPrefix, sessionId, accessToken);
+		JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+		this.rq.add(req);	 
+	}
+	
 	/**
 	 * Get the room json object by its id
 	 * @param roomId the room id

@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -27,10 +28,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import most.demo.specapp.TeleconsultationState;
 import most.demo.specapp.models.Device;
 import most.demo.specapp.models.Teleconsultation;
+import most.demo.specapp.models.TeleconsultationSessionState;
 import most.demo.specapp.ui.TcStateTextView;
 import most.voip.api.Utils;
 import most.voip.api.VoipEventBundle;
@@ -59,6 +63,12 @@ import org.crs4.most.visualization.PTZ_ControllerFragment;
 import org.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import org.crs4.most.visualization.StreamViewerFragment;
 import org.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
  
 
 
@@ -123,14 +133,30 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	private boolean streamMainDestroyed=false;
 	private boolean streamEchoDestroyed=false;
 	private boolean voipDestroyed=false;
+	private boolean firstCallStarted = false;
+	
+	private Properties configProps;
+
+	private String configServerIP;
+	private int configServerPort;
+	private String clientId = null;
+	private String clientSecret;
+	
+	private RemoteConfigReader rcr;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        this.configProps = loadProperties("uri.properties.default");
+		this.configServerIP = this.configProps.getProperty("configServerIp");
+		this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort")).intValue();
+		this.clientId = this.configProps.getProperty("clientId");
+		this.clientSecret = this.configProps.getProperty("clientSecret");
+		this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId,this.clientSecret);
     
         this.handler = new Handler(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.spec_activity_main);
         this.setupActionBar();
         this.setupTeleconsultationInfo();
         this.setupVoipGUI();
@@ -304,6 +330,31 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 		});
     }
     
+    private Properties loadProperties(String FileName) {
+		Properties properties = new Properties();
+        try {
+               /**
+                * getAssets() Return an AssetManager instance for your
+                * application's package. AssetManager Provides access to an
+                * application's raw asset files;
+                */
+               AssetManager assetManager = this.getAssets();
+               /**
+                * Open an asset using ACCESS_STREAMING mode. This
+                */
+               InputStream inputStream = assetManager.open(FileName);
+               /**
+                * Loads properties from the specified InputStream,
+                */
+               properties.load(inputStream);
+
+        } catch (IOException e) {
+               // TODO Auto-generated catch block
+               Log.e("AssetsPropertyReader",e.toString());
+        }
+        return properties;
+ }
+    
     private void showPTZPopupWindow()
     {
     	this.ptzPopupWindowController.show();
@@ -343,6 +394,10 @@ private void notifyTeleconsultationStateChanged() {
 			remoteHold = false;
 			accountRegistered = true;
 			pauseStreams();
+			
+			if (firstCallStarted)
+				checkForSessionClosed();
+				
 		}
 		
 		else if (this.tcState==TeleconsultationState.CALLING)
@@ -352,6 +407,7 @@ private void notifyTeleconsultationStateChanged() {
 			butHoldCall.setEnabled(true);
 			localHold = false;
 			remoteHold = false;
+			firstCallStarted = true;
 			playStreams();
  
 		}
@@ -372,9 +428,59 @@ private void notifyTeleconsultationStateChanged() {
 			remoteHold = true;
 			pauseStreams();
 		}
+		else if (this.tcState==TeleconsultationState.SESSION_CLOSED)
+		{
+			startReportActivity();
+		}
 	}
     
-    
+
+			private void checkForSessionClosed()
+			{
+				final Timer t = new Timer();
+				
+				t.schedule(new TimerTask() {
+					
+					@Override
+					public void run() {
+						
+						rcr.getSessionState(teleconsultation.getLastSession().getId(), teleconsultation.getSpecialist().getAccessToken(), new Listener<JSONObject>() {
+			            
+							@Override
+							public void onResponse(JSONObject res) {
+								Log.d(TAG, "Teleconsultation state response:" + res);
+								try {
+									String state = res.getJSONObject("data").getJSONObject("session").getString("state");
+									Log.d(TAG, "Teleconsultation state found:" + state);
+									if (state.equals(TeleconsultationSessionState.CLOSE.name()))
+									{
+										Log.d(TAG, "Closing session");
+										t.cancel();
+										setTeleconsultationState(TeleconsultationState.SESSION_CLOSED);
+									}
+											 
+								} catch (JSONException e) {
+									Log.e(TAG, "Error retrieving session state:" + e);
+									e.printStackTrace();
+								}
+								
+							
+								
+							}
+
+							
+						}, new ErrorListener() {
+			
+							@Override
+							public void onErrorResponse(VolleyError arg0) {
+								Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
+							}
+						});
+						// config.setTeleconsultation(selectedTc);
+					}
+				}, 0, 5000);
+			}
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -397,6 +503,15 @@ private void notifyTeleconsultationStateChanged() {
     	return false;
     }
 
+    
+    private void startReportActivity() {
+		Log.d(TAG, "Do report... Call activity!");
+		Intent i = new Intent(this,InnerArchetypeViewerActivity.class);
+		Log.d(TAG,"STARTING ACTIVITY InnerArchetypeViewerActivity");
+		startActivity(i);
+	 
+		//this.finish();
+	}
 
 	@Override
 	public void onPTZstartMove(PTZ_Direction dir) {

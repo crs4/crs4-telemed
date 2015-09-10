@@ -3,18 +3,17 @@ package most.demo.specapp.models;
 
 public enum TeleconsultationSessionState {
 	
-	NEW("NEW", "new session"),	
-	WAITING("WAITING","Session waiting for specialist"),
-	READY("READY","Session ready to start"),
-    RUN("RUN","Session in progress"),
-    CLOSE("CLOSE","Session is closed"),
-    CANCELED("CANCELED","Session is canceled");
+	NEW("new session"),	
+	WAITING("Session waiting for specialist"),
+	READY("Session ready to start"),
+    RUN("Session in progress"),
+    CLOSE("Session is closed"),
+    CANCELED("Session is canceled");
 	
-	private String state;
     private String description;
     
-    private TeleconsultationSessionState(String state, String description) {
-        this.state = state;
+    private TeleconsultationSessionState(String description) {
+       
         this.description = description;
     }
     
@@ -24,14 +23,14 @@ public enum TeleconsultationSessionState {
     
     @Override
     public String toString() {
-        return state;
+        return this.name();
     }
     
     public static TeleconsultationSessionState getState(String state)
     {
     	for (TeleconsultationSessionState st : TeleconsultationSessionState.values())
     	{
-    		if (st.state.equalsIgnoreCase(state))
+    		if (st.name().equalsIgnoreCase(state))
     			return st;
     	}
     	return null;

@@ -60,7 +60,7 @@ public class RemoteArchetypeViewerActivityExample extends ActionBarActivity{
 	
 	// REMOTE PYEHR SERVER CONNECTION PARAMS
 	private String serverIp = "156.148.132.223"; //"156.148.132.223";
-	private static int serverPort = 8000;
+	private static int serverPort = 8002;
 	private static RemotePyEHRConnector rc =null;  //new RemotePyEHRConnector(getActivity(), serverIp, serverPort);
 	private static ArchetypeSchemaProvider asp = null;
 	
