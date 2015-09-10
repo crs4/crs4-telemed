@@ -646,12 +646,16 @@ private void notifyTeleconsultationStateChanged() {
 	{ 
 		if (this.stream1!=null && this.stream1.getState() != StreamState.PLAYING) 
 		{
+			//this.stream1Fragment.setStreamVisible(true);
 			this.stream1.play();
+			
 		}
 		
 		if (this.streamEcho!=null  && this.streamEcho.getState() != StreamState.PLAYING)
 		{	
+			//this.streamEchoFragment.setStreamVisible(true);
 			this.streamEcho.play();
+			
 		}
 		
 	}
@@ -663,12 +667,13 @@ private void notifyTeleconsultationStateChanged() {
 		if (this.stream1!=null && this.stream1.getState() == StreamState.PLAYING)
 		{	
 			this.stream1.pause();
-		
+		   // this.stream1Fragment.setStreamVisible(false);
 		}
 		
 		if (this.streamEcho!=null && this.streamEcho.getState() == StreamState.PLAYING)
 		{
 			this.streamEcho.pause();
+			//this.streamEchoFragment.setStreamVisible(false);
 			
 		}
 		

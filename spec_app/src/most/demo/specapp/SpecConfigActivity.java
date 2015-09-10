@@ -41,7 +41,7 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 		                               "Teleconsultations"
 									   };
 	
-	private String configServerIP="156.148.132.223"; 
+	private String configServerIP= null; 
 	private int configServerPort = 8000;
 	
 	private static String TAG = "MostViewPager";
