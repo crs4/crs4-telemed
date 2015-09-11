@@ -10,6 +10,7 @@ import org.crs4.most.streaming.IStream;
 import org.crs4.most.streaming.StreamingEventBundle;
 import org.crs4.most.streaming.StreamingLib;
 import org.crs4.most.streaming.StreamingLibBackend;
+import org.crs4.most.streaming.enums.StreamState;
 import org.crs4.most.visualization.IStreamFragmentCommandListener;
 import org.crs4.most.visualization.StreamViewerFragment;
 import org.json.JSONObject;
@@ -194,6 +195,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			localHold = false;
 			accountRegistered = false;
 			remoteHold = false;
+			pauseStream();
 		}
 		else if (tcState==TeleconsultationState.READY)
 			{
@@ -207,6 +209,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 				localHold = false;
 				accountRegistered = true;
 				remoteHold = false;
+				pauseStream();
 			}
 		
 		
@@ -220,6 +223,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			popupHangupButton.setEnabled(true);
 			remoteHold = false;
 			localHold = false;
+			playStream();
 		}
 		
 		else if (this.tcState==TeleconsultationState.HOLDING)
@@ -231,6 +235,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			popupHangupButton.setEnabled(true);
 			
 			localHold = true;
+			pauseStream();
 		}
 		
 		else if (this.tcState==TeleconsultationState.REMOTE_HOLDING)
@@ -241,9 +246,32 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 			popupHoldButton.setEnabled(true);
 			popupHangupButton.setEnabled(true);
 			remoteHold = true;
+			pauseStream();
 		}
 		 
 	}
+	
+	private void playStream()
+	{ 
+		if (this.stream1!=null && this.stream1.getState() != StreamState.PLAYING) 
+		{
+			this.stream1Fragment.setStreamVisible();
+			this.stream1.play();
+			
+		}
+	}
+	
+	private void pauseStream()
+	{
+	
+		if (this.stream1!=null && this.stream1.getState() == StreamState.PLAYING)
+		{	
+			this.stream1.pause();
+		    this.stream1Fragment.setStreamInvisible("PAUSED");
+		}
+		
+	}
+	
 	
 	private void exitFromApp() {
 	    
@@ -271,6 +299,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 		this.prepareStream(streamName,streamUri);
 		
 		this.stream1Fragment = StreamViewerFragment.newInstance(streamName);
+		this.stream1Fragment.setPlayerButtonsVisible(false);
 		
 		// add the first fragment to the first container
     	FragmentTransaction fragmentTransaction = getFragmentManager()
@@ -446,9 +475,6 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	        popupWindow.setTouchable(true);
 	        popupWindow.setFocusable(true);
 		}
-		
-        
-       
 	}
 	
 	@Override
@@ -466,8 +492,6 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 	public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
 		Log.d(TAG, "Surface View created: preparing surface for stream" + streamId);
 		this.stream1.prepare(surfaceView);
-		this.stream1Fragment.setPlayerButtonsVisible(true);
-		
 	}
 
 	@Override

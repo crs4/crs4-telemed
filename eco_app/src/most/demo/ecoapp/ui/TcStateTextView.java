@@ -52,7 +52,7 @@ public class TcStateTextView extends TextView {
        		
        	default:
        		Log.d(TAG,"Called DEFAULT:");
-       		this.setTextColor(Color.BLUE);
+       		this.setTextColor(Color.WHITE);
        		//this.setBackgroundColor(Color.WHITE);
        		break;
        		 

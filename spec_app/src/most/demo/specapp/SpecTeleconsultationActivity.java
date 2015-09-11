@@ -541,7 +541,7 @@ private void notifyTeleconsultationStateChanged() {
 
 	@Override
 	public void onGoHome() {
-		String homePreset = "home"; // this.uriProps.getProperty("home_preset_ptz");
+		String homePreset =  this.configProps.getProperty("home_preset_ptz");   
 		this.ptzManager.goTo(homePreset);
 		
 	}
@@ -646,14 +646,14 @@ private void notifyTeleconsultationStateChanged() {
 	{ 
 		if (this.stream1!=null && this.stream1.getState() != StreamState.PLAYING) 
 		{
-			//this.stream1Fragment.setStreamVisible(true);
+			this.stream1Fragment.setStreamVisible();
 			this.stream1.play();
 			
 		}
 		
 		if (this.streamEcho!=null  && this.streamEcho.getState() != StreamState.PLAYING)
 		{	
-			//this.streamEchoFragment.setStreamVisible(true);
+			this.streamEchoFragment.setStreamVisible();
 			this.streamEcho.play();
 			
 		}
@@ -667,17 +667,15 @@ private void notifyTeleconsultationStateChanged() {
 		if (this.stream1!=null && this.stream1.getState() == StreamState.PLAYING)
 		{	
 			this.stream1.pause();
-		   // this.stream1Fragment.setStreamVisible(false);
+		    this.stream1Fragment.setStreamInvisible("PAUSED");
 		}
 		
 		if (this.streamEcho!=null && this.streamEcho.getState() == StreamState.PLAYING)
 		{
 			this.streamEcho.pause();
-			//this.streamEchoFragment.setStreamVisible(false);
+			this.streamEchoFragment.setStreamInvisible("PAUSED");
 			
-		}
-		
-		 
+		}	 
 	}
 
 	@Override
