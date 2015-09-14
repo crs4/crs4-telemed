@@ -172,8 +172,8 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
         public Fragment getItem(int position) {
         	Log.d(TAG,"Selected Page Item at pos:" + position);
         	
-        	  Toast.makeText(this.activity, 
-                      "getItem on position:::: " + position, Toast.LENGTH_SHORT).show();
+        	//  Toast.makeText(this.activity,      "getItem on position:::: " + position, Toast.LENGTH_SHORT).show();
+        	  
               if (position>=0 && position < pages.length)
                 return this.activity.configFragments[position];
               else
