@@ -44,10 +44,10 @@ public class TeleconsultationSession implements Serializable {
 		try {
 			JSONObject jcamera = sessionData.getJSONObject("room").getJSONObject("devices").getJSONObject(deviceName);
 			
-			return new Device(jcamera.getString("name"), jcamera.getJSONObject("capabilities").getString("streaming"),
-														 jcamera.getJSONObject("capabilities").getString("shot"),
-														 jcamera.getJSONObject("capabilities").getString("web"),
-														 jcamera.getJSONObject("capabilities").getString("ptz"),
+			return new Device(jcamera.getString("name"), jcamera.getJSONObject("capabilities").optString("streaming"),
+														 jcamera.getJSONObject("capabilities").optString("shot"),
+														 jcamera.getJSONObject("capabilities").optString("web"),
+														 jcamera.getJSONObject("capabilities").optString("ptz"),
 									 jcamera.getString("user"),
 									 jcamera.getString("password"));
 		} catch (JSONException e) {

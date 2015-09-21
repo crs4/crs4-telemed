@@ -174,7 +174,6 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
         public CharSequence getPageTitle(int position) {
             return pages[position];
         }
-
     }
 
 

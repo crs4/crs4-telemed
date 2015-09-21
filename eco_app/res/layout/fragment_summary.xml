@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left" 
         android:layout_marginRight="10dp"
-        android:text="INSERT ACCOUNT NUMBER" />
+        android:text="" />
   
   
     
@@ -94,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left" 
         android:layout_marginRight="10dp"
-        android:text="N.A" />
+        android:text="" />
  
     <Button
         android:id="@+id/buttonStartEmergency"

@@ -5,7 +5,7 @@
 
     <string name="holdCall">Hold</string>
     <string name="onHoldCall">On Hold</string>
-    <string name="makeCall">Make Call</string>
+    <string name="makeCall">Call</string>
     <string name="unoldCall">Unhold</string>
     <string name="hangupCall">Hangup</string>
     <string name="action_settings">Settings</string>

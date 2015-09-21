@@ -96,7 +96,7 @@ public class Fragment_Summary extends ConfigFragment {
     private void createNewTeleconsultation()
     {
     	Log.d(TAG, "Trying to create a new teleconsultation...");
-    	final String description = "new Test Teleconsultation";
+    	final String description = "Teleconsultation 0001";
     	final String severity =  severitySpinner.getSelectedItem().toString();
     	final Room room = (Room)roomSpinner.getSelectedItem();
     	retrieveRoomDevices(room);
@@ -112,7 +112,7 @@ public class Fragment_Summary extends ConfigFragment {
 					JSONObject tcData = new JSONObject(teleconsultationData);
 					String uuid = tcData.getJSONObject("data").getJSONObject("teleconsultation").getString("uuid");
 					String roomUUIO = room.getId();
-					Teleconsultation tc = new Teleconsultation(uuid,"N.A", description, severity, room,config.getEcoUser());
+					Teleconsultation tc = new Teleconsultation(uuid,"", description, severity, room,config.getEcoUser());
 			    	
 					createTeleconsultationSession(tc);
 				} catch (JSONException e) {

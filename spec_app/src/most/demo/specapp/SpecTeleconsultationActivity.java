@@ -219,7 +219,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 	    	// Instance the Echo Stream
 	    	
 	    	Device encoder = teleconsultation.getLastSession().getEncoder();
-	    	
+	    	Log.d(TAG, "ENCODER check");
+	    	Log.d(TAG, "ENCODER NULLO ??? " + encoder);
 	    	HashMap<String,String> stream_echo_params = new HashMap<String,String>();
 	    	stream_echo_params.put("name", ECHO_STREAM);
 	    	
