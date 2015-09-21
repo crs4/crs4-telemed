@@ -377,7 +377,7 @@ private void notifyTeleconsultationStateChanged() {
 		txtTcState.setTeleconsultationState(this.tcState);
 		if (this.tcState==TeleconsultationState.IDLE)
 		{  
-			butMakeCall.setText("Make");
+			butMakeCall.setText("Call");
 			butMakeCall.setEnabled(false);
 			butHoldCall.setEnabled(false);
 			localHold = false;
@@ -388,7 +388,7 @@ private void notifyTeleconsultationStateChanged() {
 		}
 		else if (this.tcState==TeleconsultationState.READY)
 		{  
-			butMakeCall.setText("Make");
+			butMakeCall.setText("Call");
 			butMakeCall.setEnabled(true);
 			butHoldCall.setEnabled(false);
 			localHold = false;
