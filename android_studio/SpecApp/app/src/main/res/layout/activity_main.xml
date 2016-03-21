@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#faffffff"
+    >
+
+   
+ <LinearLayout  
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#23232323"
+    android:gravity="center_horizontal"
+    >
+    
+     <Button
+     android:id="@+id/butJson"
+     android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+     android:text="@string/but_json"
+    />
+    
+    <Button
+     android:id="@+id/butSave"
+     android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+     android:text="@string/but_save"
+    />
+    
+     <Button
+     android:id="@+id/butReset"
+     android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+     android:text="@string/but_reset"
+    />
+     
+    </LinearLayout>
+    
+    
+    
+    
+<ScrollView 
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical">
+
+<LinearLayout 
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    />
+
+ </ScrollView>
+ 
+
+    
+ </LinearLayout>

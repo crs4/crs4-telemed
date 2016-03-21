@@ -1,0 +1,34 @@
+{
+	"en":{
+		"at0000":{
+			"text":"Report demo most",
+			"description":"DEMO section"
+		},
+	  "at0001" : { 
+			"text":"FAST scan",
+			"description":"Focused Assessment with Sonography for Trauma"
+	  	},
+			
+			"at0002" : { 
+				"text":"Abdominal scan",
+				"description":"Abdomen ultrasound scan"
+		  	}
+	  	
+	},
+	"it":{
+		"at0000":{
+			"text":"Report demo most",
+			"description":"Sezione demo"
+		},
+	  "at0001" : { 
+			"text":"Eco FAST",
+			"description":"Report esame FAST"
+	  	},
+			
+			"at0002" : { 
+				"text":"Ecografia addominale",
+				"description":"Report ecografia addominale"
+		  	}
+	  	
+	}
+}

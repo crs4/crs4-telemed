@@ -2,9 +2,9 @@ devel:
 
 	echo "clone libs"
 
-	@if ! [ -d libs/most ]; then git clone https://github.com/crs4/most libs/most -b develop; fi
-	@if ! [ -d libs/most-streaming ]; then git clone https://github.com/crs4/most-streaming libs/most-streaming -b develop; fi
-	@if ! [ -d libs/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b develop; fi
+	@if ! [ -d libs/most ]; then git clone https://github.com/crs4/most libs/most -b master; fi
+	@if ! [ -d libs/most-streaming ]; then git clone https://github.com/crs4/most-streaming libs/most-streaming -b master; fi
+	@if ! [ -d libs/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b master; fi
 	@if ! [ -d libs/most-visualization ]; then git clone https://github.com/crs4/most-visualization libs/most-visualization -b master; fi
 
 	echo "link libs"

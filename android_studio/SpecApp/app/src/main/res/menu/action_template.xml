@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+    	xmlns:custom="http://schemas.android.com/apk/res-auto"  
+     >
+
+    <item
+       android:id="@+id/menu_italy"
+       android:orderInCategory="100"
+       custom:showAsAction="always"
+       android:icon="@drawable/italy32"
+       android:title="@string/it"/>
+    
+    <item
+       android:id="@+id/menu_english"
+       android:orderInCategory="100"
+       custom:showAsAction="always"
+       android:icon="@drawable/uk32"
+       android:title="@string/en"/>
+    
+     <item
+        android:id="@+id/action_quit"
+        android:orderInCategory="200"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:title="@string/action_quit"
+        custom:showAsAction="always"/>
+
+</menu>

@@ -1,0 +1,49 @@
+{
+	"sections":[
+		"data"
+	],
+	"items":{  
+		
+	   "data[at0001]/events[at0002]/data[at0003]/items[at0004]":{
+			"priority":1
+		},
+		
+		"data[at0001]/events[at0002]/data[at0003]/items[at0007]":{
+			"priority":2
+		},
+		
+		"data[at0001]/events[at0002]/data[at0003]/items[at0010]":{
+			"priority":3
+		},
+		
+		"data[at0001]/events[at0002]/data[at0003]/items[at0013]":{
+			"priority":4
+		},
+		
+		"data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0005]":{
+			"priority":1
+		},
+		"data[at0001]/events[at0002]/data[at0003]/items[at0004]/items[at0006]":{
+			"priority":2
+		},
+		
+		"data[at0001]/events[at0002]/data[at0003]/items[at0007]/items[at0008]":{
+			"priority":1
+		},
+		"data[at0001]/events[at0002]/data[at0003]/items[at0007]/items[at0009]":{
+			"priority":2
+		},
+		"data[at0001]/events[at0002]/data[at0003]/items[at0010]/items[at0011]":{
+			"priority":1
+		},
+		"data[at0001]/events[at0002]/data[at0003]/items[at0010]/items[at0012]":{
+			"priority":2
+		},
+		"data[at0001]/events[at0002]/data[at0003]/items[at0013]/items[at0014]":{
+			"priority":1
+		},
+		"data[at0001]/events[at0002]/data[at0003]/items[at0013]/items[at0015]":{
+			"priority":2
+		}
+	}
+}
