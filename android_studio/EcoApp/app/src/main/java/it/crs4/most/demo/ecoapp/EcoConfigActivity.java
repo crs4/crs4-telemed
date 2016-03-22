@@ -13,12 +13,10 @@ import it.crs4.most.demo.ecoapp.models.Device;
 import it.crs4.most.demo.ecoapp.models.EcoUser;
 import it.crs4.most.demo.ecoapp.models.Patient;
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
-import it.crs4.most.demo.ecoapp.RemoteConfigReader;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -53,7 +51,7 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	private String clientId = null;
 	private String clientSecret;
 	
-	private it.crs4.most.demo.ecoapp.RemoteConfigReader rcr;
+	private RemoteConfigReader rcr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

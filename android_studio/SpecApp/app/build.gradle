@@ -31,6 +31,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.android.support:support-v4'
     compile(name: "MOSTStreaming-arm-debug", ext: "aar")
     compile(name: "MOSTVisualization-debug", ext: "aar")
     compile(name: "MOSTVoip-arm-debug", ext: "aar")

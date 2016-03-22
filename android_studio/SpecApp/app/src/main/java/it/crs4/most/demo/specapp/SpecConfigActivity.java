@@ -63,7 +63,6 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
         this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId, this.clientSecret);
 
         setupConfigFragments();
-
         setContentView(R.layout.config_activity_main);
         vpPager = (MostViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(this, getSupportFragmentManager());
@@ -114,41 +113,6 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
         this.configFragments[1] = Fragment_TeleconsultationSelection.newInstance(this, 2, "Teleconsultations");
     }
 
-    // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
-    public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
-
-        private SpecConfigActivity activity = null;
-
-        public MyPagerAdapter(SpecConfigActivity activity, FragmentManager fragmentManager) {
-            super(fragmentManager);
-            this.activity = activity;
-
-        }
-
-        // Returns total number of pages
-        @Override
-        public int getCount() {
-            return pages.length;
-        }
-
-        // Returns the fragment to display for that page
-        @Override
-        public Fragment getItem(int position) {
-            Log.d(TAG, "Selected Page Item at pos:" + position);
-
-            if (position >= 0 && position < pages.length)
-                return this.activity.configFragments[position];
-            else
-                return null;
-        }
-
-        // Returns the page title for the top indicator
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return pages[position];
-        }
-    }
-
     private void startTeleconsultationActivity() {
         Intent i = new Intent(this, SpecTeleconsultationActivity.class);
         Log.d(TAG, "STARTING ACTIVITY WITH TELECONSULTATION: " + this.teleconsultation.getInfo());
@@ -167,7 +131,6 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 
     @Override
     public SpecUser getSpecUser() {
-
         return this.specUser;
     }
 
@@ -207,6 +170,41 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
     @Override
     public RemoteConfigReader getRemoteConfigReader() {
         return this.rcr;
+    }
+
+    // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
+    public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
+
+        private SpecConfigActivity activity = null;
+
+        public MyPagerAdapter(SpecConfigActivity activity, FragmentManager fragmentManager) {
+            super(fragmentManager);
+            this.activity = activity;
+
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return pages.length;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            Log.d(TAG, "Selected Page Item at pos:" + position);
+
+            if (position >= 0 && position < pages.length)
+                return this.activity.configFragments[position];
+            else
+                return null;
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return pages[position];
+        }
     }
 
 }

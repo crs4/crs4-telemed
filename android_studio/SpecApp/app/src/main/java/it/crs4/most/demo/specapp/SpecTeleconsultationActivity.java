@@ -77,7 +77,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
         IStreamFragmentCommandListener,
         IStreamProvider {
 
-    private static String TAG = "SpecMainActivity";
+    private static String TAG = "SpecTeleconsultationActivity";
 
     //ID for the menu exit option
     private final int ID_MENU_EXIT = 1;

@@ -26,8 +26,7 @@
         <activity
             android:name=".EcoTeleconsultationActivity"
             android:label="@string/title_activity_teleconsultation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
