@@ -18,22 +18,19 @@ android {
         }
     }
     repositories {
-        flatDir {
-            dirs '../../../../most-streaming/android/android_studio/MOSTStreamingLib/MOSTStreaming/build/outputs/aar/',
-                 '../../../../most-voip/android/android_studio/MOSTVoipLib/MOSTVoip/build/outputs/aar/',
-                 '../../../../most-visualization/android/android_studio/MOSTVisualizationLib/MOSTVisualization/build/outputs/aar/',
-                 '../../../../most-report/client/android/android_studio/MOSTEhrLib/MOSTEhr/build/outputs/aar/'
-        }
+        mavenLocal()
     }
 }
 
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.mcxiaoke.volley:library:1.0.19'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.android.support:support-v4'
-    compile(name: "MOSTStreaming-arm-debug", ext: "aar")
-    compile(name: "MOSTVisualization-debug", ext: "aar")
-    compile(name: "MOSTVoip-arm-debug", ext: "aar")
-    compile(name: "MOSTEhr-debug", ext: "aar")
+    compile name: "MOSTStreaming", ext: "aar", group: 'it.crs4.most.streaming', version: '1.0'
+    compile name: "MOSTVisualization", ext: "aar", group: 'it.crs4.most.visualization', version: '1.0'
+    compile name: "MOSTVisualization", ext: "aar", group: 'it.crs4.most.visualization', version: '1.0'
+    compile name: "MOSTVoip", ext: "aar", group: 'it.crs4.most.voip', version: '1.0'
 }
