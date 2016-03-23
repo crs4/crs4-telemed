@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'maven'
 
 android {
     compileSdkVersion 21
@@ -17,22 +18,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    repositories {
-        flatDir {
-            dirs '../../../../most-streaming/android/android_studio/MOSTStreamingLib/MOSTStreaming/build/outputs/aar/',
-                 '../../../../most-voip/android/android_studio/MOSTVoipLib/MOSTVoip/build/outputs/aar/',
-                 '../../../../most-visualization/android/android_studio/MOSTVisualizationLib/MOSTVisualization/build/outputs/aar/'
-        }
-    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.android.support:support-v4'
     compile 'com.nhaarman.supertooltips:library:3.0.+'
-    compile(name: "MOSTStreaming-arm-debug", ext: "aar")
-    compile(name: "MOSTVisualization-debug", ext: "aar")
-    compile(name: "MOSTVoip-arm-debug", ext: "aar")
+    compile name: "MOSTStreaming", ext: "aar", group: 'it.crs4.most.streaming', version: '1.0'
+    compile name: "MOSTVisualization", ext: "aar", group: 'it.crs4.most.visualization', version: '1.0'
+    compile name: "MOSTVoip", ext: "aar", group: 'it.crs4.most.voip', version: '1.0'
 }
