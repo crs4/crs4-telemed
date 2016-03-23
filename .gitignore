@@ -78,7 +78,7 @@ docs/_build/
 .ipynb_checkpoints
 .idea
 *.sqlite3
-settings.py
+#settings.py
 
 
 #IOS Examples
