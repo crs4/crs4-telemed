@@ -1,5 +1,4 @@
 devel:
-
 	echo "clone libs"
 
 	@if ! [ -d libs/most ]; then git clone https://github.com/crs4/most libs/most -b master; fi
@@ -16,65 +15,57 @@ devel:
 
 	cd server; ln -s ../libs/most/src/provider provider;
 
-
 clean:
-
 	echo "clean devel mode"
 	
-	@if [[ `git -C libs/most status --porcelain` ]]; then \
-			echo "CHANGES - most repository not removed"; \
-		else \
-			echo "NO CHANGES - remove most repository"; \
-			rm -fr libs/most; \
-			rm -f server/most/web/utils; \
-			rm -f server/most/web/users; \
-			rm -f server/most/web/authentication; \
+	rm server/provider
+
+	@if [ `git -C libs/most status --porcelain` ]]; then \
+		echo "CHANGES - most repository not removed"; \
+	else \
+		echo "NO CHANGES - remove most repository"; \
+		rm -fr libs/most; \
+		rm -f server/most/web/utils; \
+		rm -f server/most/web/users; \
+		rm -f server/most/web/authentication; \
 	fi
 
-	@if [[ `git -C libs/most-streaming status --porcelain` ]]; then \
-			echo "CHANGES - most streaming repository not removed"; \
-		else \
-			echo "NO CHANGES - remove most streaming repository"; \
-			rm -fr libs/most-streaming; \
-			rm -f server/most/web/streaming; \
+	@if [ `git -C libs/most-streaming status --porcelain` ]]; then \
+		echo "CHANGES - most streaming repository not removed"; \
+	else \
+		echo "NO CHANGES - remove most streaming repository"; \
+		rm -fr libs/most-streaming; \
+		rm -f server/most/web/streaming; \
 	fi
 
-	@if [[ `git -C libs/most-voip status --porcelain` ]]; then \
-			echo "CHANGES - most voip repository not removed"; \
-		else \
-			echo "NO CHANGES - remove most voip repository"; \
-			rm -fr libs/most-voip; \
-			rm -f server/most/web/voip; \
+	@if [ `git -C libs/most-voip status --porcelain` ]; then \
+		echo "CHANGES - most voip repository not removed"; \
+	else \
+		echo "NO CHANGES - remove most voip repository"; \
+		rm -fr libs/most-voip; \
+		rm -f server/most/web/voip; \
 	fi
 
 
-	@if [[ `git -C libs/most-visualization status --porcelain` ]]; then \
-				echo "CHANGES - most visualization repository not removed"; \
-			else \
-				echo "NO CHANGES - remove most visualization repository"; \
-				rm -fr libs/most-visualization; \
-		fi
-
-	
-
+	@if [ `git -C libs/most-visualization status --porcelain` ]; then \
+		echo "CHANGES - most visualization repository not removed"; \
+	else \
+		echo "NO CHANGES - remove most visualization repository"; \
+		rm -fr libs/most-visualization; \
+	fi
 
 run:
-
 	cd server/most; PYTHONPATH=.. python manage.py runserver 0.0.0.0:8000
 
 
 shell: 
-
 	cd server/most; PYTHONPATH=.. python manage.py shell
 
 sync:
-
 	cd server/most; PYTHONPATH=.. python manage.py migrate
 
 dump:
 	@cd examples/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions --exclude admin --natural-foreign
 
 test:
-
 	cd src/most/web/medicalrecords/; nosetests --logging-level=DEBUG -s
-
