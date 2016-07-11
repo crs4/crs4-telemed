@@ -19,14 +19,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.support.v4.widget.DrawerLayout;
+import android.widget.ListView;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 
-public class EcoConfigActivity extends ActionBarActivity implements IConfigBuilder {
+public class EcoConfigActivity extends AppCompatActivity implements IConfigBuilder {
    
 	private static String [] pages = { "User Selection",
 									   "Pass Code",
@@ -50,8 +58,54 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
 	private int configServerPort;
 	private String clientId = null;
 	private String clientSecret;
-	
 	private RemoteConfigReader rcr;
+
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
+
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+		String TAG = "DrawerItemClickListener";
+
+		@Override
+		public void onItemClick(AdapterView parent, View view, int position, long id) {
+			String value = (String) parent.getItemAtPosition(position);
+			Log.d(TAG, String.format("position %d, value %s", position, value));
+
+			switch (position){
+				case 0: //SETTINGS
+					Intent intent = new Intent(EcoConfigActivity.this, SettingsActivity.class);
+					startActivity(intent);
+					break;
+				case 1: //EXIT
+					finish();
+					break;
+
+			}
+		}
+	}
+
+//	/** Swaps fragments in the main content view */
+//	private void selectItem(int position) {
+//		// Create a new fragment and specify the planet to show based on position
+//		Fragment fragment = new PlanetFragment();
+//		Bundle args = new Bundle();
+//		args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+//		fragment.setArguments(args);
+//
+//		// Insert the fragment by replacing any existing fragment
+//		FragmentManager fragmentManager = getFragmentManager();
+//		fragmentManager.beginTransaction()
+//				.replace(R.id.content_frame, fragment)
+//				.commit();
+//
+//		// Highlight the selected item, update the title, and close the drawer
+//		mDrawerList.setItemChecked(position, true);
+//		setTitle(mPlanetTitles[position]);
+//		mDrawerLayout.closeDrawer(mDrawerList);
+//	}
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,29 +127,68 @@ public class EcoConfigActivity extends ActionBarActivity implements IConfigBuild
         adapterViewPager = new MyPagerAdapter(this,getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
         vpPager.setOnPageListener(pages);
-        
+		Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+		setSupportActionBar(myToolbar);
         //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         //actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+		// Set the adapter for the list view
+
+		String[] items = {"Settings", "Exit"};
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, items));
+		// Set the list's click listener
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+
+
+		mDrawerToggle = new ActionBarDrawerToggle(
+				this,                  /* host Activity */
+				mDrawerLayout,         /* DrawerLayout object */
+				myToolbar,
+				R.string.drawer_open,  /* "open drawer" description for accessibility */
+				R.string.drawer_close  /* "close drawer" description for accessibility */
+		) {
+
+			/** Called when a drawer has settled in a completely closed state. */
+			public void onDrawerClosed(View view) {
+				super.onDrawerClosed(view);
+//				getActionBar().setTitle(mTitle);
+			}
+
+			/** Called when a drawer has settled in a completely open state. */
+			public void onDrawerOpened(View drawerView) {
+				super.onDrawerOpened(drawerView);
+//				getActionBar().setTitle(mDrawerTitle);
+			}
+		};
+
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+
 	}
-	
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
+	}
+
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.config, menu);
 		return true;
 	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_exit:
-			finish();
-			break;
-		
-		}
-		return true;
-	}
-	
 
 	private void setupActionBar()
 	{
