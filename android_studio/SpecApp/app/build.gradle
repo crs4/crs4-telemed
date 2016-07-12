@@ -27,7 +27,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:support-v4'
     compile name: "MOSTStreaming", ext: "aar", group: 'it.crs4.most.streaming', version: '1.0'
-    compile name: "MOSTVisualization", ext: "aar", group: 'it.crs4.most.visualization', version: '1.0'
+//    compile name: "MOSTVisualization", group: 'it.crs4.most.visualization', version: '1.0'
+    compile('it.crs4.most.visualization:MOSTVisualization:1.0@aar') {
+        transitive=true
+    }
     compile name: "MOSTVoip", ext: "aar", group: 'it.crs4.most.voip', version: '1.0'
     compile name: "MOSTEhr", ext: "aar", group: 'it.crs4.most.report.ehr', version: '1.0'
+    compile project(':aRBaseLib')
 }

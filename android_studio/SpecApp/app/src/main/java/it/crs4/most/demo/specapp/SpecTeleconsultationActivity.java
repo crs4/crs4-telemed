@@ -37,6 +37,7 @@ import it.crs4.most.demo.specapp.models.Device;
 import it.crs4.most.demo.specapp.models.Teleconsultation;
 import it.crs4.most.demo.specapp.models.TeleconsultationSessionState;
 import it.crs4.most.demo.specapp.ui.TcStateTextView;
+import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.voip.Utils;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.VoipLib;
@@ -76,7 +77,8 @@ import com.android.volley.VolleyError;
 public class SpecTeleconsultationActivity extends AppCompatActivity implements Handler.Callback,
         IPtzCommandReceiver,
         IStreamFragmentCommandListener,
-        IStreamProvider {
+        IStreamProvider,
+        ARFragment.OnCompleteListener{
 
     private static String TAG = "SpecTeleconsultationActivity";
 
@@ -88,7 +90,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private IStream stream1 = null;
     private IStream streamEcho = null;
 
-    private StreamViewerFragment stream1Fragment = null;
+    private ARFragment stream1Fragment = null;
     private StreamViewerFragment streamEchoFragment = null;
 
     private TeleconsultationState tcState = TeleconsultationState.IDLE;
@@ -205,7 +207,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             Log.d(TAG, "STREAM 1 INSTANCE");
 
             // Instance the first StreamViewer fragment where to render the first stream by passing the stream name as its ID.
-            this.stream1Fragment = StreamViewerFragment.newInstance(stream1.getName());
+            this.stream1Fragment = ARFragment.newInstance(stream1.getName());
             this.stream1Fragment.setPlayerButtonsVisible(false);
 
 
@@ -758,6 +760,16 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         Log.d(TAG, "OnHoldSoundPath:" + onHoldSoundPath);
 
         return params;
+
+    }
+
+    @Override
+    public void onFragmentCreate() {
+
+    }
+
+    @Override
+    public void onFragmentResume() {
 
     }
 
