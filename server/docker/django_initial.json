@@ -1,0 +1,517 @@
+[
+  {
+    "fields": {
+      "domain": "example.com",
+      "name": "example.com"
+    },
+    "model": "sites.site",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "last_name": "Admin",
+      "user_type": "AD",
+      "is_staff": true,
+      "user_permissions": [],
+      "date_joined": "2016-07-12T13:11:09.156Z",
+      "first_name": "Admin",
+      "uuid": "pok6c275l6zm7gzgdprn3tlcvtt4sb64",
+      "last_modified_timestamp": "2016-07-12T13:11:09.180Z",
+      "is_superuser": true,
+      "last_login": "2016-07-13T07:03:59.667Z",
+      "creation_timestamp": "2016-07-12T13:11:09.156Z",
+      "email": "admin@admin.it",
+      "numeric_password": null,
+      "username": "admin",
+      "is_active": true,
+      "phone": null,
+      "is_admin": true,
+      "groups": [],
+      "password": "pbkdf2_sha256$15000$AoqPebNX070u$tIDJvmH89qhqd3EaWeRlUuEemDb1AOw3LnJmsikqE+k=",
+      "mobile": null,
+      "gender": "U",
+      "certified_email": null,
+      "birth_date": null
+    },
+    "model": "users.mostuser",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "last_name": "Grafista",
+      "user_type": "CL",
+      "is_staff": true,
+      "user_permissions": [],
+      "date_joined": "2016-07-12T13:24:22.941Z",
+      "first_name": "Eco",
+      "uuid": "sb4htkhsvoyyoxy2wqfcvw76sacgekig",
+      "last_modified_timestamp": "2016-07-12T15:06:21.824Z",
+      "is_superuser": false,
+      "last_login": "2016-07-12T16:15:53.682Z",
+      "creation_timestamp": "2016-07-12T13:24:22.941Z",
+      "email": "ecografista@eco.it",
+      "numeric_password": "12345",
+      "username": "eco",
+      "is_active": true,
+      "phone": "",
+      "is_admin": false,
+      "groups": [],
+      "password": "pbkdf2_sha256$15000$25lV2GxuZ2p3$rE6r99YDo1VfCFh6Nx+HgfNxhZUunMtgjviLIDgLHoA=",
+      "mobile": "",
+      "gender": "M",
+      "certified_email": "",
+      "birth_date": null
+    },
+    "model": "users.mostuser",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "last_name": "Ialista",
+      "user_type": "CL",
+      "is_staff": true,
+      "user_permissions": [],
+      "date_joined": "2016-07-12T13:25:10.174Z",
+      "first_name": "Spec",
+      "uuid": "afxacgutazd657uriworwvf7bkfekybg",
+      "last_modified_timestamp": "2016-07-12T13:25:13.113Z",
+      "is_superuser": false,
+      "last_login": "2016-07-12T16:15:48.567Z",
+      "creation_timestamp": "2016-07-12T13:25:10.174Z",
+      "email": "specialista@eco.it",
+      "numeric_password": "",
+      "username": "spec",
+      "is_active": true,
+      "phone": "",
+      "is_admin": false,
+      "groups": [],
+      "password": "pbkdf2_sha256$15000$qih7kB4wPlsV$b4QGE24UXIbA28TGy+MDvuN1Nt+FfyALg0K64S3J3uY=",
+      "mobile": "",
+      "gender": "U",
+      "certified_email": "",
+      "birth_date": null
+    },
+    "model": "users.mostuser",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "shot_url_template": "",
+      "web_url_template": "",
+      "has_ptz": false,
+      "description": "Encoder Axis Q7401",
+      "has_shot": false,
+      "ptz_url_template": "",
+      "has_streaming": true,
+      "has_web": false,
+      "streaming_url_template": "rtsp://{user}:{password}@{ip_address}/axis-media/media.amp",
+      "name": "AQ7401"
+    },
+    "model": "streaming.devicemodel",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "shot_url_template": "http://{ip_address}/axis-cgi/jpg/image.cgi?resolution=[width]x[height]",
+      "web_url_template": "http://{user}:{password}@{ip_address}/axis-cgi/mjpg/video.cgi?resolution=[width]x[height]",
+      "has_ptz": true,
+      "description": "Camera Axis PTZ 214",
+      "has_shot": true,
+      "ptz_url_template": "http://{ip_address}/axis-cgi/com/ptz.cgi",
+      "has_streaming": true,
+      "has_web": true,
+      "streaming_url_template": "rtsp://{user}:{password}@{ip_address}/mpeg4/media.amp",
+      "name": "Axis PTZ"
+    },
+    "model": "streaming.devicemodel",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "uuid": "nzn5acgz6m3lwxdkxjmlf3vvgpzslqr5",
+      "ip_address": "156.148.133.11",
+      "user": "specialista",
+      "model": 2,
+      "password": "speciali",
+      "type": "AV",
+      "name": "Axis PTZ"
+    },
+    "model": "streaming.streamingdevice",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "uuid": "4xj775tvpl2nhbnrkuyksxdjt7ru7cmg",
+      "ip_address": "156.148.133.12",
+      "user": "specialista",
+      "model": 1,
+      "password": "speciali",
+      "type": "AV",
+      "name": "Axis Encoder"
+    },
+    "model": "streaming.streamingdevice",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "application_type": "AA",
+      "task_groups": [
+        1
+      ],
+      "uuid": "18539040da2d088c",
+      "device_platform": "ANDROID"
+    },
+    "model": "teleconsultation.device",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "application_type": "SA",
+      "task_groups": [
+        1
+      ],
+      "uuid": "bfb8c90589f768a2",
+      "device_platform": "ANDROID"
+    },
+    "model": "teleconsultation.device",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "application_type": "AA",
+      "task_groups": [
+        1
+      ],
+      "uuid": "2e4a1a0bcc79dbeb",
+      "device_platform": "ANDROID"
+    },
+    "model": "teleconsultation.device",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "has_camera": true,
+      "description": "Camera B228 @ CRS4",
+      "uuid": "t3fhnipi42jd5j3pfhipxy4eijxoxy62",
+      "name": "B228",
+      "task_group": 1,
+      "camera_device": 1,
+      "has_encoder": true,
+      "encoder_device": 2
+    },
+    "model": "teleconsultation.room",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "specialist": [
+        "spec"
+      ],
+      "updated": "2016-07-12T15:38:34.186Z",
+      "uuid": "lbkq52v5m7xigefts2gjlbujjener2o2",
+      "created": "2016-07-12T15:38:03.086Z",
+      "severity": "LOW",
+      "applicant": [
+        "eco"
+      ],
+      "task_group": 1,
+      "state": "ACTIVE",
+      "description": "Teleconsultation 0001"
+    },
+    "model": "teleconsultation.teleconsultation",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "specialist": [
+        "spec"
+      ],
+      "updated": "2016-07-12T15:56:21.866Z",
+      "uuid": "f3jmfx5zlo4zx7zuxpkxobthzibiqrjn",
+      "created": "2016-07-12T15:56:00.889Z",
+      "severity": "LOW",
+      "applicant": [
+        "eco"
+      ],
+      "task_group": 1,
+      "state": "ACTIVE",
+      "description": "Teleconsultation 0001"
+    },
+    "model": "teleconsultation.teleconsultation",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "specialist": [
+        "spec"
+      ],
+      "updated": "2016-07-12T16:15:53.709Z",
+      "uuid": "sx5y7aokpcpycwfwc2i45x6fpefxanqm",
+      "created": "2016-07-12T16:15:32.614Z",
+      "severity": "LOW",
+      "applicant": [
+        "eco"
+      ],
+      "task_group": 1,
+      "state": "ACTIVE",
+      "description": "Teleconsultation 0001"
+    },
+    "model": "teleconsultation.teleconsultation",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "updated": "2016-07-12T15:38:34.210Z",
+      "room": 1,
+      "created": "2016-07-12T15:38:03.498Z",
+      "state": "RUN",
+      "teleconsultation": 1,
+      "uuid": "3vju5hoyujeydaq7f6otz5iv2wfcmf3i"
+    },
+    "model": "teleconsultation.teleconsultationsession",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "updated": "2016-07-12T15:56:21.893Z",
+      "room": 1,
+      "created": "2016-07-12T15:56:01.096Z",
+      "state": "RUN",
+      "teleconsultation": 2,
+      "uuid": "b2kk7623oqy6qa2w65bprzac3usicz2r"
+    },
+    "model": "teleconsultation.teleconsultationsession",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "updated": "2016-07-12T16:15:53.733Z",
+      "room": 1,
+      "created": "2016-07-12T16:15:32.924Z",
+      "state": "RUN",
+      "teleconsultation": 3,
+      "uuid": "5ltdknx3or37n5t6zv2dww5bmoivgfvr"
+    },
+    "model": "teleconsultation.teleconsultationsession",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "port": 5060,
+      "name": "Demo SIP Server",
+      "address": "156.148.33.193"
+    },
+    "model": "voip.sipserver",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "port": 3478,
+      "name": "Demo Turn Server",
+      "address": "156.148.33.193"
+    },
+    "model": "voip.turnserver",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "turn_server": 1,
+      "name": "Ecografista",
+      "extension": "eco",
+      "sip_username": "eco",
+      "sip_transport": "tcp",
+      "sip_server": 1,
+      "user": [
+        "eco"
+      ],
+      "sip_password": "eco",
+      "turn_password": "eco",
+      "turn_username": "eco"
+    },
+    "model": "voip.account",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "turn_server": 1,
+      "name": "Specialista",
+      "extension": "spec",
+      "sip_username": "spec",
+      "sip_transport": "tcp",
+      "sip_server": 1,
+      "user": [
+        "spec"
+      ],
+      "sip_password": "spec",
+      "turn_password": "spec",
+      "turn_username": "spec"
+    },
+    "model": "voip.account",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "task_group_type": "HF",
+      "name": "CRS4",
+      "hospital": "",
+      "is_active": true,
+      "uuid": "2cmcabo7e4enkpytsvrrxok6thykxgdh",
+      "related_task_groups": [],
+      "users": [
+        [
+          "eco"
+        ],
+        [
+          "spec"
+        ]
+      ],
+      "is_health_care_provider": true,
+      "description": "Demo Task Group @ CRS4"
+    },
+    "model": "users.taskgroup",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T15:32:20.842Z",
+      "expires": "2016-08-11T15:32:20.842Z",
+      "modified": "2016-07-12T15:32:20.842Z",
+      "taskgroup": 1,
+      "token": "5d09e0198a4350bc2d11fc86221084d0bddba49e",
+      "client": 1,
+      "user": [
+        "eco"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T15:37:44.804Z",
+      "expires": "2016-08-11T15:37:44.804Z",
+      "modified": "2016-07-12T15:37:44.804Z",
+      "taskgroup": 1,
+      "token": "c29043cafc2ecabbd3938bb4fafa914e1205e469",
+      "client": 1,
+      "user": [
+        "spec"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T15:38:21.871Z",
+      "expires": "2016-08-11T15:38:21.871Z",
+      "modified": "2016-07-12T15:38:21.871Z",
+      "taskgroup": 1,
+      "token": "4173d4c8c6094f2a9f5614711c6c80c3d8a6bcf9",
+      "client": 1,
+      "user": [
+        "spec"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T15:55:54.766Z",
+      "expires": "2016-08-11T15:55:54.766Z",
+      "modified": "2016-07-12T15:55:54.766Z",
+      "taskgroup": 1,
+      "token": "90e3ad4795163cb955d3d740bf0215062f8b4c21",
+      "client": 1,
+      "user": [
+        "eco"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T15:56:15.048Z",
+      "expires": "2016-08-11T15:56:15.049Z",
+      "modified": "2016-07-12T15:56:15.049Z",
+      "taskgroup": 1,
+      "token": "9f5542a8a31e152b6fda05f1ab7ffb9b71e8b439",
+      "client": 1,
+      "user": [
+        "spec"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T16:13:52.189Z",
+      "expires": "2016-08-11T16:13:52.190Z",
+      "modified": "2016-07-12T16:13:52.189Z",
+      "taskgroup": 1,
+      "token": "2d64048d2b383a720169632cfe2b463f69b001ea",
+      "client": 1,
+      "user": [
+        "eco"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T16:15:28.026Z",
+      "expires": "2016-08-11T16:15:28.026Z",
+      "modified": "2016-07-12T16:15:28.026Z",
+      "taskgroup": 1,
+      "token": "bd05f0416e1630f9a853bc98268940297cbe30dc",
+      "client": 1,
+      "user": [
+        "eco"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "created": "2016-07-12T16:15:43.238Z",
+      "expires": "2016-08-11T16:15:43.239Z",
+      "modified": "2016-07-12T16:15:43.238Z",
+      "taskgroup": 1,
+      "token": "b33a84dc3240d98cd9aee48de015daa1bc6b7462",
+      "client": 1,
+      "user": [
+        "spec"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "name": "Android Eco App",
+      "created": "2016-07-12T15:31:23.580Z",
+      "url": "http://156.148.33.193/",
+      "client_type": 1,
+      "modified": "2016-07-12T16:13:09.556Z",
+      "redirect_uri": "http://156.148.33.193",
+      "user": null,
+      "client_id": "9db4f27b3d9c8e352b5c",
+      "client_secret": "00ea399c013349a716ea3e47d8f8002502e2e982"
+    },
+    "model": "provider.client",
+    "pk": 1
+  }
+]

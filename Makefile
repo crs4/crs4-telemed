@@ -13,7 +13,7 @@ devel:
 	ln -s ../../../libs/most-streaming/service/src/most/web/streaming streaming; \
 	ln -s ../../../libs/most-voip/service/src/most/web/voip voip; \
 
-	cd server; ln -s ../libs/most/src/provider provider;
+	cd server; ln -fs ../libs/most/src/provider provider;
 
 clean:
 	echo "clean devel mode"
@@ -57,7 +57,6 @@ clean:
 run:
 	cd server/most; PYTHONPATH=.. python manage.py runserver 0.0.0.0:8000
 
-
 shell: 
 	cd server/most; PYTHONPATH=.. python manage.py shell
 
@@ -65,7 +64,7 @@ sync:
 	cd server/most; PYTHONPATH=.. python manage.py migrate
 
 dump:
-	@cd examples/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions --exclude admin --natural-foreign
+	cd server/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions --exclude admin --natural-foreign
 
 test:
 	cd src/most/web/medicalrecords/; nosetests --logging-level=DEBUG -s
