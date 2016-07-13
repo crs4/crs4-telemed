@@ -6,7 +6,7 @@ android {
     buildToolsVersion "21.0.2"
 
     defaultConfig {
-        applicationId "it.crs4.most.eco_app"
+        applicationId "it.crs4.most.demo.ecoapp"
         minSdkVersion 15
         targetSdkVersion 21
         versionCode 1

@@ -13,242 +13,157 @@ import it.crs4.most.demo.ecoapp.models.Device;
 import it.crs4.most.demo.ecoapp.models.EcoUser;
 import it.crs4.most.demo.ecoapp.models.Patient;
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
+
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 
 public class EcoConfigActivity extends AppCompatActivity implements IConfigBuilder {
-   
-	private static String [] pages = { "User Selection",
-									   "Pass Code",
-									   "Emergency Patient Selection", 
-									   "Summary",
-									   };
-	
-	private static String TAG = "MostViewPager";
-	
-	private ConfigFragment [] configFragments = null;
 
-	private MostViewPager vpPager  = null;
-	private EcoUser ecoUser = null;
-	private Patient patient = null;
-	private Teleconsultation teleconsultation = null;
-	private Device camera = null;
+    private static String[] pages = {"User Selection",
+            "Pass Code",
+            "Emergency Patient Selection",
+            "Summary",
+    };
 
-	private Properties configProps;
+    private static String TAG = "MostViewPager";
 
-	private String configServerIP;
-	private int configServerPort;
-	private String clientId = null;
-	private String clientSecret;
-	private RemoteConfigReader rcr;
+    private ConfigFragment[] configFragments = null;
 
-	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
-	private ActionBarDrawerToggle mDrawerToggle;
+    private MostViewPager vpPager = null;
+    private EcoUser ecoUser = null;
+    private Patient patient = null;
+    private Teleconsultation teleconsultation = null;
+    private Device camera = null;
 
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
-		String TAG = "DrawerItemClickListener";
+    private Properties configProps;
 
-		@Override
-		public void onItemClick(AdapterView parent, View view, int position, long id) {
-			String value = (String) parent.getItemAtPosition(position);
-			Log.d(TAG, String.format("position %d, value %s", position, value));
+    private String configServerIP;
+    private int configServerPort;
+    private String clientId = null;
+    private String clientSecret;
+    private RemoteConfigReader rcr;
 
-			switch (position){
-				case 0: //SETTINGS
-					Intent intent = new Intent(EcoConfigActivity.this, SettingsActivity.class);
-					startActivity(intent);
-					break;
-				case 1: //EXIT
-					finish();
-					break;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ListView mDrawerList;
+    private SmartFragmentStatePagerAdapter adapterViewPager;
 
-			}
-		}
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-//	/** Swaps fragments in the main content view */
-//	private void selectItem(int position) {
-//		// Create a new fragment and specify the planet to show based on position
-//		Fragment fragment = new PlanetFragment();
-//		Bundle args = new Bundle();
-//		args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-//		fragment.setArguments(args);
-//
-//		// Insert the fragment by replacing any existing fragment
-//		FragmentManager fragmentManager = getFragmentManager();
-//		fragmentManager.beginTransaction()
-//				.replace(R.id.content_frame, fragment)
-//				.commit();
-//
-//		// Highlight the selected item, update the title, and close the drawer
-//		mDrawerList.setItemChecked(position, true);
-//		setTitle(mPlanetTitles[position]);
-//		mDrawerLayout.closeDrawer(mDrawerList);
-//	}
+        this.configProps = loadProperties("uri.properties.default");
+        this.configServerIP = this.configProps.getProperty("configServerIp");
+        this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort"));
+        this.clientId = this.configProps.getProperty("clientId");
+        this.clientSecret = this.configProps.getProperty("clientSecret");
+        this.rcr = new RemoteConfigReader(this, this.configServerIP,
+                configServerPort, this.clientId, this.clientSecret);
 
+        setupConfigFragments();
+        setContentView(R.layout.config_activity_main);
 
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		this.configProps = loadProperties("uri.properties.default");
-		this.configServerIP = this.configProps.getProperty("configServerIp");
-		this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort")).intValue();
-		this.clientId = this.configProps.getProperty("clientId");
-		this.clientSecret = this.configProps.getProperty("clientSecret");
-		this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId,this.clientSecret);
-		
-		setupConfigFragments();
-		setContentView(R.layout.config_activity_main);
-		
-		//setupActionBar();
-		
-		vpPager = (MostViewPager) findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(this,getSupportFragmentManager());
+        vpPager = (MostViewPager) findViewById(R.id.vpPager);
+        adapterViewPager = new PagerAdapter(this, getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
         vpPager.setOnPageListener(pages);
-		Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-		setSupportActionBar(myToolbar);
-        //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        //actionBar.setDisplayHomeAsUpEnabled(true);
 
 
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        String[] drawerItems = {
+                getString(R.string.settings), getString(R.string.exit)
+        };
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-		// Set the adapter for the list view
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
+        ) {
 
-		String[] items = {"Settings", "Exit"};
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, items));
-		// Set the list's click listener
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-
-
-		mDrawerToggle = new ActionBarDrawerToggle(
-				this,                  /* host Activity */
-				mDrawerLayout,         /* DrawerLayout object */
-				myToolbar,
-				R.string.drawer_open,  /* "open drawer" description for accessibility */
-				R.string.drawer_close  /* "close drawer" description for accessibility */
-		) {
-
-			/** Called when a drawer has settled in a completely closed state. */
-			public void onDrawerClosed(View view) {
-				super.onDrawerClosed(view);
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
 //				getActionBar().setTitle(mTitle);
-			}
+            }
 
-			/** Called when a drawer has settled in a completely open state. */
-			public void onDrawerOpened(View drawerView) {
-				super.onDrawerOpened(drawerView);
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
 //				getActionBar().setTitle(mDrawerTitle);
-			}
-		};
+            }
+        };
 
-		// Set the drawer toggle as the DrawerListener
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
+    }
 
-	}
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
-		mDrawerToggle.syncState();
-	}
-
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.config, menu);
-		return true;
-	}
-
-	private void setupActionBar()
-	{
-		ActionBar actionBar = getSupportActionBar();
-	    // add the custom view to the action bar
-	    actionBar.setCustomView(R.layout.config_actionbar_view);
-	    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
-		        | ActionBar.DISPLAY_SHOW_HOME);
-	}
-	
     private void setupConfigFragments() {
-			
-	   this.configFragments = new ConfigFragment[this.pages.length];
-	   
-	   this.configFragments[0] = Fragment_UserSelection.newInstance(this,1, "User Selection");	
-	   this.configFragments[1] = Fragment_EnterPasscode.newInstance(this, 2, "Enter passcode");
-	   this.configFragments[2] = Fragment_PatientSelection.newInstance(this, 3, "Patient Selection");
-	   this.configFragments[3] = Fragment_Summary.newInstance(this, 4, "Summary  ");
-	}
-    
+
+        this.configFragments = new ConfigFragment[this.pages.length];
+
+        this.configFragments[0] = Fragment_UserSelection.newInstance(this, 1, "User Selection");
+        this.configFragments[1] = Fragment_EnterPasscode.newInstance(this, 2, "Enter passcode");
+        this.configFragments[2] = Fragment_PatientSelection.newInstance(this, 3, "Patient Selection");
+        this.configFragments[3] = Fragment_Summary.newInstance(this, 4, "Summary  ");
+    }
+
     private Properties loadProperties(String FileName) {
-		Properties properties = new Properties();
+        Properties properties = new Properties();
         try {
-               /**
-                * getAssets() Return an AssetManager instance for your
-                * application's package. AssetManager Provides access to an
-                * application's raw asset files;
-                */
-               AssetManager assetManager = this.getAssets();
-               /**
-                * Open an asset using ACCESS_STREAMING mode. This
-                */
-               InputStream inputStream = assetManager.open(FileName);
-               /**
-                * Loads properties from the specified InputStream,
-                */
-               properties.load(inputStream);
+            /**
+             * getAssets() Return an AssetManager instance for your
+             * application's package. AssetManager Provides access to an
+             * application's raw asset files;
+             */
+            AssetManager assetManager = this.getAssets();
+            /**
+             * Open an asset using ACCESS_STREAMING mode. This
+             */
+            InputStream inputStream = assetManager.open(FileName);
+            /**
+             * Loads properties from the specified InputStream,
+             */
+            properties.load(inputStream);
 
         } catch (IOException e) {
-               // TODO Auto-generated catch block
-               Log.e("AssetsPropertyReader",e.toString());
+            Log.e("AssetsPropertyReader", e.toString());
         }
         return properties;
- }
-
-
-	private SmartFragmentStatePagerAdapter adapterViewPager;
+    }
 
     // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
-    public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
-       
-    	private EcoConfigActivity activity = null;
-       
-        public MyPagerAdapter(EcoConfigActivity activity,FragmentManager fragmentManager) {
+    public static class PagerAdapter extends SmartFragmentStatePagerAdapter {
+
+        private EcoConfigActivity activity = null;
+
+        public PagerAdapter(EcoConfigActivity activity, FragmentManager fragmentManager) {
             super(fragmentManager);
-            this.activity = activity; 
-            
+            this.activity = activity;
+
         }
-        
-        
 
         // Returns total number of pages
         @Override
@@ -259,96 +174,106 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
         // Returns the fragment to display for that page
         @Override
         public Fragment getItem(int position) {
-        	Log.d(TAG,"Selected Page Item at pos:" + position);
-        	
-        	//  Toast.makeText(this.activity,      "getItem on position:::: " + position, Toast.LENGTH_SHORT).show();
-        	  
-              if (position>=0 && position < pages.length)
+            Log.d(TAG, "Selected Page Item at pos:" + position);
+
+            if (position >= 0 && position < pages.length)
                 return this.activity.configFragments[position];
-              else
-            	  return null;
-            }
-       
+            else
+                return null;
+        }
 
         // Returns the page title for the top indicator
         @Override
         public CharSequence getPageTitle(int position) {
             return pages[position];
         }
-
     }
 
-   
     @Override
-	public void listEcoUsers() {
-		this.vpPager.setInternalCurrentItem(0,0);
-	}
-    
-	@Override
-	public void setEcoUser(EcoUser user) {
-		this.ecoUser = user;
-		Log.d(TAG, "User selected:" + String.format("%s %s ", user.getFirstName() , user.getLastName()));
-		if (this.ecoUser!=null)
-		{   
-			this.vpPager.setInternalCurrentItem(1,0);
-		}
-	}
+    public void listEcoUsers() {
+        this.vpPager.setInternalCurrentItem(0, 0);
+    }
+
+    @Override
+    public void setEcoUser(EcoUser user) {
+        this.ecoUser = user;
+        Log.d(TAG, "User selected:" + String.format("%s %s ", user.getFirstName(), user.getLastName()));
+        if (this.ecoUser != null) {
+            this.vpPager.setInternalCurrentItem(1, 0);
+        }
+    }
+
+    @Override
+    public EcoUser getEcoUser() {
+        return this.ecoUser;
+    }
+
+    @Override
+    public void listPatients() {
+        this.vpPager.setInternalCurrentItem(2, 0);
+    }
+
+    @Override
+    public void setPatient(Patient selectedPatient) {
+
+        this.patient = selectedPatient;
+        this.vpPager.setInternalCurrentItem(3, 2);
+    }
+
+    @Override
+    public void setTeleconsultation(Teleconsultation teleconsultation) {
+        this.teleconsultation = teleconsultation;
+        this.startTeleconsultationActivity();
+    }
+
+    @Override
+    public Patient getPatient() {
+        return this.patient;
+    }
 
 
-	@Override
-	public EcoUser getEcoUser() {
-		return this.ecoUser;
-	}
+    private void startTeleconsultationActivity() {
+        Intent i = new Intent(this, EcoTeleconsultationActivity.class);
+        Log.d(TAG, "STARTING ACTIVITY WITH ECO USER:" + this.ecoUser);
+        i.putExtra("EcoUser", this.ecoUser);
+        i.putExtra("Teleconsultation", this.teleconsultation);
+        startActivity(i);
+    }
 
+    @Override
+    public RemoteConfigReader getRemoteConfigReader() {
+        return this.rcr;
+    }
 
-	@Override
-	public void listPatients() {
-		this.vpPager.setInternalCurrentItem(2,0);
-	}
+    @Override
+    public Device getCamera() {
+        return this.camera;
+    }
 
-	@Override
-	public void setPatient(Patient selectedPatient) {
-		
-	this.patient = selectedPatient;
-	this.vpPager.setInternalCurrentItem(3, 2);
-	}
+    @Override
+    public void setCamera(Device camera) {
+        this.camera = camera;
+    }
 
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        String TAG = "DrawerItemClickListener";
 
-	@Override
-	public void setTeleconsultation(Teleconsultation teleconsultation) {
-	 this.teleconsultation = teleconsultation;
-     this.startTeleconsultationActivity();
-	}
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            String value = (String) parent.getItemAtPosition(position);
+            Log.d(TAG, String.format("position %d, value %s", position, value));
 
+            switch (position) {
+                case 0: //SETTINGS
+                    Intent intent = new Intent(EcoConfigActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    break;
+                case 1: //EXIT
+                    finish();
+                    break;
 
-	@Override
-	public Patient getPatient() {
-		return this.patient;
-	}
+            }
+        }
+    }
 
-
-	private void startTeleconsultationActivity()
-	{
-		Intent i = new Intent(this,EcoTeleconsultationActivity.class);
-		Log.d(TAG,"STARTING ACTIVITY WITH ECO USER:" + this.ecoUser);
-		i.putExtra("EcoUser", this.ecoUser);
-		i.putExtra("Teleconsultation" , this.teleconsultation);
-		startActivity(i);
-	}
-
-	@Override
-	public RemoteConfigReader getRemoteConfigReader() {
-		return this.rcr;
-	}
-
-	@Override
-	public Device getCamera() {
-		return this.camera;
-	}
-
-	@Override
-	public void setCamera(Device camera) {
-		this.camera = camera;
-	}
-	
 }

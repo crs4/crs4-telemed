@@ -10,15 +10,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/my_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
         <it.crs4.most.demo.ecoapp.MostViewPager
             android:id="@+id/vpPager"
             android:layout_width="match_parent"

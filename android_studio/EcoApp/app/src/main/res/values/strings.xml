@@ -33,7 +33,7 @@
      <string name="exit">Exit</string>
      <string name="config_server_url">Config Server URL</string>
      <string name="preference_file_key">it.crs4.most.demo.preference_file_key</string>
+    <string name="remote_app">Remote Ecographist App</string>
 
-     
- 
+
 </resources>
