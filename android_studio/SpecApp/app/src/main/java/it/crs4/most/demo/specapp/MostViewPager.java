@@ -71,7 +71,7 @@ public class MostViewPager extends ViewPager {
         Log.d(TAG, "Manual Page Enabled:" + MostViewPager.manual_page_change_enabled + " target_position:" + target_position + " permitted:" + permittedPos);
 
 
-        ((ConfigFragment) ((SpecConfigActivity.MyPagerAdapter) this.getAdapter()).getItem(targetPos)).updateConfigFields();
+        ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) this.getAdapter()).getItem(targetPos)).updateConfigFields();
         super.setCurrentItem(targetPos);
         MostViewPager.manual_page_change_enabled = false;
         updatePageTitleStyle();
@@ -91,7 +91,7 @@ public class MostViewPager extends ViewPager {
             return;
         }
 
-        ((ConfigFragment) ((SpecConfigActivity.MyPagerAdapter) this.getAdapter()).getItem(position)).updateConfigFields();
+        ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) this.getAdapter()).getItem(position)).updateConfigFields();
         super.setCurrentItem(position);
         MostViewPager.manual_page_change_enabled = false;
         updatePageTitleStyle();
