@@ -33,8 +33,8 @@ public class PatientArrayAdapter extends ArrayAdapter<Patient> {
                       .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.patient_row, null);
             viewHolder = new ViewHolder();
-            viewHolder.fullName = (TextView)convertView.findViewById(R.id.textPatientFullName);
-            viewHolder.id = (TextView)convertView.findViewById(R.id.textPatientID);
+            viewHolder.fullName = (TextView)convertView.findViewById(R.id.patient_full_name_text);
+            viewHolder.id = (TextView)convertView.findViewById(R.id.patient_id_text);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

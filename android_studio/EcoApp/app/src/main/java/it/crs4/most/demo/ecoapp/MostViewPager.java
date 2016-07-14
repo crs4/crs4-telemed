@@ -64,8 +64,8 @@ public class MostViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (MostViewPager.manualPageChangeEnabled) {
-            return super.onTouchEvent(event);        }
-
+            return super.onTouchEvent(event);
+        }
         return false;
     }
 

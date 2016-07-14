@@ -27,26 +27,17 @@ public class PatientSelectionFragment extends ConfigFragment {
 	private ArrayList<Patient> patientsArray;
 	private ArrayAdapter<Patient>  patientsArrayAdapter;
 
-    // newInstance constructor for creating fragment with arguments
     public static PatientSelectionFragment newInstance(IConfigBuilder config, int page, String title) {
         PatientSelectionFragment fragmentPatientSel = new PatientSelectionFragment();
-        Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("someTitle", title);
-        fragmentPatientSel.setArguments(args);
         fragmentPatientSel.setConfigBuilder(config);
         return fragmentPatientSel;
     }
 
-    // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //page = getArguments().getInt("someInt", 0);
-        //title = getArguments().getString("someTitle");
     }
 
-    // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.patients_list, container, false);
@@ -57,7 +48,7 @@ public class PatientSelectionFragment extends ConfigFragment {
     private void initializeGUI(View view)
     {
 
-    	Button butEmergency = (Button)view.findViewById(R.id.buttonEmergency);
+    	Button butEmergency = (Button)view.findViewById(R.id.emergency_button);
     	
     	butEmergency.setOnClickListener(new OnClickListener() {
 			
@@ -68,7 +59,7 @@ public class PatientSelectionFragment extends ConfigFragment {
 			}
 		});
     	
-        ListView listView = (ListView)view.findViewById(R.id.listPatients);
+        ListView listView = (ListView)view.findViewById(R.id.patients_list);
        
         this.patientsArray = new ArrayList<Patient>();
         

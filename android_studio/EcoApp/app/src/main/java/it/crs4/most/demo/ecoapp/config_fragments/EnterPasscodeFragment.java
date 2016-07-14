@@ -24,20 +24,17 @@ import android.widget.TextView;
 
 
 public class EnterPasscodeFragment extends ConfigFragment {
-	
-	private EditText editPass = null;
-	private RemoteConfigReader rcr;
-	private TextView txtUser;
-	private static int PASSCODE_LEN = 5;
 
-	private static String TAG = "MostViewPager";
+    private static String TAG = "MostViewPager";
+    private static int PASSCODE_LEN = 5;
+
+    private EditText mEditPass;
+    private RemoteConfigReader mConfigReader;
+    private TextView mUserText;
+
     // newInstance constructor for creating fragment with arguments
     public static EnterPasscodeFragment newInstance(IConfigBuilder config, int page, String title) {
         EnterPasscodeFragment fragmentFirst = new EnterPasscodeFragment();
-        Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("someTitle", title);
-        fragmentFirst.setArguments(args);
         fragmentFirst.setConfigBuilder(config);
         return fragmentFirst;
     }
@@ -46,117 +43,97 @@ public class EnterPasscodeFragment extends ConfigFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.rcr = config.getRemoteConfigReader();
-        Log.d(TAG, "Config: " + config);
-        Log.d(TAG, "Eco Config: " + config.getEcoUser());
+        this.mConfigReader = config.getRemoteConfigReader();
     }
 
-    // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_passcode, container, false);
         initializeGUI(view);
         return view;
     }
-    
-    
-  
-    private void initializeGUI(View view)
-    {
-     this.editPass = (EditText) view.findViewById(R.id.editPasscode);
-     this.txtUser = (TextView) view.findViewById(R.id.text_operator_username);
-     Log.d(TAG, "INIT VIEW FOR TEXT VIEW " + this.txtUser);
-     Log.d(TAG, "Config:::: " + config);
-  
-     editPass.addTextChangedListener(new TextWatcher() {
-		
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void afterTextChanged(Editable s) {
-		   String passcode = editPass.getText().toString();
-		   
-		   Log.d(TAG, "PASSCODE:" + passcode + " LEN:" + passcode.length());
-			if (passcode.length()==PASSCODE_LEN)
-				{
-				retrieveAccessToken(passcode);
-				editPass.setText("");
-				}
-		}
-	});
-  
+
+    private void initializeGUI(View view) {
+        this.mEditPass = (EditText) view.findViewById(R.id.editPasscode);
+        this.mUserText = (TextView) view.findViewById(R.id.text_operator_username);
+
+        mEditPass.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String passcode = mEditPass.getText().toString();
+
+                if (passcode.length() == PASSCODE_LEN) {
+                    retrieveAccessToken(passcode);
+                    mEditPass.setText("");
+                }
+            }
+        });
     }
 
-    
-    private void retrieveAccessToken(String pincode)
-    {
-    	String username = this.config.getEcoUser().getUsername();
-    	String taskgroupId = this.config.getEcoUser().getTaskGroup().getId();
-    	Log.d(TAG, "GET ACCESS TOKEN WITH PIN CODE: " + pincode); 
-    	this.rcr.getAccessToken(username, pincode, taskgroupId, new Listener<String>() {
+    private void retrieveAccessToken(String pincode) {
+        String username = this.config.getEcoUser().getUsername();
+        String taskgroupId = this.config.getEcoUser().getTaskGroup().getId();
+        Log.d(TAG, "GET ACCESS TOKEN WITH PIN CODE: " + pincode);
+        this.mConfigReader.getAccessToken(username, pincode, taskgroupId, new Listener<String>() {
 
-			
 
-			@Override
-			public void onResponse(String response) {
-		    	Log.d(TAG, "Query Response:" + response);
-		    	try {
-					JSONObject  jsonresponse = new JSONObject(response);
-					Log.d(TAG,"ACCESS TOKEN: " + jsonresponse.getString("access_token"));
-					String accessToken =  jsonresponse.getString("access_token");
-					
-					if (accessToken!=null)
-					{
-						config.getEcoUser().setAccessToken(accessToken);
-						config.listPatients();
-					}
-					else 
-					{
-						showPinCodeErrorAlert();
-						config.getEcoUser().setAccessToken(null);
-						config.listEcoUsers();
-					}
-					
-				} catch (JSONException e) {
-					Log.e(TAG, "error parsing json response: " + e);
-					e.printStackTrace();
-				}
-		    
-				
-			}
-		}, new ErrorListener() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Query Response:" + response);
+                try {
+                    JSONObject jsonresponse = new JSONObject(response);
+                    Log.d(TAG, "ACCESS TOKEN: " + jsonresponse.getString("access_token"));
+                    String accessToken = jsonresponse.getString("access_token");
 
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				Log.e(TAG, "Error ["+error+"]");
-				showPinCodeErrorAlert();
-				config.listEcoUsers();
-			}
-		});                                        
+                    if (accessToken != null) {
+                        config.getEcoUser().setAccessToken(accessToken);
+                        config.listPatients();
+                    } else {
+                        showPinCodeErrorAlert();
+                        config.getEcoUser().setAccessToken(null);
+                        config.listEcoUsers();
+                    }
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "error parsing json response: " + e);
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error [" + error + "]");
+                showPinCodeErrorAlert();
+                config.listEcoUsers();
+            }
+        });
     }
-    
-    private void showPinCodeErrorAlert(){
-    	AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(this.getActivity());
-		loginErrorAlert.setTitle("Login Error");
-		loginErrorAlert.setMessage("Invalid Pin code.\n Please retry.");
-		AlertDialog alert = loginErrorAlert.create();
-		alert.show();
+
+    private void showPinCodeErrorAlert() {
+        AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(this.getActivity());
+        loginErrorAlert.setTitle("Login Error");
+        loginErrorAlert.setMessage("Invalid Pin code.\n Please retry.");
+        AlertDialog alert = loginErrorAlert.create();
+        alert.show();
     }
-  
-	@Override
-	public void updateConfigFields() {
-		Log.d(TAG, String.format("Config fields for %s %s" , config.getEcoUser().getFirstName() , config.getEcoUser().getLastName()));
-	     this.txtUser.setText(String.format("%s %s" , config.getEcoUser().getFirstName() , config.getEcoUser().getLastName()));
-	}
+
+    @Override
+    public void updateConfigFields() {
+        Log.d(TAG, String.format("Config fields for %s %s", config.getEcoUser().getFirstName(), config.getEcoUser().getLastName()));
+        this.mUserText.setText(String.format("%s %s", config.getEcoUser().getFirstName(), config.getEcoUser().getLastName()));
+    }
 }
