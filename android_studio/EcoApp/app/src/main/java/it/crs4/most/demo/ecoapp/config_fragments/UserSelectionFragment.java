@@ -2,6 +2,7 @@ package it.crs4.most.demo.ecoapp.config_fragments;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import it.crs4.most.demo.ecoapp.models.TaskGroup;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,83 +31,73 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
-public class Fragment_UserSelection extends ConfigFragment {
-    protected static final String TAG = "Fragment_UserSelection";
+public class UserSelectionFragment extends ConfigFragment {
+    protected static final String TAG = "UserSelectionFragment";
     // Store instance variables
-    private ProgressDialog loadingConfigDialog;
-    private ArrayList<EcoUser> ecoArray;
-    private ArrayAdapter<EcoUser> ecoArrayAdapter;
-    private RemoteConfigReader rcr;
+    private ProgressDialog mLoadingConfigDialog;
+    private ArrayList<EcoUser> mEcoArray;
+    private ArrayAdapter<EcoUser> mEcoArrayAdapter;
+    private RemoteConfigReader mConfigReader;
     private TaskGroup selectedTaskgroup = null;
 
     // newInstance constructor for creating fragment with arguments
-    public static Fragment_UserSelection newInstance(IConfigBuilder config, int page, String title) {
-        Fragment_UserSelection fragmentFirst = new Fragment_UserSelection();
-        Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("someTitle", title);
-        fragmentFirst.setArguments(args);
-        fragmentFirst.setConfigBuilder(config);
-        return fragmentFirst;
+    public static UserSelectionFragment newInstance(IConfigBuilder config, int page, String title) {
+        UserSelectionFragment fragment = new UserSelectionFragment();
+        fragment.setConfigBuilder(config);
+        return fragment;
     }
 
     // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //page = getArguments().getInt("someInt", 0);
-        //title = getArguments().getString("someTitle");
     }
 
     // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.eco_list, container, false);
-        initializeGUI(view);
-        return view;
-    }
+        mEcoArray = new ArrayList<>();
+        mEcoArrayAdapter = new EcoUserArrayAdapter(this, R.layout.eco_row, mEcoArray);
 
-    private void initializeGUI(View view) {
-        ListView listView = (ListView) view.findViewById(R.id.listEco);
-        this.ecoArray = new ArrayList<>();
-        this.ecoArrayAdapter = new EcoUserArrayAdapter(this, R.layout.eco_row, this.ecoArray);
-        listView.setAdapter(this.ecoArrayAdapter);
-
+        ListView listView = (ListView) view.findViewById(R.id.operator_list);
+        listView.setAdapter(mEcoArrayAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                EcoUser selectedUser = ecoArray.get(position);
+                EcoUser selectedUser = mEcoArray.get(position);
                 config.setEcoUser(selectedUser);
             }
         });
-        this.loadRemoteConfig();
+        loadRemoteConfig();
+        return view;
     }
 
     private void loadRemoteConfig() {
-        //Toast.makeText(EcoConfigActivity.this, "Connecting to:" + deviceName + "(" + macAddress +")" , Toast.LENGTH_LONG).show();
-        loadingConfigDialog = new ProgressDialog(getActivity());
-        loadingConfigDialog.setTitle("Connection to the remote server");
-        loadingConfigDialog.setMessage("Loading taskgroups associated to this device. Please wait....");
-        loadingConfigDialog.setCancelable(false);
-        loadingConfigDialog.setCanceledOnTouchOutside(false);
-        loadingConfigDialog.show();
+        mLoadingConfigDialog = new ProgressDialog(getActivity());
+        mLoadingConfigDialog.setTitle("Connection to the remote server");
+        mLoadingConfigDialog.setMessage("Loading taskgroups associated to this device. Please wait....");
+        mLoadingConfigDialog.setCancelable(false);
+        mLoadingConfigDialog.setCanceledOnTouchOutside(false);
+        mLoadingConfigDialog.show();
 
-        this.rcr = config.getRemoteConfigReader();
-        this.retrieveTaskgroups();
+        mConfigReader = config.getRemoteConfigReader();
+        retrieveTaskgroups();
     }
 
     /**
      * Get the taskgroups associated to this device ID
      */
     private void retrieveTaskgroups() {
-        this.rcr.getTaskgroups(new Listener<JSONObject>() {
+        mConfigReader.getTaskgroups(new Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject taskgroups) {
-                loadingConfigDialog.setMessage("Taskgroups found for this device. Recovering Taskgroup applicants...");
+                mLoadingConfigDialog.setMessage("Taskgroups found for this device. Recovering Taskgroup applicants...");
                 Log.d(TAG, "Received taskgroups: " + taskgroups.toString());
-                loadingConfigDialog.dismiss();
+                mLoadingConfigDialog.dismiss();
                 retrieveSelectedTaskgroup(taskgroups);
             }
         }, new ErrorListener() {
@@ -113,8 +105,8 @@ public class Fragment_UserSelection extends ConfigFragment {
             @Override
             public void onErrorResponse(VolleyError arg0) {
                 Log.e(TAG, "Error retrieving the taskgroup: " + arg0);
-                loadingConfigDialog.setMessage("No taskgroups found for the current device: " + arg0);
-                loadingConfigDialog.dismiss();
+                mLoadingConfigDialog.setMessage("No taskgroups found for the current device: " + arg0);
+                mLoadingConfigDialog.dismiss();
                 // [TODO] Handle the error
             }
         });
@@ -127,7 +119,7 @@ public class Fragment_UserSelection extends ConfigFragment {
      */
     private void retrieveSelectedTaskgroup(JSONObject taskgroups_data) {
         /*{"data":{"task_groups":[
-    	 *         {"description":"CRS4","name":"CRS4","uuid":"hdhtoz6ef4vixu3gk4s62knhncz6tmww"}
+         *         {"description":"CRS4","name":"CRS4","uuid":"hdhtoz6ef4vixu3gk4s62knhncz6tmww"}
     	 *         ]},
     	 *         
     	 *         "success":true}
@@ -139,14 +131,12 @@ public class Fragment_UserSelection extends ConfigFragment {
             }
 
             // Alert Dialog for taskgroup selection
-
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(
                     getActivity());
             builderSingle.setCancelable(false);
-            builderSingle.setIcon(R.drawable.ic_launcher);
-            builderSingle.setTitle("Select the taskgroup");
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                    getActivity(),
+//            builderSingle.setIcon(R.drawable.ic_launcher);
+            builderSingle.setTitle(R.string.select_task_group_dialog);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.select_dialog_item);
 
             final JSONArray taskgroups = taskgroups_data.getJSONObject("data").getJSONArray("task_groups");
@@ -155,25 +145,21 @@ public class Fragment_UserSelection extends ConfigFragment {
                 arrayAdapter.add(taskgroups.getJSONObject(i).getString("name"));
             }
 
-            builderSingle.setNeutralButton("cancel",
-                    new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
+            builderSingle.setNeutralButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
             builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
                         // call the getUsers for the selected taskgroup
                         String taskgroupID = taskgroups.getJSONObject(which).getString("uuid");
                         String taskgroudDesc = taskgroups.getJSONObject(which).getString("description");
-                        Fragment_UserSelection.this.selectedTaskgroup = new TaskGroup(taskgroupID, taskgroudDesc);
+                        UserSelectionFragment.this.selectedTaskgroup = new TaskGroup(taskgroupID, taskgroudDesc);
                         retrieveUsers(taskgroupID);
                         dialog.dismiss();
                     } catch (JSONException e) {
@@ -185,8 +171,6 @@ public class Fragment_UserSelection extends ConfigFragment {
             });
 
             builderSingle.show();
-
-            // -------------------------------------
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -200,7 +184,7 @@ public class Fragment_UserSelection extends ConfigFragment {
      * @param taskgroupId
      */
     private void retrieveUsers(String taskgroupId) {
-        this.rcr.getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
+        mConfigReader.getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject users) {
@@ -213,7 +197,7 @@ public class Fragment_UserSelection extends ConfigFragment {
             @Override
             public void onErrorResponse(VolleyError arg0) {
                 Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
-                //loadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
+                //mLoadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
                 // [TODO] Handle the error
             }
         });
@@ -222,7 +206,7 @@ public class Fragment_UserSelection extends ConfigFragment {
     private void retrieveSelectedUser(final JSONObject users_data) {
         // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
         // String username = users.getJSONObject("data").getJSONArray("applicants").getJSONObject(0).getString("username");
-        //	editUsername.setText(username);
+        // editUsername.setText(username);
 
         try {
             boolean success = (users_data != null && users_data.getBoolean("success"));
@@ -237,10 +221,10 @@ public class Fragment_UserSelection extends ConfigFragment {
                 String username = users.getJSONObject(i).getString("username");
                 String lastname = users.getJSONObject(i).getString("lastname");
                 String firstname = users.getJSONObject(i).getString("firstname");
-                this.ecoArray.add(new EcoUser(firstname, lastname, username, this.selectedTaskgroup));
+                mEcoArray.add(new EcoUser(firstname, lastname, username, selectedTaskgroup));
 
             }
-            this.ecoArrayAdapter.notifyDataSetChanged();
+            mEcoArrayAdapter.notifyDataSetChanged();
 
             // -------------------------------------
 
@@ -251,8 +235,43 @@ public class Fragment_UserSelection extends ConfigFragment {
 
     }
 
-
     @Override
     public void updateConfigFields() {
+
+    }
+
+    private class EcoUserArrayAdapter extends ArrayAdapter<EcoUser> {
+
+        public EcoUserArrayAdapter(UserSelectionFragment userSelectionFragment, int textViewResourceId,
+                                   List<EcoUser> objects) {
+
+            super(userSelectionFragment.getActivity(), textViewResourceId, objects);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return getViewOptimize(position, convertView, parent);
+        }
+
+        public View getViewOptimize(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder = null;
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) getContext()
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.eco_row, null);
+                viewHolder = new ViewHolder();
+                viewHolder.username = (TextView) convertView.findViewById(R.id.text_operator_username);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            EcoUser ecoUser = getItem(position);
+            viewHolder.username.setText(String.format("%s %s", ecoUser.getLastName(), ecoUser.getFirstName()));
+            return convertView;
+        }
+
+        private class ViewHolder {
+            public TextView username;
+        }
     }
 }

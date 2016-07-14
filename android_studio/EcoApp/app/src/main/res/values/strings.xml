@@ -33,6 +33,7 @@
     <string name="remote_app">Remote Ecographist App</string>
     <string name="config_server_port">Port</string>
     <string name="save">Save</string>
+    <string name="select_task_group_dialog">Select the taskgroup</string>
 
 
 </resources>

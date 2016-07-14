@@ -23,7 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class Fragment_EnterPasscode extends ConfigFragment {
+public class EnterPasscodeFragment extends ConfigFragment {
 	
 	private EditText editPass = null;
 	private RemoteConfigReader rcr;
@@ -32,8 +32,8 @@ public class Fragment_EnterPasscode extends ConfigFragment {
 
 	private static String TAG = "MostViewPager";
     // newInstance constructor for creating fragment with arguments
-    public static Fragment_EnterPasscode newInstance(IConfigBuilder config, int page, String title) {
-        Fragment_EnterPasscode fragmentFirst = new Fragment_EnterPasscode();
+    public static EnterPasscodeFragment newInstance(IConfigBuilder config, int page, String title) {
+        EnterPasscodeFragment fragmentFirst = new EnterPasscodeFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);
@@ -64,7 +64,7 @@ public class Fragment_EnterPasscode extends ConfigFragment {
     private void initializeGUI(View view)
     {
      this.editPass = (EditText) view.findViewById(R.id.editPasscode);
-     this.txtUser = (TextView) view.findViewById(R.id.textEcoUsername);
+     this.txtUser = (TextView) view.findViewById(R.id.text_operator_username);
      Log.d(TAG, "INIT VIEW FOR TEXT VIEW " + this.txtUser);
      Log.d(TAG, "Config:::: " + config);
   

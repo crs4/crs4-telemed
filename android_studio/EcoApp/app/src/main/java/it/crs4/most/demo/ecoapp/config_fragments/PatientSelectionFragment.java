@@ -18,19 +18,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class Fragment_PatientSelection extends ConfigFragment {
+public class PatientSelectionFragment extends ConfigFragment {
     // Store instance variables
    
 	private ArrayList<Patient> patientsArray;
 	private ArrayAdapter<Patient>  patientsArrayAdapter;
 
     // newInstance constructor for creating fragment with arguments
-    public static Fragment_PatientSelection newInstance(IConfigBuilder config, int page, String title) {
-        Fragment_PatientSelection fragmentPatientSel = new Fragment_PatientSelection();
+    public static PatientSelectionFragment newInstance(IConfigBuilder config, int page, String title) {
+        PatientSelectionFragment fragmentPatientSel = new PatientSelectionFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);

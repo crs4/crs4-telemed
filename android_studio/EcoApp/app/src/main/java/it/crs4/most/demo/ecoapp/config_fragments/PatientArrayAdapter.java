@@ -15,10 +15,10 @@ import android.widget.TextView;
 
 public class PatientArrayAdapter extends ArrayAdapter<Patient> {
 
-    public PatientArrayAdapter(Fragment_PatientSelection fragment_PatientSelection, int textViewResourceId,
-                 List<Patient> objects) {
+    public PatientArrayAdapter(PatientSelectionFragment patientSelectionFragment, int textViewResourceId,
+                               List<Patient> objects) {
     	
-        super(fragment_PatientSelection.getActivity(), textViewResourceId, objects);
+        super(patientSelectionFragment.getActivity(), textViewResourceId, objects);
     }
 
     @Override

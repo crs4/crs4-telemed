@@ -1,10 +1,10 @@
 package it.crs4.most.demo.ecoapp;
 
 import it.crs4.most.demo.ecoapp.config_fragments.ConfigFragment;
-import it.crs4.most.demo.ecoapp.config_fragments.Fragment_EnterPasscode;
-import it.crs4.most.demo.ecoapp.config_fragments.Fragment_PatientSelection;
-import it.crs4.most.demo.ecoapp.config_fragments.Fragment_Summary;
-import it.crs4.most.demo.ecoapp.config_fragments.Fragment_UserSelection;
+import it.crs4.most.demo.ecoapp.config_fragments.EnterPasscodeFragment;
+import it.crs4.most.demo.ecoapp.config_fragments.PatientSelectionFragment;
+import it.crs4.most.demo.ecoapp.config_fragments.SummaryFragment;
+import it.crs4.most.demo.ecoapp.config_fragments.UserSelectionFragment;
 import it.crs4.most.demo.ecoapp.models.Device;
 import it.crs4.most.demo.ecoapp.models.EcoUser;
 import it.crs4.most.demo.ecoapp.models.Patient;
@@ -55,17 +55,15 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
 
-        mConfigReader = new RemoteConfigReader(this, configServerIP,
-                configServerPort, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET);
+        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort,
+                OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET);
 
         setupConfigFragments();
         setContentView(R.layout.config_activity_main);
 
-        mVpPager = (MostViewPager) findViewById(R.id.vpPager);
+        mVpPager = (MostViewPager) findViewById(R.id.vp_pager);
         mPagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mVpPager.setAdapter(mPagerAdapter);
-        mVpPager.setOnPageListener(mPages);
-
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         String[] drawerItems = {
@@ -97,7 +95,6 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
     }
 
     @Override
@@ -108,113 +105,75 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
     }
 
     private void setupConfigFragments() {
-
-        this.mConfigFragments = new ConfigFragment[this.mPages.length];
-
-        this.mConfigFragments[0] = Fragment_UserSelection.newInstance(this, 1, "User Selection");
-        this.mConfigFragments[1] = Fragment_EnterPasscode.newInstance(this, 2, "Enter passcode");
-        this.mConfigFragments[2] = Fragment_PatientSelection.newInstance(this, 3, "Patient Selection");
-        this.mConfigFragments[3] = Fragment_Summary.newInstance(this, 4, "Summary  ");
-    }
-
-    // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
-    public static class PagerAdapter extends SmartFragmentStatePagerAdapter {
-
-        private EcoConfigActivity activity = null;
-
-        public PagerAdapter(EcoConfigActivity activity, FragmentManager fragmentManager) {
-            super(fragmentManager);
-            this.activity = activity;
-        }
-
-        // Returns total number of mPages
-        @Override
-        public int getCount() {
-            return mPages.length;
-        }
-
-        // Returns the fragment to display for that page
-        @Override
-        public Fragment getItem(int position) {
-            Log.d(TAG, "Selected Page Item at pos:" + position);
-
-            if (position >= 0 && position < mPages.length)
-                return this.activity.mConfigFragments[position];
-            else
-                return null;
-        }
-
-        // Returns the page title for the top indicator
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mPages[position];
-        }
+        mConfigFragments = new ConfigFragment[mPages.length];
+        mConfigFragments[0] = UserSelectionFragment.newInstance(this, 1, mPages[0]);
+        mConfigFragments[1] = EnterPasscodeFragment.newInstance(this, 2, mPages[1]);
+        mConfigFragments[2] = PatientSelectionFragment.newInstance(this, 3, mPages[2]);
+        mConfigFragments[3] = SummaryFragment.newInstance(this, 4, mPages[3]);
     }
 
     @Override
     public void listEcoUsers() {
-        this.mVpPager.setInternalCurrentItem(0, 0);
+        mVpPager.setInternalCurrentItem(0, 0);
     }
 
     @Override
     public void setEcoUser(EcoUser user) {
-        this.mEcoUser = user;
-        Log.d(TAG, "User selected:" + String.format("%s %s ", user.getFirstName(), user.getLastName()));
-        if (this.mEcoUser != null) {
-            this.mVpPager.setInternalCurrentItem(1, 0);
+        mEcoUser = user;
+        if (mEcoUser != null) {
+            mVpPager.setInternalCurrentItem(1, 0);
         }
     }
 
     @Override
     public EcoUser getEcoUser() {
-        return this.mEcoUser;
+        return mEcoUser;
     }
 
     @Override
     public void listPatients() {
-        this.mVpPager.setInternalCurrentItem(2, 0);
+        mVpPager.setInternalCurrentItem(2, 0);
     }
 
     @Override
     public void setPatient(Patient selectedPatient) {
-
-        this.mPatient = selectedPatient;
-        this.mVpPager.setInternalCurrentItem(3, 2);
+        mPatient = selectedPatient;
+        mVpPager.setInternalCurrentItem(3, 2);
     }
 
     @Override
     public void setTeleconsultation(Teleconsultation teleconsultation) {
-        this.mTeleconsultation = teleconsultation;
-        this.startTeleconsultationActivity();
+        mTeleconsultation = teleconsultation;
+        startTeleconsultationActivity();
     }
 
     @Override
     public Patient getPatient() {
-        return this.mPatient;
+        return mPatient;
     }
 
 
     private void startTeleconsultationActivity() {
         Intent i = new Intent(this, EcoTeleconsultationActivity.class);
-        Log.d(TAG, "STARTING ACTIVITY WITH ECO USER:" + this.mEcoUser);
-        i.putExtra("EcoUser", this.mEcoUser);
-        i.putExtra("Teleconsultation", this.mTeleconsultation);
+        Log.d(TAG, "STARTING ACTIVITY WITH ECO USER:" + mEcoUser);
+        i.putExtra("EcoUser", mEcoUser);
+        i.putExtra("Teleconsultation", mTeleconsultation);
         startActivity(i);
     }
 
     @Override
     public RemoteConfigReader getRemoteConfigReader() {
-        return this.mConfigReader;
+        return mConfigReader;
     }
 
     @Override
     public Device getCamera() {
-        return this.mCamera;
+        return mCamera;
     }
 
     @Override
     public void setCamera(Device camera) {
-        this.mCamera = camera;
+        mCamera = camera;
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -238,4 +197,38 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
         }
     }
 
+    // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
+    public static class PagerAdapter extends SmartFragmentStatePagerAdapter {
+
+        private EcoConfigActivity mActivity = null;
+
+        public PagerAdapter(EcoConfigActivity activity, FragmentManager fragmentManager) {
+            super(fragmentManager);
+            mActivity = activity;
+        }
+
+        // Returns total number of mPages
+        @Override
+        public int getCount() {
+            return mPages.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Log.d(TAG, "Selected Page Item at pos:" + position);
+
+            if (position >= 0 && position < mPages.length) {
+                return mActivity.mConfigFragments[position];
+            }
+            else {
+                return null;
+            }
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mPages[position];
+        }
+    }
 }
