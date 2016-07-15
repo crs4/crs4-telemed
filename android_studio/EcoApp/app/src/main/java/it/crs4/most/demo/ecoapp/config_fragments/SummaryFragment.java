@@ -36,7 +36,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 
-public class Fragment_Summary extends ConfigFragment {
+public class SummaryFragment extends ConfigFragment {
 	
 	private EditText txtPatientFullName = null;
 	private Button butStartEmergency = null;
@@ -46,8 +46,8 @@ public class Fragment_Summary extends ConfigFragment {
 			
 	private static String TAG = "MostFragmentSummary";
     // newInstance constructor for creating fragment with arguments
-    public static Fragment_Summary newInstance(IConfigBuilder config, int page, String title) {
-        Fragment_Summary fragmentFirst = new Fragment_Summary();
+    public static SummaryFragment newInstance(IConfigBuilder config, int page, String title) {
+        SummaryFragment fragmentFirst = new SummaryFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);

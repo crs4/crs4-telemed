@@ -15,10 +15,10 @@ import android.widget.TextView;
 
 public class PatientArrayAdapter extends ArrayAdapter<Patient> {
 
-    public PatientArrayAdapter(Fragment_PatientSelection fragment_PatientSelection, int textViewResourceId,
-                 List<Patient> objects) {
+    public PatientArrayAdapter(PatientSelectionFragment patientSelectionFragment, int textViewResourceId,
+                               List<Patient> objects) {
     	
-        super(fragment_PatientSelection.getActivity(), textViewResourceId, objects);
+        super(patientSelectionFragment.getActivity(), textViewResourceId, objects);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class PatientArrayAdapter extends ArrayAdapter<Patient> {
                       .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.patient_row, null);
             viewHolder = new ViewHolder();
-            viewHolder.fullName = (TextView)convertView.findViewById(R.id.textPatientFullName);
-            viewHolder.id = (TextView)convertView.findViewById(R.id.textPatientID);
+            viewHolder.fullName = (TextView)convertView.findViewById(R.id.patient_full_name_text);
+            viewHolder.id = (TextView)convertView.findViewById(R.id.patient_id_text);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

@@ -22,7 +22,12 @@
 	<string name ="but_save">Save</string>
 	<string name ="but_reset">Reset</string>
 	<string name ="inner_archetype_demo">Report Compiler</string>
-	
-     
+    <string name="settings">Settings</string>
+    <string name="config_server_address">Config Server Address</string>
+    <string name="config_server_port">Config Server Port</string>
+    <string name="exit">Exit</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 
 </resources>

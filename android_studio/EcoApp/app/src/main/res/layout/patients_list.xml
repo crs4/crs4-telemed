@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-     <ListView
-        android:id="@+id/listPatients"
+    <ListView
+        android:id="@+id/patients_list"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:focusable="true" android:descendantFocusability="beforeDescendants"
-        >
-    </ListView>
-    
-      <Button
-        android:id="@+id/buttonEmergency"
+        android:descendantFocusability="beforeDescendants"
+        android:focusable="true"/>
+
+    <Button
+        android:id="@+id/emergency_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="START EMERGENCY CALL" />
-      
+        android:text="@string/start_emergency_call"/>
 
 </LinearLayout>

@@ -1,11 +1,6 @@
 package it.crs4.most.demo.specapp;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-
 import org.json.JSONObject;
 
 import com.android.volley.Response.ErrorListener;
@@ -13,7 +8,6 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 
-import it.crs4.most.demo.specapp.RemoteConfigReader;
 import it.crs4.most.demo.specapp.config_fragments.ConfigFragment;
 import it.crs4.most.demo.specapp.config_fragments.FragmentLogin;
 import it.crs4.most.demo.specapp.config_fragments.Fragment_TeleconsultationSelection;
@@ -22,130 +16,144 @@ import it.crs4.most.demo.specapp.models.Teleconsultation;
 import it.crs4.most.demo.specapp.models.TeleconsultationSessionState;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 
-public class SpecConfigActivity extends ActionBarActivity implements IConfigBuilder {
+public class SpecConfigActivity extends AppCompatActivity implements IConfigBuilder {
 
+    private static final String OAUTH_CLIENT_ID = "9db4f27b3d9c8e352b5c";
+    private static final String OAUTH_CLIENT_SECRET = "00ea399c013349a716ea3e47d8f8002502e2e982";
     private static String TAG = "MostViewPager";
-    private static String[] pages = {"Login", "Teleconsultations"};
-    private SmartFragmentStatePagerAdapter adapterViewPager;
-    private String configServerIP = null;
-    private int configServerPort = 8000;
-    private String clientId;
-    private String clientSecret;
-    private ConfigFragment[] configFragments = null;
-    private SpecUser specUser = null;
-    private Teleconsultation teleconsultation = null;
-    private MostViewPager vpPager = null;
-    private Properties configProps;
-    private RemoteConfigReader rcr;
+    private static String[] mPages = {"Login", "Teleconsultations"};
+
+    private ConfigFragment[] mConfigFragments = null;
+    private SpecUser mSpecUser = null;
+    private Teleconsultation mTeleconsultation = null;
+    private MostViewPager mPager = null;
+    private RemoteConfigReader mConfigReader;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.configProps = loadProperties("uri.properties.default");
-        this.configServerIP = this.configProps.getProperty("configServerIp");
-        this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort")).intValue();
-        this.clientId = this.configProps.getProperty("clientId");
-        this.clientSecret = this.configProps.getProperty("clientSecret");
-        this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId, this.clientSecret);
+        String configServerIP = QuerySettings.getConfigServerAddress(this);
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
+
+        mConfigReader = new RemoteConfigReader(this, configServerIP,
+                configServerPort, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET);
 
         setupConfigFragments();
         setContentView(R.layout.config_activity_main);
-        vpPager = (MostViewPager) findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(this, getSupportFragmentManager());
-        vpPager.setAdapter(adapterViewPager);
-        vpPager.setOnPageListener(pages);
+        mPager = (MostViewPager) findViewById(R.id.vpPager);
+        SmartFragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
+        mPager.setAdapter(pagerAdapter);
+        mPager.setOnPageListener(mPages);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        String[] drawerItems = {
+                getString(R.string.settings), getString(R.string.exit)
+        };
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+//				getActionBar().setTitle(mTitle);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+//				getActionBar().setTitle(mDrawerTitle);
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.config, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_exit:
-                finish();
-                break;
-        }
-        return true;
-    }
-
-    private Properties loadProperties(String FileName) {
-        Properties properties = new Properties();
-        try {
-
-            //getAssets() Return an AssetManager instance for your
-            //application's package. AssetManager Provides access to an
-            //application's raw asset files;
-            AssetManager assetManager = this.getAssets();
-            // Open an asset using ACCESS_STREAMING mode. This
-            InputStream inputStream = assetManager.open(FileName);
-            // Loads properties from the specified InputStream,
-            properties.load(inputStream);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            Log.e("AssetsPropertyReader", e.toString());
-        }
-        return properties;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.config, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_exit:
+//                finish();
+//                break;
+//            case R.id.action_settings:
+//                Intent i = new Intent(this, SettingsActivity.class);
+//                startActivity(i);
+//                break;
+//        }
+//        return true;
+//    }
 
     private void setupConfigFragments() {
-        this.configFragments = new ConfigFragment[this.pages.length];
-        this.configFragments[0] = FragmentLogin.newInstance(this, 1, "Login");
-        this.configFragments[1] = Fragment_TeleconsultationSelection.newInstance(this, 2, "Teleconsultations");
+        mConfigFragments = new ConfigFragment[mPages.length];
+        mConfigFragments[0] = FragmentLogin.newInstance(this, 1, "Login");
+        mConfigFragments[1] = Fragment_TeleconsultationSelection.newInstance(this, 2, "Teleconsultations");
     }
 
     private void startTeleconsultationActivity() {
         Intent i = new Intent(this, SpecTeleconsultationActivity.class);
-        Log.d(TAG, "STARTING ACTIVITY WITH TELECONSULTATION: " + this.teleconsultation.getInfo());
-        i.putExtra("Teleconsultation", this.teleconsultation);
+        Log.d(TAG, "STARTING ACTIVITY WITH TELECONSULTATION: " + mTeleconsultation.getInfo());
+        i.putExtra("Teleconsultation", mTeleconsultation);
         startActivity(i);
 
-        // this activity is no longer used.
         this.finish();
     }
 
     @Override
     public void setSpecUser(SpecUser user) {
-        this.specUser = user;
-        this.vpPager.setInternalCurrentItem(1, 0);
+        this.mSpecUser = user;
+        this.mPager.setInternalCurrentItem(1, 0);
     }
 
     @Override
     public SpecUser getSpecUser() {
-        return this.specUser;
+        return this.mSpecUser;
     }
 
 
     @Override
     public void setTeleconsultation(Teleconsultation selectedTc) {
-        this.teleconsultation = selectedTc;
-        this.teleconsultation.setSpecialist(getSpecUser());
-        this.joinTeleconsultationSession(this.teleconsultation);
+        this.mTeleconsultation = selectedTc;
+        this.mTeleconsultation.setSpecialist(getSpecUser());
+        this.joinTeleconsultationSession(mTeleconsultation);
     }
 
     private void joinTeleconsultationSession(final Teleconsultation selectedTc) {
-        Log.d(TAG, "joining teleconsultation session...");
+        Log.d(TAG, "joining mTeleconsultation session...");
         if (selectedTc.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
-            this.rcr.joinSession(selectedTc.getLastSession().getId(), getSpecUser().getAccessToken(), new Listener<JSONObject>() {
+            mConfigReader.joinSession(selectedTc.getLastSession().getId(), getSpecUser().getAccessToken(), new Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Session Join Response:" + response);
@@ -164,46 +172,67 @@ public class SpecConfigActivity extends ActionBarActivity implements IConfigBuil
 
     @Override
     public Teleconsultation getTeleconsultation() {
-        return this.teleconsultation;
+        return mTeleconsultation;
     }
 
     @Override
     public RemoteConfigReader getRemoteConfigReader() {
-        return this.rcr;
+        return mConfigReader;
     }
 
     // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
-    public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
+    public static class PagerAdapter extends SmartFragmentStatePagerAdapter {
 
         private SpecConfigActivity activity = null;
 
-        public MyPagerAdapter(SpecConfigActivity activity, FragmentManager fragmentManager) {
+        public PagerAdapter(SpecConfigActivity activity, FragmentManager fragmentManager) {
             super(fragmentManager);
             this.activity = activity;
 
         }
 
-        // Returns total number of pages
         @Override
         public int getCount() {
-            return pages.length;
+            return mPages.length;
         }
 
-        // Returns the fragment to display for that page
         @Override
         public Fragment getItem(int position) {
             Log.d(TAG, "Selected Page Item at pos:" + position);
 
-            if (position >= 0 && position < pages.length)
-                return this.activity.configFragments[position];
-            else
+            if (position >= 0 && position < mPages.length) {
+                return this.activity.mConfigFragments[position];
+            }
+            else {
                 return null;
+            }
         }
 
         // Returns the page title for the top indicator
         @Override
         public CharSequence getPageTitle(int position) {
-            return pages[position];
+            return mPages[position];
+        }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        String TAG = "DrawerItemClickListener";
+
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            String value = (String) parent.getItemAtPosition(position);
+            Log.d(TAG, String.format("position %d, value %s", position, value));
+
+            switch (position) {
+                case 0: //SETTINGS
+                    Intent intent = new Intent(SpecConfigActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    break;
+                case 1: //EXIT
+                    finish();
+                    break;
+
+            }
         }
     }
 
