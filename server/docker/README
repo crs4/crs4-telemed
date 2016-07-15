@@ -1,0 +1,17 @@
+To build the docker image launch the command
+
+- docker build -t most_demo -f Dockerfile .
+
+To launch the container use the command
+
+- docker run -it  -p 2000:2000 -p 3306:3306 -p 3478:3478 -p 5060:5060 -p 8000:8000 --name most_container most_demo
+
+The first time you launch the container run in the container the command
+
+- init_django.sh
+
+Finally to launch the server use the command
+
+- run.sh <ip_address>
+
+The ip_address should be the external address of the server since it needs to be accessible by the tablet and phone devices.
