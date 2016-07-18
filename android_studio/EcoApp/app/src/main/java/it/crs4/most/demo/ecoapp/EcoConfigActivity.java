@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -92,6 +93,13 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+        catch (NullPointerException ex) {
+            Log.d(TAG, "There's no actionbar");
+        }
     }
 
     @Override
@@ -107,6 +115,14 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
         mConfigFragments[1] = EnterPasscodeFragment.newInstance(this);
         mConfigFragments[2] = PatientSelectionFragment.newInstance(this);
         mConfigFragments[3] = SummaryFragment.newInstance(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
