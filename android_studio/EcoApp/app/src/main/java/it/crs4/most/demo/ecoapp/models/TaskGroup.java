@@ -3,37 +3,34 @@ package it.crs4.most.demo.ecoapp.models;
 import java.io.Serializable;
 
 public class TaskGroup implements Serializable {
-	
-	
-	private static final long serialVersionUID = 6314390526009668956L;
-	private String id;
-	private String description;
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    private static final long serialVersionUID = 6314390526009668956L;
+    private String mId;
+    private String mDescription;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setId(String id) {
+        mId = id;
+    }
 
-	public TaskGroup (String id, String description)
-	{
-		this.id = id;
-		this.description = description;
-		
-	}
+    public void setDescription(String description) {
+        mDescription = description;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public TaskGroup(String id, String description) {
+        mId = id;
+        mDescription = description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getId() {
+        return mId;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
 
 }

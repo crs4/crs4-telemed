@@ -25,8 +25,7 @@ import android.widget.AdapterView;
 
 public class EcoConfigActivity extends AppCompatActivity implements IConfigBuilder {
 
-    private static final String OAUTH_CLIENT_ID = "9db4f27b3d9c8e352b5c";
-    private static final String OAUTH_CLIENT_SECRET = "00ea399c013349a716ea3e47d8f8002502e2e982";
+
     private static final String TAG = "MostViewPager";
 
     private static String[] mPages = {"User Selection",
@@ -35,13 +34,12 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
             "Summary",
     };
 
-    private ConfigFragment[] mConfigFragments = null;
-
-    private MostViewPager mVpPager = null;
-    private EcoUser mEcoUser = null;
-    private Patient mPatient = null;
-    private Teleconsultation mTeleconsultation = null;
-    private Device mCamera = null;
+    private ConfigFragment[] mConfigFragments;
+    private MostViewPager mVpPager;
+    private EcoUser mEcoUser;
+    private Patient mPatient;
+    private Teleconsultation mTeleconsultation;
+    private Device mCamera;
     private RemoteConfigReader mConfigReader;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -55,8 +53,7 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
 
-        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort,
-                OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET);
+        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
 
         setupConfigFragments();
         setContentView(R.layout.config_activity_main);
@@ -106,10 +103,10 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
 
     private void setupConfigFragments() {
         mConfigFragments = new ConfigFragment[mPages.length];
-        mConfigFragments[0] = UserSelectionFragment.newInstance(this, 1, mPages[0]);
-        mConfigFragments[1] = EnterPasscodeFragment.newInstance(this, 2, mPages[1]);
-        mConfigFragments[2] = PatientSelectionFragment.newInstance(this, 3, mPages[2]);
-        mConfigFragments[3] = SummaryFragment.newInstance(this, 4, mPages[3]);
+        mConfigFragments[0] = UserSelectionFragment.newInstance(this);
+        mConfigFragments[1] = EnterPasscodeFragment.newInstance(this);
+        mConfigFragments[2] = PatientSelectionFragment.newInstance(this);
+        mConfigFragments[3] = SummaryFragment.newInstance(this);
     }
 
     @Override

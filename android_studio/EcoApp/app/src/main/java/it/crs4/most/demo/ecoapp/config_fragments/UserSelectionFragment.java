@@ -13,15 +13,12 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 
 import it.crs4.most.demo.ecoapp.IConfigBuilder;
+import it.crs4.most.demo.ecoapp.QuerySettings;
 import it.crs4.most.demo.ecoapp.R;
-import it.crs4.most.demo.ecoapp.RemoteConfigReader;
 import it.crs4.most.demo.ecoapp.models.EcoUser;
 import it.crs4.most.demo.ecoapp.models.TaskGroup;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,15 +32,13 @@ import android.widget.TextView;
 
 public class UserSelectionFragment extends ConfigFragment {
     protected static final String TAG = "UserSelectionFragment";
-    // Store instance variables
-    private ProgressDialog mLoadingConfigDialog;
+
     private ArrayList<EcoUser> mEcoArray;
     private ArrayAdapter<EcoUser> mEcoArrayAdapter;
-    private RemoteConfigReader mConfigReader;
-    private TaskGroup selectedTaskgroup = null;
+    private TaskGroup mSelectedTaskgroup;
 
     // newInstance constructor for creating fragment with arguments
-    public static UserSelectionFragment newInstance(IConfigBuilder config, int page, String title) {
+    public static UserSelectionFragment newInstance(IConfigBuilder config) {
         UserSelectionFragment fragment = new UserSelectionFragment();
         fragment.setConfigBuilder(config);
         return fragment;
@@ -59,6 +54,7 @@ public class UserSelectionFragment extends ConfigFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.eco_list, container, false);
+        mSelectedTaskgroup = new TaskGroup(QuerySettings.getTaskGroup(getActivity()), null);
         mEcoArray = new ArrayList<>();
         mEcoArrayAdapter = new EcoUserArrayAdapter(this, R.layout.eco_row, mEcoArray);
 
@@ -68,139 +64,40 @@ public class UserSelectionFragment extends ConfigFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 EcoUser selectedUser = mEcoArray.get(position);
-                config.setEcoUser(selectedUser);
+                getConfigBuilder().setEcoUser(selectedUser);
             }
         });
-        loadRemoteConfig();
+
+        retrieveUsers();
+
         return view;
     }
 
-    private void loadRemoteConfig() {
-        mLoadingConfigDialog = new ProgressDialog(getActivity());
-        mLoadingConfigDialog.setTitle("Connection to the remote server");
-        mLoadingConfigDialog.setMessage("Loading taskgroups associated to this device. Please wait....");
-        mLoadingConfigDialog.setCancelable(false);
-        mLoadingConfigDialog.setCanceledOnTouchOutside(false);
-        mLoadingConfigDialog.show();
-
-        mConfigReader = config.getRemoteConfigReader();
-        retrieveTaskgroups();
-    }
-
     /**
-     * Get the taskgroups associated to this device ID
+     * Retrieves the applicants associated to a specific taskgroup
      */
-    private void retrieveTaskgroups() {
-        mConfigReader.getTaskgroups(new Listener<JSONObject>() {
+    private void retrieveUsers() {
+        String taskgroupId = QuerySettings.getTaskGroup(getActivity());
+        if (taskgroupId != null) {
+            getConfigBuilder().getRemoteConfigReader().
+                    getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
 
-            @Override
-            public void onResponse(JSONObject taskgroups) {
-                mLoadingConfigDialog.setMessage("Taskgroups found for this device. Recovering Taskgroup applicants...");
-                Log.d(TAG, "Received taskgroups: " + taskgroups.toString());
-                mLoadingConfigDialog.dismiss();
-                retrieveSelectedTaskgroup(taskgroups);
-            }
-        }, new ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                Log.e(TAG, "Error retrieving the taskgroup: " + arg0);
-                mLoadingConfigDialog.setMessage("No taskgroups found for the current device: " + arg0);
-                mLoadingConfigDialog.dismiss();
-                // [TODO] Handle the error
-            }
-        });
-    }
-
-    /**
-     * read the data of the taskgroup selected by the user
-     *
-     * @param taskgroups_data the json data of the selected taskgroup
-     */
-    private void retrieveSelectedTaskgroup(JSONObject taskgroups_data) {
-        /*{"data":{"task_groups":[
-         *         {"description":"CRS4","name":"CRS4","uuid":"hdhtoz6ef4vixu3gk4s62knhncz6tmww"}
-    	 *         ]},
-    	 *         
-    	 *         "success":true}
-    	 */
-        try {
-            boolean success = (taskgroups_data != null && taskgroups_data.getBoolean("success"));
-            if (!success) {
-                Log.e(TAG, "No valid taskgroups found for this device");
-            }
-
-            // Alert Dialog for taskgroup selection
-            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
-                    getActivity());
-            builderSingle.setCancelable(false);
-//            builderSingle.setIcon(R.drawable.ic_launcher);
-            builderSingle.setTitle(R.string.select_task_group_dialog);
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.select_dialog_item);
-
-            final JSONArray taskgroups = taskgroups_data.getJSONObject("data").getJSONArray("task_groups");
-
-            for (int i = 0; i < taskgroups.length(); i++) {
-                arrayAdapter.add(taskgroups.getJSONObject(i).getString("name"));
-            }
-
-            builderSingle.setNeutralButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
+                public void onResponse(JSONObject users) {
+                    Log.d(TAG, "Received taskgroup applicants: " + users.toString());
+                    // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
+                    retrieveSelectedUser(users);
+                }
+            }, new ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError arg0) {
+                    Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
+                    //mLoadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
+                    // [TODO] Handle the error
                 }
             });
-
-            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    try {
-                        // call the getUsers for the selected taskgroup
-                        String taskgroupID = taskgroups.getJSONObject(which).getString("uuid");
-                        String taskgroudDesc = taskgroups.getJSONObject(which).getString("description");
-                        UserSelectionFragment.this.selectedTaskgroup = new TaskGroup(taskgroupID, taskgroudDesc);
-                        retrieveUsers(taskgroupID);
-                        dialog.dismiss();
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-
-            builderSingle.show();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
         }
-    }
-
-    /**
-     * retrieve the applicants associated to a specific taskgroup
-     *
-     * @param taskgroupId
-     */
-    private void retrieveUsers(String taskgroupId) {
-        mConfigReader.getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject users) {
-                Log.d(TAG, "Received taskgroup applicants: " + users.toString());
-                // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
-                retrieveSelectedUser(users);
-            }
-        }, new ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
-                //mLoadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
-                // [TODO] Handle the error
-            }
-        });
     }
 
     private void retrieveSelectedUser(final JSONObject users_data) {
@@ -221,12 +118,10 @@ public class UserSelectionFragment extends ConfigFragment {
                 String username = users.getJSONObject(i).getString("username");
                 String lastname = users.getJSONObject(i).getString("lastname");
                 String firstname = users.getJSONObject(i).getString("firstname");
-                mEcoArray.add(new EcoUser(firstname, lastname, username, selectedTaskgroup));
+                mEcoArray.add(new EcoUser(firstname, lastname, username, mSelectedTaskgroup));
 
             }
             mEcoArrayAdapter.notifyDataSetChanged();
-
-            // -------------------------------------
 
         } catch (JSONException e) {
             e.printStackTrace();

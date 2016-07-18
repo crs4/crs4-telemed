@@ -4,60 +4,55 @@ import java.io.Serializable;
 
 public class Device implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7284527758558743253L;
-	private String streamUri = null;
-	private String shotUri = null;
-	private String webUri = null;
-	private String ptzUri;
-	private String name;
-	String user;
-	String pwd;
+    private static final long serialVersionUID = -7284527758558743253L;
+    private String mStreamUri = null;
+    private String mShotUri = null;
+    private String mWebUri = null;
+    private String mPtzUri;
+    private String mName;
+    private String mUser;
+    private String mPwd;
 
-	public Device(String name, String streamUri, String shotUri, String webUri, String ptzUri, String user, String pwd)
-	{   
-		this.name = name;
-		this.streamUri = streamUri;
-		this.shotUri = shotUri;
-		this.webUri = webUri;
-		this.ptzUri = ptzUri;
-		this.user = user;
-		this.pwd = pwd;
-	}
+    public Device(String name, String streamUri, String shotUri, String webUri, String ptzUri, String user, String pwd) {
+        mName = name;
+        mStreamUri = streamUri;
+        mShotUri = shotUri;
+        mWebUri = webUri;
+        mPtzUri = ptzUri;
+        mUser = user;
+        mPwd = pwd;
+    }
 
-	
-	public String getName() {
-		return name;
-	}
-	
-	public String getStreamUri() {
-		return streamUri;
-	}
+    public String getName() {
+        return mName;
+    }
 
-	public String getShotUri() {
-		return shotUri;
-	}
+    public String getStreamUri() {
+        return mStreamUri;
+    }
 
-	public String getWebUri() {
-		return webUri;
-	}
-	
-	public String getPtzUri() {
-		return ptzUri;
-	}
-	
-	public String getUser() {
-		return user;
-	}
-	
-	public String getPwd() {
-		return pwd;
-	}
-	
-	public String toString() {
-		
-		return String.format("[Device:%s\nStream: %s\nShot: %s\n Web: %s\n PTZ: %s]", this.name, this.streamUri, this.shotUri, this.webUri, this.ptzUri);
-	}
+    public String getShotUri() {
+        return mShotUri;
+    }
+
+    public String getWebUri() {
+        return mWebUri;
+    }
+
+    public String getPtzUri() {
+        return mPtzUri;
+    }
+
+    public String getUser() {
+        return mUser;
+    }
+
+    public String getPwd() {
+        return mPwd;
+    }
+
+    public String toString() {
+        return String.format("[Device:%s\nStream: %s\nShot: %s\n Web: %s\n PTZ: %s]", mName,
+                mStreamUri, mShotUri, mWebUri, mPtzUri);
+    }
 }

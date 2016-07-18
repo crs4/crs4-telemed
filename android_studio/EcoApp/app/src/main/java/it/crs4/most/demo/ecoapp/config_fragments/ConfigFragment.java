@@ -5,12 +5,16 @@ import android.support.v4.app.Fragment;
 
 public abstract class ConfigFragment extends Fragment {
    
-  protected IConfigBuilder config = null;
+  private IConfigBuilder mConfigBuilder = null;
   
   public void setConfigBuilder(IConfigBuilder config)
   {
-	  this.config = config;
+	  this.mConfigBuilder = config;
   }
-  
+
+  public IConfigBuilder getConfigBuilder() {
+    return mConfigBuilder;
+  }
+
   public abstract void updateConfigFields();
 }

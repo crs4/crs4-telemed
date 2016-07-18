@@ -4,71 +4,63 @@ import java.io.Serializable;
 
 public class Teleconsultation implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1408055529735190987L;
-	private String id;
-	private String info;
-	private Room room;
-	
-	private String severity;
-	private EcoUser applicant;
-	private String name;
-	
-	private TeleconsultationSession session;
-	
-    
+    /**
+     *
+     */
+    private static final long serialVersionUID = -1408055529735190987L;
+    private String mId;
+    private String mInfo;
+    private Room mRoom;
+    private String mSeverity;
+    private EcoUser mApplicant;
+    private String mName;
+    private TeleconsultationSession mSession;
 
-
-	public Teleconsultation(String id, String name, String info, String severity, Room room, EcoUser applicant)
-	{
-		this.id = id;
-		this.name = name;
-		this.info = info;
-		this.severity = severity;
-	    this.room = room;
-	    this.applicant = applicant;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-    public String getInfo()
-    {
-    	return this.info;
+    public Teleconsultation(String id, String name, String info, String severity, Room room, EcoUser applicant) {
+        mId = id;
+        mName = name;
+        mInfo = info;
+        mSeverity = severity;
+        mRoom = room;
+        mApplicant = applicant;
     }
-    
 
-	public String getSeverity() {
-		return severity;
-	}
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-	public EcoUser getApplicant() {
-		return applicant;
-	}
+    public String getId() {
+        return mId;
+    }
 
-	public Room getRoom() {
-		return room;
-	}
+    public String getName() {
+        return mName;
+    }
 
-	public TeleconsultationSession getLastSession() {
-		return session;
-	}
+    public String getInfo() {
+        return mInfo;
+    }
 
-	public void setLastSession(TeleconsultationSession session) {
-		this.session = session;
-	}
-	
- 
-	
+
+    public String getSeverity() {
+        return mSeverity;
+    }
+
+    public EcoUser getApplicant() {
+        return mApplicant;
+    }
+
+    public Room getRoom() {
+        return mRoom;
+    }
+
+    public TeleconsultationSession getLastSession() {
+        return mSession;
+    }
+
+    public void setLastSession(TeleconsultationSession session) {
+        mSession = session;
+    }
+
+
 }

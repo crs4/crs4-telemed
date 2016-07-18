@@ -3,57 +3,49 @@ package it.crs4.most.demo.ecoapp.models;
 import java.io.Serializable;
 
 public class Room implements Serializable {
-	
-	
-	private static final long serialVersionUID = 4399813546588966888L;
-	
-	private String id;
-	private String name;
-	private String description;
-	
-	private Device encoder;
-	private Device camera;
-	
-	public String getId() {
-		return id;
-	}
+    private static final long serialVersionUID = 4399813546588966888L;
+    private String mId;
+    private String mName;
+    private String mDescription;
+    private Device mEncoder;
+    private Device mCamera;
 
+    public Room(String id, String name, String description) {
+        mId = id;
+        mName = name;
+        mDescription = description;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getId() {
+        return mId;
+    }
 
+    public String getName() {
+        return mName;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return mDescription;
+    }
 
+    public Device getEncoder() {
+        return mEncoder;
+    }
 
-	public Room(String id, String name,  String description){
-		this.id = id;
-		this.name = name;
-		this.description = description;
-	}
-	
-	public Device getEncoder() {
-		return encoder;
-	}
-	
-	
-	public void setEncoder(Device encoder) {
-		this.encoder = encoder;
-	}
-	
-	public Device getCamera() {
-		return camera;
-	}
-	
-	public void setCamera(Device camera) {
-		this.camera = camera;
-	}
+    public void setEncoder(Device encoder) {
+        mEncoder = encoder;
+    }
 
-	@Override
-	public String toString(){
-		return this.name;
-	}
+    public Device getCamera() {
+        return mCamera;
+    }
+
+    public void setCamera(Device camera) {
+        mCamera = camera;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

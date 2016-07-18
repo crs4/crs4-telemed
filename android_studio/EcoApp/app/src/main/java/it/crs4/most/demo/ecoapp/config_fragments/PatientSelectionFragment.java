@@ -27,7 +27,7 @@ public class PatientSelectionFragment extends ConfigFragment {
 	private ArrayList<Patient> patientsArray;
 	private ArrayAdapter<Patient>  patientsArrayAdapter;
 
-    public static PatientSelectionFragment newInstance(IConfigBuilder config, int page, String title) {
+    public static PatientSelectionFragment newInstance(IConfigBuilder config) {
         PatientSelectionFragment fragmentPatientSel = new PatientSelectionFragment();
         fragmentPatientSel.setConfigBuilder(config);
         return fragmentPatientSel;
@@ -54,14 +54,14 @@ public class PatientSelectionFragment extends ConfigFragment {
 			
 			@Override
 			public void onClick(View v) {
-				config.setPatient(null);
+				getConfigBuilder().setPatient(null);
 				
 			}
 		});
     	
         ListView listView = (ListView)view.findViewById(R.id.patients_list);
        
-        this.patientsArray = new ArrayList<Patient>();
+        this.patientsArray = new ArrayList<>();
         
         this.patientsArrayAdapter =
                 new PatientArrayAdapter(this, R.layout.patient_row, this.patientsArray);
@@ -74,7 +74,7 @@ public class PatientSelectionFragment extends ConfigFragment {
 					int position, long id) {
 				
 				Patient selectedPatient= patientsArray.get(position);
-				config.setPatient(selectedPatient);
+				getConfigBuilder().setPatient(selectedPatient);
 				
 			}});
         this.retrievePatients();

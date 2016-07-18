@@ -3,66 +3,56 @@ package it.crs4.most.demo.ecoapp.models;
 import java.io.Serializable;
 
 public class EcoUser implements Serializable {
-	
-	private static final long serialVersionUID = 6108801942060044140L;
-	
-	private String username = null;
-	private TaskGroup taskGroup = null;
-	private String firstName = null;
-	private String lastName = null;
-	private String accessToken = null;
-	
-	public EcoUser(String firstName, String lastName, String username, TaskGroup taskGroup)
-	{   
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.username = username;
-		this.taskGroup = taskGroup;
-	}
-	
 
-	public String getFirstName() {
-		return firstName;
-	}
+    private static final long serialVersionUID = 6108801942060044140L;
+
+    private String mUsername = null;
+    private TaskGroup mTaskGroup = null;
+    private String mFirstName = null;
+    private String mLastName = null;
+    private String mAccessToken = null;
+
+    public EcoUser(String firstName, String lastName, String username, TaskGroup taskGroup) {
+        this.mFirstName = firstName;
+        this.mLastName = lastName;
+        this.mUsername = username;
+        this.mTaskGroup = taskGroup;
+    }
 
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getFirstName() {
+        return mFirstName;
+    }
 
+    public String getLastName() {
+        return mLastName;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.mUsername = username;
+    }
 
-	public void setTaskGroup(TaskGroup taskGroup) {
-		this.taskGroup = taskGroup;
-	}
+    public void setTaskGroup(TaskGroup taskGroup) {
+        this.mTaskGroup = taskGroup;
+    }
 
-	
-	
+    public String getUsername() {
+        return mUsername;
+    }
 
+    public TaskGroup getTaskGroup() {
+        return mTaskGroup;
+    }
 
-	public String getUsername() {
-		return username;
-	}
-	
+    public String getAccessToken() {
+        return mAccessToken;
+    }
 
-	public TaskGroup getTaskGroup() {
-		return taskGroup;
-	}
-
-
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
+    public void setAccessToken(String accessToken) {
+        this.mAccessToken = accessToken;
+    }
 }

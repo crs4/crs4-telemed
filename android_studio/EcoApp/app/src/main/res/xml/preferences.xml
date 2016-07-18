@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/settings">
+                  android:title="@string/settings">
     <EditTextPreference
         android:key="config_server_address"
-        android:title="@string/config_server_address"/>
+        android:title="@string/config_server_address"
+        android:summary="%s"/>
     <EditTextPreference
         android:key="config_server_port"
         android:title="@string/config_server_port"
-        android:defaultValue="8000"/>
+        android:defaultValue="8000"
+        android:summary="%s"/>
+    <ListPreference
+        android:key="select_task_group_preference"
+        android:enabled="false"
+        android:title="@string/task_group"
+        android:summary="%s"/>
 </PreferenceScreen>

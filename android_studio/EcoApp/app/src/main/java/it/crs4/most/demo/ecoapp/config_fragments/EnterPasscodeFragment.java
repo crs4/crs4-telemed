@@ -4,8 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
+import com.android.volley.Response;
 
 import it.crs4.most.demo.ecoapp.IConfigBuilder;
 import it.crs4.most.demo.ecoapp.R;
@@ -29,11 +28,10 @@ public class EnterPasscodeFragment extends ConfigFragment {
     private static int PASSCODE_LEN = 5;
 
     private EditText mEditPass;
-    private RemoteConfigReader mConfigReader;
     private TextView mUserText;
 
     // newInstance constructor for creating fragment with arguments
-    public static EnterPasscodeFragment newInstance(IConfigBuilder config, int page, String title) {
+    public static EnterPasscodeFragment newInstance(IConfigBuilder config) {
         EnterPasscodeFragment fragmentFirst = new EnterPasscodeFragment();
         fragmentFirst.setConfigBuilder(config);
         return fragmentFirst;
@@ -43,19 +41,13 @@ public class EnterPasscodeFragment extends ConfigFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.mConfigReader = config.getRemoteConfigReader();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_passcode, container, false);
-        initializeGUI(view);
-        return view;
-    }
-
-    private void initializeGUI(View view) {
-        this.mEditPass = (EditText) view.findViewById(R.id.editPasscode);
-        this.mUserText = (TextView) view.findViewById(R.id.text_operator_username);
+        mEditPass = (EditText) view.findViewById(R.id.editPasscode);
+        mUserText = (TextView) view.findViewById(R.id.text_operator_username);
 
         mEditPass.addTextChangedListener(new TextWatcher() {
 
@@ -79,52 +71,53 @@ public class EnterPasscodeFragment extends ConfigFragment {
                 }
             }
         });
+        return view;
     }
 
     private void retrieveAccessToken(String pincode) {
-        String username = this.config.getEcoUser().getUsername();
-        String taskgroupId = this.config.getEcoUser().getTaskGroup().getId();
-        Log.d(TAG, "GET ACCESS TOKEN WITH PIN CODE: " + pincode);
-        this.mConfigReader.getAccessToken(username, pincode, taskgroupId, new Listener<String>() {
+        String username = getConfigBuilder().getEcoUser().getUsername();
+        String taskgroupId = getConfigBuilder().getEcoUser().getTaskGroup().getId();
+        Log.d(TAG, "Get access token with pin code: " + pincode);
+        getConfigBuilder().getRemoteConfigReader().getAccessToken(username, pincode, taskgroupId,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "Query Response:" + response);
+                        try {
+                            JSONObject jsonresponse = new JSONObject(response);
+                            Log.d(TAG, "ACCESS TOKEN: " + jsonresponse.getString("access_token"));
+                            String accessToken = jsonresponse.getString("access_token");
+
+                            if (accessToken != null) {
+                                getConfigBuilder().getEcoUser().setAccessToken(accessToken);
+                                getConfigBuilder().listPatients();
+                            } else {
+                                showPinCodeErrorAlert();
+                                getConfigBuilder().getEcoUser().setAccessToken(null);
+                                getConfigBuilder().listEcoUsers();
+                            }
+
+                        } catch (JSONException e) {
+                            Log.e(TAG, "error parsing json response: " + e);
+                            e.printStackTrace();
+                        }
 
 
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Query Response:" + response);
-                try {
-                    JSONObject jsonresponse = new JSONObject(response);
-                    Log.d(TAG, "ACCESS TOKEN: " + jsonresponse.getString("access_token"));
-                    String accessToken = jsonresponse.getString("access_token");
-
-                    if (accessToken != null) {
-                        config.getEcoUser().setAccessToken(accessToken);
-                        config.listPatients();
-                    } else {
-                        showPinCodeErrorAlert();
-                        config.getEcoUser().setAccessToken(null);
-                        config.listEcoUsers();
                     }
+                }, new Response.ErrorListener() {
 
-                } catch (JSONException e) {
-                    Log.e(TAG, "error parsing json response: " + e);
-                    e.printStackTrace();
-                }
-
-
-            }
-        }, new ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Error [" + error + "]");
-                showPinCodeErrorAlert();
-                config.listEcoUsers();
-            }
-        });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Error [" + error + "]");
+                        showPinCodeErrorAlert();
+                        getConfigBuilder().listEcoUsers();
+                    }
+                });
     }
 
     private void showPinCodeErrorAlert() {
-        AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(this.getActivity());
+        AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(getActivity());
         loginErrorAlert.setTitle("Login Error");
         loginErrorAlert.setMessage("Invalid Pin code.\n Please retry.");
         AlertDialog alert = loginErrorAlert.create();
@@ -133,7 +126,7 @@ public class EnterPasscodeFragment extends ConfigFragment {
 
     @Override
     public void updateConfigFields() {
-        Log.d(TAG, String.format("Config fields for %s %s", config.getEcoUser().getFirstName(), config.getEcoUser().getLastName()));
-        this.mUserText.setText(String.format("%s %s", config.getEcoUser().getFirstName(), config.getEcoUser().getLastName()));
+        Log.d(TAG, String.format("Config fields for %s %s", getConfigBuilder().getEcoUser().getFirstName(), getConfigBuilder().getEcoUser().getLastName()));
+        mUserText.setText(String.format("%s %s", getConfigBuilder().getEcoUser().getFirstName(), getConfigBuilder().getEcoUser().getLastName()));
     }
 }

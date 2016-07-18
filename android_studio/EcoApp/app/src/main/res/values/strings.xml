@@ -35,6 +35,7 @@
     <string name="save">Save</string>
     <string name="select_task_group_dialog">Select the taskgroup</string>
     <string name="start_emergency_call">START EMERGENCY CALL</string>
+    <string name="task_group">Task Group</string>
 
 
 </resources>
