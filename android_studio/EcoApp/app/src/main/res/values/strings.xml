@@ -36,6 +36,10 @@
     <string name="select_task_group_dialog">Select the taskgroup</string>
     <string name="start_emergency_call">START EMERGENCY CALL</string>
     <string name="task_group">Task Group</string>
+    <string name="text_summary_patient_hint">Insert patient name</string>
+    <string name="severity">SEVERITY:</string>
+    <string name="room">ROOM:</string>
+    <string name="start_emergency">START EMERGENCY</string>
 
 
 </resources>

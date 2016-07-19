@@ -1,105 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
- 
-    <TextView
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        
-  		android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:text="@string/lbl_patients_title" 
-        style="?android:attr/listSeparatorTextViewStyle"
-        />
-    
-   
- 
-  <EditText
-        android:id="@+id/textSummaryPatientFullName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left" 
-        android:layout_marginRight="10dp"
-        android:text="INSERT USER NAME" />
-  
-   <EditText
-        android:id="@+id/textSummaryPatientAccountNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left" 
-        android:layout_marginRight="10dp"
-        android:text="" />
-  
-  
-    
-  <TextView
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-  		android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:text="@string/lbl_teleconsultation_title" 
-        style="?android:attr/listSeparatorTextViewStyle"
-        />
-  
-   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txtSeverity"
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/lbl_patients_title"/>
+
+    <EditText
+        android:id="@+id/text_summary_patient_full_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left" 
+        android:layout_gravity="start"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:text="SEVERITY:" />
-    
-     
-  <Spinner
-    android:id="@+id/spinnerSeverity"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" />
+        android:hint="@string/text_summary_patient_hint"/>
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/text_summary_patient_account_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"/>
 
-   
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/lbl_teleconsultation_title"/>
+
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal" >
-
-    <TextView
-        android:id="@+id/txtRoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left" 
-        android:layout_marginRight="10dp"
-        android:text="ROOM:" />
-    
-     
-  <Spinner
-    android:id="@+id/spinnerRoom"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" />
-
-</LinearLayout>
-  
-  <EditText
-        android:id="@+id/textTaskGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left" 
-        android:layout_marginRight="10dp"
-        android:text="" />
- 
-    <Button
-        android:id="@+id/buttonStartEmergency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="START EMERGENCY" />
-    
+        android:minHeight="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_severity_severity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0.20"
+            android:gravity="center_vertical"
+            android:text="@string/severity"/>
+
+        <Spinner
+            android:id="@+id/spinner_summary_severity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.80"
+            android:gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_summary_room"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0.20"
+            android:gravity="center_vertical"
+            android:text="@string/room"/>
+
+        <Spinner
+            android:id="@+id/spinner_summary_room"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.80"
+            android:gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_summary_start_emergency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_emergency"/>
+
 </LinearLayout>

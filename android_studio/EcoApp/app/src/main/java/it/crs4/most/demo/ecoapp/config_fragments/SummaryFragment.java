@@ -38,60 +38,49 @@ import android.widget.Spinner;
 
 public class SummaryFragment extends ConfigFragment {
 
-    private EditText txtPatientFullName = null;
-    private Button butStartEmergency = null;
-    private Spinner severitySpinner;
-    private Spinner roomSpinner;
-
-
     private static String TAG = "MostFragmentSummary";
 
-    // newInstance constructor for creating fragment with arguments
+    private EditText mTxtPatientFullName;
+    private Button mButStartEmergency;
+    private Spinner mSeveritySpinner;
+    private Spinner mRoomSpinner;
+
     public static SummaryFragment newInstance(IConfigBuilder config) {
         SummaryFragment fragmentFirst = new SummaryFragment();
         fragmentFirst.setConfigBuilder(config);
         return fragmentFirst;
     }
 
-    // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
-    // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_summary, container, false);
-        initializeGUI(view);
-        return view;
-    }
+        mTxtPatientFullName = (EditText) view.findViewById(R.id.text_summary_patient_full_name);
+        mButStartEmergency = (Button) view.findViewById(R.id.button_summary_start_emergency);
 
-    private void initializeGUI(View view) {
-        this.txtPatientFullName = (EditText) view.findViewById(R.id.textSummaryPatientFullName);
-        this.butStartEmergency = (Button) view.findViewById(R.id.buttonStartEmergency);
+        setupTcSeveritySpinner(view);
+        setupTcRoomSpinner(view);
 
-        this.setupTcSeveritySpinner(view);
-        this.setupTcRoomSpinner(view);
-
-        this.butStartEmergency.setOnClickListener(new OnClickListener() {
+        mButStartEmergency.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 // bug to be fixed on the remote server during teleconsultation creation
                 createNewTeleconsultation();
             }
         });
-
+        return view;
     }
 
     private void createNewTeleconsultation() {
         Log.d(TAG, "Trying to create a new teleconsultation...");
         final String description = "Teleconsultation 0001";
-        final String severity = severitySpinner.getSelectedItem().toString();
-        final Room room = (Room) roomSpinner.getSelectedItem();
+        final String severity = mSeveritySpinner.getSelectedItem().toString();
+        final Room room = (Room) mRoomSpinner.getSelectedItem();
         retrieveRoomDevices(room);
-
 
         Log.d(TAG, String.format("Creating teleconsultation with room: %s and desc:%s", room.getId(), description));
         getConfigBuilder().getRemoteConfigReader().createNewTeleconsultation(description, severity, room.getId(), getConfigBuilder().getEcoUser().getAccessToken(), new Listener<String>() {
@@ -102,15 +91,14 @@ public class SummaryFragment extends ConfigFragment {
                 try {
                     JSONObject tcData = new JSONObject(teleconsultationData);
                     String uuid = tcData.getJSONObject("data").getJSONObject("teleconsultation").getString("uuid");
-                    String roomUUIO = room.getId();
-                    Teleconsultation tc = new Teleconsultation(uuid, "", description, severity, room, getConfigBuilder().getEcoUser());
+                    Teleconsultation tc = new Teleconsultation(uuid, "", description, severity,
+                            room, getConfigBuilder().getEcoUser());
 
                     createTeleconsultationSession(tc);
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
 
@@ -124,18 +112,19 @@ public class SummaryFragment extends ConfigFragment {
 
     private void createTeleconsultationSession(final Teleconsultation teleconsultation) {
         EcoUser ecoUser = getConfigBuilder().getEcoUser();
-        getConfigBuilder().getRemoteConfigReader().createNewTeleconsultationSession(teleconsultation.getId(), teleconsultation.getRoom().getId(), ecoUser.getAccessToken(), new Listener<String>() {
+        getConfigBuilder().getRemoteConfigReader().createNewTeleconsultationSession(
+                teleconsultation.getId(),
+                teleconsultation.getRoom().getId(),
+                ecoUser.getAccessToken(), new Listener<String>() {
 
                     @Override
                     public void onResponse(String tcSessionData) {
                         Log.d(TAG, "Created teleconsultation session: " + tcSessionData);
                         try {
                             String sessionUUID = new JSONObject(tcSessionData).getJSONObject("data").getJSONObject("session").getString("uuid");
-
                             TeleconsultationSession ts = new TeleconsultationSession(sessionUUID, TeleconsultationSessionState.NEW);
                             teleconsultation.setLastSession(ts);
                             startSession(teleconsultation);
-
                         } catch (JSONException e) {
                             Log.e(TAG, "Error parsing the new teleconsultation session creation response: " + e);
                             e.printStackTrace();
@@ -207,7 +196,7 @@ public class SummaryFragment extends ConfigFragment {
         waitForSpecialistDialog.show();
 
 
-        this.pollForSpecialist(waitForSpecialistDialog, tc);
+        pollForSpecialist(waitForSpecialistDialog, tc);
     }
 
     private void pollForSpecialist(final ProgressDialog wfsd, final Teleconsultation tc) {
@@ -296,20 +285,20 @@ public class SummaryFragment extends ConfigFragment {
     }
 
     private void setupTcSeveritySpinner(View view) {
-        severitySpinner = (Spinner) view.findViewById(R.id.spinnerSeverity);
+        mSeveritySpinner = (Spinner) view.findViewById(R.id.spinner_summary_severity);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getActivity(),
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.tc_severities, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        severitySpinner.setAdapter(adapter);
+        mSeveritySpinner.setAdapter(adapter);
     }
 
     private void setupTcRoomSpinner(View view) {
-        this.roomSpinner = (Spinner) view.findViewById(R.id.spinnerRoom);
-        this.retrieveRooms();
+        mRoomSpinner = (Spinner) view.findViewById(R.id.spinner_summary_room);
+        retrieveRooms();
     }
 
 
@@ -348,7 +337,7 @@ public class SummaryFragment extends ConfigFragment {
 
             ArrayAdapter<Room> spinnerArrayAdapter = new ArrayAdapter<Room>(getActivity(), android.R.layout.simple_spinner_item, rooms);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-            roomSpinner.setAdapter(spinnerArrayAdapter);
+            mRoomSpinner.setAdapter(spinnerArrayAdapter);
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block
@@ -361,11 +350,11 @@ public class SummaryFragment extends ConfigFragment {
     public void updateConfigFields() {
         Patient patient = getConfigBuilder().getPatient();
         if (patient != null) {
-            txtPatientFullName.setText(patient.getName() + " " + patient.getSurname());
-            txtPatientFullName.setFocusable(false);
+            mTxtPatientFullName.setText(patient.getName() + " " + patient.getSurname());
+            mTxtPatientFullName.setFocusable(false);
         } else {
-            txtPatientFullName.setFocusable(true);
-            txtPatientFullName.setText("INSERT NAME");
+            mTxtPatientFullName.setFocusable(true);
+            mTxtPatientFullName.setText("INSERT NAME");
 
         }
 

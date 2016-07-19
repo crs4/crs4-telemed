@@ -23,8 +23,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.mcxiaoke.volley:library:1.0.19'
-    compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:support-v4'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:design:23.0.1'
     compile 'com.nhaarman.supertooltips:library:3.0.+'
     compile name: "MOSTStreaming", ext: "aar", group: 'it.crs4.most.streaming', version: '1.0'
     compile name: "MOSTVisualization", ext: "aar", group: 'it.crs4.most.visualization', version: '1.0'
