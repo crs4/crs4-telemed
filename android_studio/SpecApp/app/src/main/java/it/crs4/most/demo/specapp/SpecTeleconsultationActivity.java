@@ -1,5 +1,6 @@
 package it.crs4.most.demo.specapp;
 
+import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +40,11 @@ import it.crs4.most.demo.specapp.models.Teleconsultation;
 import it.crs4.most.demo.specapp.models.TeleconsultationSessionState;
 import it.crs4.most.demo.specapp.ui.TcStateTextView;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
+import it.crs4.most.visualization.augmentedreality.RemoteCaptureCameraPreview;
+import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
+import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
+import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
+import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.Utils;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.VoipLib;
@@ -66,6 +73,7 @@ import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamViewerFragment;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 
+import org.artoolkit.ar.base.assets.AssetHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,7 +86,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         IPtzCommandReceiver,
         IStreamFragmentCommandListener,
         IStreamProvider,
-        ARFragment.OnCompleteListener{
+        ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
     private static String TAG = "SpecTeleconsultationActivity";
 
@@ -87,17 +95,17 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private boolean exitFromAppRequest = false;
 
     private Handler handler;
-    private IStream stream1 = null;
-    private IStream streamEcho = null;
+    private IStream stream1;
+    private IStream streamEcho;
 
-    private ARFragment stream1Fragment = null;
-    private StreamViewerFragment streamEchoFragment = null;
+    private ARFragment stream1Fragment;
+    private StreamViewerFragment streamEchoFragment;
 
     private TeleconsultationState tcState = TeleconsultationState.IDLE;
-    private TcStateTextView txtTcState = null;
+    private TcStateTextView txtTcState;
 
-    private PTZ_ControllerFragment ptzControllerFragment = null;
-    private PTZ_Manager ptzManager = null;
+    private PTZ_ControllerFragment ptzControllerFragment;
+    private PTZ_Manager ptzManager;
 
     private String streamingUri;
     private String streamingEchoUri;
@@ -112,7 +120,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private VoipLib myVoip;
     private CallHandler voipHandler;
 
-    private Teleconsultation teleconsultation = null;
+    private Teleconsultation teleconsultation;
 
     private PTZ_ControllerPopupWindowFactory ptzPopupWindowController;
 
@@ -143,10 +151,17 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private String clientSecret;
 
     private RemoteConfigReader rcr;
+    private boolean mStreamPrepared = false;
+    private HashMap<String, Mesh> meshes = new HashMap<>();
+    private PubSubARRenderer renderer;
+    private Handler handlerAR;
+    private RemoteCaptureCameraPreview preview;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
 
         this.configServerIP = QuerySettings.getConfigServerAddress(this);
         this.configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
@@ -155,15 +170,55 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort,
                 this.clientId, this.clientSecret);
 
-        this.handler = new Handler(this);
+//        new Handler(preview);
+        handlerAR = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message streamingMessage) {
+                StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
+                String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
+                Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
+
+                StreamState streamState = ((IStream) event.getData()).getState();
+                Log.d(TAG, "event.getData().streamState " + streamState);
+                if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
+                        event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED
+
+                        ) {
+                    if (streamState == StreamState.PLAYING) {
+
+                        Log.d(TAG, "event.getData().streamState " + streamState);
+                        Log.d(TAG, "ready to call cameraPreviewStarted");
+
+                        //FIXME should be dynamically set
+                        int width = 704;
+                        int height = 576;
+                        Log.d(TAG, "width " + width);
+                        Log.d(TAG, "height " + height);
+                        stream1Fragment.cameraPreviewStarted(width, height, 25, 0, false);
+                    }
+                }
+            }
+        };
+
         setContentView(R.layout.spec_activity_main);
         this.setupActionBar();
         this.setupTeleconsultationInfo();
         this.setupVoipGUI();
 
-
         this.setTeleconsultationState(TeleconsultationState.IDLE);
 
+        AssetHelper assetHelper = new AssetHelper(getAssets());
+        assetHelper.cacheAssetFolder(this, "Data");
+
+        ZMQPublisher publisher = new ZMQPublisher();
+        Thread pubThread = new Thread(publisher);
+        pubThread.start();
+
+        Arrow arrow = new Arrow("arrow");
+        meshes.put(arrow.getId(), arrow);
+        arrow.publisher = publisher;
+        renderer =  new PubSubARRenderer(this);
+        renderer.setMeshes(meshes);
 
         this.setupStreamLib();
         this.setupPtzPopupWindow();
@@ -180,6 +235,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     }
 
     private void setupStreamLib() {
+        Log.d(TAG, "setupStreamLib");
         try {
             Device camera = teleconsultation.getLastSession().getCamera();
 
@@ -203,32 +259,32 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             this.streamingUri = camera.getStreamUri(); //    uriProps.getProperty("uri_stream");
             stream1_params.put("uri", this.streamingUri);
 
-            this.stream1 = streamingLib.createStream(stream1_params, this.handler);
+            this.stream1 = streamingLib.createStream(stream1_params, handlerAR);
             Log.d(TAG, "STREAM 1 INSTANCE");
 
             // Instance the first StreamViewer fragment where to render the first stream by passing the stream name as its ID.
-            this.stream1Fragment = ARFragment.newInstance(stream1.getName());
-            this.stream1Fragment.setPlayerButtonsVisible(false);
-
+            stream1Fragment = ARFragment.newInstance(stream1.getName());
+            stream1Fragment.setPlayerButtonsVisible(false);
+            Log.d(TAG, String.format("renderer != null %b", renderer != null));
+            stream1Fragment.setRenderer(renderer);
+            stream1Fragment.setStreamAR(stream1);
 
             // Instance the Echo Stream
 
             Device encoder = teleconsultation.getLastSession().getEncoder();
-            Log.d(TAG, "ENCODER check");
-            Log.d(TAG, "ENCODER NULLO ??? " + encoder);
             HashMap<String, String> stream_echo_params = new HashMap<String, String>();
             stream_echo_params.put("name", ECHO_STREAM);
 
 
-            this.streamingEchoUri = encoder.getStreamUri(); //     uriProps.getProperty("uri_echo");
+            streamingEchoUri = encoder.getStreamUri(); //     uriProps.getProperty("uri_echo");
             stream_echo_params.put("uri", this.streamingEchoUri);
 
-            this.streamEcho = streamingLib.createStream(stream_echo_params, this.handler);
+            streamEcho = streamingLib.createStream(stream_echo_params, this.handler);
             Log.d(TAG, "STREAM ECHO INSTANCE");
 
             // Instance the echo StreamViewer fragment where to render the echo stream by passing the stream name as its ID.
-            this.streamEchoFragment = StreamViewerFragment.newInstance(streamEcho.getName());
-            this.streamEchoFragment.setPlayerButtonsVisible(false);
+            streamEchoFragment = StreamViewerFragment.newInstance(streamEcho.getName());
+            streamEchoFragment.setPlayerButtonsVisible(false);
 
 
         }
@@ -236,6 +292,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             streaming_ready = false;
             e.printStackTrace();
         }
+
+
+        stream1Fragment.setGlSurfaceViewCallback(this);
+
 
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager()
@@ -635,12 +695,20 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
-
+        Log.d("TAG", "onSurfaceViewCreated");
+        if(surfaceView != null){
         if (streamId.equals(MAIN_STREAM))
-            this.stream1.prepare(surfaceView);
+            if(!mStreamPrepared) {
+                stream1.prepare(surfaceView, true);
+//                stream1Fragment.setStreamAR(stream1);
+//                stream1Fragment.setRenderer(renderer);
+                stream1Fragment.prepareRemoteAR();
+                mStreamPrepared = true;
+            }
 
         else if (streamId.equals(ECHO_STREAM))
             this.streamEcho.prepare(surfaceView);
+        }
     }
 
     @Override
@@ -770,6 +838,22 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public void onFragmentResume() {
+
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        stream1Fragment.getGlView().setMeshes(meshes);
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
 
     }
 
