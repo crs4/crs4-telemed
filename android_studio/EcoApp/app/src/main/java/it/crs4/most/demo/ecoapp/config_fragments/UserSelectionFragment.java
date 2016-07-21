@@ -82,21 +82,21 @@ public class UserSelectionFragment extends ConfigFragment {
             getConfigBuilder().getRemoteConfigReader().
                     getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
 
-                @Override
-                public void onResponse(JSONObject users) {
-                    Log.d(TAG, "Received taskgroup applicants: " + users.toString());
-                    // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
-                    retrieveSelectedUser(users);
-                }
-            }, new ErrorListener() {
+                        @Override
+                        public void onResponse(JSONObject users) {
+                            Log.d(TAG, "Received taskgroup applicants: " + users.toString());
+                            // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
+                            retrieveSelectedUser(users);
+                        }
+                    }, new ErrorListener() {
 
-                @Override
-                public void onErrorResponse(VolleyError arg0) {
-                    Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
-                    //mLoadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
-                    // [TODO] Handle the error
-                }
-            });
+                        @Override
+                        public void onErrorResponse(VolleyError arg0) {
+                            Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
+                            //mLoadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
+                            // [TODO] Handle the error
+                        }
+                    });
         }
     }
 
@@ -123,7 +123,8 @@ public class UserSelectionFragment extends ConfigFragment {
             }
             mEcoArrayAdapter.notifyDataSetChanged();
 
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             e.printStackTrace();
             return;
         }
@@ -157,7 +158,8 @@ public class UserSelectionFragment extends ConfigFragment {
                 viewHolder = new ViewHolder();
                 viewHolder.username = (TextView) convertView.findViewById(R.id.text_operator_username);
                 convertView.setTag(viewHolder);
-            } else {
+            }
+            else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             EcoUser ecoUser = getItem(position);

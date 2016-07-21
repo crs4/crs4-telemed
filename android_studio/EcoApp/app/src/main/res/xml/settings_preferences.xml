@@ -15,4 +15,8 @@
         android:enabled="false"
         android:title="@string/task_group"
         android:summary="%s"/>
+    <EditTextPreference
+        android:key="device_id"
+        android:title="@string/device_id"
+        android:enabled="false"/>
 </PreferenceScreen>

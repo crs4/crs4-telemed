@@ -45,6 +45,7 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,10 +63,10 @@ import android.os.Handler;
 import android.os.Message;
 
 @SuppressLint("InlinedApi")
-public class EcoTeleconsultationActivity extends ActionBarActivity implements Handler.Callback,
+public class EcoTeleconsultationActivity extends AppCompatActivity implements Handler.Callback,
         IStreamFragmentCommandListener {
 
-    private static final String TAG = "EcoTeleconsultationActivity";
+    private static final String TAG = "EcoTeleconsultActivity";
 
     private StreamViewerFragment stream1Fragment = null;
     private IStream stream1 = null;
@@ -98,9 +99,6 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
     private boolean exitFromAppRequest = false;
 
     private Teleconsultation teleconsultation = null;
-    private Properties configProps;
-    private String configServerIP;
-    private int configServerPort;
     private RemoteConfigReader rcr;
 
     @Override
@@ -109,11 +107,9 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 
         // Intent i = getIntent();
         //this.ecoUser =  (EcoUser) i.getExtras().getSerializable("EcoUser");
-        this.configProps = loadProperties("uri.properties.default");
-        this.configServerIP = this.configProps.getProperty("configServerIp");
-        this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort"));
-
-        this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort);
+        String configServerIP = QuerySettings.getConfigServerAddress(this);
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
+        this.rcr = new RemoteConfigReader(this, configServerIP, configServerPort);
 
         setContentView(R.layout.activity_teleconsultation);
         txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
@@ -132,47 +128,18 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
         //this.waitForSpecialist();
     }
 
-    private Properties loadProperties(String FileName) {
-        Properties properties = new Properties();
-        try {
-            /**
-             * getAssets() Return an AssetManager instance for your
-             * application's package. AssetManager Provides access to an
-             * application's raw asset files;
-             */
-            AssetManager assetManager = this.getAssets();
-            /**
-             * Open an asset using ACCESS_STREAMING mode. This
-             */
-            InputStream inputStream = assetManager.open(FileName);
-            /**
-             * Loads properties from the specified InputStream,
-             */
-            properties.load(inputStream);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            Log.e("AssetsPropertyReader", e.toString());
-        }
-        return properties;
-    }
-
     private void setupTeleconsultationInfo() {
         Intent i = getIntent();
         this.teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
 
         TextView txtEcoUser = (TextView) findViewById(R.id.txtEcoUser);
-
         txtEcoUser.setText(String.format("%s %s", this.teleconsultation.getApplicant().getFirstName(),
                 this.teleconsultation.getApplicant().getLastName()));
-
     }
-
 
     private void setTeleconsultationState(TeleconsultationState tcState) {
         this.tcState = tcState;
         notifyTeleconsultationStateChanged();
-
     }
 
     private void notifyTeleconsultationStateChanged() {
@@ -190,7 +157,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
             accountRegistered = false;
             remoteHold = false;
             pauseStream();
-        } else if (tcState == TeleconsultationState.READY) {
+        }
+        else if (tcState == TeleconsultationState.READY) {
             butCall.setEnabled(false);
             butCloseSession.setEnabled(true);
             popupCancelButton.setEnabled(true);
@@ -202,7 +170,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
             accountRegistered = true;
             remoteHold = false;
             pauseStream();
-        } else if (this.tcState == TeleconsultationState.CALLING) {
+        }
+        else if (this.tcState == TeleconsultationState.CALLING) {
             butCall.setEnabled(true);
             butCloseSession.setEnabled(false);
             popupCancelButton.setEnabled(true);
@@ -212,7 +181,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
             remoteHold = false;
             localHold = false;
             playStream();
-        } else if (this.tcState == TeleconsultationState.HOLDING) {
+        }
+        else if (this.tcState == TeleconsultationState.HOLDING) {
             butCall.setEnabled(true);
             butCloseSession.setEnabled(false);
             popupCancelButton.setEnabled(true);
@@ -221,7 +191,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 
             localHold = true;
             pauseStream();
-        } else if (this.tcState == TeleconsultationState.REMOTE_HOLDING) {
+        }
+        else if (this.tcState == TeleconsultationState.REMOTE_HOLDING) {
             butCall.setEnabled(true);
             butCloseSession.setEnabled(false);
             popupCancelButton.setEnabled(true);
@@ -259,7 +230,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
 
         if (this.myVoip != null) {
             this.myVoip.destroyLib();
-        } else {
+        }
+        else {
             Log.d(TAG, "Voip Library deinitialized. Exiting the app");
             this.finish();
         }
@@ -295,7 +267,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
             streamingLib.initLib(this.getApplicationContext());
 
             this.stream1 = streamingLib.createStream(stream1_params, this.handler);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.e(TAG, "ERROR INITIALIZING STREAM:" + e);
             e.printStackTrace();
         }
@@ -345,7 +318,7 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
     }
 
 	/*
-	@Override
+    @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.teleconsultation, menu);
@@ -524,13 +497,17 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
             // Register the account after the Lib Initialization
             if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZED) {
                 myVoip.registerAccount();
-            } else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTERED) {
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTERED) {
                 if (!accountRegistered) {
                     this.app.subscribeBuddies();
-                } else accountRegistered = true;
-            } else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_UNREGISTERED) {
+                }
+                else accountRegistered = true;
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_UNREGISTERED) {
                 setTeleconsultationState(TeleconsultationState.IDLE);
-            } else if (myEventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
+            }
+            else if (myEventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
 
                 Log.d(TAG, "In handle Message for BUDDY EVENT");
                 //IBuddy myBuddy = (IBuddy) myEventBundle.getData();
@@ -543,20 +520,25 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
                     if (tcState == TeleconsultationState.REMOTE_HOLDING || tcState == TeleconsultationState.HOLDING) {
                         if (localHold) {
                             setTeleconsultationState(TeleconsultationState.HOLDING);
-                        } else
+                        }
+                        else
                             setTeleconsultationState(TeleconsultationState.CALLING);
-                    } else if (tcState == TeleconsultationState.IDLE) {
+                    }
+                    else if (tcState == TeleconsultationState.IDLE) {
                         setTeleconsultationState(TeleconsultationState.READY);
                     }
 
-                } else if (myEventBundle.getEvent() == VoipEvent.BUDDY_HOLDING) {
+                }
+                else if (myEventBundle.getEvent() == VoipEvent.BUDDY_HOLDING) {
                     if (myVoip.getCall().getState() == CallState.ACTIVE || myVoip.getCall().getState() == CallState.HOLDING)
                         setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-                } else if (myEventBundle.getEvent() == VoipEvent.BUDDY_DISCONNECTED) {
+                }
+                else if (myEventBundle.getEvent() == VoipEvent.BUDDY_DISCONNECTED) {
                     setTeleconsultationState(TeleconsultationState.IDLE);
                 }
 
-            } else if (myEventBundle.getEvent() == VoipEvent.CALL_INCOMING)
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.CALL_INCOMING)
                 answerCall(); //handleIncomingCallRequest();
             /*
             else if (myEventBundle.getEvent()==VoipEvent.CALL_READY)
@@ -571,13 +553,16 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
             else if (myEventBundle.getEvent() == VoipEvent.CALL_ACTIVE) {
                 if (remoteHold) {
                     this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-                } else {
+                }
+                else {
                     this.app.setTeleconsultationState(TeleconsultationState.CALLING);
                 }
 
-            } else if (myEventBundle.getEvent() == VoipEvent.CALL_HOLDING) {
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.CALL_HOLDING) {
                 this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
-            } else if (myEventBundle.getEvent() == VoipEvent.CALL_HANGUP || myEventBundle.getEvent() == VoipEvent.CALL_REMOTE_HANGUP) {
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.CALL_HANGUP || myEventBundle.getEvent() == VoipEvent.CALL_REMOTE_HANGUP) {
 
                 if (this.app.tcState != TeleconsultationState.IDLE)
                     this.app.setTeleconsultationState(TeleconsultationState.READY);
@@ -591,10 +576,12 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
                 if (this.reinitRequest) {
                     this.reinitRequest = false;
                     this.app.setupVoipLib();
-                } else if (exitFromAppRequest) {
+                }
+                else if (exitFromAppRequest) {
                     exitFromApp();
                 }
-            } else if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
                     myEventBundle.getEvent() == VoipEvent.LIB_CONNECTION_FAILED || myEventBundle.getEvent() == VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
                 showErrorEventAlert(myEventBundle);
 
@@ -642,7 +629,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
     private void toggleHoldCall(boolean holding) {
         if (holding) {
             myVoip.holdCall();
-        } else {
+        }
+        else {
             myVoip.unholdCall();
         }
     }
@@ -666,7 +654,8 @@ public class EcoTeleconsultationActivity extends ActionBarActivity implements Ha
             // to receive event notifications. Following Voip methods are called from the handleMassage() callback method
             //boolean result = myVoip.initLib(params, new RegistrationHandler(this, myVoip));
             myVoip.initLib(this.getApplicationContext(), this.voipParams, this.voipHandler);
-        } else {
+        }
+        else {
             Log.d(TAG, "Voip is not null... Destroying the lib before reinitializing.....");
             // Reinitialization will be done after deinitialization event callback
             this.voipHandler.reinitRequest = true;

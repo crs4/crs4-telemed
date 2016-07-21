@@ -10,7 +10,6 @@ import it.crs4.most.demo.ecoapp.models.EcoUser;
 import it.crs4.most.demo.ecoapp.models.Patient;
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,8 +25,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 
 public class EcoConfigActivity extends AppCompatActivity implements IConfigBuilder {
-
-
     private static final String TAG = "MostViewPager";
 
     private static String[] mPages = {"User Selection",
@@ -89,7 +86,6 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
@@ -152,7 +148,7 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
 
     private void startTeleconsultationActivity() {
         Intent i = new Intent(this, EcoTeleconsultationActivity.class);
-        Log.d(TAG, "STARTING ACTIVITY WITH ECO USER:" + mEcoUser);
+        Log.d(TAG, "Starting activity with eco user: " + mEcoUser);
         i.putExtra("EcoUser", mEcoUser);
         i.putExtra("Teleconsultation", mTeleconsultation);
         startActivity(i);
@@ -182,14 +178,13 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
             Log.d(TAG, String.format("position %d, value %s", position, value));
 
             switch (position) {
-                case 0: //SETTINGS
-                    Intent intent = new Intent(EcoConfigActivity.this, SettingsActivity.class);
-                    startActivity(intent);
+                case 0: // SETTINGS
+                    Intent settingsIntent = new Intent(EcoConfigActivity.this, SettingsActivity.class);
+                    startActivity(settingsIntent);
                     break;
-                case 1: //EXIT
+                case 1: // EXIT
                     finish();
                     break;
-
             }
         }
     }

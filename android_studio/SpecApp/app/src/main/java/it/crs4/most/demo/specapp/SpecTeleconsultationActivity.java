@@ -134,8 +134,6 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     private boolean voipDestroyed = false;
     private boolean firstCallStarted = false;
 
-    private Properties configProps;
-
     private String configServerIP;
     private int configServerPort;
     private String clientId = null;
@@ -147,12 +145,12 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.configProps = loadProperties("uri.properties.default");
-        this.configServerIP = this.configProps.getProperty("configServerIp");
-        this.configServerPort = Integer.valueOf(this.configProps.getProperty("configServerPort")).intValue();
-        this.clientId = this.configProps.getProperty("clientId");
-        this.clientSecret = this.configProps.getProperty("clientSecret");
-        this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort, this.clientId, this.clientSecret);
+        this.configServerIP = QuerySettings.getConfigServerAddress(this);
+        this.configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
+        this.clientId = "9db4f27b3d9c8e352b5c";
+        this.clientSecret = "00ea399c013349a716ea3e47d8f8002502e2e982";
+        this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort,
+                this.clientId, this.clientSecret);
 
         this.handler = new Handler(this);
         setContentView(R.layout.spec_activity_main);
@@ -180,9 +178,6 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 
     private void setupStreamLib() {
         try {
-
-            //this.uriProps = getUriProperties("uri.properties.default");
-
             Device camera = teleconsultation.getLastSession().getCamera();
 
             // Instance and initialize the Streaming Library
@@ -510,7 +505,7 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 
     @Override
     public void onGoHome() {
-        String homePreset = this.configProps.getProperty("home_preset_ptz");
+        String homePreset = "home";// this.configProps.getProperty("home_preset_ptz");
         this.ptzManager.goTo(homePreset);
 
     }

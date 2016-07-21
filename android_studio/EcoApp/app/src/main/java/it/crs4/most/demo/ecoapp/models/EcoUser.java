@@ -19,7 +19,6 @@ public class EcoUser implements Serializable {
         this.mTaskGroup = taskGroup;
     }
 
-
     public String getFirstName() {
         return mFirstName;
     }
@@ -54,5 +53,10 @@ public class EcoUser implements Serializable {
 
     public void setAccessToken(String accessToken) {
         this.mAccessToken = accessToken;
+    }
+
+    @Override
+    public String toString() {
+        return getUsername();
     }
 }

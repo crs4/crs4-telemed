@@ -118,15 +118,15 @@ public class EnterPasscodeFragment extends ConfigFragment {
 
     private void showPinCodeErrorAlert() {
         AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(getActivity());
-        loginErrorAlert.setTitle("Login Error");
-        loginErrorAlert.setMessage("Invalid Pin code.\n Please retry.");
+        loginErrorAlert.setTitle(R.string.login_error);
+        loginErrorAlert.setMessage(R.string.login_error_details);
         AlertDialog alert = loginErrorAlert.create();
         alert.show();
     }
 
     @Override
     public void updateConfigFields() {
-        Log.d(TAG, String.format("Config fields for %s %s", getConfigBuilder().getEcoUser().getFirstName(), getConfigBuilder().getEcoUser().getLastName()));
-        mUserText.setText(String.format("%s %s", getConfigBuilder().getEcoUser().getFirstName(), getConfigBuilder().getEcoUser().getLastName()));
+        mUserText.setText(String.format("%s %s", getConfigBuilder().getEcoUser().getFirstName(),
+                getConfigBuilder().getEcoUser().getLastName()));
     }
 }

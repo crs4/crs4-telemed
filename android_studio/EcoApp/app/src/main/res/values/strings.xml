@@ -17,7 +17,7 @@
     <string name="action_exit">Exit</string>
     <string name="title_activity_teleconsultation">TeleconsultationActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="close_session">close session</string>
+    <string name="close_session">Close session</string>
 
     <string name="call_hangup">Hangup</string>
 
@@ -40,6 +40,11 @@
     <string name="severity">SEVERITY:</string>
     <string name="room">ROOM:</string>
     <string name="start_emergency">START EMERGENCY</string>
+    <string name="login_error">Login Error</string>
+    <string name="login_error_details">Invalid Pin code.\n Please retry.</string>
+    <string name="waiting_for_specialist">Waiting for specialist...</string>
+    <string name="device_info">Device Info</string>
+    <string name="device_id">Device ID</string>
 
 
 </resources>

@@ -6,6 +6,7 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.android.volley.Response;
@@ -24,13 +25,21 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.settings_preferences);
         EditTextPreference configServerAddr = (EditTextPreference)
                 findPreference("config_server_address");
         configServerAddr.setSummary(configServerAddr.getText());
+
         EditTextPreference configServerPort = (EditTextPreference)
                 findPreference("config_server_port");
         configServerPort.setSummary(configServerPort.getText());
+
+        EditTextPreference deviceID = (EditTextPreference)
+                findPreference("device_id");
+        deviceID.setSummary(Settings.Secure.getString(getActivity().getContentResolver(),
+                Settings.Secure.ANDROID_ID));
+
+
         mTaskGroupPreference = (ListPreference) findPreference("select_task_group_preference");
 
         retrieveTaskgroups(QuerySettings.getConfigServerAddress(getActivity()),
@@ -68,8 +77,9 @@ public class SettingsFragment extends PreferenceFragment {
         final ProgressDialog loadingConfigDialog = new ProgressDialog(getActivity());
         loadingConfigDialog.setTitle("Connection to the remote server");
         loadingConfigDialog.setMessage("Loading taskgroups associated to this device. Please wait....");
-        loadingConfigDialog.setCancelable(false);
-        loadingConfigDialog.setCanceledOnTouchOutside(false);
+        loadingConfigDialog.setCancelable(true);
+        loadingConfigDialog.setCanceledOnTouchOutside(true);
+        loadingConfigDialog.setMax(10);
         loadingConfigDialog.show();
 
         configReader.getTaskgroups(

@@ -5,7 +5,7 @@ import android.preference.PreferenceManager;
 
 public class QuerySettings {
 
-    // NOTE: the value of the constants MUST correspond to the value in preferences.xml
+    // NOTE: the value of the constants MUST correspond to the value in settings_preferenceseferences.xml
     private static final String CONFIG_SERVER_IP = "config_server_address";
     private static final String CONFIG_SERVER_PORT = "config_server_port";
     private static final String TASK_GROUP = "select_task_group_preference";
