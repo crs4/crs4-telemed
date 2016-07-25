@@ -217,7 +217,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         Arrow arrow = new Arrow("arrow");
         meshes.put(arrow.getId(), arrow);
         arrow.publisher = publisher;
-        renderer =  new PubSubARRenderer(this);
+        renderer =  new PubSubARRenderer(this, publisher);
         renderer.setMeshes(meshes);
 
         this.setupStreamLib();
