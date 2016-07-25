@@ -170,6 +170,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         this.rcr = new RemoteConfigReader(this, this.configServerIP, configServerPort,
                 this.clientId, this.clientSecret);
 
+        this.handler = new Handler(this);
 //        new Handler(preview);
         handlerAR = new Handler(Looper.getMainLooper()) {
             @Override
@@ -210,7 +211,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
-        ZMQPublisher publisher = new ZMQPublisher();
+        ZMQPublisher publisher = new ZMQPublisher(5556);
         Thread pubThread = new Thread(publisher);
         pubThread.start();
 
