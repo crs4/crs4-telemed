@@ -31,7 +31,7 @@
     <string name="exit">Exit</string>
     <string name="config_server_address">Config Server Address</string>
     <string name="remote_app">Remote Ecographist App</string>
-    <string name="config_server_port">Port</string>
+    <string name="config_server_port">Config Server Port</string>
     <string name="save">Save</string>
     <string name="select_task_group_dialog">Select the taskgroup</string>
     <string name="start_emergency_call">START EMERGENCY CALL</string>
