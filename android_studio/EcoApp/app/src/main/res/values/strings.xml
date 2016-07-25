@@ -45,6 +45,10 @@
     <string name="waiting_for_specialist">Waiting for specialist...</string>
     <string name="device_info">Device Info</string>
     <string name="device_id">Device ID</string>
+    <string name="error">Error</string>
+    <string name="device_not_registered">The device is not registered in the server. Contact the administator</string>
+    <string name="generic_taskgroup_error">An error occurred retrieving the taskgroups</string>
+    <string name="error_contacting_the_server">Error contacting the configuration server. Check the parameters</string>
 
 
 </resources>

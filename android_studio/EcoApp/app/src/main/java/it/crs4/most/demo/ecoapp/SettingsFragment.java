@@ -1,6 +1,8 @@
 package it.crs4.most.demo.ecoapp;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -90,6 +92,14 @@ public class SettingsFragment extends PreferenceFragment {
                             boolean success = (taskgroupsData != null && taskgroupsData.getBoolean("success"));
                             if (!success) {
                                 Log.e(TAG, "No valid taskgroups found for this device");
+                                loadingConfigDialog.dismiss();
+
+                                if (taskgroupsData.getJSONObject("error").getInt("code") == 501) {
+                                    showAlertDialog(R.string.device_not_registered);
+                                }
+                                else {
+                                    showAlertDialog(R.string.generic_taskgroup_error);
+                                }
                                 updateTaskGroupPreference();
                                 return;
                             }
@@ -106,7 +116,8 @@ public class SettingsFragment extends PreferenceFragment {
                             mTaskGroupPreference.setEntryValues(taskGroupsValues);
                             getPreferenceScreen().addPreference(mTaskGroupPreference);
 
-                        } catch (JSONException e) {
+                        }
+                        catch (JSONException e) {
                             e.printStackTrace();
                             return;
                         }
@@ -119,10 +130,25 @@ public class SettingsFragment extends PreferenceFragment {
                     public void onErrorResponse(VolleyError arg0) {
                         Log.e(TAG, "Error contacting the configuration server");
                         loadingConfigDialog.dismiss();
+                        showAlertDialog(R.string.error_contacting_the_server);
                         updateTaskGroupPreference();
                     }
                 }
         );
+    }
+
+    private void showAlertDialog(int messageResId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).
+                setIconAttribute(android.R.attr.alertDialogIcon).
+                setTitle(R.string.error).
+                setMessage(messageResId).
+                setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
     }
 
     public void updateTaskGroupPreference() {
