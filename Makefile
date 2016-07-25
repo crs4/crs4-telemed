@@ -61,6 +61,7 @@ shell:
 	cd server/most; PYTHONPATH=.. python manage.py shell
 
 sync:
+	cd server/most; PYTHONPATH=.. python manage.py makemigrations
 	cd server/most; PYTHONPATH=.. python manage.py migrate
 
 dump:

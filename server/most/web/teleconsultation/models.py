@@ -37,6 +37,7 @@ class Device(models.Model):
     )
 
     uuid = models.CharField(_('Device UUID'), max_length=100, unique=True)
+    description = models.CharField(_('Description'), max_length=50)
     application_type = models.CharField(_('Application type'), choices=APPLICATION_TYPES, max_length=2)
     device_platform = models.CharField(_('Device platform'), choices=DEVICE_PLATFORM, max_length=7)
     task_groups = models.ManyToManyField(TaskGroup, related_name='devices', null=True, blank=True, verbose_name=_('Device Task Groups'))
