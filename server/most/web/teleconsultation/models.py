@@ -44,7 +44,10 @@ class Device(models.Model):
 
 
     def __unicode__(self):
-        return '%s in %s with uuid: %s' % (self.get_application_type_display(), self.get_device_platform_display(), self.uuid)
+        if not self.description:
+            return '%s in %s' % (self.get_application_type_display(), self.uuid)
+        else:
+            return '%s in %s' % (self.get_application_type_display(), self.description)
 
 class Room(models.Model):
 
