@@ -190,6 +190,54 @@
   },
   {
     "fields": {
+      "application_type": "SA",
+      "task_groups": [
+        1
+      ],
+      "uuid": "fa990f46d892464a",
+      "device_platform": "ANDROID"
+    },
+    "model": "teleconsultation.device",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "application_type": "AA",
+      "task_groups": [
+        1
+      ],
+      "uuid": "d062fdef929fe93a",
+      "device_platform": "ANDROID"
+    },
+    "model": "teleconsultation.device",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "application_type": "AA",
+      "task_groups": [
+        1
+      ],
+      "uuid": "5c29ebbf989ef6a8",
+      "device_platform": "ANDROID"
+    },
+    "model": "teleconsultation.device",
+    "pk": 6
+  },
+    {
+    "fields": {
+      "application_type": "AA",
+      "task_groups": [
+        1
+      ],
+      "uuid": "63ca58dce917b7eb",
+      "device_platform": "ANDROID"
+    },
+    "model": "teleconsultation.device",
+    "pk": 7
+  },
+  {
+    "fields": {
       "has_camera": true,
       "description": "Camera B228 @ CRS4",
       "uuid": "t3fhnipi42jd5j3pfhipxy4eijxoxy62",

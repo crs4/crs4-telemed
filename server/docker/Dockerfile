@@ -1,6 +1,7 @@
 FROM ubuntu:14.04.4
 
-RUN apt-get update && apt-get install -y asterisk wget vim mysql-server libmysqlclient-dev git odbcinst python-pip build-essential sqlite3
+RUN apt-get update && apt-get install -y asterisk wget vim mysql-server libmysqlclient-dev git odbcinst python-pip build-essential sqlite3 \
+	unixodbc unixodbc-dev
 RUN pip install Django==1.7.9 shortuuid pytz
 
 WORKDIR /tmp
@@ -38,4 +39,4 @@ RUN service mysql start && \
 	mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('most')" && \
 	service mysql stop
 
-EXPOSE 2000 3306 3478 5060 8000
+EXPOSE 2000 3306 3478 5060 8000 10000-10010
