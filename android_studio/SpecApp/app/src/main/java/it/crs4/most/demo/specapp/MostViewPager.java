@@ -3,13 +3,11 @@ package it.crs4.most.demo.specapp;
 import it.crs4.most.demo.specapp.config_fragments.ConfigFragment;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.TextView;
 
 public class MostViewPager extends ViewPager {
 
@@ -17,8 +15,6 @@ public class MostViewPager extends ViewPager {
     private static int targetPos = 0;
     private static int permittedPos = 0;
     private static String TAG = "MostViewPager";
-    private PagerTitleStrip titleStrip;
-    private String[] pages;
 
     public MostViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,39 +26,10 @@ public class MostViewPager extends ViewPager {
         MostViewPager.manual_page_change_enabled = false;
     }
 
-    public void setOnPageListener(String pages[]) {
-        this.setOnPageChangeListener(new PageListener());
-        titleStrip = (PagerTitleStrip) findViewById(R.id.pager_header);
-        this.pages = pages;
-    }
-
-    private void updatePageTitleStyle() {
-        Log.d(TAG, "Num Pages:" + pages.length + " Num Childs:" + titleStrip.getChildCount());
-        for (int i = 0; i < titleStrip.getChildCount(); i++) {
-
-            TextView titlePageView = (TextView) titleStrip.getChildAt(i);
-            String title = titlePageView.getText().toString();
-            if (permittedPos >= 0)
-                Log.d(TAG, "Child:" + i + " ->" + title + " PER:" + pages[permittedPos]);
-            else
-                Log.d(TAG, "Child:" + i + " ->" + title + " NO PERMITTED POS ");
-
-
-            if (permittedPos >= 0 && permittedPos != getCurrentItem() && title.contains(pages[permittedPos])) {
-                Log.d(TAG, "Title to be changed in blu: " + title);
-                //titlePageView.setText(Html.fromHtml("<u>" + pages[permittedPos] + "</u>"));
-
-                titlePageView.setTextColor(Color.GREEN);
-            } else {
-                //titlePageView.setText(titlePageView.getText().toString());
-                titlePageView.setTextColor(Color.WHITE);
-            }
-        }
-
-        getAdapter().notifyDataSetChanged();
+    public void setOnPageListener() {
+        super.addOnPageChangeListener(new PageListener());
 
     }
-
 
     public void setInternalCurrentItem(int target_position, int permitted_position) {
         MostViewPager.manual_page_change_enabled = true;
@@ -70,12 +37,9 @@ public class MostViewPager extends ViewPager {
         targetPos = target_position;
         Log.d(TAG, "Manual Page Enabled:" + MostViewPager.manual_page_change_enabled + " target_position:" + target_position + " permitted:" + permittedPos);
 
-
-        ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) this.getAdapter()).getItem(targetPos)).updateConfigFields();
+        ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) getAdapter()).getItem(targetPos)).onShow();
         super.setCurrentItem(targetPos);
         MostViewPager.manual_page_change_enabled = false;
-        updatePageTitleStyle();
-
 
         if (getCurrentItem() == targetPos && targetPos != permittedPos) {
             MostViewPager.manual_page_change_enabled = true;
@@ -91,10 +55,9 @@ public class MostViewPager extends ViewPager {
             return;
         }
 
-        ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) this.getAdapter()).getItem(position)).updateConfigFields();
+//        ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) getAdapter()).getItem(position)).onShow();
         super.setCurrentItem(position);
         MostViewPager.manual_page_change_enabled = false;
-        updatePageTitleStyle();
     }
 
     @Override
@@ -102,7 +65,6 @@ public class MostViewPager extends ViewPager {
         if (MostViewPager.manual_page_change_enabled) {
             return super.onTouchEvent(event);
         }
-
         return false;
     }
 
@@ -111,7 +73,6 @@ public class MostViewPager extends ViewPager {
         if (MostViewPager.manual_page_change_enabled) {
             return super.onInterceptTouchEvent(event);
         }
-
         return false;
     }
 
@@ -121,9 +82,9 @@ public class MostViewPager extends ViewPager {
             Log.d(TAG, "Page selected:" + position + " Permitted position;" + permittedPos);
             if (position != permittedPos && position != targetPos) {
                 MostViewPager.this.setInternalCurrentItem(targetPos, permittedPos);
-            } else {
+            }
+            else {
                 MostViewPager.manual_page_change_enabled = false;
-                updatePageTitleStyle();
             }
         }
     }

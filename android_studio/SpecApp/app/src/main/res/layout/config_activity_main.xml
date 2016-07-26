@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <it.crs4.most.demo.specapp.MostViewPager
-            android:id="@+id/vpPager"
+            android:id="@+id/vp_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

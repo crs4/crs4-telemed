@@ -9,8 +9,8 @@ import com.android.volley.VolleyError;
 
 
 import it.crs4.most.demo.specapp.config_fragments.ConfigFragment;
-import it.crs4.most.demo.specapp.config_fragments.FragmentLogin;
-import it.crs4.most.demo.specapp.config_fragments.Fragment_TeleconsultationSelection;
+import it.crs4.most.demo.specapp.config_fragments.LoginFragment;
+import it.crs4.most.demo.specapp.config_fragments.TeleconsultationSelectionFragment;
 import it.crs4.most.demo.specapp.models.SpecUser;
 import it.crs4.most.demo.specapp.models.Teleconsultation;
 import it.crs4.most.demo.specapp.models.TeleconsultationSessionState;
@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -58,10 +59,10 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
 
         setupConfigFragments();
         setContentView(R.layout.config_activity_main);
-        mPager = (MostViewPager) findViewById(R.id.vpPager);
-        SmartFragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
+        mPager = (MostViewPager) findViewById(R.id.vp_pager);
+        FragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mPager.setAdapter(pagerAdapter);
-        mPager.setOnPageListener(mPages);
+        mPager.setOnPageListener();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         String[] drawerItems = {
@@ -118,8 +119,8 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
 
     private void setupConfigFragments() {
         mConfigFragments = new ConfigFragment[mPages.length];
-        mConfigFragments[0] = FragmentLogin.newInstance(this, 1, "Login");
-        mConfigFragments[1] = Fragment_TeleconsultationSelection.newInstance(this, 2, "Teleconsultations");
+        mConfigFragments[0] = LoginFragment.newInstance(this);
+        mConfigFragments[1] = TeleconsultationSelectionFragment.newInstance(this);
     }
 
     private void startTeleconsultationActivity() {
@@ -128,26 +129,25 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         i.putExtra("Teleconsultation", mTeleconsultation);
         startActivity(i);
 
-        this.finish();
+        finish();
     }
 
     @Override
     public void setSpecUser(SpecUser user) {
-        this.mSpecUser = user;
-        this.mPager.setInternalCurrentItem(1, 0);
+        mSpecUser = user;
+        mPager.setInternalCurrentItem(1, 0);
     }
 
     @Override
     public SpecUser getSpecUser() {
-        return this.mSpecUser;
+        return mSpecUser;
     }
-
 
     @Override
     public void setTeleconsultation(Teleconsultation selectedTc) {
-        this.mTeleconsultation = selectedTc;
-        this.mTeleconsultation.setSpecialist(getSpecUser());
-        this.joinTeleconsultationSession(mTeleconsultation);
+        mTeleconsultation = selectedTc;
+        mTeleconsultation.setSpecialist(getSpecUser());
+        joinTeleconsultationSession(mTeleconsultation);
     }
 
     private void joinTeleconsultationSession(final Teleconsultation selectedTc) {
@@ -183,12 +183,11 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
     // Extend from SmartFragmentStatePagerAdapter now instead for more dynamic ViewPager items
     public static class PagerAdapter extends SmartFragmentStatePagerAdapter {
 
-        private SpecConfigActivity activity = null;
+        private SpecConfigActivity mActivity;
 
         public PagerAdapter(SpecConfigActivity activity, FragmentManager fragmentManager) {
             super(fragmentManager);
-            this.activity = activity;
-
+            mActivity = activity;
         }
 
         @Override
@@ -201,7 +200,7 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
             Log.d(TAG, "Selected Page Item at pos:" + position);
 
             if (position >= 0 && position < mPages.length) {
-                return this.activity.mConfigFragments[position];
+                return mActivity.mConfigFragments[position];
             }
             else {
                 return null;

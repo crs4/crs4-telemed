@@ -12,5 +12,5 @@ public abstract class ConfigFragment extends Fragment {
 	  this.config = config;
   }
   
-  public abstract void updateConfigFields();
+  public abstract void onShow();
 }

@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 public class TcArrayAdapter extends ArrayAdapter<Teleconsultation> {
 
-    public TcArrayAdapter(Fragment_TeleconsultationSelection fragment_PatientSelection, int textViewResourceId,
-                 List<Teleconsultation> objects) {
+    public TcArrayAdapter(TeleconsultationSelectionFragment fragment_PatientSelection, int textViewResourceId,
+                          List<Teleconsultation> objects) {
     	
         super(fragment_PatientSelection.getActivity(), textViewResourceId, objects);
     }
@@ -33,8 +33,8 @@ public class TcArrayAdapter extends ArrayAdapter<Teleconsultation> {
                       .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.tc_row, null);
             viewHolder = new ViewHolder();
-            viewHolder.fullName = (TextView)convertView.findViewById(R.id.textTcTitle);
-            viewHolder.id = (TextView)convertView.findViewById(R.id.textTcID);
+            viewHolder.fullName = (TextView)convertView.findViewById(R.id.text_tc_name);
+            viewHolder.id = (TextView)convertView.findViewById(R.id.text_tc_id);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
