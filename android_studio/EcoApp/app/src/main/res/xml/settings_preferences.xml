@@ -9,6 +9,7 @@
         android:key="config_server_port"
         android:title="@string/config_server_port"
         android:defaultValue="8000"
+        android:inputType="number"
         android:summary="%s"/>
     <ListPreference
         android:key="select_task_group_preference"
