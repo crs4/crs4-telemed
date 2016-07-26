@@ -148,17 +148,17 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
 
 
     private void startTeleconsultationActivity() {
+        Intent i;
         if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
-            Intent i = new Intent(this, AREcoTeleconsultationActivity.class);
-            startActivity(i);
+            i = new Intent(this, AREcoTeleconsultationActivity.class);
         }
         else{
-            Intent i = new Intent(this, EcoTeleconsultationActivity.class);
-            Log.d(TAG, "Starting activity with eco user: " + mEcoUser);
-            i.putExtra("EcoUser", mEcoUser);
-            i.putExtra("Teleconsultation", mTeleconsultation);
-            startActivity(i);
+            i = new Intent(this, EcoTeleconsultationActivity.class);
         }
+        Log.d(TAG, "Starting activity with eco user: " + mEcoUser);
+        i.putExtra("EcoUser", mEcoUser);
+        i.putExtra("Teleconsultation", mTeleconsultation);
+        startActivity(i);
     }
 
     @Override

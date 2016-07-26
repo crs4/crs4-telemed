@@ -1,7 +1,6 @@
 package it.crs4.most.demo.ecoapp;
 
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,18 +9,16 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.artoolkit.ar.base.ARToolKit;
@@ -35,50 +32,8 @@ import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
 import java.util.HashMap;
 
-import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
-import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
-import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
-import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
-import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
-import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
-import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
-
-
-
-
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ConfigurationInfo;
-import android.opengl.GLSurfaceView;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.artoolkit.ar.base.ARToolKit;
-import org.artoolkit.ar.base.NativeInterface;
-import org.artoolkit.ar.base.camera.CameraEventListener;
-import org.artoolkit.ar.base.camera.CameraPreferencesActivity;
-import org.artoolkit.ar.base.camera.CaptureCameraPreview;
-import org.artoolkit.ar.base.rendering.ARRenderer;
-import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
-
-import java.util.HashMap;
-
+import it.crs4.most.demo.ecoapp.models.Teleconsultation;
+import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
@@ -90,7 +45,8 @@ import jp.epson.moverio.bt200.DisplayControl;
 // For Epson Moverio BT-200. BT200Ctrl.jar must be in libs/ folder.
 
 
-public class AREcoTeleconsultationActivity extends Activity implements CameraEventListener {
+public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity implements
+        CameraEventListener {
     protected static final String TAG = "LocalARActivity";
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
@@ -104,12 +60,14 @@ public class AREcoTeleconsultationActivity extends Activity implements CameraEve
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.ar_eco);
 
         AssetHelper assetHelper = new AssetHelper(getAssets());
@@ -121,8 +79,18 @@ public class AREcoTeleconsultationActivity extends Activity implements CameraEve
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
         }
 
+        String configServerIP = QuerySettings.getConfigServerAddress(this);
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
+        rcr = new RemoteConfigReader(this, configServerIP, configServerPort);
+//        init();
+        setTeleconsultationState(TeleconsultationState.IDLE);
+        Intent i = getIntent();
+        teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+        setupVoipLib();
+
 //        String address = "156.148.33.87:5555";
-        String address = "172.16.4.20:5555";
+//        String address = "156.148.33.87:5556";
+        String address = "156.148.33.66:5556";
         ZMQSubscriber subscriber = new ZMQSubscriber(address);
         Thread subThread = new Thread(subscriber);
         subThread.start();
@@ -264,7 +232,10 @@ public class AREcoTeleconsultationActivity extends Activity implements CameraEve
             this.finish();
         }
 
-        Toast.makeText(this, "Camera settings: " + width + "x" + height + "@" + rate + "fps", 0).show();
+        Toast.makeText(this, "Camera settings: " + width + "x" + height + "@" + rate + "fps",
+
+
+                0).show();
         this.firstUpdate = true;
     }
 
@@ -321,4 +292,8 @@ public class AREcoTeleconsultationActivity extends Activity implements CameraEve
         return (FrameLayout) this.findViewById(R.id.local_ar_frame);
     }
 
+    @Override
+    protected void notifyTeleconsultationStateChanged() {
+        // FIXME
+    }
 }

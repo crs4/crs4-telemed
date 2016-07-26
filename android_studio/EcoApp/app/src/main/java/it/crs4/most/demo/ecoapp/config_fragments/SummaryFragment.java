@@ -312,25 +312,30 @@ public class SummaryFragment extends ConfigFragment {
 
 
     private void retrieveRooms() {
-        String accessToken = getConfigBuilder().getEcoUser().getAccessToken();
+        if (getConfigBuilder() != null){
+            Log.d(TAG, String.format("getConfigBuilder() == null %b", getConfigBuilder() == null));
+            Log.d(TAG, String.format("getConfigBuilder().getEcoUser() == null %b", getConfigBuilder().getEcoUser() == null));
 
-        getConfigBuilder().getRemoteConfigReader().getRooms(accessToken, new Response.Listener<JSONObject>() {
+            String accessToken = getConfigBuilder().getEcoUser().getAccessToken();
+
+            getConfigBuilder().getRemoteConfigReader().getRooms(accessToken, new Response.Listener<JSONObject>() {
 
 
-            @Override
-            public void onResponse(JSONObject rooms) {
+                @Override
+                public void onResponse(JSONObject rooms) {
 
-                Log.d(TAG, String.format("Received rooms:\n\n%s\n\n", rooms));
-                populateTcRoomSpinner(rooms);
-            }
-        }, new Response.ErrorListener() {
+                    Log.d(TAG, String.format("Received rooms:\n\n%s\n\n", rooms));
+                    populateTcRoomSpinner(rooms);
+                }
+            }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                Log.e(TAG, "Error retrieving rooms:" + arg0);
+                @Override
+                public void onErrorResponse(VolleyError arg0) {
+                    Log.e(TAG, "Error retrieving rooms:" + arg0);
 
-            }
-        });
+                }
+            });
+        }
     }
 
     private void populateTcRoomSpinner(JSONObject roomsData) {
