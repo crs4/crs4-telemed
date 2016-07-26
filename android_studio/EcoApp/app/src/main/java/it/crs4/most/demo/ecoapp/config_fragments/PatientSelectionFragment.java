@@ -8,11 +8,13 @@ import it.crs4.most.demo.ecoapp.R;
 import it.crs4.most.demo.ecoapp.models.Patient;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -20,6 +22,7 @@ import android.widget.ListView;
 public class PatientSelectionFragment extends ConfigFragment {
     private ArrayList<Patient> mPatients;
     private ArrayAdapter<Patient> mPatientArrayAdapter;
+    private View mView;
 
     public static PatientSelectionFragment newInstance(IConfigBuilder config) {
         PatientSelectionFragment fragment = new PatientSelectionFragment();
@@ -34,8 +37,8 @@ public class PatientSelectionFragment extends ConfigFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_patients, container, false);
-        FloatingActionButton addPatient = (FloatingActionButton) view.findViewById(R.id.button_patients_add);
+        mView = inflater.inflate(R.layout.fragment_patients, container, false);
+        FloatingActionButton addPatient = (FloatingActionButton) mView.findViewById(R.id.button_patients_add);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,7 +46,7 @@ public class PatientSelectionFragment extends ConfigFragment {
             }
         });
 
-        ListView listView = (ListView) view.findViewById(R.id.patients_list);
+        ListView listView = (ListView) mView.findViewById(R.id.patients_list);
         mPatients = new ArrayList<>();
         mPatientArrayAdapter = new PatientArrayAdapter(this, R.layout.patient_row, mPatients);
         listView.setAdapter(mPatientArrayAdapter);
@@ -55,7 +58,8 @@ public class PatientSelectionFragment extends ConfigFragment {
             }
         });
         retrievePatients();
-        return view;
+
+        return mView;
     }
 
     private void retrievePatients() {
@@ -66,6 +70,8 @@ public class PatientSelectionFragment extends ConfigFragment {
     }
 
     @Override
-    public void updateConfigFields() {
+    public void onShow() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
     }
 }

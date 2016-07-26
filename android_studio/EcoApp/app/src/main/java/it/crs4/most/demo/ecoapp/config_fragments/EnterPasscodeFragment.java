@@ -8,9 +8,9 @@ import com.android.volley.Response;
 
 import it.crs4.most.demo.ecoapp.IConfigBuilder;
 import it.crs4.most.demo.ecoapp.R;
-import it.crs4.most.demo.ecoapp.RemoteConfigReader;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ public class EnterPasscodeFragment extends ConfigFragment {
     private static String TAG = "MostViewPager";
     private static int PASSCODE_LEN = 5;
 
+    private View mView;
     private EditText mEditPass;
     private TextView mUserText;
 
@@ -45,9 +48,9 @@ public class EnterPasscodeFragment extends ConfigFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_passcode, container, false);
-        mEditPass = (EditText) view.findViewById(R.id.editPasscode);
-        mUserText = (TextView) view.findViewById(R.id.text_operator_username);
+        mView = inflater.inflate(R.layout.fragment_passcode, container, false);
+        mEditPass = (EditText) mView.findViewById(R.id.edit_passcode);
+        mUserText = (TextView) mView.findViewById(R.id.text_operator_username);
 
         mEditPass.addTextChangedListener(new TextWatcher() {
 
@@ -71,7 +74,7 @@ public class EnterPasscodeFragment extends ConfigFragment {
                 }
             }
         });
-        return view;
+        return mView;
     }
 
     private void retrieveAccessToken(String pincode) {
@@ -125,8 +128,15 @@ public class EnterPasscodeFragment extends ConfigFragment {
     }
 
     @Override
-    public void updateConfigFields() {
-        mUserText.setText(String.format("%s %s", getConfigBuilder().getEcoUser().getFirstName(),
-                getConfigBuilder().getEcoUser().getLastName()));
+    public void onShow() {
+        Log.d(TAG, "onShow");
+        mUserText.setText(
+                String.format("%s %s",
+                        getConfigBuilder().getEcoUser().getFirstName(),
+                        getConfigBuilder().getEcoUser().getLastName())
+        );
+        mEditPass.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mEditPass, InputMethodManager.SHOW_IMPLICIT);
     }
 }

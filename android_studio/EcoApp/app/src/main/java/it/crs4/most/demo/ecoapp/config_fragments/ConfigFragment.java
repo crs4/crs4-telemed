@@ -16,5 +16,5 @@ public abstract class ConfigFragment extends Fragment {
     return mConfigBuilder;
   }
 
-  public abstract void updateConfigFields();
+  public abstract void onShow();
 }

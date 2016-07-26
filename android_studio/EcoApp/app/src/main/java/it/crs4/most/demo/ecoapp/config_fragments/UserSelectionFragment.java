@@ -132,7 +132,7 @@ public class UserSelectionFragment extends ConfigFragment {
     }
 
     @Override
-    public void updateConfigFields() {
+    public void onShow() {
 
     }
 

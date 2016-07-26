@@ -36,7 +36,7 @@ public class MostViewPager extends ViewPager {
                 " target_position:" + target_position + " permitted:" + mPermittedPos);
 
 
-        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(mTargetPos)).updateConfigFields();
+        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(mTargetPos)).onShow();
         super.setCurrentItem(mTargetPos);
         MostViewPager.manualPageChangeEnabled = false;
 
@@ -56,7 +56,7 @@ public class MostViewPager extends ViewPager {
             return;
         }
 
-        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(position)).updateConfigFields();
+        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(position)).onShow();
         super.setCurrentItem(position);
         MostViewPager.manualPageChangeEnabled = false;
     }

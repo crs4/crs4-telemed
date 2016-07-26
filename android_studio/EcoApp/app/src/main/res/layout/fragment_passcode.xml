@@ -9,32 +9,29 @@
          android:id="@+id/text_operator_username"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignParentTop="true"
-         android:layout_centerHorizontal="true"
          android:layout_gravity="center"
-         android:layout_marginTop="15dp"
-         android:text=""
-         android:textAlignment="center" />
-    
+         android:textSize="20sp"
+         android:layout_marginTop="15dp"/>
+
     <TextView
-        android:id="@+id/textEnterPasscode"
+        android:id="@+id/text_enter_passcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
+        android:layout_gravity="center"
         android:text="@string/lbl_enter_passcode" />
     
     
      <EditText
-        android:id="@+id/editPasscode"
+        android:id="@+id/edit_passcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/TextView01"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:ems="10"
         android:maxLength="5"
+        android:layout_gravity="center"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:inputType="numberPassword"/>
 
 </LinearLayout>

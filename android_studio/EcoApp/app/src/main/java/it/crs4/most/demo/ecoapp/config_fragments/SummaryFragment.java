@@ -261,7 +261,8 @@ public class SummaryFragment extends ConfigFragment {
                         tc.getLastSession().setVoipParams(sessionData);
                         getConfigBuilder().setTeleconsultation(tc);
                     }
-                }, new Response.ErrorListener() {
+                },
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError arg0) {
                         Log.e(TAG, "Error running the session: " + arg0);
@@ -356,7 +357,7 @@ public class SummaryFragment extends ConfigFragment {
     }
 
     @Override
-    public void updateConfigFields() {
+    public void onShow() {
         Patient patient = getConfigBuilder().getPatient();
         if (patient != null) {
             mTxtPatientFullName.setText(patient.getName() + " " + patient.getSurname());
