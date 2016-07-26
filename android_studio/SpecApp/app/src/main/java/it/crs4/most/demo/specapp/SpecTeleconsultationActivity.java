@@ -3,6 +3,7 @@ package it.crs4.most.demo.specapp;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.app.AlertDialog;
@@ -72,7 +73,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 
-public class SpecTeleconsultationActivity extends ActionBarActivity implements Handler.Callback,
+public class SpecTeleconsultationActivity extends AppCompatActivity implements Handler.Callback,
         IPtzCommandReceiver,
         IStreamFragmentCommandListener,
         IStreamProvider {
@@ -228,7 +229,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
             this.streamEchoFragment.setPlayerButtonsVisible(false);
 
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             streaming_ready = false;
             e.printStackTrace();
         }
@@ -260,7 +262,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
             // to receive event notifications. Following Voip methods are called from the handleMassage() callback method
             //boolean result = myVoip.initLib(params, new RegistrationHandler(this, myVoip));
             myVoip.initLib(this.getApplicationContext(), voipParams, this.voipHandler);
-        } else {
+        }
+        else {
             Log.d(TAG, "Voip is not null... Destroying the lib before reinitializing.....");
             // Reinitialization will be done after deinitialization event callback
             this.voipHandler.reinitRequest = true;
@@ -315,35 +318,9 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
         });
     }
 
-    private Properties loadProperties(String FileName) {
-        Properties properties = new Properties();
-        try {
-            /**
-             * getAssets() Return an AssetManager instance for your
-             * application's package. AssetManager Provides access to an
-             * application's raw asset files;
-             */
-            AssetManager assetManager = this.getAssets();
-            /**
-             * Open an asset using ACCESS_STREAMING mode. This
-             */
-            InputStream inputStream = assetManager.open(FileName);
-            /**
-             * Loads properties from the specified InputStream,
-             */
-            properties.load(inputStream);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            Log.e("AssetsPropertyReader", e.toString());
-        }
-        return properties;
-    }
-
     private void showPTZPopupWindow() {
         this.ptzPopupWindowController.show();
     }
-
 
     private void setTeleconsultationState(TeleconsultationState tcState) {
         this.tcState = tcState;
@@ -366,7 +343,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
             accountRegistered = false;
             pauseStreams();
 
-        } else if (this.tcState == TeleconsultationState.READY) {
+        }
+        else if (this.tcState == TeleconsultationState.READY) {
             butMakeCall.setText("Call");
             butMakeCall.setEnabled(true);
             butHoldCall.setEnabled(false);
@@ -378,7 +356,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
             if (firstCallStarted)
                 checkForSessionClosed();
 
-        } else if (this.tcState == TeleconsultationState.CALLING) {
+        }
+        else if (this.tcState == TeleconsultationState.CALLING) {
             butMakeCall.setEnabled(true);
             butMakeCall.setText("Hangup");
             butHoldCall.setEnabled(true);
@@ -387,19 +366,22 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
             firstCallStarted = true;
             playStreams();
 
-        } else if (this.tcState == TeleconsultationState.HOLDING) {
+        }
+        else if (this.tcState == TeleconsultationState.HOLDING) {
             butMakeCall.setEnabled(true);
             butMakeCall.setText("Hangup");
             butHoldCall.setEnabled(true);
             localHold = true;
             pauseStreams();
-        } else if (this.tcState == TeleconsultationState.REMOTE_HOLDING) {
+        }
+        else if (this.tcState == TeleconsultationState.REMOTE_HOLDING) {
             butMakeCall.setEnabled(true);
             butMakeCall.setText("Hangup");
             butHoldCall.setEnabled(true);
             remoteHold = true;
             pauseStreams();
-        } else if (this.tcState == TeleconsultationState.SESSION_CLOSED) {
+        }
+        else if (this.tcState == TeleconsultationState.SESSION_CLOSED) {
             startReportActivity();
         }
     }
@@ -427,7 +409,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
                                 setTeleconsultationState(TeleconsultationState.SESSION_CLOSED);
                             }
 
-                        } catch (JSONException e) {
+                        }
+                        catch (JSONException e) {
                             Log.e(TAG, "Error retrieving session state:" + e);
                             e.printStackTrace();
                         }
@@ -593,7 +576,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 
         if (this.myVoip != null && !this.voipDestroyed) {
             this.myVoip.destroyLib();
-        } else {
+        }
+        else {
             Log.d(TAG, "Voip Library deinitialized. Exiting the app");
             this.finish();
         }
@@ -709,7 +693,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
     private void toggleHoldCall(boolean holding) {
         if (holding) {
             myVoip.holdCall();
-        } else {
+        }
+        else {
             myVoip.unholdCall();
         }
     }
@@ -736,7 +721,8 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
              */
             properties.load(inputStream);
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             // TODO Auto-generated catch block
             Log.e("AssetsPropertyReader", e.toString());
         }
@@ -809,13 +795,17 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
             // Register the account after the Lib Initialization
             if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZED) {
                 myVoip.registerAccount();
-            } else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTERED) {
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTERED) {
                 if (!accountRegistered) {
                     this.app.subscribeBuddies();
-                } else accountRegistered = true;
-            } else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_UNREGISTERED) {
+                }
+                else accountRegistered = true;
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_UNREGISTERED) {
                 setTeleconsultationState(TeleconsultationState.IDLE);
-            } else if (myEventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
+            }
+            else if (myEventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
 
                 Log.d(TAG, "In handle Message for BUDDY EVENT");
                 //IBuddy myBuddy = (IBuddy) myEventBundle.getData();
@@ -828,16 +818,20 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
                     if (tcState == TeleconsultationState.REMOTE_HOLDING || tcState == TeleconsultationState.HOLDING) {
                         if (localHold) {
                             setTeleconsultationState(TeleconsultationState.HOLDING);
-                        } else
+                        }
+                        else
                             setTeleconsultationState(TeleconsultationState.CALLING);
-                    } else if (tcState == TeleconsultationState.IDLE) {
+                    }
+                    else if (tcState == TeleconsultationState.IDLE) {
                         setTeleconsultationState(TeleconsultationState.READY);
                     }
 
-                } else if (myEventBundle.getEvent() == VoipEvent.BUDDY_HOLDING) {
+                }
+                else if (myEventBundle.getEvent() == VoipEvent.BUDDY_HOLDING) {
                     if (myVoip.getCall().getState() == CallState.ACTIVE || myVoip.getCall().getState() == CallState.HOLDING)
                         setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-                } else if (myEventBundle.getEvent() == VoipEvent.BUDDY_DISCONNECTED) {
+                }
+                else if (myEventBundle.getEvent() == VoipEvent.BUDDY_DISCONNECTED) {
                     setTeleconsultationState(TeleconsultationState.IDLE);
                 }
 
@@ -847,16 +841,20 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
 
             else if (myEventBundle.getEvent() == VoipEvent.CALL_READY) {
 
-            } else if (myEventBundle.getEvent() == VoipEvent.CALL_ACTIVE) {
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.CALL_ACTIVE) {
                 if (remoteHold) {
                     this.app.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-                } else {
+                }
+                else {
                     this.app.setTeleconsultationState(TeleconsultationState.CALLING);
                 }
 
-            } else if (myEventBundle.getEvent() == VoipEvent.CALL_HOLDING) {
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.CALL_HOLDING) {
                 this.app.setTeleconsultationState(TeleconsultationState.HOLDING);
-            } else if (myEventBundle.getEvent() == VoipEvent.CALL_HANGUP || myEventBundle.getEvent() == VoipEvent.CALL_REMOTE_HANGUP) {
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.CALL_HANGUP || myEventBundle.getEvent() == VoipEvent.CALL_REMOTE_HANGUP) {
 
                 if (this.app.tcState != TeleconsultationState.IDLE)
                     this.app.setTeleconsultationState(TeleconsultationState.READY);
@@ -870,10 +868,12 @@ public class SpecTeleconsultationActivity extends ActionBarActivity implements H
                 if (this.reinitRequest) {
                     this.reinitRequest = false;
                     this.app.setupVoipLib();
-                } else if (exitFromAppRequest) {
+                }
+                else if (exitFromAppRequest) {
                     exitFromApp();
                 }
-            } else if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
+            }
+            else if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
                     myEventBundle.getEvent() == VoipEvent.LIB_CONNECTION_FAILED || myEventBundle.getEvent() == VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
                 showErrorEventAlert(myEventBundle);
 

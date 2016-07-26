@@ -67,27 +67,12 @@ public class TeleconsultationSelectionFragment extends ConfigFragment {
                 config.setTeleconsultation(selectedTc);
             }
         });
-//        retrieveTeleconsultations();
         return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        Log.d(TAG, "Called onAttach");
-        super.onAttach(context);
-//        retrieveTeleconsultations();
-    }
-
-    @Override
-    public void onStart() {
-        Log.d(TAG, "Called on start");
-        super.onStart();
-    }
-
-    @Override
     public void onPause() {
-//        mGetTeleconsultationsHandler.removeCallbacks(mGetTeleconsultationsTask);
-        Log.d(TAG, "Called onPause");
+        mGetTeleconsultationsHandler.removeCallbacks(mGetTeleconsultationsTask);
         super.onPause();
     }
 
