@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -38,6 +39,7 @@ public class TeleconsultationSelectionFragment extends ConfigFragment {
     private RemoteConfigReader mConfigReader;
     private Runnable mGetTeleconsultationsTask;
     private Handler mGetTeleconsultationsHandler;
+    private View mView;
     private static String TAG = "TeleconsultationSelectionFragment";
 
     public static TeleconsultationSelectionFragment newInstance(IConfigBuilder config) {
@@ -54,8 +56,8 @@ public class TeleconsultationSelectionFragment extends ConfigFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tc_list, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.teleconsultation_list);
+        mView = inflater.inflate(R.layout.tc_list, container, false);
+        ListView listView = (ListView) mView.findViewById(R.id.teleconsultation_list);
         tcArray = new ArrayList<>();
         tcArrayAdapter = new TcArrayAdapter(this, R.layout.tc_row, tcArray);
 
@@ -67,7 +69,7 @@ public class TeleconsultationSelectionFragment extends ConfigFragment {
                 config.setTeleconsultation(selectedTc);
             }
         });
-        return view;
+        return mView;
     }
 
     @Override
@@ -147,6 +149,8 @@ public class TeleconsultationSelectionFragment extends ConfigFragment {
 
     @Override
     public void onShow() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
         retrieveTeleconsultations();
     }
 }

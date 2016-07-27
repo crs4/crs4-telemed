@@ -211,20 +211,20 @@ public class RemoteConfigReader {
 
 	/*
 	public void  getAccounts(Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "accounts/?access_token=" + this.accessToken, null, listener, errorListener);
+		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "accounts/?access_token=" + this.mAccessToken, null, listener, errorListener);
 		this.rq.add(postReq);	 
 		Log.d("most_example", "getAccountsRequest Sent");
 	}
 
 
 	public void getAccount(int accountId , Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "accounts/" + String.valueOf(accountId)+"/?access_token=" + this.accessToken, null, listener, errorListener);
+		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "accounts/" + String.valueOf(accountId)+"/?access_token=" + this.mAccessToken, null, listener, errorListener);
 		this.rq.add(postReq);
 	}
 
 	
 	public void  getBuddies(int accountId , Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "buddies/" + String.valueOf(accountId)+"/?access_token=" + this.accessToken, null, listener, errorListener);
+		JsonObjectRequest postReq = new JsonObjectRequest( this.urlPrefix + "buddies/" + String.valueOf(accountId)+"/?access_token=" + this.mAccessToken, null, listener, errorListener);
 		this.rq.add(postReq);
 	}
   */

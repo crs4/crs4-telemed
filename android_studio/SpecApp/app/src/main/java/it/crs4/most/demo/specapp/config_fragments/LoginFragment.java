@@ -15,6 +15,7 @@ import it.crs4.most.demo.specapp.models.SpecUser;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,27 +31,16 @@ import android.widget.EditText;
 
 public class LoginFragment extends ConfigFragment {
 
-    RemoteConfigReader rcr = null;
-
-    // params to be moved in the configuration file
-
-    private String clientId = "9db4f27b3d9c8e352b5c"; //"d67a0f2868956edece1a";
-    private String clientSecret = "00ea399c013349a716ea3e47d8f8002502e2e982"; //"29df85c27354579d87f026cb33007f350398a491";
-    //private String taskgroupID = "hdhtoz6ef4vixu3gk4s62knhncz6tmww"; // CRS4 taskgroup ID
-    private String taskgroupID = null;
-    private String username = null;
-    //PYTHONPATH=.. python manage.py runserver 0.0.0.0:8001
-
-    // --------------------------------------------------
-
-    private EditText editPass = null;
-    private EditText editUsername;
-    private Button butLogin;
-    private ProgressDialog loadingConfigDialog;
-
-    protected String accessToken;
-
     private static String TAG = "LoginFragment";
+
+    private RemoteConfigReader mConfigReader;
+    private String mTaskgroupID;
+    private String mUsername;
+    private EditText mEditPass = null;
+    private EditText mEditUsername;
+    private ProgressDialog mLoadingConfigDialog;
+    protected String mAccessToken;
+
 
     // newInstance constructor for creating fragment with arguments
     public static LoginFragment newInstance(IConfigBuilder config) {
@@ -58,60 +49,56 @@ public class LoginFragment extends ConfigFragment {
         return fragmentFirst;
     }
 
-    // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login, container, false);
-        initializeGUI(view);
-        loadRemoteConfig();
-        return view;
-    }
-
-    private void initializeGUI(View view) {
-        this.editPass = (EditText) view.findViewById(R.id.editPassword);
-        this.editUsername = (EditText) view.findViewById(R.id.editUsername);
-        this.butLogin = (Button) view.findViewById(R.id.butLogin);
-        //Log.d(TAG,"Call to getAccessToken()");
-        //this.getAccessToken();
-        this.butLogin.setOnClickListener(new OnClickListener() {
+        mEditPass = (EditText) view.findViewById(R.id.editPassword);
+        mEditUsername = (EditText) view.findViewById(R.id.editUsername);
+        Button butLogin = (Button) view.findViewById(R.id.butLogin);
+        butLogin.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 retrieveAccessToken();
             }
         });
+        loadRemoteConfig();
 
+        mEditPass.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mEditPass, 0);
+
+        return view;
     }
 
     private void loadRemoteConfig() {
         //Toast.makeText(EcoConfigActivity.this, "Connecting to:" + deviceName + "(" + macAddress +")" , Toast.LENGTH_LONG).show();
-        loadingConfigDialog = new ProgressDialog(getActivity());
-        loadingConfigDialog.setTitle("Connection to the remote server");
-        loadingConfigDialog.setMessage("Loading taskgroups associated to this device. Please wait....");
-        loadingConfigDialog.setCancelable(false);
-        loadingConfigDialog.setCanceledOnTouchOutside(false);
-        loadingConfigDialog.show();
+        mLoadingConfigDialog = new ProgressDialog(getActivity());
+        mLoadingConfigDialog.setTitle("Connection to the remote server");
+        mLoadingConfigDialog.setMessage("Loading taskgroups associated to this device. Please wait....");
+        mLoadingConfigDialog.setCancelable(false);
+        mLoadingConfigDialog.setCanceledOnTouchOutside(false);
+        mLoadingConfigDialog.show();
 
-        this.rcr = config.getRemoteConfigReader();
-        this.retrieveTaskgroups();
+        mConfigReader = config.getRemoteConfigReader();
+        retrieveTaskgroups();
     }
 
 
     private void retrieveTaskgroups() {
-        this.rcr.getTaskgroups(new Listener<JSONObject>() {
+        mConfigReader.getTaskgroups(new Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject taskgroups) {
-                loadingConfigDialog.setMessage("Taskgroups found for this device. Recovering Taskgroup applicants...");
+                mLoadingConfigDialog.setMessage("Taskgroups found for this device. Recovering Taskgroup applicants...");
                 Log.d(TAG, "Received taskgroups: " + taskgroups.toString());
-                loadingConfigDialog.dismiss();
+                mLoadingConfigDialog.dismiss();
                 retrieveSelectedTaskgroup(taskgroups);
             }
         }, new ErrorListener() {
@@ -119,8 +106,8 @@ public class LoginFragment extends ConfigFragment {
             @Override
             public void onErrorResponse(VolleyError arg0) {
                 Log.e(TAG, "Error retrieving the taskgroup: " + arg0);
-                loadingConfigDialog.setMessage("No taskgroups found for the current device: " + arg0);
-                loadingConfigDialog.dismiss();
+                mLoadingConfigDialog.setMessage("No taskgroups found for the current device: " + arg0);
+                mLoadingConfigDialog.dismiss();
                 // [TODO] Handle the error
             }
         });
@@ -173,8 +160,8 @@ public class LoginFragment extends ConfigFragment {
                 public void onClick(DialogInterface dialog, int which) {
                     try {
                         // call the getUsers for the selected taskgroup
-                        LoginFragment.this.taskgroupID = taskgroups.getJSONObject(which).getString("uuid");
-                        retrieveUsers(LoginFragment.this.taskgroupID);
+                        LoginFragment.this.mTaskgroupID = taskgroups.getJSONObject(which).getString("uuid");
+                        retrieveUsers(LoginFragment.this.mTaskgroupID);
                         dialog.dismiss();
                     }
                     catch (JSONException e) {
@@ -184,10 +171,7 @@ public class LoginFragment extends ConfigFragment {
 
                 }
             });
-
             builderSingle.show();
-
-            // -------------------------------------
 
         }
         catch (JSONException e) {
@@ -197,7 +181,7 @@ public class LoginFragment extends ConfigFragment {
     }
 
     private void retrieveUsers(String taskgroupId) {
-        this.rcr.getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
+        mConfigReader.getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject users) {
@@ -209,16 +193,16 @@ public class LoginFragment extends ConfigFragment {
             @Override
             public void onErrorResponse(VolleyError arg0) {
                 Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
-                //loadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
+                //mLoadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
                 // [TODO] Handle the error
             }
         });
     }
 
     private void retrieveSelectedUser(final JSONObject users_data) {
-        // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
-        // String username = users.getJSONObject("data").getJSONArray("applicants").getJSONObject(0).getString("username");
-        //	editUsername.setText(username);
+        // {"data":{"applicants":[{"lastname":"admin","mUsername":"admin","firstname":"admin"}]},"success":true}
+        // String mUsername = users.getJSONObject("data").getJSONArray("applicants").getJSONObject(0).getString("mUsername");
+        //	mEditUsername.setText(mUsername);
 
         try {
             boolean success = (users_data != null && users_data.getBoolean("success"));
@@ -259,11 +243,11 @@ public class LoginFragment extends ConfigFragment {
                 public void onClick(DialogInterface dialog, int which) {
                     try {
 
-                        username = users_data.getJSONObject("data").getJSONArray("applicants").getJSONObject(which).getString("username");
-                        Log.d(TAG, "Selected user:" + username);
+                        mUsername = users_data.getJSONObject("data").getJSONArray("applicants").getJSONObject(which).getString("username");
+                        Log.d(TAG, "Selected user:" + mUsername);
 
-                        editUsername.setText(username);
-                        editUsername.setEnabled(false);
+                        mEditUsername.setText(mUsername);
+                        mEditUsername.setEnabled(false);
                         dialog.dismiss();
                     }
                     catch (JSONException e) {
@@ -283,12 +267,11 @@ public class LoginFragment extends ConfigFragment {
             e.printStackTrace();
             return;
         }
-
     }
 
     private void retrieveAccessToken() {
-        String password = this.editPass.getText().toString();
-        rcr.getAccessToken(username, password, LoginFragment.this.taskgroupID, new Listener<String>() {
+        String password = mEditPass.getText().toString();
+        mConfigReader.getAccessToken(mUsername, password, LoginFragment.this.mTaskgroupID, new Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -296,10 +279,10 @@ public class LoginFragment extends ConfigFragment {
                 try {
                     JSONObject jsonresponse = new JSONObject(response);
                     Log.d(TAG, "ACCESS TOKEN: " + jsonresponse.getString("access_token"));
-                    accessToken = jsonresponse.getString("access_token");
+                    mAccessToken = jsonresponse.getString("access_token");
 
-                    if (accessToken != null)
-                        config.setSpecUser(new SpecUser(username, taskgroupID, accessToken));
+                    if (mAccessToken != null)
+                        config.setSpecUser(new SpecUser(mUsername, mTaskgroupID, mAccessToken));
                     else showWrongPasswordAlert();
 
                 }
@@ -316,14 +299,14 @@ public class LoginFragment extends ConfigFragment {
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error [" + error + "]");
                 Log.e(TAG, "Network response: " + error.getMessage());
-                accessToken = null;
+                mAccessToken = null;
                 showWrongPasswordAlert();
             }
         });
     }
 
     private void showWrongPasswordAlert() {
-        AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(this.getActivity());
+        AlertDialog.Builder loginErrorAlert = new AlertDialog.Builder(getActivity());
         loginErrorAlert.setTitle("Login Error");
         loginErrorAlert.setMessage("Invalid password.\n Please retry.");
         AlertDialog alert = loginErrorAlert.create();
