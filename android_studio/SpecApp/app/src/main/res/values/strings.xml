@@ -28,6 +28,8 @@
     <string name="exit">Exit</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="ptz">PTZ</string>
+    <string name="app_label">Remote Specialist App</string>
 
 
 </resources>

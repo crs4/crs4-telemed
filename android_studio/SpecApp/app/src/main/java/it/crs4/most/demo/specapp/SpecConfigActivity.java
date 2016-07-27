@@ -33,8 +33,6 @@ import android.widget.ListView;
 
 public class SpecConfigActivity extends AppCompatActivity implements IConfigBuilder {
 
-    private static final String OAUTH_CLIENT_ID = "9db4f27b3d9c8e352b5c";
-    private static final String OAUTH_CLIENT_SECRET = "00ea399c013349a716ea3e47d8f8002502e2e982";
     private static String TAG = "MostViewPager";
     private static String[] mPages = {"Login", "Teleconsultations"};
 
@@ -43,9 +41,6 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
     private Teleconsultation mTeleconsultation = null;
     private MostViewPager mPager = null;
     private RemoteConfigReader mConfigReader;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +50,7 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
 
         mConfigReader = new RemoteConfigReader(this, configServerIP,
-                configServerPort, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET);
+                configServerPort);
 
         setupConfigFragments();
         setContentView(R.layout.config_activity_main);
@@ -64,17 +59,17 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         mPager.setAdapter(pagerAdapter);
         mPager.setOnPageListener();
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         String[] drawerItems = {
                 getString(R.string.settings), getString(R.string.exit)
         };
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
+        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        mDrawerToggle = new ActionBarDrawerToggle(
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
+                drawerLayout,         /* DrawerLayout object */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -93,7 +88,7 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         };
 
         // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        drawerLayout.setDrawerListener(drawerToggle);
     }
 
 //    @Override
@@ -125,11 +120,9 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
 
     private void startTeleconsultationActivity() {
         Intent i = new Intent(this, SpecTeleconsultationActivity.class);
-        Log.d(TAG, "STARTING ACTIVITY WITH TELECONSULTATION: " + mTeleconsultation.getInfo());
+        Log.d(TAG, "Starting activity with teleconsultation: " + mTeleconsultation.getInfo());
         i.putExtra("Teleconsultation", mTeleconsultation);
         startActivity(i);
-
-        finish();
     }
 
     @Override
@@ -207,7 +200,6 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
             }
         }
 
-        // Returns the page title for the top indicator
         @Override
         public CharSequence getPageTitle(int position) {
             return mPages[position];

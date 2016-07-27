@@ -35,29 +35,16 @@ public class MostViewPager extends ViewPager {
         MostViewPager.manual_page_change_enabled = true;
         permittedPos = permitted_position;
         targetPos = target_position;
-        Log.d(TAG, "Manual Page Enabled:" + MostViewPager.manual_page_change_enabled + " target_position:" + target_position + " permitted:" + permittedPos);
+        Log.d(TAG, "Manual Page Enabled:" + MostViewPager.manual_page_change_enabled +
+                " target_position:" + target_position + " permitted:" + permittedPos);
 
         ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) getAdapter()).getItem(targetPos)).onShow();
-        super.setCurrentItem(targetPos);
+        setCurrentItem(targetPos);
         MostViewPager.manual_page_change_enabled = false;
 
         if (getCurrentItem() == targetPos && targetPos != permittedPos) {
             MostViewPager.manual_page_change_enabled = true;
         }
-    }
-
-    @Override
-    public void setCurrentItem(int position) {
-        Log.d(TAG, "MostViewer childs:" + getChildCount());
-        Log.d(TAG, "Called setCurrentItem:" + position + " with MostViewPager.manual_page_change_enabled:" + MostViewPager.manual_page_change_enabled);
-
-        if (!MostViewPager.manual_page_change_enabled || position != permittedPos) {
-            return;
-        }
-
-//        ((ConfigFragment) ((SpecConfigActivity.PagerAdapter) getAdapter()).getItem(position)).onShow();
-        super.setCurrentItem(position);
-        MostViewPager.manual_page_change_enabled = false;
     }
 
     @Override
