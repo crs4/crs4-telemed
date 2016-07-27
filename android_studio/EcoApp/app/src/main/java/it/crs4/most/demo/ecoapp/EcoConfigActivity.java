@@ -11,6 +11,7 @@ import it.crs4.most.demo.ecoapp.models.Patient;
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -147,7 +148,13 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
 
 
     private void startTeleconsultationActivity() {
-        Intent i = new Intent(this, EcoTeleconsultationActivity.class);
+        Intent i;
+        if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
+            i = new Intent(this, AREcoTeleconsultationActivity.class);
+        }
+        else{
+            i = new Intent(this, EcoTeleconsultationActivity.class);
+        }
         Log.d(TAG, "Starting activity with eco user: " + mEcoUser);
         i.putExtra("EcoUser", mEcoUser);
         i.putExtra("Teleconsultation", mTeleconsultation);
