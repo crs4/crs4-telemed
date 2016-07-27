@@ -73,7 +73,6 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private IStream stream1 = null;
     private ProgressDialog progressWaitingSpec;
 
-    private TeleconsultationState tcState = TeleconsultationState.IDLE;
     private TcStateTextView txtTcState;
     private ImageButton butCall;
     private Button butCloseSession;

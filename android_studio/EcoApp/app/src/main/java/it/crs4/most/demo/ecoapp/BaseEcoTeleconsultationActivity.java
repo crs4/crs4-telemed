@@ -49,8 +49,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity{
 
     private ProgressDialog progressWaitingSpec;
 
-    private TeleconsultationState tcState = TeleconsultationState.IDLE;
-
+    protected TeleconsultationState tcState = TeleconsultationState.IDLE;
     private String sipServerIp;
     private String sipServerPort;
 
