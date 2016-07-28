@@ -2,24 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@android:color/background_light"
               android:gravity="end"
               android:orientation="horizontal">
 
     <Button
-        android:id="@+id/butCloseSession"
+        android:id="@+id/button_close_session"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/close_session"/>
 
     <ImageButton
-        android:id="@+id/butCallActionBar"
+        android:id="@+id/button_call"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_action_call"/>
 
     <ImageButton
-        android:id="@+id/butExit"
+        android:id="@+id/button_exit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_menu_close_clear_cancel"/>

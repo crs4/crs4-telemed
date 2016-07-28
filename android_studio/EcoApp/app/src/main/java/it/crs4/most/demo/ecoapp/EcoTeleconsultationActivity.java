@@ -1,10 +1,7 @@
 package it.crs4.most.demo.ecoapp;
 
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Properties;
 
 import it.crs4.most.streaming.IStream;
 import it.crs4.most.streaming.StreamingEventBundle;
@@ -14,47 +11,27 @@ import it.crs4.most.streaming.enums.StreamState;
 import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.StreamViewerFragment;
 
-import org.json.JSONObject;
-
-import com.android.volley.VolleyError;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-
-import it.crs4.most.demo.ecoapp.models.EcoUser;
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
 import it.crs4.most.demo.ecoapp.ui.TcStateTextView;
-import it.crs4.most.demo.ecoapp.TeleconsultationState;
 
-import it.crs4.most.voip.Utils;
-import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.VoipLib;
-import it.crs4.most.voip.VoipLibBackend;
-import it.crs4.most.voip.enums.CallState;
-import it.crs4.most.voip.enums.VoipEvent;
-import it.crs4.most.voip.enums.VoipEventType;
-import it.crs4.most.voip.interfaces.IBuddy;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
-import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -65,34 +42,22 @@ import android.os.Message;
 
 @SuppressLint("InlinedApi")
 public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
-        implements IStreamFragmentCommandListener, Handler.Callback{
+        implements IStreamFragmentCommandListener, Handler.Callback {
 
     private static final String TAG = "EcoTeleconsultActivity";
 
     private StreamViewerFragment stream1Fragment = null;
     private IStream stream1 = null;
-    private ProgressDialog progressWaitingSpec;
+
+    private MenuItem butCall;
+    private MenuItem butCloseSession;
 
     private TcStateTextView txtTcState;
-    private ImageButton butCall;
-    private Button butCloseSession;
-
-    private String sipServerIp;
-    private String sipServerPort;
-
-    private VoipLib myVoip;
-    private CallHandler voipHandler;
     private PopupWindow popupWindow;
 
     private Button popupCancelButton;
     private Button popupHangupButton;
     private ToggleButton popupHoldButton;
-
-    private boolean localHold = false;
-    private boolean remoteHold = false;
-
-    private boolean accountRegistered = false;
-    private boolean exitFromAppRequest = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,17 +69,39 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         this.rcr = new RemoteConfigReader(this, configServerIP, configServerPort);
         this.handler = new Handler(this);
-//        init();
-        this.setupActionBar();
         this.setupCallPopupWindow();
         this.setTeleconsultationState(TeleconsultationState.IDLE);
 
         Intent i = getIntent();
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
         this.setupTeleconsultationInfo();
-
         this.setupStreamLib();
         this.setupVoipLib();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.teleconsultation_menu, menu);
+        boolean res = super.onCreateOptionsMenu(menu);
+        butCall = menu.findItem(R.id.button_call);
+        butCloseSession = menu.findItem(R.id.button_close_session);
+        return res;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.button_close_session:
+                closeSession();
+                break;
+            case R.id.button_call:
+                showCallPopupWindow();
+                break;
+            case R.id.button_exit:
+                exitFromApp();
+                break;
+        }
+        return true;
     }
 
     private void setupTeleconsultationInfo() {
@@ -128,12 +115,16 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     protected void notifyTeleconsultationStateChanged() {
 
-        txtTcState.setTeleconsultationState(this.tcState);
-        if (this.tcState == TeleconsultationState.IDLE) {
-            butCall.setEnabled(false);
-            butCloseSession.setEnabled(false);
-            popupCancelButton.setEnabled(true);
+        txtTcState.setTeleconsultationState(this.mTcState);
+        if (this.mTcState == TeleconsultationState.IDLE) {
+            try {
+                butCall.setEnabled(false);
+                butCloseSession.setEnabled(false);
+            }
+            catch (NullPointerException ex) {
 
+            }
+            popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(false);
             popupHangupButton.setEnabled(false);
 
@@ -142,11 +133,15 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             remoteHold = false;
             pauseStream();
         }
-        else if (tcState == TeleconsultationState.READY) {
-            butCall.setEnabled(false);
-            butCloseSession.setEnabled(true);
-            popupCancelButton.setEnabled(true);
+        else if (mTcState == TeleconsultationState.READY) {
+            try {
+                butCall.setEnabled(false);
+                butCloseSession.setEnabled(true);
+            }
+            catch (NullPointerException ex) {
 
+            }
+            popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(false);
             popupHangupButton.setEnabled(false);
 
@@ -155,20 +150,27 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             remoteHold = false;
             pauseStream();
         }
-        else if (this.tcState == TeleconsultationState.CALLING) {
-            butCall.setEnabled(true);
-            butCloseSession.setEnabled(false);
+        else if (this.mTcState == TeleconsultationState.CALLING) {
+            try {
+                butCall.setEnabled(true);
+                butCloseSession.setEnabled(false);
+
+            }
+            catch (NullPointerException ne) {}
             popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(true);
-
             popupHangupButton.setEnabled(true);
+
             remoteHold = false;
             localHold = false;
             playStream();
         }
-        else if (this.tcState == TeleconsultationState.HOLDING) {
-            butCall.setEnabled(true);
-            butCloseSession.setEnabled(false);
+        else if (this.mTcState == TeleconsultationState.HOLDING) {
+            try {
+                butCall.setEnabled(true);
+                butCloseSession.setEnabled(false);
+            }
+            catch (NullPointerException ne) {}
             popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(true);
             popupHangupButton.setEnabled(true);
@@ -176,16 +178,21 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             localHold = true;
             pauseStream();
         }
-        else if (this.tcState == TeleconsultationState.REMOTE_HOLDING) {
-            butCall.setEnabled(true);
-            butCloseSession.setEnabled(false);
+        else if (this.mTcState == TeleconsultationState.REMOTE_HOLDING) {
+            try {
+                butCall.setEnabled(true);
+                butCloseSession.setEnabled(false);
+            }
+            catch (NullPointerException ne) {
+
+            }
             popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(true);
             popupHangupButton.setEnabled(true);
+
             remoteHold = true;
             pauseStream();
         }
-
     }
 
     private void playStream() {
@@ -196,7 +203,6 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     }
 
     private void pauseStream() {
-
         if (this.stream1 != null && this.stream1.getState() == StreamState.PLAYING) {
             this.stream1.pause();
             this.stream1Fragment.setStreamInvisible("PAUSED");
@@ -240,61 +246,21 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     }
 
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        // add the custom view to the action bar
-        actionBar.setCustomView(R.layout.actionbar_view);
-        butCall = (ImageButton) actionBar.getCustomView().findViewById(R.id.butCallActionBar);
-        butCall.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                showCallPopupWindow();
-            }
-        });
-
-        ImageButton butExit = (ImageButton) actionBar.getCustomView().findViewById(R.id.butExit);
-        butExit.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                exitFromApp();
-
-            }
-        });
-
-        butCloseSession = (Button) actionBar.getCustomView().findViewById(R.id.butCloseSession);
-
-        butCloseSession.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                closeSession();
-
-            }
-        });
-
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
-                | ActionBar.DISPLAY_SHOW_HOME);
-
-    }
-
     private void showCallPopupWindow() {
         LayoutInflater inflater = (LayoutInflater) EcoTeleconsultationActivity.this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View popupView = inflater.inflate(R.layout.popup_call_selection,
-                null);
+        View popupView = inflater.inflate(R.layout.popup_call_selection, null);
         this.popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
     }
+
 
     private void setupCallPopupWindow() {
 
         LayoutInflater inflater = (LayoutInflater) EcoTeleconsultationActivity.this
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View popupView = inflater.inflate(R.layout.popup_call_selection,
-                null);
+        View popupView = inflater.inflate(R.layout.popup_call_selection, null);
 
         if (popupWindow == null) {
             popupWindow = new PopupWindow(popupView,
@@ -371,23 +337,9 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         return false;
     }
 
-
-    private void waitForSpecialist() {
-        //Toast.makeText(EcoConfigActivity.this, "Connecting to:" + deviceName + "(" + macAddress +")" , Toast.LENGTH_LONG).show();
-        progressWaitingSpec = new ProgressDialog(EcoTeleconsultationActivity.this);
-        progressWaitingSpec.setTitle("Preparing Teleconsultation Session");
-        progressWaitingSpec.setMessage("Waiting for specialist...");
-        progressWaitingSpec.setCancelable(false);
-        progressWaitingSpec.setCanceledOnTouchOutside(false);
-        progressWaitingSpec.show();
-
-    }
-
-// VOIP METHODS AND LOGIC
-
-
+    // TODO: shoul be moved to Base?
     private void handleButHoldClicked() {
-        if (this.tcState != TeleconsultationState.READY && this.tcState != TeleconsultationState.IDLE)
+        if (this.mTcState != TeleconsultationState.READY && this.mTcState != TeleconsultationState.IDLE)
             toggleHoldCall(popupHoldButton.isChecked());
     }
 }

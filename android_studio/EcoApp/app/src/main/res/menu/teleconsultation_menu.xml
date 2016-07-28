@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/button_close_session"
+        android:title="@string/close_session"
+        android:enabled="false"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/button_call"
+        android:title="@string/action_call"
+        android:icon="@drawable/ic_action_call"
+        android:enabled="false"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/button_exit"
+        android:title="@string/exit"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:showAsAction="ifRoom"/>
+
+</menu>
