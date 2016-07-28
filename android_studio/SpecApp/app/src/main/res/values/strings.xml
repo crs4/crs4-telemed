@@ -30,6 +30,8 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="ptz">PTZ</string>
     <string name="app_label">Remote Specialist App</string>
+    <string name="action_call">Call</string>
+    <string name="close_session">Close session</string>
 
 
 </resources>

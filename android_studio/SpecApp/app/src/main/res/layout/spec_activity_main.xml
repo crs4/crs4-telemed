@@ -1,63 +1,63 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/root"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context="it.crs4.most.demo.specapp.SpecTeleconsultationActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/root"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context="it.crs4.most.demo.specapp.SpecTeleconsultationActivity">
 
     <LinearLayout
         android:id="@+id/stream_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:baselineAligned="false">
 
         <FrameLayout
             android:id="@+id/container_stream_camera"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_weight=".3"/>
+            android:layout_weight=".5"/>
 
         <FrameLayout
             android:id="@+id/container_stream_eco"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_weight=".7"/>
+            android:layout_weight=".5"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/stream_layout"
-        android:orientation="horizontal">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:minHeight="50dp"-->
+        <!--android:layout_below="@id/stream_layout"-->
+        <!--android:orientation="horizontal">-->
 
-        <TextView
-            android:id="@+id/txtTeleconsultation"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+        <!--<TextView-->
+            <!--android:id="@+id/txtTeleconsultation"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"/>-->
 
-        <it.crs4.most.demo.specapp.ui.TcStateTextView
-            android:id="@+id/txtTcState"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"/>
+        <!--<it.crs4.most.demo.specapp.ui.TcStateTextView-->
+            <!--android:id="@+id/txtTcState"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center"/>-->
 
-        <Button
-            android:id="@+id/but_make_call"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/makeCall"/>
+        <!--<Button-->
+            <!--android:id="@+id/but_make_call"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="@string/makeCall"/>-->
 
-        <ToggleButton
-            android:id="@+id/but_hold_call"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textOff="@string/onHoldCall"
-            android:textOn="@string/onHoldCall"/>
+        <!--<ToggleButton-->
+            <!--android:id="@+id/but_hold_call"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:textOff="@string/onHoldCall"-->
+            <!--android:textOn="@string/onHoldCall"/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </RelativeLayout>
           

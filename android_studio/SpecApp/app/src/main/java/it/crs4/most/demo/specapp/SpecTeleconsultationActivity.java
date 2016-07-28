@@ -90,7 +90,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private String ECO_STREAM = "ECO_STREAM";
 
     //ID for the menu exit option
-    private final int ID_MENU_EXIT = 1;
     private boolean exitFromAppRequest = false;
 
     private Handler mStreamHandler;
@@ -109,8 +108,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private Teleconsultation mTeleconsultation;
     private PTZ_ControllerPopupWindowFactory mPTZPopupWindowController;
     private String mEcoExtension;
-    private Button mButtonMakeCall;
-    private ToggleButton mButtonHoldCall;
+
+    private MenuItem mButtonMakeCall;
+    private MenuItem mButtonHoldCall;
+
     private HashMap<String, String> mVoipParams;
     private RemoteConfigReader mConfigReader;
     private boolean mLocalHold = false;
@@ -162,9 +163,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         };
 
         setContentView(R.layout.spec_activity_main);
-        setupActionBar();
         setupTeleconsultationInfo();
-        setupVoipGUI();
         setTeleconsultationState(TeleconsultationState.IDLE);
 
         AssetHelper assetHelper = new AssetHelper(getAssets());
@@ -188,8 +187,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private void setupTeleconsultationInfo() {
         Intent i = getIntent();
         mTeleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
-        TextView txtTeleconsultation = (TextView) findViewById(R.id.txtTeleconsultation);
-        txtTeleconsultation.setText(mTeleconsultation.getInfo());
+//        TextView txtTeleconsultation = (TextView) findViewById(R.id.txtTeleconsultation);
+//        txtTeleconsultation.setText(mTeleconsultation.getInfo());
 
     }
 
@@ -285,50 +284,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         }
     }
 
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        // add the custom view to the action bar
-        actionBar.setCustomView(R.layout.actionbar_view);
-        Button butPTZ = (Button) actionBar.getCustomView().findViewById(R.id.butPTZActionBar);
-        butPTZ.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                showPTZPopupWindow();
-
-            }
-        });
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-
-    }
-
-
     private void setupPtzPopupWindow() {
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this, this, true, true, true, 100, 100);
         //PopupWindow ptzPopupWindow = mPTZPopupWindowController.getPopupWindow();
-    }
-
-
-    private void setupVoipGUI() {
-        mButtonMakeCall = (Button) findViewById(R.id.but_make_call);
-
-        mButtonMakeCall.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                handleButMakeCallClicked();
-            }
-        });
-
-        mButtonHoldCall = (ToggleButton) findViewById(R.id.but_hold_call);
-
-        mButtonHoldCall.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                handleButHoldClicked();
-            }
-        });
     }
 
     private void showPTZPopupWindow() {
@@ -343,62 +301,64 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     private void notifyTeleconsultationStateChanged() {
 
-        if (mTextTcState == null)
-            mTextTcState = (TcStateTextView) findViewById(R.id.txtTcState);
+//        if (mTextTcState == null) {
+//            mTextTcState = (TcStateTextView) findViewById(R.id.txtTcState);
+//        }
+//
+//        mTextTcState.setTeleconsultationState(mTcState);
+        try {
+            if (mTcState == TeleconsultationState.IDLE) {
+                mButtonMakeCall.setTitle("Call");
+                mButtonMakeCall.setEnabled(false);
+                mButtonHoldCall.setEnabled(false);
+                mLocalHold = false;
+                mRemoteHold = false;
+                mAccountRegistered = false;
+                pauseStreams();
+            }
+            else if (mTcState == TeleconsultationState.READY) {
+                mButtonMakeCall.setTitle("Call");
+                mButtonMakeCall.setEnabled(true);
+                mButtonHoldCall.setEnabled(false);
+                mLocalHold = false;
+                mRemoteHold = false;
+                mAccountRegistered = true;
+                pauseStreams();
 
-        mTextTcState.setTeleconsultationState(mTcState);
-        if (mTcState == TeleconsultationState.IDLE) {
-            mButtonMakeCall.setText("Call");
-            mButtonMakeCall.setEnabled(false);
-            mButtonHoldCall.setEnabled(false);
-            mLocalHold = false;
-            mRemoteHold = false;
-            mAccountRegistered = false;
-            pauseStreams();
+                if (mFirstCallStarted)
+                    checkForSessionClosed();
+            }
+            else if (mTcState == TeleconsultationState.CALLING) {
+                mButtonMakeCall.setEnabled(true);
+                mButtonMakeCall.setTitle("Hangup");
+                mButtonHoldCall.setEnabled(true);
+                mLocalHold = false;
+                mRemoteHold = false;
+                mFirstCallStarted = true;
+                playStreams();
+            }
+            else if (mTcState == TeleconsultationState.HOLDING) {
+                mButtonMakeCall.setEnabled(true);
+                mButtonMakeCall.setTitle("Hangup");
+                mButtonHoldCall.setEnabled(true);
+                mLocalHold = true;
+                pauseStreams();
+            }
+            else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
+                mButtonMakeCall.setEnabled(true);
+                mButtonMakeCall.setTitle("Hangup");
+                mButtonHoldCall.setEnabled(true);
+                mRemoteHold = true;
+                pauseStreams();
+            }
+            else if (mTcState == TeleconsultationState.SESSION_CLOSED) {
+                startReportActivity();
+            }
+        }
+        catch (NullPointerException ne) {
 
-        }
-        else if (mTcState == TeleconsultationState.READY) {
-            mButtonMakeCall.setText("Call");
-            mButtonMakeCall.setEnabled(true);
-            mButtonHoldCall.setEnabled(false);
-            mLocalHold = false;
-            mRemoteHold = false;
-            mAccountRegistered = true;
-            pauseStreams();
-
-            if (mFirstCallStarted)
-                checkForSessionClosed();
-
-        }
-        else if (mTcState == TeleconsultationState.CALLING) {
-            mButtonMakeCall.setEnabled(true);
-            mButtonMakeCall.setText("Hangup");
-            mButtonHoldCall.setEnabled(true);
-            mLocalHold = false;
-            mRemoteHold = false;
-            mFirstCallStarted = true;
-            playStreams();
-
-        }
-        else if (mTcState == TeleconsultationState.HOLDING) {
-            mButtonMakeCall.setEnabled(true);
-            mButtonMakeCall.setText("Hangup");
-            mButtonHoldCall.setEnabled(true);
-            mLocalHold = true;
-            pauseStreams();
-        }
-        else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
-            mButtonMakeCall.setEnabled(true);
-            mButtonMakeCall.setText("Hangup");
-            mButtonHoldCall.setEnabled(true);
-            mRemoteHold = true;
-            pauseStreams();
-        }
-        else if (mTcState == TeleconsultationState.SESSION_CLOSED) {
-            startReportActivity();
         }
     }
-
 
     private void checkForSessionClosed() {
         final Timer t = new Timer();
@@ -447,18 +407,29 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //get the MenuItem reference
-        MenuItem item =
-                menu.add(Menu.NONE, ID_MENU_EXIT, Menu.NONE, R.string.mnu_exit);
-        return true;
+        getMenuInflater().inflate(R.menu.teleconsultation_menu, menu);
+        boolean res = super.onCreateOptionsMenu(menu);
+        mButtonMakeCall = menu.findItem(R.id.button_call);
+        return res;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //check selected menu item
-        if (item.getItemId() == ID_MENU_EXIT) {
-            exitFromApp();
-            return true;
+
+        switch (item.getItemId()) {
+            case R.id.button_ptz:
+                showPTZPopupWindow();
+                break;
+            case R.id.button_exit:
+                exitFromApp();
+                break;
+            case R.id.button_call:
+                handleButMakeCallClicked();
+                break;
+            case R.id.button_hold:
+                handleButHoldClicked();
+            break;
         }
         return false;
     }
@@ -693,10 +664,14 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     // VOIP METHODS AND LOGIC
 
     private void handleButMakeCallClicked() {
-        if (mTcState == TeleconsultationState.READY)
+        if (mTcState == TeleconsultationState.READY) {
             makeCall();
-        else if (mTcState == TeleconsultationState.CALLING || mTcState == TeleconsultationState.HOLDING || mTcState == TeleconsultationState.REMOTE_HOLDING)
+        }
+        else if (mTcState == TeleconsultationState.CALLING ||
+                mTcState == TeleconsultationState.HOLDING ||
+                mTcState == TeleconsultationState.REMOTE_HOLDING) {
             hangupCall();
+        }
     }
 
     private void makeCall() {
@@ -742,7 +717,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         HashMap<String, String> params = mTeleconsultation.getLastSession().getVoipParams();
 
         mSipServerIp = params.get("sipServerIp");
-        mSipServerPort = params.get("mSipServerPort");
+        mSipServerPort = params.get("sipServerPort");
 
         String onHoldSoundPath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "test_hold.wav");
         String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "ring_in_call.wav");
@@ -796,7 +771,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         public CallHandler(SpecTeleconsultationActivity teleconsultationActivity,
                            VoipLib myVoip) {
             app = teleconsultationActivity;
-            myVoip = myVoip;
+            this.myVoip = myVoip;
         }
 
         protected VoipEventBundle getEventBundle(Message voipMessage) {
