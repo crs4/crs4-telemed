@@ -35,6 +35,7 @@
         <activity
             android:name=".AREcoTeleconsultationActivity"
             android:label="@string/title_activity_teleconsultation"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             />
     </application>
 

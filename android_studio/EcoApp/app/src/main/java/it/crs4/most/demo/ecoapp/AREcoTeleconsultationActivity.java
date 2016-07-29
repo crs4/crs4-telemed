@@ -14,6 +14,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -61,11 +63,20 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//
+//
+//        View decorView = getWindow().getDecorView();
+//    // Hide both the navigation bar and the status bar.
+//    // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+//    // a general rule, you should design your app to hide the status bar whenever you
+//    // hide the navigation bar.
+//        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+//        decorView.setSystemUiVisibility(uiOptions);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ar_eco);
@@ -123,18 +134,38 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         }
 
-        if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
-            DisplayControl displayControl = new DisplayControl(this);
-            boolean stereo = PreferenceManager.getDefaultSharedPreferences(this).
-                    getBoolean("pref_stereoDisplay", false);
-            displayControl.setMode(DisplayControl.DISPLAY_MODE_3D, stereo);
-        }
     }
-
     @Override
     public void onResume() {
         super.onResume();
-        this.preview = new CaptureCameraPreview(this, this);
+        preview = new CaptureCameraPreview(this, this);
+        preview.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
+                    DisplayControl displayControl = new DisplayControl(AREcoTeleconsultationActivity.this);
+                    boolean stereo = PreferenceManager.getDefaultSharedPreferences(AREcoTeleconsultationActivity.this).
+                            getBoolean("pref_stereoDisplay", false);
+            displayControl.setMode(DisplayControl.DISPLAY_MODE_3D, stereo);
+//            Window win = getWindow();
+//            WindowManager.LayoutParams winParams = win.getAttributes();
+////        winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+//
+//                    winParams.flags |= 0x80000000;
+//                    win.setAttributes(winParams);
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
 //        this.glView = new GLSurfaceView(this);
         this.glView = new TouchGLSurfaceView(this);
@@ -173,7 +204,6 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         if(this.glView != null) {
             this.glView.onResume();
         }
-
     }
 
     protected void onPause() {
@@ -227,20 +257,20 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 }
             }
             Log.i("ARActivity", "getGLView(): Camera initialised");
+
+
         } else {
             Log.e("ARActivity", "getGLView(): Error initialising camera. Cannot continue.");
             this.finish();
         }
 
-        Toast.makeText(this, "Camera settings: " + width + "x" + height + "@" + rate + "fps",
-
-
-                0).show();
+        Toast.makeText(this, "Camera settings: " + width + "x" + height + "@" + rate + "fps", 0).show();
         this.firstUpdate = true;
     }
 
     public void cameraPreviewFrame(byte[] frame) {
         if(this.firstUpdate) {
+
             if(this.renderer.configureARScene()) {
                 Log.i("ARActivity", "cameraPreviewFrame(): Scene configured successfully");
             } else {
