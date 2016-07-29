@@ -33,13 +33,9 @@ import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-
-import android.os.Handler;
-import android.os.Message;
-
 @SuppressLint("InlinedApi")
 public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
-        implements IStreamFragmentCommandListener, Handler.Callback {
+        implements IStreamFragmentCommandListener {
 
     private static final String TAG = "EcoTeleconsultActivity";
 
@@ -66,13 +62,12 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
-        handler = new Handler(this);
         Intent i = getIntent();
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
         mIsOnHold = false;
         setupCallPopupWindow();
         setTeleconsultationState(TeleconsultationState.IDLE);
-        setupTeleconsultationInfo();
+//        setupTeleconsultationInfo();
         setupStreamLib();
         setupVoipLib();
     }
@@ -208,38 +203,31 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     }
 
     private void setupStreamLib() {
+        mStreamHandler = new StreamHandler();
+
         String streamName = "Teleconsultation Stream";
         String streamUri = teleconsultation.getRoom().getCamera().getStreamUri();
+        StreamingLib streamingLib = new StreamingLibBackend();
+        HashMap<String, String> cameraStream = new HashMap<>();
+        cameraStream.put("name", streamName);
+        cameraStream.put("uri", streamUri);
 
-        prepareStream(streamName, streamUri);
+        try {
+            // First of all, initialize the library
+            streamingLib.initLib(getApplicationContext());
+            mStreamCamera = streamingLib.createStream(cameraStream, mStreamHandler);
+        }
+        catch (Exception e) {
+            Log.e(TAG, "Error initializing the stream:" + e);
+            e.printStackTrace();
+        }
 
         mStreamCameraFragment = StreamViewerFragment.newInstance(streamName);
         mStreamCameraFragment.setPlayerButtonsVisible(false);
-
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.container_stream, mStreamCameraFragment);
         fragmentTransaction.commit();
-    }
-
-    private void prepareStream(String name, String uri) {
-        StreamingLib streamingLib = new StreamingLibBackend();
-        HashMap<String, String> stream1_params = new HashMap<>();
-        stream1_params.put("name", name);
-        stream1_params.put("uri", uri);
-
-        try {
-
-            // First of all, initialize the library
-            streamingLib.initLib(getApplicationContext());
-
-            mStreamCamera = streamingLib.createStream(stream1_params, handler);
-        }
-        catch (Exception e) {
-            Log.e(TAG, "ERROR INITIALIZING STREAM:" + e);
-            e.printStackTrace();
-        }
-
     }
 
     private void showCallPopupWindow() {
@@ -304,16 +292,6 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     @Override
     public void onSurfaceViewDestroyed(String streamId) {
         mStreamCamera.destroy();
-    }
-
-    @Override
-    public boolean handleMessage(Message streamingMessage) {
-        StreamingEventBundle myEvent = (StreamingEventBundle) streamingMessage.obj;
-
-        String infoMsg = "Event Type:" + myEvent.getEventType() + " ->" + myEvent.getEvent() + ":" + myEvent.getInfo();
-        Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-        Log.d(TAG, "Stream State:" + mStreamCamera.getState());
-        return false;
     }
 
     private void handleButHoldClicked() {

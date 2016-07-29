@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import it.crs4.most.demo.ecoapp.models.EcoUser;
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
+import it.crs4.most.streaming.StreamingEventBundle;
 import it.crs4.most.voip.Utils;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.VoipLib;
@@ -32,11 +33,12 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     private static final String TAG = "EcoTeleconsultActivity";
 
     protected TeleconsultationState mTcState = TeleconsultationState.IDLE;
-    private String sipServerIp;
-    private String sipServerPort;
+    private String mSipServerIp;
+    private String mSipServerPort;
 
     private VoipLib mVoipLib;
     private CallHandler voipHandler;
+    protected StreamHandler mStreamHandler;
     protected HashMap<String, String> voipParams;
 
     protected boolean localHold = false;
@@ -44,7 +46,6 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected boolean accountRegistered = false;
     protected boolean exitFromAppRequest = false;
 
-    protected Handler handler;
     protected Teleconsultation teleconsultation;
     protected RemoteConfigReader mConfigReader;
 
@@ -84,6 +85,66 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
 
                     }
                 });
+    }
+
+    protected void answerCall() {
+        mVoipLib.answerCall();
+    }
+
+    protected void registerAccount() {
+        mVoipLib.registerAccount();
+    }
+
+    protected CallState getCallState() {
+        return mVoipLib.getCall().getState();
+    }
+
+    protected void toggleHoldCall(boolean holding) {
+        if (holding) {
+            mVoipLib.holdCall();
+        }
+        else {
+            mVoipLib.unholdCall();
+        }
+    }
+
+    protected void hangupCall() {
+        mVoipLib.hangupCall();
+    }
+
+    protected void setupVoipLib() {
+        // Voip Lib Initialization Params
+        voipParams = teleconsultation.getLastSession().getVoipParams();
+
+        mSipServerIp = voipParams.get("sipServerIp");
+        mSipServerPort = voipParams.get("sipServerPort");
+
+        Log.d(TAG, "Initializing the lib...");
+        if (mVoipLib == null) {
+            Log.d(TAG, "Voip null... Initialization.....");
+            mVoipLib = new VoipLibBackend();
+            voipHandler = new CallHandler(this);
+
+            // Initialize the library providing custom initialization params and an handler where
+            // to receive event notifications. Following Voip methods are called from the handleMassage() callback method
+            mVoipLib.initLib(getApplicationContext(), voipParams, voipHandler);
+        }
+        else {
+            Log.d(TAG, "Voip is not null... Destroying the lib before reinitializing.....");
+            // Reinitialization will be done after deinitialization event callback
+            voipHandler.mReinitRequest = true;
+            mVoipLib.destroyLib();
+        }
+    }
+
+    protected void subscribeBuddies() {
+        String buddyExtension = voipParams.get("specExtension");
+        Log.d(TAG, "adding buddies...");
+        mVoipLib.getAccount().addBuddy(getBuddyUri(buddyExtension));
+    }
+
+    protected String getBuddyUri(String extension) {
+        return "sip:" + extension + "@" + mSipServerIp + ":" + mSipServerPort;
     }
 
     // VOIP METHODS AND LOGIC
@@ -214,93 +275,14 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             alert.show();
         }
     }
-    protected void answerCall() {
-        mVoipLib.answerCall();
-    }
 
-    protected void registerAccount() {
-        mVoipLib.registerAccount();
-    }
+    protected static class StreamHandler extends Handler {
+        @Override
+        public void handleMessage(Message streamingMessage) {
+            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
+            String infoMsg = "Event Type: " + event.getEventType() + ", " + event.getEvent() + ":" + event.getInfo();
+            Log.d(TAG, "Stream Message Arrived: Current Event:" + infoMsg);
 
-    protected CallState getCallState() {
-        return mVoipLib.getCall().getState();
-    }
-
-    protected void toggleHoldCall(boolean holding) {
-        if (holding) {
-            mVoipLib.holdCall();
         }
-        else {
-            mVoipLib.unholdCall();
-        }
-    }
-
-    protected void hangupCall() {
-        mVoipLib.hangupCall();
-    }
-
-    protected void setupVoipLib() {
-        // Voip Lib Initialization Params
-        voipParams = getVoipSetupParams();
-
-        Log.d(TAG, "Initializing the lib...");
-        if (mVoipLib == null) {
-            Log.d(TAG, "Voip null... Initialization.....");
-            mVoipLib = new VoipLibBackend();
-            voipHandler = new CallHandler(this);
-
-            // Initialize the library providing custom initialization params and an handler where
-            // to receive event notifications. Following Voip methods are called from the handleMassage() callback method
-            mVoipLib.initLib(getApplicationContext(), voipParams, voipHandler);
-        }
-        else {
-            Log.d(TAG, "Voip is not null... Destroying the lib before reinitializing.....");
-            // Reinitialization will be done after deinitialization event callback
-            voipHandler.mReinitRequest = true;
-            mVoipLib.destroyLib();
-        }
-    }
-
-    protected HashMap<String, String> getVoipSetupParams() {
-        HashMap<String, String> params = teleconsultation.getLastSession().getVoipParams();
-
-        sipServerIp = params.get("sipServerIp");
-        sipServerPort = params.get("sipServerPort");
-
-        /**
-         sipServerIp = "192.168.1.100";
-         sipServerPort="5060";
-         HashMap<String,String> params = new HashMap<String,String>();
-         params.put("sipServerIp",sipServerIp);
-         params.put("sipServerPort",sipServerPort); // default 5060
-         params.put("turnServerIp",  sipServerIp);
-         params.put("sipServerTransport","tcp");
-
-         // used by the mMainActivity for calling the specified extension, not used directly by the VoipLib
-         params.put("specExtension","MOST0001");
-
-         */
-
-		/* ecografista 	*/
-        //accountName = params.get("sipUserName");
-
-        String onHoldSoundPath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "test_hold.wav");
-        String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "ring_in_call.wav");
-        String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "ring_out_call.wav");
-
-        params.put("onHoldSound", onHoldSoundPath);
-        params.put("onIncomingCallSound", onIncomingCallRingTonePath); // onIncomingCallRingTonePath
-        params.put("onOutcomingCallSound", onOutcomingCallRingTonePath); // onOutcomingCallRingTonePath
-        return params;
-    }
-
-    protected void subscribeBuddies() {
-        String buddyExtension = voipParams.get("specExtension");
-        Log.d(TAG, "adding buddies...");
-        mVoipLib.getAccount().addBuddy(getBuddyUri(buddyExtension));
-    }
-
-    protected String getBuddyUri(String extension) {
-        return "sip:" + extension + "@" + sipServerIp + ":" + sipServerPort;
     }
 }

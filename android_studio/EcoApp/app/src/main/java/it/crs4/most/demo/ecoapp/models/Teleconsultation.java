@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class Teleconsultation implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -1408055529735190987L;
     private String mId;
     private String mInfo;
@@ -40,7 +37,6 @@ public class Teleconsultation implements Serializable {
     public String getInfo() {
         return mInfo;
     }
-
 
     public String getSeverity() {
         return mSeverity;

@@ -258,7 +258,7 @@ public class SummaryFragment extends ConfigFragment {
                     @Override
                     public void onResponse(JSONObject sessionData) {
                         Log.d(TAG, "Session running: " + sessionData);
-                        tc.getLastSession().setVoipParams(sessionData);
+                        tc.getLastSession().setVoipParams(getActivity(), sessionData);
                         getConfigBuilder().setTeleconsultation(tc);
                     }
                 },

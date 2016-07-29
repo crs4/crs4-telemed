@@ -1,10 +1,14 @@
 package it.crs4.most.demo.ecoapp.models;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import it.crs4.most.voip.Utils;
 
 public class TeleconsultationSession implements Serializable {
     private static final long serialVersionUID = -6277133365800493720L;
@@ -17,7 +21,7 @@ public class TeleconsultationSession implements Serializable {
         mSessionState = teleconsultationSessionState;
     }
 
-    public void setVoipParams(JSONObject sd) {
+    public void setVoipParams(Context context, JSONObject sd) {
         JSONObject applicantVoipData;
         try {
             JSONObject sessionData = sd.getJSONObject("data").getJSONObject("session");
@@ -30,8 +34,12 @@ public class TeleconsultationSession implements Serializable {
             String sipUserName = applicantVoipData.getString("sip_user");
             String sipUserPwd = applicantVoipData.getString("sip_password");
             String specExtension = sessionData.getJSONObject("teleconsultation").getJSONObject("specialist").getJSONObject("voip_data").getString("extension");
+            String onHoldSoundPath = Utils.getResourcePathByAssetCopy(context, "", "test_hold.wav");
+            String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(context, "", "ring_in_call.wav");
+            String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(context, "", "ring_out_call.wav");
 
-            voipParams = new HashMap<String, String>();
+
+            voipParams = new HashMap<>();
 
             voipParams.put("sipServerIp", sipServerIp);
             voipParams.put("sipServerPort", sipServerPort); // default 5060
@@ -44,6 +52,9 @@ public class TeleconsultationSession implements Serializable {
             voipParams.put("sipUserPwd", sipUserPwd); //
             voipParams.put("sipUserName", sipUserName); // specialista
 
+            voipParams.put("onHoldSound", onHoldSoundPath);
+            voipParams.put("onIncomingCallSound", onIncomingCallRingTonePath);
+            voipParams.put("onOutcomingCallSound", onOutcomingCallRingTonePath);
             //params.put("turnServerIp",  sipServerIp);
             //params.put("turnServerUser",sipUserName);
             //params.put("turnServerPwd",sipUserPwd);
