@@ -20,7 +20,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -47,8 +46,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private StreamViewerFragment mStreamCameraFragment;
     private IStream mStreamCamera;
 
-    private MenuItem butCall;
-    private MenuItem butCloseSession;
+    private MenuItem mButCall;
+    private MenuItem mButCloseSession;
     private TcStateTextView txtTcState;
     private View mPopupView;
     private PopupWindow popupWindow;
@@ -56,6 +55,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private Button popupCancelButton;
     private ImageButton popupHangupButton;
     private ImageButton popupHoldButton;
+    private boolean mIsOnHold;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +67,11 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
         handler = new Handler(this);
-        setupCallPopupWindow();
-        setTeleconsultationState(TeleconsultationState.IDLE);
-
         Intent i = getIntent();
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+        mIsOnHold = false;
+        setupCallPopupWindow();
+        setTeleconsultationState(TeleconsultationState.IDLE);
         setupTeleconsultationInfo();
         setupStreamLib();
         setupVoipLib();
@@ -81,8 +81,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.teleconsultation_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
-        butCall = menu.findItem(R.id.button_call);
-        butCloseSession = menu.findItem(R.id.button_close_session);
+        mButCall = menu.findItem(R.id.button_call);
+        mButCloseSession = menu.findItem(R.id.button_close_session);
         return res;
     }
 
@@ -116,8 +116,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         txtTcState.setTeleconsultationState(mTcState);
         if (mTcState == TeleconsultationState.IDLE) {
             try {
-                butCall.setEnabled(false);
-                butCloseSession.setEnabled(false);
+                mButCall.setEnabled(false);
+                mButCloseSession.setEnabled(false);
             }
             catch (NullPointerException ex) {
 
@@ -133,8 +133,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         }
         else if (mTcState == TeleconsultationState.READY) {
             try {
-                butCall.setEnabled(false);
-                butCloseSession.setEnabled(true);
+                mButCall.setEnabled(false);
+                mButCloseSession.setEnabled(true);
             }
             catch (NullPointerException ex) {
 
@@ -150,8 +150,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         }
         else if (mTcState == TeleconsultationState.CALLING) {
             try {
-                butCall.setEnabled(true);
-                butCloseSession.setEnabled(false);
+                mButCall.setEnabled(true);
+                mButCloseSession.setEnabled(false);
 
             }
             catch (NullPointerException ne) {}
@@ -165,8 +165,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         }
         else if (mTcState == TeleconsultationState.HOLDING) {
             try {
-                butCall.setEnabled(true);
-                butCloseSession.setEnabled(false);
+                mButCall.setEnabled(true);
+                mButCloseSession.setEnabled(false);
             }
             catch (NullPointerException ne) {}
             popupCancelButton.setEnabled(true);
@@ -178,8 +178,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         }
         else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
             try {
-                butCall.setEnabled(true);
-                butCloseSession.setEnabled(false);
+                mButCall.setEnabled(true);
+                mButCloseSession.setEnabled(false);
             }
             catch (NullPointerException ne) {
 
@@ -244,16 +244,12 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     private void showCallPopupWindow() {
         Log.d(TAG, "Opening Layout Window");
-//        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//        View popupView = inflater.inflate(R.layout.popup_call_selection, null);
         popupWindow.showAtLocation(mPopupView, Gravity.CENTER, 0, 0);
     }
 
 
     private void setupCallPopupWindow() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         mPopupView = inflater.inflate(R.layout.popup_call_selection, null);
 
         if (popupWindow == null) {
@@ -266,7 +262,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
                 }
             });
 
-            popupHoldButton = (ImageButton) mPopupView.findViewById(R.id.buttton_call_hold);
+            popupHoldButton = (ImageButton) mPopupView.findViewById(R.id.button_call_hold);
             popupHoldButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -320,9 +316,16 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         return false;
     }
 
-    // TODO: should be moved to Base?
     private void handleButHoldClicked() {
-//        if (mTcState != TeleconsultationState.READY && mTcState != TeleconsultationState.IDLE)
-//            toggleHoldCall(popupHoldButton.isChecked());
+        if (mTcState != TeleconsultationState.READY && mTcState != TeleconsultationState.IDLE) {
+            mIsOnHold = !mIsOnHold;
+            if (mIsOnHold) {
+                popupHoldButton.setImageResource(R.drawable.ic_call_white_36dp);
+            }
+            else {
+                popupHoldButton.setImageResource(R.drawable.ic_phone_paused_white_36dp);
+            }
+            toggleHoldCall(mIsOnHold);
+        }
     }
 }
