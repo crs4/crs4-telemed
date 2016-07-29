@@ -14,15 +14,13 @@ import it.crs4.most.visualization.StreamViewerFragment;
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
 import it.crs4.most.demo.ecoapp.ui.TcStateTextView;
 
-import it.crs4.most.voip.VoipLib;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,9 +30,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 
 import android.os.Handler;
@@ -46,18 +44,18 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     private static final String TAG = "EcoTeleconsultActivity";
 
-    private StreamViewerFragment stream1Fragment = null;
-    private IStream stream1 = null;
+    private StreamViewerFragment mStreamCameraFragment;
+    private IStream mStreamCamera;
 
     private MenuItem butCall;
     private MenuItem butCloseSession;
-
     private TcStateTextView txtTcState;
+    private View mPopupView;
     private PopupWindow popupWindow;
 
     private Button popupCancelButton;
-    private Button popupHangupButton;
-    private ToggleButton popupHoldButton;
+    private ImageButton popupHangupButton;
+    private ImageButton popupHoldButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +65,16 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        this.rcr = new RemoteConfigReader(this, configServerIP, configServerPort);
-        this.handler = new Handler(this);
-        this.setupCallPopupWindow();
-        this.setTeleconsultationState(TeleconsultationState.IDLE);
+        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
+        handler = new Handler(this);
+        setupCallPopupWindow();
+        setTeleconsultationState(TeleconsultationState.IDLE);
 
         Intent i = getIntent();
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
-        this.setupTeleconsultationInfo();
-        this.setupStreamLib();
-        this.setupVoipLib();
+        setupTeleconsultationInfo();
+        setupStreamLib();
+        setupVoipLib();
     }
 
     @Override
@@ -106,17 +104,17 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     private void setupTeleconsultationInfo() {
         Intent i = getIntent();
-        this.teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+        teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
 
         TextView txtEcoUser = (TextView) findViewById(R.id.txtEcoUser);
-        txtEcoUser.setText(String.format("%s %s", this.teleconsultation.getApplicant().getFirstName(),
-                this.teleconsultation.getApplicant().getLastName()));
+        txtEcoUser.setText(String.format("%s %s", teleconsultation.getApplicant().getFirstName(),
+                teleconsultation.getApplicant().getLastName()));
     }
 
     protected void notifyTeleconsultationStateChanged() {
 
-        txtTcState.setTeleconsultationState(this.mTcState);
-        if (this.mTcState == TeleconsultationState.IDLE) {
+        txtTcState.setTeleconsultationState(mTcState);
+        if (mTcState == TeleconsultationState.IDLE) {
             try {
                 butCall.setEnabled(false);
                 butCloseSession.setEnabled(false);
@@ -150,7 +148,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             remoteHold = false;
             pauseStream();
         }
-        else if (this.mTcState == TeleconsultationState.CALLING) {
+        else if (mTcState == TeleconsultationState.CALLING) {
             try {
                 butCall.setEnabled(true);
                 butCloseSession.setEnabled(false);
@@ -165,7 +163,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             localHold = false;
             playStream();
         }
-        else if (this.mTcState == TeleconsultationState.HOLDING) {
+        else if (mTcState == TeleconsultationState.HOLDING) {
             try {
                 butCall.setEnabled(true);
                 butCloseSession.setEnabled(false);
@@ -178,7 +176,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             localHold = true;
             pauseStream();
         }
-        else if (this.mTcState == TeleconsultationState.REMOTE_HOLDING) {
+        else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
             try {
                 butCall.setEnabled(true);
                 butCloseSession.setEnabled(false);
@@ -196,48 +194,46 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     }
 
     private void playStream() {
-        if (this.stream1 != null && this.stream1.getState() != StreamState.PLAYING) {
-            this.stream1Fragment.setStreamVisible();
-            this.stream1.play();
+        if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
+            mStreamCameraFragment.setStreamVisible();
+            mStreamCamera.play();
         }
     }
 
     private void pauseStream() {
-        if (this.stream1 != null && this.stream1.getState() == StreamState.PLAYING) {
-            this.stream1.pause();
-            this.stream1Fragment.setStreamInvisible("PAUSED");
+        if (mStreamCamera != null && mStreamCamera.getState() == StreamState.PLAYING) {
+            mStreamCamera.pause();
+            mStreamCameraFragment.setStreamInvisible("PAUSED");
         }
     }
 
     private void setupStreamLib() {
         String streamName = "Teleconsultation Stream";
-        String streamUri = this.teleconsultation.getRoom().getCamera().getStreamUri();
+        String streamUri = teleconsultation.getRoom().getCamera().getStreamUri();
 
-        this.prepareStream(streamName, streamUri);
+        prepareStream(streamName, streamUri);
 
-        this.stream1Fragment = StreamViewerFragment.newInstance(streamName);
-        this.stream1Fragment.setPlayerButtonsVisible(false);
+        mStreamCameraFragment = StreamViewerFragment.newInstance(streamName);
+        mStreamCameraFragment.setPlayerButtonsVisible(false);
 
         // add the first fragment to the first container
-        FragmentTransaction fragmentTransaction = getFragmentManager()
-                .beginTransaction();
-        fragmentTransaction.add(R.id.container_stream,
-                stream1Fragment);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.container_stream, mStreamCameraFragment);
         fragmentTransaction.commit();
     }
 
     private void prepareStream(String name, String uri) {
         StreamingLib streamingLib = new StreamingLibBackend();
-        HashMap<String, String> stream1_params = new HashMap<String, String>();
+        HashMap<String, String> stream1_params = new HashMap<>();
         stream1_params.put("name", name);
         stream1_params.put("uri", uri);
 
         try {
 
             // First of all, initialize the library
-            streamingLib.initLib(this.getApplicationContext());
+            streamingLib.initLib(getApplicationContext());
 
-            this.stream1 = streamingLib.createStream(stream1_params, this.handler);
+            mStreamCamera = streamingLib.createStream(stream1_params, handler);
         }
         catch (Exception e) {
             Log.e(TAG, "ERROR INITIALIZING STREAM:" + e);
@@ -247,41 +243,31 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     }
 
     private void showCallPopupWindow() {
-        LayoutInflater inflater = (LayoutInflater) EcoTeleconsultationActivity.this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View popupView = inflater.inflate(R.layout.popup_call_selection, null);
-        this.popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+        Log.d(TAG, "Opening Layout Window");
+//        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//
+//        View popupView = inflater.inflate(R.layout.popup_call_selection, null);
+        popupWindow.showAtLocation(mPopupView, Gravity.CENTER, 0, 0);
     }
 
 
     private void setupCallPopupWindow() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        LayoutInflater inflater = (LayoutInflater) EcoTeleconsultationActivity.this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View popupView = inflater.inflate(R.layout.popup_call_selection, null);
+        mPopupView = inflater.inflate(R.layout.popup_call_selection, null);
 
         if (popupWindow == null) {
-            popupWindow = new PopupWindow(popupView,
-                    LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
-
-
-            popupCancelButton = (Button) popupView.findViewById(R.id.butCallCancel);
-
+            popupWindow = new PopupWindow(mPopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
+            popupCancelButton = (Button) mPopupView.findViewById(R.id.button_call_cancel);
             popupCancelButton.setOnClickListener(new OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     popupWindow.dismiss();
-
                 }
             });
 
-            popupHoldButton = (ToggleButton) popupView.findViewById(R.id.butCallHold);
-
+            popupHoldButton = (ImageButton) mPopupView.findViewById(R.id.buttton_call_hold);
             popupHoldButton.setOnClickListener(new OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     handleButHoldClicked();
@@ -289,10 +275,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
                 }
             });
 
-            popupHangupButton = (Button) popupView.findViewById(R.id.butCallHangup);
-
+            popupHangupButton = (ImageButton) mPopupView.findViewById(R.id.button_call_hangup);
             popupHangupButton.setOnClickListener(new OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     hangupCall();
@@ -307,24 +291,23 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     @Override
     public void onPlay(String streamId) {
-        this.stream1.play();
-
+        mStreamCamera.play();
     }
 
     @Override
     public void onPause(String streamId) {
-        this.stream1.pause();
+        mStreamCamera.pause();
     }
 
     @Override
     public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
         Log.d(TAG, "Surface View created: preparing surface for stream" + streamId);
-        this.stream1.prepare(surfaceView);
+        mStreamCamera.prepare(surfaceView);
     }
 
     @Override
     public void onSurfaceViewDestroyed(String streamId) {
-        this.stream1.destroy();
+        mStreamCamera.destroy();
     }
 
     @Override
@@ -333,13 +316,13 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
         String infoMsg = "Event Type:" + myEvent.getEventType() + " ->" + myEvent.getEvent() + ":" + myEvent.getInfo();
         Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-        Log.d(TAG, "Stream State:" + this.stream1.getState());
+        Log.d(TAG, "Stream State:" + mStreamCamera.getState());
         return false;
     }
 
-    // TODO: shoul be moved to Base?
+    // TODO: should be moved to Base?
     private void handleButHoldClicked() {
-        if (this.mTcState != TeleconsultationState.READY && this.mTcState != TeleconsultationState.IDLE)
-            toggleHoldCall(popupHoldButton.isChecked());
+//        if (mTcState != TeleconsultationState.READY && mTcState != TeleconsultationState.IDLE)
+//            toggleHoldCall(popupHoldButton.isChecked());
     }
 }

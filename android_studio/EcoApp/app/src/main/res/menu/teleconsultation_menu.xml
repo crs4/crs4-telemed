@@ -11,8 +11,8 @@
     <item
         android:id="@+id/button_call"
         android:title="@string/action_call"
-        android:icon="@drawable/ic_action_call"
-        android:enabled="false"
+        android:icon="@drawable/ic_call_white_24dp"
+        android:enabled="true"
         app:showAsAction="always"/>
 
     <item

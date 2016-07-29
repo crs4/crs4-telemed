@@ -46,19 +46,18 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
 
     protected Handler handler;
     protected Teleconsultation teleconsultation;
-    protected RemoteConfigReader rcr;
+    protected RemoteConfigReader mConfigReader;
+
+    protected abstract void notifyTeleconsultationStateChanged();
 
     protected void setTeleconsultationState(TeleconsultationState tcState) {
         mTcState = tcState;
         notifyTeleconsultationStateChanged();
     }
 
-    protected abstract void notifyTeleconsultationStateChanged();
-
     protected void exitFromApp() {
         Log.d(TAG, "Called exitFromApp()");
         exitFromAppRequest = true;
-
         if (mVoipLib != null) {
             mVoipLib.destroyLib();
         }
@@ -70,10 +69,9 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
 
     protected void closeSession() {
         EcoUser ecoUser = teleconsultation.getApplicant();
-        rcr.closeSession(teleconsultation.getLastSession().getId(),
+        mConfigReader.closeSession(teleconsultation.getLastSession().getId(),
                 ecoUser.getAccessToken(),
                 new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject sessionData) {
                         Log.d(TAG, "Session closed: " + sessionData);
@@ -87,6 +85,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                     }
                 });
     }
+
     // VOIP METHODS AND LOGIC
     protected static class CallHandler extends Handler {
 

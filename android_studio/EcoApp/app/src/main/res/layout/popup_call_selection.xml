@@ -1,29 +1,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/background_light"
-    android:orientation="vertical" >
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:background="@android:color/background_light"
+              android:orientation="vertical">
 
- <Button
-     android:id="@+id/butCallHangup"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/call_hangup"
-   />
- 
- <ToggleButton
-     android:id="@+id/butCallHold"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textOn="@string/call_onHold"
-    android:textOff="@string/call_onLine"
-   />
- 
- <Button
-     android:id="@+id/butCallCancel"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/cancel"
-   />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_call_hangup"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_margin="10dp"
+            android:layout_weight=".5"
+            android:background="@drawable/circle_button"
+            android:contentDescription="@string/call_hangup"
+            android:src="@drawable/ic_call_end_white_36dp"
+            android:text="@string/call_hangup"/>
+
+        <ImageButton
+            android:id="@+id/buttton_call_hold"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_margin="10dp"
+            android:layout_weight=".5"
+            android:background="@drawable/circle_button"
+            android:contentDescription="@string/call_onHold"
+            android:src="@drawable/ic_phone_paused_white_36dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_call_cancel"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"/>
 
 </LinearLayout>

@@ -14,8 +14,6 @@ import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,7 +41,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import it.crs4.most.demo.ecoapp.models.Teleconsultation;
-import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
@@ -180,7 +177,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        rcr = new RemoteConfigReader(this, configServerIP, configServerPort);
+        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
 //        init();
         setTeleconsultationState(TeleconsultationState.IDLE);
         Intent i = getIntent();
