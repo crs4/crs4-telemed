@@ -43,7 +43,6 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private IStream mStreamCamera;
 
     private MenuItem mButCall;
-    private MenuItem mButCloseSession;
     private TcStateTextView txtTcState;
     private View mPopupView;
     private PopupWindow popupWindow;
@@ -77,16 +76,13 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         getMenuInflater().inflate(R.menu.teleconsultation_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
         mButCall = menu.findItem(R.id.button_call);
-        mButCloseSession = menu.findItem(R.id.button_close_session);
+//        mButCloseSession = menu.findItem(R.id.button_close_session);
         return res;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.button_close_session:
-                closeSession();
-                break;
             case R.id.button_call:
                 showCallPopupWindow();
                 break;
@@ -107,17 +103,14 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     }
 
     protected void notifyTeleconsultationStateChanged() {
-
         txtTcState.setTeleconsultationState(mTcState);
         if (mTcState == TeleconsultationState.IDLE) {
             try {
                 mButCall.setEnabled(false);
-                mButCloseSession.setEnabled(false);
             }
             catch (NullPointerException ex) {
 
             }
-            popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(false);
             popupHangupButton.setEnabled(false);
 
@@ -129,12 +122,10 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         else if (mTcState == TeleconsultationState.READY) {
             try {
                 mButCall.setEnabled(false);
-                mButCloseSession.setEnabled(true);
             }
             catch (NullPointerException ex) {
 
             }
-            popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(false);
             popupHangupButton.setEnabled(false);
 
@@ -146,11 +137,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         else if (mTcState == TeleconsultationState.CALLING) {
             try {
                 mButCall.setEnabled(true);
-                mButCloseSession.setEnabled(false);
-
             }
             catch (NullPointerException ne) {}
-            popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(true);
             popupHangupButton.setEnabled(true);
 
@@ -161,10 +149,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         else if (mTcState == TeleconsultationState.HOLDING) {
             try {
                 mButCall.setEnabled(true);
-                mButCloseSession.setEnabled(false);
             }
             catch (NullPointerException ne) {}
-            popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(true);
             popupHangupButton.setEnabled(true);
 
@@ -174,24 +160,33 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
             try {
                 mButCall.setEnabled(true);
-                mButCloseSession.setEnabled(false);
             }
             catch (NullPointerException ne) {
 
             }
-            popupCancelButton.setEnabled(true);
             popupHoldButton.setEnabled(true);
             popupHangupButton.setEnabled(true);
 
             remoteHold = true;
             pauseStream();
         }
+        else if (mTcState == TeleconsultationState.FINISHED) {
+            try {
+                mButCall.setEnabled(false);
+                popupHangupButton.setEnabled(false);
+                popupHoldButton.setEnabled(false);
+            }
+            catch (NullPointerException ne) {
+
+            }
+            stopStream();
+        }
     }
 
     private void playStream() {
         if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
-            mStreamCameraFragment.setStreamVisible();
             mStreamCamera.play();
+            mStreamCameraFragment.setStreamVisible();
         }
     }
 
@@ -199,6 +194,13 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         if (mStreamCamera != null && mStreamCamera.getState() == StreamState.PLAYING) {
             mStreamCamera.pause();
             mStreamCameraFragment.setStreamInvisible("PAUSED");
+        }
+    }
+
+    private void stopStream() {
+        if (mStreamCamera != null) {
+            mStreamCamera.destroy();
+            mStreamCameraFragment.setStreamInvisible("");
         }
     }
 

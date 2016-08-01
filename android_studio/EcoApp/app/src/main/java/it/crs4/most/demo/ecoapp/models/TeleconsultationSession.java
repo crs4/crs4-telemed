@@ -40,7 +40,6 @@ public class TeleconsultationSession implements Serializable {
 
 
             voipParams = new HashMap<>();
-
             voipParams.put("sipServerIp", sipServerIp);
             voipParams.put("sipServerPort", sipServerPort); // default 5060
             voipParams.put("sipServerTransport", sipServerTransport);

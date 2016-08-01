@@ -76,13 +76,14 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                     @Override
                     public void onResponse(JSONObject sessionData) {
                         Log.d(TAG, "Session closed: " + sessionData);
+                        finish();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError err) {
                         Log.e(TAG, "Error closing the session: " + err);
-
+                        finish();
                     }
                 });
     }
@@ -124,9 +125,6 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             Log.d(TAG, "Voip null... Initialization.....");
             mVoipLib = new VoipLibBackend();
             voipHandler = new CallHandler(this);
-
-            // Initialize the library providing custom initialization params and an handler where
-            // to receive event notifications. Following Voip methods are called from the handleMassage() callback method
             mVoipLib.initLib(getApplicationContext(), voipParams, voipHandler);
         }
         else {
@@ -139,7 +137,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
 
     protected void subscribeBuddies() {
         String buddyExtension = voipParams.get("specExtension");
-        Log.d(TAG, "adding buddies...");
+        Log.d(TAG, "Subscribing buddy " + buddyExtension);
         mVoipLib.getAccount().addBuddy(getBuddyUri(buddyExtension));
     }
 
@@ -157,38 +155,28 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             mOuterRef = new WeakReference<>(outerRef);
         }
 
-        protected VoipEventBundle getEventBundle(Message voipMessage) {
-            //int msg_type = voipMessage.what;
-            VoipEventBundle myState = (VoipEventBundle) voipMessage.obj;
-            String infoMsg = "Event:" + myState.getEvent() + ": Type:" + myState.getEventType() + " : " + myState.getInfo();
-            Log.d(TAG, "Called handleMessage with event info:" + infoMsg);
-            return myState;
-        }
-
         @Override
         public void handleMessage(Message voipMessage) {
             BaseEcoTeleconsultationActivity mainActivity = mOuterRef.get();
-            VoipEventBundle myEventBundle = getEventBundle(voipMessage);
-            Log.d(TAG, "HANDLE EVENT TYPE:" + myEventBundle.getEventType() + " EVENT:" + myEventBundle.getEvent());
+            VoipEventBundle eventBundle = (VoipEventBundle) voipMessage.obj;
+            Log.d(TAG, "Event type:" + eventBundle.getEventType() + " Event: " + eventBundle.getEvent());
 
-            VoipEvent event = myEventBundle.getEvent();
-            // Register the account after the Lib Initialization
+            VoipEvent event = eventBundle.getEvent();
             if (event == VoipEvent.LIB_INITIALIZED) {
+                // Register the account after the Lib Initialization
                 mainActivity.registerAccount();
             }
             else if (event == VoipEvent.ACCOUNT_REGISTERED) {
-                if (!mainActivity.accountRegistered) {
+                // The first time it is called we subscribe the buddy
+                if (!mainActivity.accountRegistered) {  // Next times we don't need to do this
                     mainActivity.subscribeBuddies();
-                }
-                else {
                     mainActivity.accountRegistered = true;
                 }
             }
             else if (event == VoipEvent.ACCOUNT_UNREGISTERED) {
                 mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
             }
-            else if (myEventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
-                Log.d(TAG, "In handle Message for BUDDY EVENT");
+            else if (eventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
                 // There is only one subscribed buddy in this mMainActivity, so we don't need to get IBuddy informations
                 if (event == VoipEvent.BUDDY_CONNECTED) {
                     // the remote buddy is no longer on Hold State
@@ -217,20 +205,12 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                 }
             }
             else if (event == VoipEvent.CALL_INCOMING) {
-                mainActivity.answerCall(); //handleIncomingCallRequest();
+                // answer call as soon as we get the call
+                mainActivity.answerCall();
             }
-            /*
-            else if (event==VoipEvent.CALL_READY)
-            {
-                    if (incoming_call_request)
-
-                    {
-                            answerCall();
-                    }
-            }
-            */
             else if (event == VoipEvent.CALL_ACTIVE) {
                 if (mainActivity.remoteHold) {
+                    //TODO: why?
                     mainActivity.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
                 }
                 else {
@@ -241,13 +221,15 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                 mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
             }
             else if (event == VoipEvent.CALL_HANGUP || event == VoipEvent.CALL_REMOTE_HANGUP) {
-                if (mainActivity.mTcState != TeleconsultationState.IDLE) {
-                    mainActivity.setTeleconsultationState(TeleconsultationState.READY);
-                }
+                mainActivity.setTeleconsultationState(TeleconsultationState.FINISHED);
+                mainActivity.mVoipLib.destroyLib();
+                mainActivity.closeSession();
+//                if (mainActivity.mTcState != TeleconsultationState.IDLE) {
+//                    mainActivity.setTeleconsultationState(TeleconsultationState.READY);
+//                }
             }
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED || event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
-                Log.d(TAG, "Setting to null MyVoipLib");
                 mainActivity.mVoipLib = null;
                 mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
 
@@ -263,7 +245,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                     event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
                     event == VoipEvent.LIB_CONNECTION_FAILED ||
                     event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
-                showErrorEventAlert(myEventBundle);
+                showErrorEventAlert(eventBundle);
         }
 
         private void showErrorEventAlert(VoipEventBundle myEventBundle) {

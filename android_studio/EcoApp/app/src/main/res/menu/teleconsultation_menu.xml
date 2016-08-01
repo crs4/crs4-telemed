@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/button_close_session"
-        android:title="@string/close_session"
-        android:enabled="false"
-        app:showAsAction="always"/>
+    <!--<item-->
+        <!--android:id="@+id/button_close_session"-->
+        <!--android:title="@string/close_session"-->
+        <!--android:enabled="false"-->
+        <!--app:showAsAction="always"/>-->
 
     <item
         android:id="@+id/button_call"

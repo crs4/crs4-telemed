@@ -5,6 +5,7 @@ public enum TeleconsultationState {
      READY,
      CALLING,
      HOLDING,
-     REMOTE_HOLDING
+     REMOTE_HOLDING,
+     FINISHED
 }
  
