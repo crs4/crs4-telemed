@@ -318,7 +318,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 pauseStreams();
             }
             else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
-                mButtonCall.setEnabled(true);
+                mButtonCall.setEnabled(false);
                 mButtonHangup.setEnabled(true);
                 pauseStreams();
             }

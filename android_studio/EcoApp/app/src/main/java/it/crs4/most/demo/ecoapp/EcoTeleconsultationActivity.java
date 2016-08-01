@@ -164,9 +164,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             catch (NullPointerException ne) {
 
             }
-            popupHoldButton.setEnabled(true);
+            popupHoldButton.setEnabled(false);
             popupHangupButton.setEnabled(true);
-
             remoteHold = true;
             pauseStream();
         }
