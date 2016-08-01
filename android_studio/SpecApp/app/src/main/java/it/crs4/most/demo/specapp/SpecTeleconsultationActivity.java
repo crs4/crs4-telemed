@@ -97,14 +97,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private Teleconsultation mTeleconsultation;
     private PTZ_ControllerPopupWindowFactory mPTZPopupWindowController;
     private String mEcoExtension;
-
-    private MenuItem mButtonMakeCall;
-    private MenuItem mButtonHoldCall;
-
+    private MenuItem mButtonCall;
+    private MenuItem mButtonHangup;
     private HashMap<String, String> mVoipParams;
     private RemoteConfigReader mConfigReader;
     private boolean mLocalHold = false;
-    private boolean mRemoteHold = false;
     private boolean mAccountRegistered = false;
     private boolean mFirstCallStarted = false;
     private boolean mStreamPrepared = false;
@@ -154,7 +151,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         setContentView(R.layout.spec_activity_main);
         setupTeleconsultationInfo();
         setTeleconsultationState(TeleconsultationState.IDLE);
-
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
@@ -177,8 +173,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.teleconsultation_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
-        mButtonMakeCall = menu.findItem(R.id.button_call);
-        mButtonHoldCall = menu.findItem(R.id.button_hold);
+        mButtonCall = menu.findItem(R.id.button_call);
+        mButtonHangup = menu.findItem(R.id.button_hangup);
         return res;
     }
 
@@ -194,8 +190,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             case R.id.button_call:
                 handleButMakeCallClicked();
                 break;
-            case R.id.button_hold:
-                handleButHoldClicked();
+            case R.id.button_hangup:
+                hangupCall();
                 break;
         }
         return false;
@@ -258,19 +254,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         mEcoExtension = mVoipParams.get("ecoExtension");
 
         Log.d(TAG, "Initializing the lib...");
-        CallHandler voipHandler = null;
-        if (mVoipLib == null) {
-            Log.d(TAG, "Voip null... Initialization.....");
-            mVoipLib = new VoipLibBackend();
-            voipHandler = new CallHandler(this);
-            mVoipLib.initLib(getApplicationContext(), mVoipParams, voipHandler);
-        }
-        else {
-            Log.d(TAG, "Voip is not null... Destroying the lib before reinitializing.....");
-            // Reinitialization will be done after deinitialization event callback
-            voipHandler.mReinitRequest = true;
-            mVoipLib.destroyLib();
-        }
+        CallHandler voipHandler = new CallHandler(this);
+        mVoipLib = new VoipLibBackend();
+        mVoipLib.initLib(getApplicationContext(), mVoipParams, voipHandler);
     }
 
     private void setupPtzPopupWindow() {
@@ -297,52 +283,47 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
         try {
             if (mTcState == TeleconsultationState.IDLE) {
-                mButtonMakeCall.setTitle("Call");
-                mButtonMakeCall.setEnabled(false);
-                mButtonHoldCall.setEnabled(false);
+                mButtonCall.setTitle("Call");
+                mButtonCall.setEnabled(false);
+                mButtonHangup.setEnabled(false);
                 mLocalHold = false;
-                mRemoteHold = false;
                 mAccountRegistered = false;
                 pauseStreams();
             }
             else if (mTcState == TeleconsultationState.READY) {
-                mButtonMakeCall.setTitle("Call");
-                mButtonMakeCall.setEnabled(true);
-                mButtonHoldCall.setEnabled(false);
+                mButtonCall.setTitle("Call");
+                mButtonCall.setEnabled(true);
+                mButtonHangup.setEnabled(false);
                 mLocalHold = false;
-                mRemoteHold = false;
                 mAccountRegistered = true;
                 pauseStreams();
 
                 if (mFirstCallStarted) {
-                    checkForSessionClosed();
+//                    checkForSessionClosed();
                 }
             }
             else if (mTcState == TeleconsultationState.CALLING) {
-                mButtonMakeCall.setEnabled(true);
-                mButtonMakeCall.setTitle("Hangup");
-                mButtonHoldCall.setEnabled(true);
+                mButtonCall.setTitle("Hold");
+                mButtonCall.setEnabled(true);
+                mButtonHangup.setEnabled(true);
                 mLocalHold = false;
-                mRemoteHold = false;
                 mFirstCallStarted = true;
                 playStreams();
             }
             else if (mTcState == TeleconsultationState.HOLDING) {
-                mButtonMakeCall.setEnabled(true);
-                mButtonMakeCall.setTitle("Hangup");
-                mButtonHoldCall.setEnabled(true);
+                mButtonCall.setTitle("Call");
+                mButtonCall.setEnabled(true);
+                mButtonHangup.setEnabled(true);
                 mLocalHold = true;
                 pauseStreams();
             }
             else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
-                mButtonMakeCall.setEnabled(true);
-                mButtonMakeCall.setTitle("Hangup");
-                mButtonHoldCall.setEnabled(true);
-                mRemoteHold = true;
+                mButtonCall.setEnabled(true);
+                mButtonHangup.setEnabled(true);
                 pauseStreams();
             }
             else if (mTcState == TeleconsultationState.SESSION_CLOSED) {
-                startReportActivity();
+//                startReportActivity();
             }
         }
         catch (NullPointerException ne) {
@@ -401,13 +382,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         mPTZManager.startMove(dir);
     }
 
-
     @Override
     public void onPTZstopMove(PTZ_Direction dir) {
         Log.d(TAG, "Called onPTZstoptMove for direction:" + dir);
         mPTZManager.stopMove();
     }
-
 
     @Override
     public void onPTZstartZoom(PTZ_Zoom dir) {
@@ -491,14 +470,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     }
 
     private void exitFromApp() {
-        Log.d(TAG, "Called exitFromApp()");
         exitFromAppRequest = true;
         if (mVoipLib != null) {
+            stopStreams();
             mVoipLib.destroyLib();
-        }
-        else {
-            Log.d(TAG, "Voip Library deinitialized. Exiting the app");
-            finish();
         }
     }
 
@@ -524,6 +499,23 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             mStreamEco.pause();
             mStreamEcoFragment.setStreamInvisible("PAUSED");
         }
+    }
+
+    private void stopStreams() {
+        if (mStreamCamera != null) {
+            mStreamCamera.destroy();
+            mStreamCameraFragment.setStreamInvisible("");
+        }
+
+        if (mStreamEco != null) {
+            mStreamEco.destroy();
+            mStreamEcoFragment.setStreamInvisible("");
+        }
+    }
+
+    private void endTeleconsultation() {
+        mVoipLib.destroyLib();
+        stopStreams();
     }
 
     @Override
@@ -593,37 +585,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     // VOIP METHODS AND LOGIC
     private void handleButMakeCallClicked() {
         if (mTcState == TeleconsultationState.READY) {
-            makeCall();
-        }
-        else if (mTcState == TeleconsultationState.CALLING ||
-                mTcState == TeleconsultationState.HOLDING ||
-                mTcState == TeleconsultationState.REMOTE_HOLDING) {
-            hangupCall();
-        }
-    }
-
-    private void makeCall() {
-        if (mVoipLib != null && mVoipLib.getCall().getState() == CallState.IDLE) {
             mVoipLib.makeCall(mEcoExtension);
         }
-    }
-
-    private void handleButHoldClicked() {
-//			if (mTcState==TeleconsultationState.CALLING)
-//				toggleHoldCall(true);
-//			else if (mTcState==TeleconsultationState.HOLDING)
-//				toggleHoldCall(false);
-
-        if (mTcState != TeleconsultationState.READY && mTcState != TeleconsultationState.IDLE) {
-            toggleHoldCall(mButtonHoldCall.isChecked());
-        }
-    }
-
-    private void toggleHoldCall(boolean holding) {
-        if (holding) {
+        else if (mTcState == TeleconsultationState.CALLING) {
             mVoipLib.holdCall();
         }
-        else {
+        else if (mTcState == TeleconsultationState.HOLDING) {
             mVoipLib.unholdCall();
         }
     }
@@ -694,12 +661,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private static class CallHandler extends Handler {
 
         private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
-        public boolean mReinitRequest = false;
 
         private CallHandler(SpecTeleconsultationActivity outerRef) {
             mOuterRef = new WeakReference<>(outerRef);
         }
-
 
         protected VoipEventBundle getEventBundle(Message voipMessage) {
             //int msg_type = voipMessage.what;
@@ -711,33 +676,31 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
         @Override
         public void handleMessage(Message voipMessage) {
-            VoipEventBundle myEventBundle = getEventBundle(voipMessage);
-            SpecTeleconsultationActivity mainActivity = (SpecTeleconsultationActivity) mOuterRef.get();
-            Log.d(TAG, "HANDLE EVENT TYPE:" + myEventBundle.getEventType() + " EVENT:" + myEventBundle.getEvent());
+            VoipEventBundle eventBundle = getEventBundle(voipMessage);
+            VoipEvent event = eventBundle.getEvent();
+            SpecTeleconsultationActivity mainActivity = mOuterRef.get();
+            Log.d(TAG, "HANDLE EVENT TYPE:" + eventBundle.getEventType() + " EVENT:" + eventBundle.getEvent());
 
             // Register the account after the Lib Initialization
-            if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZED) {
+            if (event == VoipEvent.LIB_INITIALIZED) {
                 mainActivity.registerAccount();
             }
-            else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTERED) {
+            else if (event == VoipEvent.ACCOUNT_REGISTERED) {
                 if (!mainActivity.mAccountRegistered) {
                     mainActivity.subscribeBuddies();
                     mainActivity.mAccountRegistered = true;
                 }
             }
-            else if (myEventBundle.getEvent() == VoipEvent.ACCOUNT_UNREGISTERED) {
+            else if (event == VoipEvent.ACCOUNT_UNREGISTERED) {
                 mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
             }
-            else if (myEventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
-
+            else if (eventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
                 Log.d(TAG, "In handle Message for BUDDY EVENT");
                 //IBuddy myBuddy = (IBuddy) myEventBundle.getData();
 
                 // There is only one subscribed buddy in this app, so we don't need to get IBuddy informations
-                if (myEventBundle.getEvent() == VoipEvent.BUDDY_CONNECTED) {
-                    // the remote buddy is no longer on Hold State
-                    mainActivity.mRemoteHold = false;
-
+                if (event == VoipEvent.BUDDY_CONNECTED) {
+                    // Probably the first condition treat cases of lost network
                     if (mainActivity.mTcState == TeleconsultationState.REMOTE_HOLDING ||
                             mainActivity.mTcState == TeleconsultationState.HOLDING) {
                         if (mainActivity.mLocalHold) {
@@ -752,66 +715,49 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                     }
 
                 }
-                else if (myEventBundle.getEvent() == VoipEvent.BUDDY_HOLDING) {
+                else if (event == VoipEvent.BUDDY_HOLDING) {
                     if (mainActivity.mVoipLib.getCall().getState() == CallState.ACTIVE ||
                             mainActivity.mVoipLib.getCall().getState() == CallState.HOLDING) {
                         mainActivity.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
                     }
                 }
-                else if (myEventBundle.getEvent() == VoipEvent.BUDDY_DISCONNECTED) {
+                else if (event == VoipEvent.BUDDY_DISCONNECTED) {
                     mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
                 }
             }
 
-            //else if (myEventBundle.getEvent()==VoipEvent.CALL_INCOMING)
+            //else if (myevent==VoipEvent.CALL_INCOMING)
 
-            else if (myEventBundle.getEvent() == VoipEvent.CALL_READY) {
-
-            }
-            else if (myEventBundle.getEvent() == VoipEvent.CALL_ACTIVE) {
-                if (mainActivity.mRemoteHold) {
-                    mainActivity.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-                }
-                else {
-                    mainActivity.setTeleconsultationState(TeleconsultationState.CALLING);
-                }
+            else if (event == VoipEvent.CALL_READY) {
 
             }
-            else if (myEventBundle.getEvent() == VoipEvent.CALL_HOLDING) {
+            else if (event == VoipEvent.CALL_ACTIVE) {
+                mainActivity.setTeleconsultationState(TeleconsultationState.CALLING);
+            }
+            else if (event == VoipEvent.CALL_HOLDING) {
                 mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
             }
-            else if (myEventBundle.getEvent() == VoipEvent.CALL_HANGUP || myEventBundle.getEvent() == VoipEvent.CALL_REMOTE_HANGUP) {
-
-                if (mainActivity.mTcState != TeleconsultationState.IDLE)
-                    mainActivity.setTeleconsultationState(TeleconsultationState.READY);
+            else if (event == VoipEvent.CALL_HANGUP || event == VoipEvent.CALL_REMOTE_HANGUP) {
+                mainActivity.endTeleconsultation();
             }
             // Deinitialize the Voip Lib and release all allocated resources
-            else if (myEventBundle.getEvent() == VoipEvent.LIB_DEINITIALIZED || myEventBundle.getEvent() == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
-                Log.d(TAG, "Setting to null MyVoipLib");
-                mainActivity.mVoipLib = null;
-                mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
-
-                if (mReinitRequest) {
-                    mReinitRequest = false;
-                    mainActivity.setupVoipLib();
-                }
-                else if (mainActivity.exitFromAppRequest) {
-                    mainActivity.exitFromApp();
-                }
+            else if (event == VoipEvent.LIB_DEINITIALIZED) {
+                mainActivity.finish();
             }
-            else if (myEventBundle.getEvent() == VoipEvent.LIB_INITIALIZATION_FAILED || myEventBundle.getEvent() == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
-                    myEventBundle.getEvent() == VoipEvent.LIB_CONNECTION_FAILED || myEventBundle.getEvent() == VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
-                showErrorEventAlert(myEventBundle);
-
+            else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
+                //TODO: check what to do
+            }
+            else if (event == VoipEvent.LIB_INITIALIZATION_FAILED || event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
+                    event == VoipEvent.LIB_CONNECTION_FAILED || event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED) {
+                showErrorEventAlert(eventBundle);
+            }
 
         } // end of handleMessage()
 
-
-        private void showErrorEventAlert(VoipEventBundle myEventBundle) {
-
+        private void showErrorEventAlert(VoipEventBundle eventBundle) {
             AlertDialog.Builder miaAlert = new AlertDialog.Builder(mOuterRef.get());
-            miaAlert.setTitle(myEventBundle.getEventType() + ":" + myEventBundle.getEvent());
-            miaAlert.setMessage(myEventBundle.getInfo());
+            miaAlert.setTitle(eventBundle.getEventType() + ":" + eventBundle.getEvent());
+            miaAlert.setMessage(eventBundle.getInfo());
             AlertDialog alert = miaAlert.create();
             alert.show();
         }
