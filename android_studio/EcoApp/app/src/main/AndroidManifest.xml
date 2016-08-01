@@ -37,6 +37,12 @@
             android:label="@string/title_activity_teleconsultation"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             />
+        <receiver android:name=".AREcoTeleconsultationActivity$RemoteControlReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
