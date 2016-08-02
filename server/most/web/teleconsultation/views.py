@@ -131,7 +131,7 @@ def create_teleconsultation(request):
     teleconsultation.description = request.REQUEST['description']
     teleconsultation.state = 'NEW'
     teleconsultation.task_group = request.taskgroup
-    if 'severity' in request.REQUEST:
+    if 'severity' in requreturn HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}), content_type="application/json")est.REQUEST:
         teleconsultation.severity = request.REQUEST['severity']
 
     teleconsultation.save()
@@ -141,8 +141,18 @@ def create_teleconsultation(request):
 
 @oauth2_required
 @csrf_exempt
-def close_teleconsultation(request):
-    return HttpResponse(json.dumps({'success': False, 'error': {'message' : 'not implemented'}}), content_type="application/json")
+def close_teleconsultation(request, teleconsultation_id):
+
+    try:
+        teleconsultation = Teleconsultation.objects.get(uuid=teleconsultation_id)
+    except Teleconsultation.DoesNotExist:
+        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}), content_type="application/json")
+
+    teleconsultation.state = 'CLOSE'
+    teleconsultation.save()
+    
+
+    return HttpResponse(json.dumps({'success': True, 'data': {'teleconsultation' : teleconsultation.json_dict}}), content_type="application/json")
 
 
 @oauth2_required

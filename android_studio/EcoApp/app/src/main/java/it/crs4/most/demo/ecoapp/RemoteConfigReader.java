@@ -118,6 +118,16 @@ public class RemoteConfigReader {
         mRequestQueue.add(req);
     }
 
+    public void closeTeleconsultation(String teleconsultationId,
+                             String accessToken,
+                             Response.Listener<JSONObject> listener,
+                             Response.ErrorListener errorListener) {
+        String uri = String.format("%steleconsultation/close/%s/?access_token=%s",
+                mUrlPrefix, teleconsultationId, accessToken);
+        JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+        mRequestQueue.add(req);
+    }
+
     public void getSessionState(String sessionId,
                                 String accessToken,
                                 Response.Listener<JSONObject> listener,

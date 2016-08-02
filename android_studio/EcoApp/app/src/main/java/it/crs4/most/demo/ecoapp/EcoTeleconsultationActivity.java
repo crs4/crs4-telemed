@@ -4,7 +4,6 @@ package it.crs4.most.demo.ecoapp;
 import java.util.HashMap;
 
 import it.crs4.most.streaming.IStream;
-import it.crs4.most.streaming.StreamingEventBundle;
 import it.crs4.most.streaming.StreamingLib;
 import it.crs4.most.streaming.StreamingLibBackend;
 import it.crs4.most.streaming.enums.StreamState;
@@ -97,7 +96,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         Intent i = getIntent();
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
 
-        TextView txtEcoUser = (TextView) findViewById(R.id.txtEcoUser);
+        TextView txtEcoUser = (TextView) findViewById(R.id.text_eco_user);
         txtEcoUser.setText(String.format("%s %s", teleconsultation.getApplicant().getFirstName(),
                 teleconsultation.getApplicant().getLastName()));
     }

@@ -64,12 +64,27 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
 
     protected void closeSession() {
         //TODO: think of putting this in the EcoConfigActivity
-        EcoUser ecoUser = teleconsultation.getApplicant();
+        final EcoUser ecoUser = teleconsultation.getApplicant();
         mConfigReader.closeSession(teleconsultation.getLastSession().getId(),
                 ecoUser.getAccessToken(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject sessionData) {
+                        mConfigReader.closeTeleconsultation(
+                                teleconsultation.getId(),
+                                ecoUser.getAccessToken(),
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                    }
+                                });
                         Log.d(TAG, "Session closed: " + sessionData);
                     }
                 },
