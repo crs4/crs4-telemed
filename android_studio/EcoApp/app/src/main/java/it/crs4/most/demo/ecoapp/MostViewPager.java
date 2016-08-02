@@ -35,19 +35,14 @@ public class MostViewPager extends ViewPager {
         Log.d(TAG, "Manual Page Enabled:" + MostViewPager.manualPageChangeEnabled +
                 " target_position:" + target_position + " permitted:" + mPermittedPos);
 
-
-        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(mTargetPos)).onShow();
         super.setCurrentItem(mTargetPos);
-        MostViewPager.manualPageChangeEnabled = false;
+        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(mTargetPos)).onShow();
 
-        if (getCurrentItem() == mTargetPos && mTargetPos != mPermittedPos) {
-            MostViewPager.manualPageChangeEnabled = true;
-        }
+        MostViewPager.manualPageChangeEnabled = getCurrentItem() == mTargetPos && mTargetPos != mPermittedPos;
     }
 
     @Override
     public void setCurrentItem(int position) {
-        Log.d(TAG, "MostViewer childs:" + getChildCount());
         Log.d(TAG, "Called setCurrentItem:" + position +
                 " with MostViewPager.manual_page_change_enabled:" +
                 MostViewPager.manualPageChangeEnabled);

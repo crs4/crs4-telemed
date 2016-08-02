@@ -174,7 +174,6 @@ public class SummaryFragment extends ConfigFragment {
                 room.setCamera(getDevice(jroom, "camera"));
                 Log.d(TAG, "TC Encoder: " + room.getEncoder());
                 Log.d(TAG, "TC Camera: " + room.getCamera());
-                //getConfigBuilder().setTeleconsultation(selectedTc);
             }
         }, new Response.ErrorListener() {
 
@@ -243,7 +242,6 @@ public class SummaryFragment extends ConfigFragment {
                                 wfsd.dismiss();
                             }
                         });
-                // getConfigBuilder().setTeleconsultation(selectedTc);
             }
         }, 0, 10000);
     }

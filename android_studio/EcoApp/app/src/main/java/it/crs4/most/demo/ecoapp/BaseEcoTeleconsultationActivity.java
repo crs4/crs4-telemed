@@ -2,6 +2,7 @@ package it.crs4.most.demo.ecoapp;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +45,6 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected boolean localHold = false;
     protected boolean remoteHold = false;
     protected boolean accountRegistered = false;
-    protected boolean exitFromAppRequest = false;
 
     protected Teleconsultation teleconsultation;
     protected RemoteConfigReader mConfigReader;
@@ -57,18 +57,13 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     }
 
     protected void exitFromApp() {
-        Log.d(TAG, "Called exitFromApp()");
-        exitFromAppRequest = true;
-        if (mVoipLib != null) {
-            mVoipLib.destroyLib();
-        }
-        else {
-            Log.d(TAG, "Voip Library deinitialized. Exiting the app");
-            finish();
-        }
+        closeSession();
+        setResult(RESULT_OK);
+        finish();
     }
 
     protected void closeSession() {
+        //TODO: think of putting this in the EcoConfigActivity
         EcoUser ecoUser = teleconsultation.getApplicant();
         mConfigReader.closeSession(teleconsultation.getLastSession().getId(),
                 ecoUser.getAccessToken(),
@@ -76,14 +71,12 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                     @Override
                     public void onResponse(JSONObject sessionData) {
                         Log.d(TAG, "Session closed: " + sessionData);
-                        finish();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError err) {
                         Log.e(TAG, "Error closing the session: " + err);
-                        finish();
                     }
                 });
     }
@@ -223,24 +216,12 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             else if (event == VoipEvent.CALL_HANGUP || event == VoipEvent.CALL_REMOTE_HANGUP) {
                 mainActivity.setTeleconsultationState(TeleconsultationState.FINISHED);
                 mainActivity.mVoipLib.destroyLib();
-                mainActivity.closeSession();
-//                if (mainActivity.mTcState != TeleconsultationState.IDLE) {
-//                    mainActivity.setTeleconsultationState(TeleconsultationState.READY);
-//                }
             }
             // Deinitialize the Voip Lib and release all allocated resources
-            else if (event == VoipEvent.LIB_DEINITIALIZED || event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
-                mainActivity.mVoipLib = null;
-                mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
-
-                if (mReinitRequest) {
-                    mReinitRequest = false;
-                    mainActivity.setupVoipLib();
-                }
-                else if (mainActivity.exitFromAppRequest) {
-                    mainActivity.exitFromApp();
-                }
+            else if (event == VoipEvent.LIB_DEINITIALIZED) {
+                mainActivity.exitFromApp();
             }
+            else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {}
             else if (event == VoipEvent.LIB_INITIALIZATION_FAILED ||
                     event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
                     event == VoipEvent.LIB_CONNECTION_FAILED ||

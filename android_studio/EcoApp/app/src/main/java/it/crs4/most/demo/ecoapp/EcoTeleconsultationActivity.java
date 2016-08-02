@@ -39,6 +39,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     private static final String TAG = "EcoTeleconsultActivity";
 
+    public static final int TELECONSULT_ENDED_REQUEST = 0;
+
     private StreamViewerFragment mStreamCameraFragment;
     private IStream mStreamCamera;
 
@@ -47,7 +49,6 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private View mPopupView;
     private PopupWindow popupWindow;
 
-    private Button popupCancelButton;
     private ImageButton popupHangupButton;
     private ImageButton popupHoldButton;
     private boolean mIsOnHold;
@@ -76,7 +77,6 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         getMenuInflater().inflate(R.menu.teleconsultation_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
         mButCall = menu.findItem(R.id.button_call);
-//        mButCloseSession = menu.findItem(R.id.button_close_session);
         return res;
     }
 
@@ -243,7 +243,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
         if (popupWindow == null) {
             popupWindow = new PopupWindow(mPopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
-            popupCancelButton = (Button) mPopupView.findViewById(R.id.button_call_cancel);
+            Button popupCancelButton = (Button) mPopupView.findViewById(R.id.button_call_cancel);
             popupCancelButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

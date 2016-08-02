@@ -107,6 +107,10 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
     }
 
     @Override
+    public RemoteConfigReader getRemoteConfigReader() {
+        return mConfigReader;
+    }
+    @Override
     public void listEcoUsers() {
         mVpPager.setInternalCurrentItem(0, 0);
     }
@@ -132,13 +136,9 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
     @Override
     public void setPatient(Patient selectedPatient) {
         mPatient = selectedPatient;
-        mVpPager.setInternalCurrentItem(3, 2);
-    }
-
-    @Override
-    public void setTeleconsultation(Teleconsultation teleconsultation) {
-        mTeleconsultation = teleconsultation;
-        startTeleconsultationActivity();
+        if (mPatient != null) {
+            mVpPager.setInternalCurrentItem(3, 2);
+        }
     }
 
     @Override
@@ -146,24 +146,12 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
         return mPatient;
     }
 
-
-    private void startTeleconsultationActivity() {
-        Intent i;
-        if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
-            i = new Intent(this, AREcoTeleconsultationActivity.class);
-        }
-        else{
-            i = new Intent(this, EcoTeleconsultationActivity.class);
-        }
-        Log.d(TAG, "Starting activity with eco user: " + mEcoUser);
-        i.putExtra("EcoUser", mEcoUser);
-        i.putExtra("Teleconsultation", mTeleconsultation);
-        startActivity(i);
-    }
-
     @Override
-    public RemoteConfigReader getRemoteConfigReader() {
-        return mConfigReader;
+    public void setTeleconsultation(Teleconsultation teleconsultation) {
+        mTeleconsultation = teleconsultation;
+        if (mTeleconsultation != null) {
+            startTeleconsultationActivity();
+        }
     }
 
     @Override
@@ -174,6 +162,33 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
     @Override
     public void setCamera(Device camera) {
         mCamera = camera;
+    }
+
+    private void startTeleconsultationActivity() {
+        Intent i;
+        if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
+            i = new Intent(this, AREcoTeleconsultationActivity.class);
+        }
+        else {
+            i = new Intent(this, EcoTeleconsultationActivity.class);
+        }
+        Log.d(TAG, "Starting activity with eco user: " + mEcoUser);
+        i.putExtra("EcoUser", mEcoUser);
+        i.putExtra("Teleconsultation", mTeleconsultation);
+        startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                setEcoUser(null);
+                setPatient(null);
+                setCamera(null);
+                setTeleconsultation(null);
+                mVpPager.setInternalCurrentItem(0, 0);
+            }
+        }
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

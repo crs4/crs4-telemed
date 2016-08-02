@@ -150,7 +150,7 @@ public class UserSelectionFragment extends ConfigFragment {
         }
 
         public View getViewOptimize(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder = null;
+            ViewHolder viewHolder;
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
