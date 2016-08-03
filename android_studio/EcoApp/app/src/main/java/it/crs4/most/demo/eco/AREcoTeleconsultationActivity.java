@@ -130,9 +130,6 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         ComponentName componentName = new ComponentName(this, RemoteControlReceiver.class);
         am.registerMediaButtonEventReceiver(componentName);
 
-        registerReceiver(broadcastReceiver, new IntentFilter("HOLDCALL"));
-        registerReceiver(broadcastReceiver, new IntentFilter("HANGUP"));
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ar_eco);
 
@@ -197,6 +194,10 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     @Override
     public void onResume() {
         super.onResume();
+
+        registerReceiver(broadcastReceiver, new IntentFilter("HOLDCALL"));
+        registerReceiver(broadcastReceiver, new IntentFilter("HANGUP"));
+
         preview = new CaptureCameraPreview(this, this);
         preview.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -261,6 +262,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         this.mainLayout.removeView(this.glView);
         this.mainLayout.removeView(this.preview);
+        unregisterReceiver(broadcastReceiver);
     }
 
     public void onStop() {
