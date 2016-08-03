@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
-import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Teleconsultation;
@@ -64,10 +63,10 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private OpticalARToolkit mOpticalARToolkit;
     private EditText coordX, coordY, coordZ;
     private HashMap<String, Mesh> meshes = new HashMap<>();
+    private boolean arInitialized = false;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
-
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive, intent.getAction() " + intent.getAction());
@@ -157,7 +156,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        decorView.setSystemUiVisibility(uiOptions);
 
 
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE) ;
         ComponentName componentName = new ComponentName(this, RemoteControlReceiver.class);
         am.registerMediaButtonEventReceiver(componentName);
 
@@ -166,6 +165,12 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ar_eco);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
+            //private static final int FLAG_SMARTFULLSCREEN = 0x80000000; // For Epson Moverio BT-200.
+            getWindow().addFlags(0x80000000);
+        }
 
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
@@ -332,7 +337,15 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
-        if (ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
+        Log.d(TAG, "cameraPreviewStarted");
+        if (arInitialized){
+            ARToolKit.getInstance().cleanup();
+            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())){
+                this.finish();
+            }
+            arInitialized = false;
+        }
+        if(ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
             Log.d(TAG, String.format("Build.MANUFACTURER %s", Build.MANUFACTURER));
             Log.d(TAG, String.format("Build.MODEL %s", Build.MODEL));
 
@@ -362,7 +375,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     public void cameraPreviewFrame(byte[] frame) {
-        if (this.firstUpdate) {
+        if(this.firstUpdate && !arInitialized) {
 
             if (this.renderer.configureARScene()) {
                 Log.i("ARActivity", "cameraPreviewFrame(): Scene configured successfully");
@@ -373,6 +386,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
 
             this.firstUpdate = false;
+            arInitialized = true;
         }
 
         if (ARToolKit.getInstance().convertAndDetect(frame)) {
