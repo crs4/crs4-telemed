@@ -6,8 +6,6 @@ RUN pip install Django==1.7.9 shortuuid pytz
 
 WORKDIR /tmp
 
-RUN git clone https://github.com/crs4/most-demo -b android_studio
-
 RUN wget http://www.creytiv.com/pub/re-0.4.15.tar.gz && tar zxf re-0.4.15.tar.gz
 RUN wget http://www.creytiv.com/pub/restund-0.4.12.tar.gz && tar zxf restund-0.4.12.tar.gz
 
@@ -38,5 +36,7 @@ RUN service mysql start && \
 	mysql -u root -e "GRANT ALL PRIVILEGES ON turnauth.* TO 'most'@'localhost'" && \
 	mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('most')" && \
 	service mysql stop
+
+VOLUME ["/tmp/most-demo"]
 
 EXPOSE 2000 3306 3478 5060 8000 10000-10010
