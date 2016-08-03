@@ -170,8 +170,7 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
             i = new Intent(this, AREcoTeleconsultationActivity.class);
         }
         else {
-            i = new Intent(this, AREcoTeleconsultationActivity.class);
-//            i = new Intent(this, EcoTeleconsultationActivity.class);
+            i = new Intent(this, EcoTeleconsultationActivity.class);
         }
         Log.d(TAG, "Starting activity with eco user: " + mEcoUser);
         i.putExtra("EcoUser", mEcoUser);
