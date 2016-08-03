@@ -131,7 +131,7 @@ def create_teleconsultation(request):
     teleconsultation.description = request.REQUEST['description']
     teleconsultation.state = 'NEW'
     teleconsultation.task_group = request.taskgroup
-    if 'severity' in requreturn HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}), content_type="application/json")est.REQUEST:
+    if 'severity' in request.REQUEST:
         teleconsultation.severity = request.REQUEST['severity']
 
     teleconsultation.save()
@@ -141,16 +141,15 @@ def create_teleconsultation(request):
 
 @oauth2_required
 @csrf_exempt
-def close_teleconsultation(request, teleconsultation_id):
+def close_teleconsultation(request, teleconsultation_uuid):
 
     try:
-        teleconsultation = Teleconsultation.objects.get(uuid=teleconsultation_id)
+        teleconsultation = Teleconsultation.objects.get(uuid=teleconsultation_uuid)
     except Teleconsultation.DoesNotExist:
         return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}), content_type="application/json")
 
     teleconsultation.state = 'CLOSE'
     teleconsultation.save()
-    
 
     return HttpResponse(json.dumps({'success': True, 'data': {'teleconsultation' : teleconsultation.json_dict}}), content_type="application/json")
 
@@ -250,9 +249,10 @@ def start_session(request, session_uuid):
 
 @csrf_exempt
 @oauth2_required
-def join_session(request,session_uuid):
+def join_session(request, session_uuid, spec_app_address):
     # Check and Retrieve session
     session = None
+    print session_uuid
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
         
@@ -267,7 +267,8 @@ def join_session(request,session_uuid):
     except Exception:
         return HttpResponse(json.dumps({'success': False, 'error': {'code': 503, 'message': 'specialist not found'}}), content_type="application/json")
         
-    
+    session.spec_app_address = spec_app_address
+    print spec_app_address
     session.state = 'READY'
     session.teleconsultation.save()
     session.save()
@@ -277,7 +278,7 @@ def join_session(request,session_uuid):
 
 @csrf_exempt
 @oauth2_required
-def run_session(request,session_uuid):
+def run_session(request, session_uuid):
    # Check and Retrieve session
     session = None
     try:
@@ -299,7 +300,7 @@ def run_session(request,session_uuid):
 
 @csrf_exempt
 @oauth2_required
-def close_session(request,session_uuid):
+def close_session(request, session_uuid):
     # Check and Retrieve session
     session = None
     try:

@@ -184,10 +184,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
         setupVoipLib();
 
-//        String address = "156.148.33.87:5555";
-//        String address = "156.148.33.87:5556";
-        String address = "156.148.33.66:5556";
-        ZMQSubscriber subscriber = new ZMQSubscriber(address);
+        String specAppAddress =  teleconsultation.getLastSession().getSpecAppAddress();
+        Log.d(TAG, "SpecApp Address: " + specAppAddress);
+        ZMQSubscriber subscriber = new ZMQSubscriber(specAppAddress);
         Thread subThread = new Thread(subscriber);
         subThread.start();
         if (mOpticalARToolkit != null){

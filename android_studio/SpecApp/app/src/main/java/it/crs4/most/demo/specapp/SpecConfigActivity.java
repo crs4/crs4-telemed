@@ -16,6 +16,7 @@ import it.crs4.most.demo.specapp.models.Teleconsultation;
 import it.crs4.most.demo.specapp.models.TeleconsultationSessionState;
 
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -24,11 +25,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 
 public class SpecConfigActivity extends AppCompatActivity implements IConfigBuilder {
@@ -144,22 +149,30 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
     }
 
     private void joinTeleconsultationSession(final Teleconsultation selectedTc) {
-        Log.d(TAG, "joining mTeleconsultation session...");
+        Log.d(TAG, "joining teleconsultation session...");
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
+                 ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
+        Log.d(TAG, "IP ADDRESS IS: " + ipAddress);
         if (selectedTc.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
-            mConfigReader.joinSession(selectedTc.getLastSession().getId(), getSpecUser().getAccessToken(), new Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "Session Join Response:" + response);
-                    selectedTc.getLastSession().setupSessionData(response);
-                    startTeleconsultationActivity();
-                }
-            }, new ErrorListener() {
+            mConfigReader.joinSession(selectedTc.getLastSession().getId(),
+                    getSpecUser().getAccessToken(),
+                    ipAddress,
+                    new Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Session Join Response:" + response);
+                            selectedTc.getLastSession().setupSessionData(response);
+                            startTeleconsultationActivity();
+                        }
+                    },
+                    new ErrorListener() {
 
-                @Override
-                public void onErrorResponse(VolleyError err) {
-                    Log.d(TAG, "Error in Session Join Response: " + err);
-                }
-            });
+                        @Override
+                        public void onErrorResponse(VolleyError err) {
+                            Log.d(TAG, "Error in Session Join Response: " + err);
+                        }
+                    });
         }
     }
 

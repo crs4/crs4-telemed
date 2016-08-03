@@ -124,12 +124,11 @@ public class SummaryFragment extends ConfigFragment {
                     public void onResponse(String tcSessionData) {
                         Log.d(TAG, "Created teleconsultation session: " + tcSessionData);
                         try {
-                            String sessionUUID = new JSONObject(tcSessionData).
+                            JSONObject sessionData = new JSONObject(tcSessionData).
                                     getJSONObject("data").
-                                    getJSONObject("session").
-                                    getString("uuid");
-                            TeleconsultationSession ts = new TeleconsultationSession(sessionUUID,
-                                    TeleconsultationSessionState.NEW);
+                                    getJSONObject("session");
+                            String sessionUUID = sessionData.getString("uuid");
+                            TeleconsultationSession ts = new TeleconsultationSession(sessionUUID, null);
                             teleconsultation.setLastSession(ts);
                             startSession(teleconsultation);
                         }
@@ -258,21 +257,23 @@ public class SummaryFragment extends ConfigFragment {
                                 Log.d(TAG, "Teleconsultation state response:" + res);
                                 try {
                                     String state = res.getJSONObject("data").getJSONObject("session").getString("state");
+                                    String specAppAddress = res.getJSONObject("data").getJSONObject("session").getString("spec_app_address");
                                     if (state.equals(TeleconsultationSessionState.WAITING.name())) {
                                         mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 10000);
-                                        return;
                                     }
                                     else if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
                                         wfsd.dismiss();
-                                        return;
+                                    }
+                                    else {
+                                        tc.getLastSession().setSpecAppAddress(specAppAddress);
+                                        wfsd.dismiss();
+                                        runSession(tc);
                                     }
                                 }
                                 catch (JSONException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
-                                wfsd.dismiss();
-                                runSession(tc);
                             }
                         },
                         new Response.ErrorListener() {

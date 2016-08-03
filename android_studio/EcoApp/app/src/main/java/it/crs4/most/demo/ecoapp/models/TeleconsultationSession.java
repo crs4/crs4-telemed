@@ -13,12 +13,14 @@ import it.crs4.most.voip.Utils;
 public class TeleconsultationSession implements Serializable {
     private static final long serialVersionUID = -6277133365800493720L;
     private String mId;
+    private String mSpecAppAddress;
     private TeleconsultationSessionState mSessionState;
     private HashMap<String, String> voipParams;
 
-    public TeleconsultationSession(String id, TeleconsultationSessionState teleconsultationSessionState) {
+    public TeleconsultationSession(String id, String specAppAddress) {
         mId = id;
-        mSessionState = teleconsultationSessionState;
+        mSpecAppAddress = specAppAddress;
+        mSessionState = TeleconsultationSessionState.NEW;
     }
 
     public void setVoipParams(Context context, JSONObject sd) {
@@ -73,8 +75,16 @@ public class TeleconsultationSession implements Serializable {
         return mId;
     }
 
-    public void setState(TeleconsultationSessionState tss) {
-        mSessionState = tss;
+    public String getSpecAppAddress() {
+        return mSpecAppAddress;
+    }
+
+    public void setSpecAppAddress(String specAppAddress) {
+        mSpecAppAddress = specAppAddress;
+    }
+
+    public void setState(TeleconsultationSessionState state) {
+        mSessionState = state;
     }
 
     public TeleconsultationSessionState getState() {

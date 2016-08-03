@@ -74,7 +74,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         IStreamProvider,
         ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
-    private static String TAG = "SpecTeleconsultationActivity";
+    private final static String TAG = "SpecTeleconsultationActivity";
+    public final static int ZMQ_LISTENING_PORT = 5556;
     private String MAIN_STREAM = "MAIN_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
 
@@ -154,7 +155,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
-        ZMQPublisher publisher = new ZMQPublisher(5556);
+        ZMQPublisher publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
         Thread pubThread = new Thread(publisher);
         pubThread.start();
 

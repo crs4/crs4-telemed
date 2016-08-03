@@ -14,6 +14,7 @@ package it.crs4.most.demo.specapp;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.net.wifi.WifiManager;
 import android.provider.Settings.Secure;
 
 import org.json.JSONObject;
@@ -46,13 +47,13 @@ public class RemoteConfigReader {
     private static final String TAG = "RemoteConfigReader";
     private static final String OAUTH_CLIENT_ID = "9db4f27b3d9c8e352b5c";
     private static final String OAUTH_CLIENT_SECRET = "00ea399c013349a716ea3e47d8f8002502e2e982";
-    private RequestQueue rq = null;
 
-    String serverIp = null;
-    int serverPort = -1;
-    Context ctx = null;
-    String deviceID = null;
-    private String urlPrefix = "";
+    private RequestQueue rq = null;
+    String serverIp;
+    String deviceID;
+    Context ctx;
+    int serverPort;
+    private String urlPrefix;
 
     /**
      * @param ctx
@@ -75,14 +76,17 @@ public class RemoteConfigReader {
      * @param listener      the listener where to receive the list of taskgroups associated to this device
      * @param errorListener the listener used for error responses
      */
-    public void getTaskgroups(Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public void getTaskgroups(Response.Listener<JSONObject> listener,
+                              Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/taskgroups/%s/", this.urlPrefix, this.deviceID);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
         this.rq.add(postReq);
     }
 
 
-    public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
+                                                Response.Listener<JSONObject> listener,
+                                                Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/today/open/?access_token=%s", this.urlPrefix, accessToken);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
         this.rq.add(postReq);
@@ -95,13 +99,15 @@ public class RemoteConfigReader {
      * @param listener      the listener where to receive the Taskgroup user(s)
      * @param errorListener the listener used for error responses
      */
-    public void getUsersByTaskgroup(String taskgroupId, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public void getUsersByTaskgroup(String taskgroupId, Response.Listener<JSONObject> listener,
+                                    Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/applicants/%s/", this.urlPrefix, taskgroupId);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
         this.rq.add(postReq);
     }
 
-    public void getSessionState(String sessionId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public void getSessionState(String sessionId, String accessToken,
+                                Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/session/%s/?access_token=%s", this.urlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         this.rq.add(req);
@@ -115,7 +121,8 @@ public class RemoteConfigReader {
      * @param listener      the listener where to receive the json room data
      * @param errorListener the listener used for error responses
      */
-    public void getRoom(String roomId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+    public void getRoom(String roomId, String accessToken, Response.Listener<JSONObject> listener,
+                        Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/room/%s/?access_token=%s", this.urlPrefix, roomId, accessToken);
         Log.d(TAG, "getRoomDataUri: " + uri);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
@@ -181,16 +188,16 @@ public class RemoteConfigReader {
      * @param listener
      * @param errorListener
      */
-    public void createNewTeleconsultation(final String description,
-                                          final String severity,
-                                          final String roomId,
-                                          String accessToken, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+    public void createNewTeleconsultation(final String description, final String severity,
+                                          final String roomId, String accessToken,
+                                          Response.Listener<String> listener,
+                                          Response.ErrorListener errorListener) {
 
         String uri = String.format("%steleconsultation/create/?access_token=%s", this.urlPrefix, accessToken);
         StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("description", description);
                 params.put("severity", severity);
                 params.put("room_uuid", roomId);
@@ -203,8 +210,13 @@ public class RemoteConfigReader {
     }
 
 
-    public void joinSession(String sessionId, String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/join?access_token=%s", this.urlPrefix, sessionId, accessToken);
+    public void joinSession(String sessionId, String accessToken, String ipAddress, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String uri = String.format("%steleconsultation/session/%s/%s/join?access_token=%s",
+                this.urlPrefix,
+                sessionId,
+                ipAddress,
+                accessToken);
+        Log.d(TAG, "JOIN SESSION: " + uri);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         this.rq.add(req);
     }
