@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
@@ -212,13 +213,22 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "Session Join Response:" + response);
-//                            selectedTc.getLastSession();
-                            Intent i = new Intent(TeleconsultationSetupActivity.this,
-                                    SpecTeleconsultationActivity.class);
-                            i.putExtra("User", mUser);
-                            i.putExtra("Teleconsultation", selectedTc);
-                            startActivity(i);
+
+                            JSONObject sessionData = null;
+                            try {
+                                sessionData = response.getJSONObject("data").getJSONObject("session");
+                                selectedTc.getLastSession().setVoipParams(getApplication(),
+                                        sessionData, 1);
+                                Intent i = new Intent(TeleconsultationSetupActivity.this,
+                                        SpecTeleconsultationActivity.class);
+                                i.putExtra("User", mUser);
+                                Log.d(TAG, "VOIP PARAMS OF SELECTED " + selectedTc.getLastSession().getVoipParams());
+                                i.putExtra("Teleconsultation", selectedTc);
+                                startActivity(i);
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 //                            startTeleconsultationActivity();
                         }
                     },

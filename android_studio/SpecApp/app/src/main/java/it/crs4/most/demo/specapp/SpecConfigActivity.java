@@ -1,6 +1,7 @@
 package it.crs4.most.demo.specapp;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.Response.ErrorListener;
@@ -146,7 +147,7 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         Log.d(TAG, "joining teleconsultation session...");
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
-                 ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
+                ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
         Log.d(TAG, "IP ADDRESS IS: " + ipAddress);
         if (selectedTc.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
             mConfigReader.joinSession(selectedTc.getLastSession().getId(),
@@ -156,8 +157,14 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "Session Join Response:" + response);
-                            selectedTc.getLastSession().setupSessionData(response);
-                            startTeleconsultationActivity();
+                            try {
+                                JSONObject sessionData = response.getJSONObject("data").getJSONObject("session");
+                                selectedTc.getLastSession().setupSessionData(sessionData);
+                                startTeleconsultationActivity();
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     },
                     new ErrorListener() {
