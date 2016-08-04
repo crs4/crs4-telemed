@@ -1,6 +1,6 @@
 package it.crs4.most.demo;
 
-import it.crs4.most.demo.config_fragments.ConfigFragment;
+import it.crs4.most.demo.eco_setup.ConfigFragment;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -13,8 +13,8 @@ public class MostViewPager extends ViewPager {
     private static String TAG = "MostViewPager";
 
     private static boolean manualPageChangeEnabled;
-    private static int mTargetPos = 0;
-    private static int mPermittedPos = 0;
+    private static int targetPos = 0;
+    private static int permittedPos = 0;
 
     public MostViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,15 +30,15 @@ public class MostViewPager extends ViewPager {
 
     public void setInternalCurrentItem(int target_position, int permitted_position) {
         MostViewPager.manualPageChangeEnabled = true;
-        mPermittedPos = permitted_position;
-        mTargetPos = target_position;
+        permittedPos = permitted_position;
+        targetPos = target_position;
         Log.d(TAG, "Manual Page Enabled:" + MostViewPager.manualPageChangeEnabled +
-                " target_position:" + target_position + " permitted:" + mPermittedPos);
+                " target_position:" + target_position + " permitted:" + permittedPos);
 
-        super.setCurrentItem(mTargetPos);
-        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(mTargetPos)).onShow();
+        super.setCurrentItem(targetPos);
+        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) getAdapter()).getItem(targetPos)).onShow();
 
-        MostViewPager.manualPageChangeEnabled = getCurrentItem() == mTargetPos && mTargetPos != mPermittedPos;
+        MostViewPager.manualPageChangeEnabled = getCurrentItem() == targetPos && targetPos != permittedPos;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MostViewPager extends ViewPager {
                 " with MostViewPager.manual_page_change_enabled:" +
                 MostViewPager.manualPageChangeEnabled);
 
-        if (!MostViewPager.manualPageChangeEnabled || position != mPermittedPos) {
+        if (!MostViewPager.manualPageChangeEnabled || position != permittedPos) {
             return;
         }
 
@@ -74,10 +74,11 @@ public class MostViewPager extends ViewPager {
 
     private class PageListener extends SimpleOnPageChangeListener {
         public void onPageSelected(int position) {
-            Log.d(TAG, "Page selected:" + position + " Permitted position;" + mPermittedPos);
-            if (position != mPermittedPos && position != mTargetPos) {
-                MostViewPager.this.setInternalCurrentItem(mTargetPos, mPermittedPos);
-            } else {
+            Log.d(TAG, "Page selected:" + position + " Permitted position;" + permittedPos);
+            if (position != permittedPos && position != targetPos) {
+                MostViewPager.this.setInternalCurrentItem(targetPos, permittedPos);
+            }
+            else {
                 MostViewPager.manualPageChangeEnabled = false;
             }
         }

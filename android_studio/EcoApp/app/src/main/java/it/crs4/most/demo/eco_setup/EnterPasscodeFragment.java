@@ -1,4 +1,4 @@
-package it.crs4.most.demo.config_fragments;
+package it.crs4.most.demo.eco_setup;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,6 +8,7 @@ import com.android.volley.Response;
 
 import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.RemoteConfigReader;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -80,7 +81,8 @@ public class EnterPasscodeFragment extends ConfigFragment {
         String username = getConfigBuilder().getUser().getUsername();
         String taskgroupId = getConfigBuilder().getUser().getTaskGroup().getId();
         Log.d(TAG, "Get access token with pin code: " + pincode);
-        getConfigBuilder().getRemoteConfigReader().getAccessToken(username, pincode, taskgroupId,
+        getConfigBuilder().getRemoteConfigReader().getAccessToken(username, taskgroupId,
+                RemoteConfigReader.GRANT_TYPE_PINCODE, pincode,
                 new Response.Listener<String>() {
 
                     @Override

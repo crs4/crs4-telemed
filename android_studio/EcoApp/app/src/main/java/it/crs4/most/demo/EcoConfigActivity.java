@@ -1,10 +1,10 @@
 package it.crs4.most.demo;
 
-import it.crs4.most.demo.config_fragments.ConfigFragment;
-import it.crs4.most.demo.config_fragments.EnterPasscodeFragment;
-import it.crs4.most.demo.config_fragments.PatientSelectionFragment;
-import it.crs4.most.demo.config_fragments.SummaryFragment;
-import it.crs4.most.demo.config_fragments.UserSelectionFragment;
+import it.crs4.most.demo.eco_setup.ConfigFragment;
+import it.crs4.most.demo.eco_setup.EnterPasscodeFragment;
+import it.crs4.most.demo.eco_setup.PatientSelectionFragment;
+import it.crs4.most.demo.eco_setup.SummaryFragment;
+import it.crs4.most.demo.eco_setup.UserSelectionFragment;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.models.Patient;
@@ -41,10 +41,7 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
     private Teleconsultation mTeleconsultation;
     private Device mCamera;
     private RemoteConfigReader mConfigReader;
-    private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private ListView mDrawerList;
-    private SmartFragmentStatePagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,22 +56,22 @@ public class EcoConfigActivity extends AppCompatActivity implements IConfigBuild
         setContentView(R.layout.config_activity_main);
 
         mVpPager = (MostViewPager) findViewById(R.id.vp_pager);
-        mPagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
-        mVpPager.setAdapter(mPagerAdapter);
+        SmartFragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
+        mVpPager.setAdapter(pagerAdapter);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         String[] drawerItems = {
                 getString(R.string.settings), getString(R.string.exit)
         };
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
+        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open,
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open,
                 R.string.drawer_close);
 
         // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        drawerLayout.setDrawerListener(mDrawerToggle);
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);

@@ -1,4 +1,4 @@
-package it.crs4.most.demo.config_fragments;
+package it.crs4.most.demo.eco_setup;
 
 import java.util.List;
 

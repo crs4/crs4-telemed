@@ -59,7 +59,6 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         mPager = (MostViewPager) findViewById(R.id.vp_pager);
         FragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mPager.setAdapter(pagerAdapter);
-        mPager.setOnPageListener();
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         String[] drawerItems = {

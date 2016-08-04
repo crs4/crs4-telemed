@@ -46,6 +46,8 @@ public class RemoteConfigReader {
     private static final String TAG = "RemoteConfigReader";
     private static final String OAUTH_CLIENT_ID = "9db4f27b3d9c8e352b5c";
     private static final String OAUTH_CLIENT_SECRET = "00ea399c013349a716ea3e47d8f8002502e2e982";
+    public static final String GRANT_TYPE_PINCODE = "pincode";
+    public static final String GRANT_TYPE_PASSWORD = "password";
 
     private RequestQueue mRequestQueue;
     private String mDeviceID;
@@ -60,8 +62,6 @@ public class RemoteConfigReader {
         mDeviceID = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         mUrlPrefix = "http://" + serverIp + ":" + String.valueOf(serverPort) + "/";
         mRequestQueue = Volley.newRequestQueue(context);
-
-        Log.d(TAG, "Device ID: " + mDeviceID);
     }
 
     /**
@@ -191,14 +191,13 @@ public class RemoteConfigReader {
      * Get the access token needed for teleconsultation rest calls
      *
      * @param username      the user name
-     * @param pincode       the pin code of the user
+     * @param grantValue       the pin code of the user
      * @param taskgroup     the taskgroup id
      * @param listener      the listener where to receive the access token
      * @param errorListener the listener where to receive remote server error responses
      */
-    public void getAccessToken(final String username,
-                               final String pincode,
-                               final String taskgroup,
+    public void getAccessToken(final String username, final String taskgroup,
+                               final String grantType, final String grantValue,
                                Response.Listener<String> listener,
                                Response.ErrorListener errorListener) {
         String uri = mUrlPrefix + "oauth2/access_token/";
@@ -208,18 +207,18 @@ public class RemoteConfigReader {
         Log.d(TAG, "device ID: " + mDeviceID);
         Log.d(TAG, "username: " + username);
         Log.d(TAG, "grant_type: " + "pincode");
-        Log.d(TAG, "pincode: " + pincode);
+        Log.d(TAG, "pincode: " + grantValue);
         Log.d(TAG, "taskgroup: " + taskgroup);
 
         StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("client_id", OAUTH_CLIENT_ID);
                 params.put("client_secret", OAUTH_CLIENT_SECRET);
-                params.put("grant_type", "pincode");
+                params.put("grant_type", grantType);
                 params.put("username", username);
-                params.put("pincode", pincode);
+                params.put("pincode", grantValue);
                 params.put("taskgroup", taskgroup); // "h52job6mlgqpym5f57djdtbsw3u5kfyf"
                 return params;
             }
@@ -232,9 +231,10 @@ public class RemoteConfigReader {
     /**
      * Create a new Teleconsultation
      *
-     * @param accessToken
-     * @param listener
-     * @param errorListener
+     * @param description A description of the Teleconsultation
+     * @param accessToken the oauth access token
+     * @param listener the listener to handle the response
+     * @param errorListener the listener that handle the response in case of error
      */
     public void createNewTeleconsultation(final String description,
                                           final String severity,
@@ -247,7 +247,7 @@ public class RemoteConfigReader {
         StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("description", description);
                 params.put("severity", severity);
                 params.put("room_uuid", roomId);
@@ -263,21 +263,18 @@ public class RemoteConfigReader {
      * Create a new Teleconsultation Session
      *
      * @param teleconsultationUUID the teleconsultation ID
-     * @param roomId
-     * @param accessToken
-     * @param listener
-     * @param errorListener
+     * @param roomId the room id
+     * @param accessToken the oauth access token
+     * @param listener the listener to handle the response
+     * @param errorListener the listener to handle the response in case of errors
      */
     public void createNewTeleconsultationSession(final String teleconsultationUUID,
-                                                 final String roomId,
-                                                 String accessToken,
+                                                 final String roomId, String accessToken,
                                                  Response.Listener<String> listener,
                                                  Response.ErrorListener errorListener) {
 
         String uri = String.format("%steleconsultation/%s/session/create/?access_token=%s",
-                mUrlPrefix,
-                teleconsultationUUID,
-                accessToken);
+                mUrlPrefix, teleconsultationUUID, accessToken);
         StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
@@ -290,7 +287,15 @@ public class RemoteConfigReader {
 
         mRequestQueue.add(postReq);
     }
-    
+
+    public void joinSession(String sessionId, String accessToken, String ipAddress,
+                            Response.Listener<JSONObject> listener,
+                            Response.ErrorListener errorListener) {
+        String uri = String.format("%steleconsultation/session/%s/%s/join?access_token=%s",
+                mUrlPrefix, sessionId, ipAddress, accessToken);
+        JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+        mRequestQueue.add(req);
+    }
 	/*
     public void  getAccounts(Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		JsonObjectRequest postReq = new JsonObjectRequest( mUrlPrefix + "accounts/?access_token=" + accessToken, null, listener, errorListener);
