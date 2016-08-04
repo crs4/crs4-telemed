@@ -13,7 +13,7 @@ import com.android.volley.VolleyError;
 import it.crs4.most.demo.specapp.IConfigBuilder;
 import it.crs4.most.demo.specapp.R;
 import it.crs4.most.demo.specapp.RemoteConfigReader;
-import it.crs4.most.demo.specapp.models.SpecUser;
+import it.crs4.most.demo.specapp.models.User;
 import it.crs4.most.demo.specapp.models.Teleconsultation;
 import it.crs4.most.demo.specapp.models.TeleconsultationSession;
 import it.crs4.most.demo.specapp.models.TeleconsultationSessionState;
@@ -81,7 +81,7 @@ public class TeleconsultationSelectionFragment extends ConfigFragment {
     private void retrieveTeleconsultations() {
         Log.d(TAG, "called retrieveTeleconsultations()");
         mConfigReader = config.getRemoteConfigReader();
-        final SpecUser specUser = config.getSpecUser();
+        final User user = config.getUser();
 
         mGetTeleconsultationsTask = new Runnable() {
             @Override
@@ -92,8 +92,8 @@ public class TeleconsultationSelectionFragment extends ConfigFragment {
                 Log.d(TAG, "Running again");
 
                 mConfigReader.getTeleconsultationsByTaskgroup(
-                        specUser.getTaskgroupId(),
-                        specUser.getAccessToken(),
+                        user.getTaskgroupId(),
+                        user.getAccessToken(),
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {

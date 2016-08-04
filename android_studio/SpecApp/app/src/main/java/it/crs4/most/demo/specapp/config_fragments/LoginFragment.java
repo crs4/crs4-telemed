@@ -11,7 +11,7 @@ import com.android.volley.VolleyError;
 import it.crs4.most.demo.specapp.IConfigBuilder;
 import it.crs4.most.demo.specapp.R;
 import it.crs4.most.demo.specapp.RemoteConfigReader;
-import it.crs4.most.demo.specapp.models.SpecUser;
+import it.crs4.most.demo.specapp.models.User;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -282,7 +282,7 @@ public class LoginFragment extends ConfigFragment {
                     mAccessToken = jsonresponse.getString("access_token");
 
                     if (mAccessToken != null)
-                        config.setSpecUser(new SpecUser(mUsername, mTaskgroupID, mAccessToken));
+                        config.setUser(new User(mUsername, mTaskgroupID, mAccessToken));
                     else showWrongPasswordAlert();
 
                 }

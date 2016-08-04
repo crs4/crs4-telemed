@@ -7,7 +7,7 @@
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
-              tools:context="it.crs4.most.demo.ecoapp.EcoTeleconsultationActivity">
+              tools:context="it.crs4.most.demo.EcoTeleconsultationActivity">
 
     <TextView
         android:id="@+id/text_eco_user"
@@ -21,7 +21,7 @@
         android:layout_height="0px"
         android:layout_weight="2"/>
 
-    <it.crs4.most.demo.ecoapp.ui.TcStateTextView
+    <it.crs4.most.demo.ui.TcStateTextView
         android:id="@+id/txtTcState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

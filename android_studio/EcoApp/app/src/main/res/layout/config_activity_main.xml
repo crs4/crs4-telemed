@@ -10,7 +10,7 @@
                   android:layout_height="match_parent"
                   android:orientation="vertical">
 
-        <it.crs4.most.demo.ecoapp.MostViewPager
+        <it.crs4.most.demo.MostViewPager
             android:id="@+id/vp_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -24,7 +24,7 @@
                 android:paddingTop="4dp"/>
 
 
-        </it.crs4.most.demo.ecoapp.MostViewPager>
+        </it.crs4.most.demo.MostViewPager>
     </LinearLayout>
 
     <ListView
