@@ -1,4 +1,4 @@
-package it.crs4.most.demo.eco_setup;
+package it.crs4.most.demo.eco;
 
 import java.util.List;
 

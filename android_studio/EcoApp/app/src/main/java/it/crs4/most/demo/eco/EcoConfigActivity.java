@@ -1,10 +1,11 @@
-package it.crs4.most.demo;
+package it.crs4.most.demo.eco;
 
-import it.crs4.most.demo.eco_setup.ConfigFragment;
-import it.crs4.most.demo.eco_setup.EnterPasscodeFragment;
-import it.crs4.most.demo.eco_setup.PatientSelectionFragment;
-import it.crs4.most.demo.eco_setup.SummaryFragment;
-import it.crs4.most.demo.eco_setup.UserSelectionFragment;
+import it.crs4.most.demo.MostViewPager;
+import it.crs4.most.demo.QuerySettings;
+import it.crs4.most.demo.R;
+import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.SettingsActivity;
+import it.crs4.most.demo.SmartFragmentStatePagerAdapter;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.models.Patient;

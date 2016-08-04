@@ -1,4 +1,4 @@
-package it.crs4.most.demo.eco_setup;
+package it.crs4.most.demo.eco;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
 import it.crs4.most.demo.models.User;

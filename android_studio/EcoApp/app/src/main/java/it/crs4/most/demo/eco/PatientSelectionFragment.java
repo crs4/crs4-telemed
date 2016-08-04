@@ -1,9 +1,8 @@
-package it.crs4.most.demo.eco_setup;
+package it.crs4.most.demo.eco;
 
 
 import java.util.ArrayList;
 
-import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.models.Patient;
 

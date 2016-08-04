@@ -1,6 +1,5 @@
-package it.crs4.most.demo.eco_setup;
+package it.crs4.most.demo.eco;
 
-import it.crs4.most.demo.IConfigBuilder;
 import android.support.v4.app.Fragment;
 
 public abstract class ConfigFragment extends Fragment {

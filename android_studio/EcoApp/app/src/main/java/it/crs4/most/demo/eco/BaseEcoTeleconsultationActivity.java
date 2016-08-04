@@ -1,4 +1,4 @@
-package it.crs4.most.demo;
+package it.crs4.most.demo.eco;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.streaming.StreamingEventBundle;

@@ -1,4 +1,4 @@
-package it.crs4.most.demo;
+package it.crs4.most.demo.eco;
 
 
 import android.app.ActivityManager;
@@ -19,10 +19,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -38,8 +35,11 @@ import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
 import java.util.HashMap;
 import java.util.Timer;
-import java.util.TimerTask;
 
+import it.crs4.most.demo.QuerySettings;
+import it.crs4.most.demo.R;
+import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;

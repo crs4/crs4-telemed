@@ -1,8 +1,12 @@
-package it.crs4.most.demo;
+package it.crs4.most.demo.eco;
 
 
 import java.util.HashMap;
 
+import it.crs4.most.demo.QuerySettings;
+import it.crs4.most.demo.R;
+import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.streaming.IStream;
 import it.crs4.most.streaming.StreamingLib;
 import it.crs4.most.streaming.StreamingLibBackend;
@@ -16,7 +20,6 @@ import it.crs4.most.demo.ui.TcStateTextView;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -237,7 +240,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
 
     private void setupCallPopupWindow() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         mPopupView = inflater.inflate(R.layout.popup_call_selection, null);
 
         if (popupWindow == null) {

@@ -1,4 +1,4 @@
-package it.crs4.most.demo.eco_setup;
+package it.crs4.most.demo.eco;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
 
-import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
 

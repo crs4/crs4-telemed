@@ -1,6 +1,7 @@
 package it.crs4.most.demo;
 
-import it.crs4.most.demo.eco_setup.ConfigFragment;
+import it.crs4.most.demo.eco.ConfigFragment;
+import it.crs4.most.demo.eco.EcoConfigActivity;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
