@@ -73,4 +73,9 @@ public class PatientSelectionFragment extends ConfigFragment {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
     }
+
+    @Override
+    public int getTitle() {
+        return R.string.patient_selection_title;
+    }
 }

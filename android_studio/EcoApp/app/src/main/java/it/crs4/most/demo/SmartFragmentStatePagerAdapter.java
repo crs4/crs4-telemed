@@ -13,7 +13,7 @@ Usage involves extending from SmartFragmentStatePagerAdapter as you would any ot
 */
 public abstract class SmartFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     // Sparse array to keep track of registered fragments in memory
-    private SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+    private SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
     public SmartFragmentStatePagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);

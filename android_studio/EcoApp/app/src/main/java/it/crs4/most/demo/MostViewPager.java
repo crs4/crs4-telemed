@@ -1,7 +1,6 @@
 package it.crs4.most.demo;
 
 import it.crs4.most.demo.eco.ConfigFragment;
-import it.crs4.most.demo.eco.EcoConfigActivity;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -37,7 +36,7 @@ public class MostViewPager extends ViewPager {
                 " target_position:" + target_position + " permitted:" + permittedPos);
 
         super.setCurrentItem(targetPos);
-        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) getAdapter()).getItem(targetPos)).onShow();
+        ((ConfigFragment) ((TeleconsultationSetupActivity.PagerAdapter) getAdapter()).getItem(targetPos)).onShow();
 
         MostViewPager.manualPageChangeEnabled = getCurrentItem() == targetPos && targetPos != permittedPos;
     }
@@ -52,7 +51,7 @@ public class MostViewPager extends ViewPager {
             return;
         }
 
-        ((ConfigFragment) ((EcoConfigActivity.PagerAdapter) this.getAdapter()).getItem(position)).onShow();
+        ((ConfigFragment) ((TeleconsultationSetupActivity.PagerAdapter) this.getAdapter()).getItem(position)).onShow();
         super.setCurrentItem(position);
         MostViewPager.manualPageChangeEnabled = false;
     }

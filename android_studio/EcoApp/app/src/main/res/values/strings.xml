@@ -49,6 +49,10 @@
     <string name="device_not_registered">The device is not registered in the server. Contact the administator</string>
     <string name="generic_taskgroup_error">An error occurred retrieving the taskgroups</string>
     <string name="error_contacting_the_server">Error contacting the configuration server. Check the parameters</string>
+    <string name="user_selection_title">User Selection</string>
+    <string name="enter_pass_code_title">Pass Code</string>
+    <string name="patient_selection_title">Select Patient</string>
+    <string name="summary_title">Summary</string>
 
 
 </resources>

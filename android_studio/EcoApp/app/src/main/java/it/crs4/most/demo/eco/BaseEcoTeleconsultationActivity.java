@@ -63,7 +63,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     }
 
     protected void closeSession() {
-        //TODO: think of putting this in the EcoConfigActivity
+        //TODO: think of putting this in the TeleconsultationSetupActivity
         final User user = teleconsultation.getApplicant();
         mConfigReader.closeSession(teleconsultation.getLastSession().getId(),
                 user.getAccessToken(),

@@ -139,4 +139,9 @@ public class EnterPasscodeFragment extends ConfigFragment {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(mEditPass, InputMethodManager.SHOW_IMPLICIT);
     }
+
+    @Override
+    public int getTitle() {
+        return R.string.enter_pass_code_title;
+    }
 }

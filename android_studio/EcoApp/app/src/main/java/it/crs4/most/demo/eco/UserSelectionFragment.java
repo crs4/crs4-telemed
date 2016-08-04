@@ -135,6 +135,11 @@ public class UserSelectionFragment extends ConfigFragment {
 
     }
 
+    @Override
+    public int getTitle() {
+        return R.string.user_selection_title;
+    }
+
     private class UserArrayAdapter extends ArrayAdapter<User> {
 
         public UserArrayAdapter(UserSelectionFragment userSelectionFragment, int textViewResourceId,

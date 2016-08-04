@@ -414,5 +414,8 @@ public class SummaryFragment extends ConfigFragment {
 
     }
 
-
+    @Override
+    public int getTitle() {
+        return R.string.summary_title;
+    }
 }
