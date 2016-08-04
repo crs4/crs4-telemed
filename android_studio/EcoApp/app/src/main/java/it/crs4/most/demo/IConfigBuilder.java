@@ -1,4 +1,4 @@
-package it.crs4.most.demo.eco;
+package it.crs4.most.demo;
 
 import it.crs4.most.demo.RemoteConfigReader;
 import it.crs4.most.demo.models.Device;

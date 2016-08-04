@@ -53,6 +53,9 @@
     <string name="enter_pass_code_title">Pass Code</string>
     <string name="patient_selection_title">Select Patient</string>
     <string name="summary_title">Summary</string>
+    <string name="teleconsultation_title">Teleconsultation Selection</string>
+    <string name="hangup_call">Hangup</string>
+    <string name="ptz">PTZ</string>
 
 
 </resources>

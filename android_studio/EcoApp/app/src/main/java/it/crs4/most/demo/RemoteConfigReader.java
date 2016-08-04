@@ -78,14 +78,12 @@ public class RemoteConfigReader {
         mRequestQueue.add(req);
     }
 
-    public void getTeleconsultationsByTaskgroup(String taskgroupId,
-                                                String accessToken,
+    public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
                                                 Response.Listener<JSONObject> listener,
                                                 Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/list/?access_token=%s", mUrlPrefix,
-                accessToken);
-        JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        String uri = String.format("%steleconsultation/today/open/?access_token=%s", mUrlPrefix, accessToken);
+        JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
+        mRequestQueue.add(postReq);
     }
 
     public void startSession(String sessionId,
@@ -206,7 +204,7 @@ public class RemoteConfigReader {
         Log.d(TAG, "client secret: " + OAUTH_CLIENT_SECRET);
         Log.d(TAG, "device ID: " + mDeviceID);
         Log.d(TAG, "username: " + username);
-        Log.d(TAG, "grant_type: " + "pincode");
+        Log.d(TAG, "grant_type: " + grantType);
         Log.d(TAG, "pincode: " + grantValue);
         Log.d(TAG, "taskgroup: " + taskgroup);
 
@@ -218,7 +216,7 @@ public class RemoteConfigReader {
                 params.put("client_secret", OAUTH_CLIENT_SECRET);
                 params.put("grant_type", grantType);
                 params.put("username", username);
-                params.put("pincode", grantValue);
+                params.put(grantType, grantValue);
                 params.put("taskgroup", taskgroup); // "h52job6mlgqpym5f57djdtbsw3u5kfyf"
                 return params;
             }

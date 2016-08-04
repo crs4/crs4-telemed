@@ -1,4 +1,4 @@
-package it.crs4.most.demo.eco;
+package it.crs4.most.demo.setup_fragments;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import it.crs4.most.demo.ConfigFragment;
+import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
 import it.crs4.most.demo.models.User;
@@ -92,7 +94,7 @@ public class SummaryFragment extends ConfigFragment {
                                 try {
                                     JSONObject tcData = new JSONObject(teleconsultationData);
                                     String uuid = tcData.getJSONObject("data").getJSONObject("teleconsultation").getString("uuid");
-                                    Teleconsultation tc = new Teleconsultation(uuid, "", description, severity,
+                                    Teleconsultation tc = new Teleconsultation(uuid, description, severity,
                                             room, getConfigBuilder().getUser());
 
                                     createTeleconsultationSession(tc);
@@ -127,7 +129,8 @@ public class SummaryFragment extends ConfigFragment {
                                     getJSONObject("data").
                                     getJSONObject("session");
                             String sessionUUID = sessionData.getString("uuid");
-                            TeleconsultationSession ts = new TeleconsultationSession(sessionUUID, null);
+                            TeleconsultationSession ts = new TeleconsultationSession(sessionUUID,
+                                    null, TeleconsultationSessionState.NEW);
                             teleconsultation.setLastSession(ts);
                             startSession(teleconsultation);
                         }
@@ -296,7 +299,7 @@ public class SummaryFragment extends ConfigFragment {
                     @Override
                     public void onResponse(JSONObject sessionData) {
                         Log.d(TAG, "Session running: " + sessionData);
-                        tc.getLastSession().setVoipParams(getActivity(), sessionData);
+                        tc.getLastSession().setVoipParams(getActivity(), sessionData, 0);
                         getConfigBuilder().setTeleconsultation(tc);
                     }
                 },

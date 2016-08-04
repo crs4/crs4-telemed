@@ -8,18 +8,6 @@ public class TaskGroup implements Serializable {
     private String mId;
     private String mDescription;
 
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
-
-    public void setId(String id) {
-        mId = id;
-    }
-
-    public void setDescription(String description) {
-        mDescription = description;
-    }
-
     public TaskGroup(String id, String description) {
         mId = id;
         mDescription = description;
@@ -29,8 +17,15 @@ public class TaskGroup implements Serializable {
         return mId;
     }
 
+    public void setId(String id) {
+        mId = id;
+    }
+
     public String getDescription() {
         return mDescription;
     }
 
+    public void setDescription(String description) {
+        mDescription = description;
+    }
 }

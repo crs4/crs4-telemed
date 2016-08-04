@@ -1,4 +1,4 @@
-package it.crs4.most.demo.eco;
+package it.crs4.most.demo;
 
 import android.support.v4.app.Fragment;
 

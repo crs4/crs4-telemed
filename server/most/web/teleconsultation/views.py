@@ -360,14 +360,11 @@ def get_open_teleconsultations(request):
     teleconsultations = Teleconsultation.objects.filter(task_group__in=taskgroups, updated__lte=today_end, updated__gte=today_start, state="OPEN")
 
     teleconsultation_list = []
-
     for teleconsultation in teleconsultations:
-
         teleconsultation_list.append(teleconsultation.json_dict)
 
 
     result = {
-
         "teleconsultations": teleconsultation_list
     }
     return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")

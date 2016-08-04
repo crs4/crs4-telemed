@@ -76,7 +76,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.teleconsultation_menu, menu);
+        getMenuInflater().inflate(R.menu.teleconsultation_eco_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
         mButCall = menu.findItem(R.id.button_call);
         return res;

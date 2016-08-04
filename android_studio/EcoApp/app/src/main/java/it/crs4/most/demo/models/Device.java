@@ -1,5 +1,8 @@
 package it.crs4.most.demo.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class Device implements Serializable {
@@ -13,7 +16,8 @@ public class Device implements Serializable {
     private String mUser;
     private String mPwd;
 
-    public Device(String name, String streamUri, String shotUri, String webUri, String ptzUri, String user, String pwd) {
+    public Device(String name, String streamUri, String shotUri, String webUri,
+                  String ptzUri, String user, String pwd) {
         mName = name;
         mStreamUri = streamUri;
         mShotUri = shotUri;
@@ -54,5 +58,22 @@ public class Device implements Serializable {
     public String toString() {
         return String.format("[Device:%s\nStream: %s\nShot: %s\n Web: %s\n PTZ: %s]", mName,
                 mStreamUri, mShotUri, mWebUri, mPtzUri);
+    }
+
+    public static Device fromJSON(JSONObject deviceData) {
+        try {
+            String name = deviceData.getString("name");
+            String pwd = deviceData.getString("password");
+            String user = deviceData.getString("user");
+            String streamUri = deviceData.getJSONObject("capabilities").getString("streaming");
+            String shotUri = deviceData.getJSONObject("capabilities").getString("shot");
+            String webUri = deviceData.getJSONObject("capabilities").getString("ptz");
+            String ptzUri = deviceData.getJSONObject("capabilities").getString("web");
+            return new Device(name, streamUri, shotUri, webUri, ptzUri, user, pwd);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

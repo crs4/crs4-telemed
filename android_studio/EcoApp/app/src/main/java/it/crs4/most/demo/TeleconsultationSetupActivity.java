@@ -1,25 +1,28 @@
 package it.crs4.most.demo;
 
 import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
-import it.crs4.most.demo.eco.ConfigFragment;
 import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
-import it.crs4.most.demo.eco.EnterPasscodeFragment;
-import it.crs4.most.demo.eco.IConfigBuilder;
-import it.crs4.most.demo.eco.PatientSelectionFragment;
-import it.crs4.most.demo.eco.SummaryFragment;
-import it.crs4.most.demo.eco.UserSelectionFragment;
+import it.crs4.most.demo.models.TeleconsultationSessionState;
+import it.crs4.most.demo.setup_fragments.EnterCredentialsFragment;
+import it.crs4.most.demo.setup_fragments.PatientSelectionFragment;
+import it.crs4.most.demo.setup_fragments.SummaryFragment;
+import it.crs4.most.demo.setup_fragments.UserSelectionFragment;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Teleconsultation;
+import it.crs4.most.demo.setup_fragments.TeleconsultationSelectionFragment;
+import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
@@ -27,6 +30,11 @@ import android.widget.ListView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
@@ -41,7 +49,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     private Device mCamera;
     private RemoteConfigReader mConfigReader;
     private ActionBarDrawerToggle mDrawerToggle;
-    private int mRole = 0;  // 0 is Ecographist
+    private int mRole = 1;  // 0 is Ecographist
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +96,21 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
     private void setupConfigFragments() {
         if (mRole == 0) {  // This should change
-            mConfigFragments = new ConfigFragment[4];
-            mConfigFragments[0] = UserSelectionFragment.newInstance(this);
-            mConfigFragments[1] = EnterPasscodeFragment.newInstance(this);
-            mConfigFragments[2] = PatientSelectionFragment.newInstance(this);
-            mConfigFragments[3] = SummaryFragment.newInstance(this);
+            mConfigFragments = new ConfigFragment[]{
+                    UserSelectionFragment.newInstance(this),
+                    EnterCredentialsFragment.newInstance(this,
+                            EnterCredentialsFragment.PASSCODE_CREDENTIALS),
+                    PatientSelectionFragment.newInstance(this),
+                    SummaryFragment.newInstance(this)
+            };
+        }
+        else {
+            mConfigFragments = new ConfigFragment[]{
+                    UserSelectionFragment.newInstance(this),
+                    EnterCredentialsFragment.newInstance(this,
+                            EnterCredentialsFragment.PASSWORD_CREDENTIALS),
+                    TeleconsultationSelectionFragment.newInstance(this)
+            };
         }
     }
 
@@ -162,16 +180,56 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     }
 
     private void startTeleconsultationActivity() {
-        Intent i;
-        if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
-            i = new Intent(this, AREcoTeleconsultationActivity.class);
+        if (mRole == 0) {
+            Intent i;
+            if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
+                i = new Intent(this, AREcoTeleconsultationActivity.class);
+            }
+            else {
+                i = new Intent(this, EcoTeleconsultationActivity.class);
+            }
+            i.putExtra("User", mUser);
+            i.putExtra("Teleconsultation", mTeleconsultation);
+            startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
         }
         else {
-            i = new Intent(this, EcoTeleconsultationActivity.class);
+//            mTeleconsultation = selectedTc;
+//            mTeleconsultation.setSpecialist(getUser());
+            joinTeleconsultationSession(mTeleconsultation);
         }
-        i.putExtra("User", mUser);
-        i.putExtra("Teleconsultation", mTeleconsultation);
-        startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
+    }
+
+    private void joinTeleconsultationSession(final Teleconsultation selectedTc) {
+        Log.d(TAG, "joining teleconsultation session...");
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
+                ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
+        Log.d(TAG, "IP ADDRESS IS: " + ipAddress);
+        if (selectedTc.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
+            mConfigReader.joinSession(selectedTc.getLastSession().getId(),
+                    getUser().getAccessToken(),
+                    ipAddress,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Session Join Response:" + response);
+//                            selectedTc.getLastSession();
+                            Intent i = new Intent(TeleconsultationSetupActivity.this,
+                                    SpecTeleconsultationActivity.class);
+                            i.putExtra("User", mUser);
+                            i.putExtra("Teleconsultation", selectedTc);
+                            startActivity(i);
+//                            startTeleconsultationActivity();
+                        }
+                    },
+                    new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError err) {
+                            Log.d(TAG, "Error in Session Join Response: " + err);
+                        }
+                    });
+        }
     }
 
     @Override

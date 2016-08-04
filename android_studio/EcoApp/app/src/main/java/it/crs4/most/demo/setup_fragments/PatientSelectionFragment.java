@@ -1,8 +1,10 @@
-package it.crs4.most.demo.eco;
+package it.crs4.most.demo.setup_fragments;
 
 
 import java.util.ArrayList;
 
+import it.crs4.most.demo.ConfigFragment;
+import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.models.Patient;
 

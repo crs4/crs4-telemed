@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="it.crs4.most.demo">
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -27,6 +28,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TeleconsultationSetupActivity"/>
         </activity>
+        <activity
+            android:name=".spec.SpecTeleconsultationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape">
+        </activity>
+
         <activity
             android:name=".eco.EcoTeleconsultationActivity"
             android:label="@string/title_activity_teleconsultation"

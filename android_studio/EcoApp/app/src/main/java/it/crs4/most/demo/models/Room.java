@@ -1,5 +1,10 @@
 package it.crs4.most.demo.models;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class Room implements Serializable {
@@ -42,6 +47,28 @@ public class Room implements Serializable {
 
     public void setCamera(Device camera) {
         mCamera = camera;
+    }
+
+    public static Room fromJSON(JSONObject roomData) {
+        Log.d("ROOM", "ROOM_DATA: " + roomData);
+
+        try {
+            String id = roomData.getString("uuid");
+            String name = roomData.getString("name");
+            String description = roomData.getString("description");
+            JSONObject cameraData = roomData.getJSONObject("devices").getJSONObject("camera");
+            JSONObject encoderData = roomData.getJSONObject("devices").getJSONObject("encoder");
+            Device camera = Device.fromJSON(cameraData);
+            Device encoder = Device.fromJSON(encoderData);
+            Room r = new Room(id, name, description);
+            r.setCamera(camera);
+            r.setEncoder(encoder);
+            return r;
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

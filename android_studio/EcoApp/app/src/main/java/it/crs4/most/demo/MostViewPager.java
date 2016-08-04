@@ -1,7 +1,5 @@
 package it.crs4.most.demo;
 
-import it.crs4.most.demo.eco.ConfigFragment;
-
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
