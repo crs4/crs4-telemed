@@ -180,7 +180,6 @@ public class RemoteConfigReader {
                          Response.Listener<JSONObject> listener,
                          Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/rooms/?access_token=%s", mUrlPrefix, accessToken);
-        Log.d(TAG, "getRoomsDataUri: " + uri);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
         mRequestQueue.add(postReq);
     }

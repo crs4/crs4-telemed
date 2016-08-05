@@ -11,12 +11,13 @@ import com.android.volley.VolleyError;
 
 import it.crs4.most.demo.ConfigFragment;
 import it.crs4.most.demo.IConfigBuilder;
+import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Room;
-import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSession;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
@@ -48,9 +49,9 @@ public class SummaryFragment extends ConfigFragment {
     private Handler mWaitForSpecialistHandler;
 
     public static SummaryFragment newInstance(IConfigBuilder config) {
-        SummaryFragment fragmentFirst = new SummaryFragment();
-        fragmentFirst.setConfigBuilder(config);
-        return fragmentFirst;
+        SummaryFragment fragment = new SummaryFragment();
+        fragment.setConfigBuilder(config);
+        return fragment;
     }
 
     @Override
@@ -73,123 +74,125 @@ public class SummaryFragment extends ConfigFragment {
     }
 
     private void createNewTeleconsultation() {
-        Log.d(TAG, "Trying to create a new teleconsultation...");
         final String description = "Teleconsultation 0001";
         final String severity = mSeveritySpinner.getSelectedItem().toString();
         final Room room = (Room) mRoomSpinner.getSelectedItem();
-        retrieveRoomDevices(room);
+//        retrieveRoomDevices(room);  This is not required anymore since getRooms now returns als info about the streaming devices
 
         Log.d(TAG, String.format("Creating teleconsultation with room: %s and desc:%s", room.getId(), description));
         getConfigBuilder().getRemoteConfigReader().
-                createNewTeleconsultation(
-                        description,
-                        severity,
-                        room.getId(),
-                        getConfigBuilder().getUser().getAccessToken(),
-                        new Response.Listener<String>() {
+            createNewTeleconsultation(
+                description,
+                severity,
+                room.getId(),
+                getConfigBuilder().getUser().getAccessToken(),
+                new Response.Listener<String>() {
 
-                            @Override
-                            public void onResponse(String teleconsultationData) {
-                                Log.d(TAG, "Created teleconsultation: " + teleconsultationData);
-                                try {
-                                    JSONObject tcData = new JSONObject(teleconsultationData);
-                                    String uuid = tcData.getJSONObject("data").getJSONObject("teleconsultation").getString("uuid");
-                                    Teleconsultation tc = new Teleconsultation(uuid, description, severity,
-                                            room, getConfigBuilder().getUser());
+                    @Override
+                    public void onResponse(String teleconsultationData) {
+                        Log.d(TAG, "Created teleconsultation: " + teleconsultationData);
+                        try {
+                            //TODO_ Why the request is not a jsonpost request?
+                            JSONObject tcData = new JSONObject(teleconsultationData);
+                            String uuid = tcData.getJSONObject("data").
+                                getJSONObject("teleconsultation").
+                                getString("uuid");
+                            Teleconsultation t = new Teleconsultation(uuid, description, severity,
+                                room, getConfigBuilder().getUser());
 
-                                    createTeleconsultationSession(tc);
-                                }
-                                catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
+                            createTeleconsultationSession(t);
+                        }
+                        catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
 
-                            @Override
-                            public void onErrorResponse(VolleyError err) {
-                                Log.e(TAG, "Error creating the new teleconsultation: " + err);
-                            }
-                        });
+                    @Override
+                    public void onErrorResponse(VolleyError err) {
+                        Log.e(TAG, "Error creating the new teleconsultation: " + err);
+                    }
+                });
     }
 
     private void createTeleconsultationSession(final Teleconsultation teleconsultation) {
         User user = getConfigBuilder().getUser();
         getConfigBuilder().getRemoteConfigReader().createNewTeleconsultationSession(
-                teleconsultation.getId(),
-                teleconsultation.getRoom().getId(),
-                user.getAccessToken(),
-                new Response.Listener<String>() {
+            teleconsultation.getId(),
+            teleconsultation.getRoom().getId(),
+            user.getAccessToken(),
+            new Response.Listener<String>() {
 
-                    @Override
-                    public void onResponse(String tcSessionData) {
-                        Log.d(TAG, "Created teleconsultation session: " + tcSessionData);
-                        try {
-                            JSONObject sessionData = new JSONObject(tcSessionData).
-                                    getJSONObject("data").
-                                    getJSONObject("session");
-                            String sessionUUID = sessionData.getString("uuid");
-                            TeleconsultationSession ts = new TeleconsultationSession(sessionUUID,
-                                    null, TeleconsultationSessionState.NEW);
-                            teleconsultation.setLastSession(ts);
-                            startSession(teleconsultation);
-                        }
-                        catch (JSONException e) {
-                            Log.e(TAG, "Error parsing the new teleconsultation session creation response: " + e);
-                            e.printStackTrace();
-                        }
+                @Override
+                public void onResponse(String tcSessionData) {
+                    Log.d(TAG, "Created teleconsultation session: " + tcSessionData);
+                    try {
+                        JSONObject sessionData = new JSONObject(tcSessionData).
+                            getJSONObject("data").
+                            getJSONObject("session");
+                        String sessionUUID = sessionData.getString("uuid");
+                        TeleconsultationSession s = new TeleconsultationSession(sessionUUID,
+                            null, TeleconsultationSessionState.NEW, teleconsultation.getRoom());
+                        teleconsultation.setLastSession(s);
+                        startSession(teleconsultation);
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError err) {
-                        Log.e(TAG, "Error creating the new teleconsultation session: " + err);
+                    catch (JSONException e) {
+                        Log.e(TAG, "Error parsing the new teleconsultation session creation response: " + e);
+                        e.printStackTrace();
                     }
-                });
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError err) {
+                    Log.e(TAG, "Error creating the new teleconsultation session: " + err);
+                }
+            });
     }
 
     private void startSession(final Teleconsultation tc) {
         User user = getConfigBuilder().getUser();
         getConfigBuilder().getRemoteConfigReader().startSession(
-                tc.getLastSession().getId(),
-                user.getAccessToken(),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject arg0) {
-                        Log.d(TAG, "Session started: " + arg0);
-                        waitForSpecialist(tc);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError arg0) {
-                        Log.e(TAG, "Error startung session: " + arg0);
-                    }
-                });
+            tc.getLastSession().getId(),
+            user.getAccessToken(),
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject arg0) {
+                    Log.d(TAG, "Session started: " + arg0);
+                    waitForSpecialist(tc);
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError arg0) {
+                    Log.e(TAG, "Error startung session: " + arg0);
+                }
+            });
     }
 
-    private void retrieveRoomDevices(final Room room) {
-        User user = getConfigBuilder().getUser();
-        getConfigBuilder().getRemoteConfigReader().getRoom(
-                room.getId(),
-                user.getAccessToken(),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jroom) {
-                        room.setEncoder(getDevice(jroom, "encoder"));
-                        room.setCamera(getDevice(jroom, "camera"));
-                        Log.d(TAG, "TC Encoder: " + room.getEncoder());
-                        Log.d(TAG, "TC Camera: " + room.getCamera());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError e) {
-                        Log.e(TAG, "Error retrieving device json data: " + e);
-
-                    }
-                });
-    }
+//    private void retrieveRoomDevices(final Room room) {
+//        User user = getConfigBuilder().getUser();
+//        getConfigBuilder().getRemoteConfigReader().getRoom(
+//            room.getId(),
+//            user.getAccessToken(),
+//            new Response.Listener<JSONObject>() {
+//                @Override
+//                public void onResponse(JSONObject jroom) {
+//                    room.setEncoder(getDevice(jroom, "encoder"));
+//                    room.setCamera(getDevice(jroom, "camera"));
+//                    Log.d(TAG, "TC Encoder: " + room.getEncoder());
+//                    Log.d(TAG, "TC Camera: " + room.getCamera());
+//                }
+//            },
+//            new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError e) {
+//                    Log.e(TAG, "Error retrieving device json data: " + e);
+//
+//                }
+//            });
+//    }
 
 
     private void waitForSpecialist(final Teleconsultation tc) {
@@ -199,12 +202,12 @@ public class SummaryFragment extends ConfigFragment {
         waitForSpecialistDialog.setCancelable(false);
         waitForSpecialistDialog.setCanceledOnTouchOutside(false);
         waitForSpecialistDialog.setButton(ProgressDialog.BUTTON_NEGATIVE,
-                getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, int which) {
-                        closeSessionAndTeleconsultation(tc);
-                    }
-                });
+            getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialog, int which) {
+                    closeSessionAndTeleconsultation(tc);
+                }
+            });
         waitForSpecialistDialog.show();
         pollForSpecialist(waitForSpecialistDialog, tc);
     }
@@ -213,36 +216,36 @@ public class SummaryFragment extends ConfigFragment {
         final RemoteConfigReader mConfigReader = getConfigBuilder().getRemoteConfigReader();
         final String accessToken = getConfigBuilder().getUser().getAccessToken();
         mConfigReader.closeSession(
-                tc.getLastSession().getId(),
-                accessToken,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Sessione closed");
-                        mConfigReader.closeTeleconsultation(
-                                tc.getId(),
-                                accessToken,
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        Log.d(TAG, "Teleconsulation closed");
-                                    }
-                                },
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.e(TAG, "Error closing teleconsultation");
-                                    }
-                                }
-                        );
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error closing teleconsultation");
-                    }
-                });
+            tc.getLastSession().getId(),
+            accessToken,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d(TAG, "Sessione closed");
+                    mConfigReader.closeTeleconsultation(
+                        tc.getId(),
+                        accessToken,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "Teleconsulation closed");
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e(TAG, "Error closing teleconsultation");
+                            }
+                        }
+                    );
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error closing teleconsultation");
+                }
+            });
     }
 
     private void pollForSpecialist(final ProgressDialog wfsd, final Teleconsultation tc) {
@@ -251,40 +254,40 @@ public class SummaryFragment extends ConfigFragment {
             @Override
             public void run() {
                 getConfigBuilder().getRemoteConfigReader().getSessionState(
-                        tc.getLastSession().getId(),
-                        tc.getApplicant().getAccessToken(),
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject res) {
-                                Log.d(TAG, "Teleconsultation state response:" + res);
-                                try {
-                                    String state = res.getJSONObject("data").getJSONObject("session").getString("state");
-                                    String specAppAddress = res.getJSONObject("data").getJSONObject("session").getString("spec_app_address");
-                                    if (state.equals(TeleconsultationSessionState.WAITING.name())) {
-                                        mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 10000);
-                                    }
-                                    else if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
-                                        wfsd.dismiss();
-                                    }
-                                    else {
-                                        tc.getLastSession().setSpecAppAddress(specAppAddress);
-                                        wfsd.dismiss();
-                                        runSession(tc);
-                                    }
+                    tc.getLastSession().getId(),
+                    tc.getUser().getAccessToken(),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject res) {
+                            Log.d(TAG, "Teleconsultation state response:" + res);
+                            try {
+                                String state = res.getJSONObject("data").getJSONObject("session").getString("state");
+                                String specAppAddress = res.getJSONObject("data").getJSONObject("session").getString("spec_app_address");
+                                if (state.equals(TeleconsultationSessionState.WAITING.name())) {
+                                    mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 10000);
                                 }
-                                catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
+                                else if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
+                                    wfsd.dismiss();
+                                }
+                                else {
+                                    tc.getLastSession().setSpecAppAddress(specAppAddress);
+                                    wfsd.dismiss();
+                                    runSession(tc);
                                 }
                             }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError arg0) {
-                                Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
-                                wfsd.dismiss();
+                            catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
                             }
-                        });
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError arg0) {
+                            Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
+                            wfsd.dismiss();
+                        }
+                    });
             }
         };
         mWaitForSpecialistHandler.post(mWaitForSpecialistTask);
@@ -293,111 +296,104 @@ public class SummaryFragment extends ConfigFragment {
     private void runSession(final Teleconsultation tc) {
         User user = getConfigBuilder().getUser();
         getConfigBuilder().getRemoteConfigReader().runSession(tc.getLastSession().getId(),
-                user.getAccessToken(),
-                new Response.Listener<JSONObject>() {
+            user.getAccessToken(),
+            new Response.Listener<JSONObject>() {
 
-                    @Override
-                    public void onResponse(JSONObject sessionData) {
-                        Log.d(TAG, "Session running: " + sessionData);
-                        tc.getLastSession().setVoipParams(getActivity(), sessionData, 0);
-                        getConfigBuilder().setTeleconsultation(tc);
+                @Override
+                public void onResponse(JSONObject sessionData) {
+                    Log.d(TAG, "Session running: " + sessionData);
+                    String role = QuerySettings.getRole(getActivity());
+                    try {
+                        sessionData = sessionData.getJSONObject("data").getJSONObject("session");
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError arg0) {
-                        Log.e(TAG, "Error running the session: " + arg0);
+                    catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
+                    tc.getLastSession().setVoipParams(getActivity(), sessionData, role);
+                    getConfigBuilder().setTeleconsultation(tc);
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError arg0) {
+                    Log.e(TAG, "Error running the session: " + arg0);
+                }
+            });
     }
 
-    private Device getDevice(JSONObject room, String deviceName) {
-        JSONObject jsonDevice;
-        try {
-            jsonDevice = room.getJSONObject("data").getJSONObject("room").
-                    getJSONObject("devices").getJSONObject(deviceName);
-            return new Device(jsonDevice.getString("name"),
-                    jsonDevice.getJSONObject("capabilities").getString("streaming"),
-                    jsonDevice.getJSONObject("capabilities").getString("shot"),
-                    jsonDevice.getJSONObject("capabilities").getString("web"),
-                    jsonDevice.getJSONObject("capabilities").getString("ptz"),
-                    jsonDevice.getString("user"),
-                    jsonDevice.getString("password")
-            );
-        }
-        catch (JSONException e) {
-            Log.e(TAG, "Error retrieving device data: " + e);
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    private Device getDevice(JSONObject room, String deviceName) {
+//        JSONObject jsonDevice;
+//        try {
+//            jsonDevice = room.getJSONObject("data").getJSONObject("room").
+//                getJSONObject("devices").getJSONObject(deviceName);
+//            return new Device(jsonDevice.getString("name"),
+//                jsonDevice.getJSONObject("capabilities").getString("streaming"),
+//                jsonDevice.getJSONObject("capabilities").getString("shot"),
+//                jsonDevice.getJSONObject("capabilities").getString("web"),
+//                jsonDevice.getJSONObject("capabilities").getString("ptz"),
+//                jsonDevice.getString("user"),
+//                jsonDevice.getString("password")
+//            );
+//        }
+//        catch (JSONException e) {
+//            Log.e(TAG, "Error retrieving device data: " + e);
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     private void setupTcSeveritySpinner(View view) {
         mSeveritySpinner = (Spinner) view.findViewById(R.id.spinner_summary_severity);
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.tc_severities, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
+            R.array.tc_severities, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         mSeveritySpinner.setAdapter(adapter);
     }
 
     private void setupTcRoomSpinner(View view) {
         mRoomSpinner = (Spinner) view.findViewById(R.id.spinner_summary_room);
-        retrieveRooms();
-    }
-
-
-    private void retrieveRooms() {
         if (getConfigBuilder() != null) {
-            Log.d(TAG, String.format("getConfigBuilder() == null %b", getConfigBuilder() == null));
-            Log.d(TAG, String.format("getConfigBuilder().getUser() == null %b", getConfigBuilder().getUser() == null));
-
             String accessToken = getConfigBuilder().getUser().getAccessToken();
+            getConfigBuilder().getRemoteConfigReader().getRooms(accessToken,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject roomsData) {
+                        try {
+                            JSONArray jrooms = roomsData.getJSONObject("data").getJSONArray("rooms");
+                            ArrayList<Room> rooms = new ArrayList<>();
 
-            getConfigBuilder().getRemoteConfigReader().getRooms(accessToken, new Response.Listener<JSONObject>() {
+                            for (int i = 0; i < jrooms.length(); i++) {
+                                JSONObject roomData = jrooms.getJSONObject(i);
+                                Room r = null;
+                                try {
+                                    r = Room.fromJSON(roomData);
+                                }
+                                catch (TeleconsultationException e) {
+                                    e.printStackTrace();
+                                }
+                                rooms.add(r);
+                            }
 
+                            ArrayAdapter<Room> adapter = new ArrayAdapter<>(getActivity(),
+                                android.R.layout.simple_spinner_item, rooms);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+                            mRoomSpinner.setAdapter(adapter);
 
-                @Override
-                public void onResponse(JSONObject rooms) {
-
-                    Log.d(TAG, String.format("Received rooms:\n\n%s\n\n", rooms));
-                    populateTcRoomSpinner(rooms);
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError arg0) {
-                    Log.e(TAG, "Error retrieving rooms:" + arg0);
-
-                }
-            });
+                        }
+                        catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError arg0) {
+                        Log.e(TAG, "Error retrieving rooms:" + arg0);
+                    }
+                });
         }
-    }
-
-    private void populateTcRoomSpinner(JSONObject roomsData) {
-        //{"data":{"rooms":[{"description":"Stanza di Test","name":"Ufficio Francesco","uuid":"yytgsihw4vtm5tpceunnoyclwvbnwi53"}]},"success":true}
-        try {
-            JSONArray jrooms = roomsData.getJSONObject("data").getJSONArray("rooms");
-            ArrayList<Room> rooms = new ArrayList<Room>();
-
-            for (int i = 0; i < jrooms.length(); i++) {
-                JSONObject jroom = jrooms.getJSONObject(i);
-                rooms.add(new Room(jroom.getString("uuid"), jroom.getString("name"), jroom.getString("description")));
-            }
-
-            ArrayAdapter<Room> spinnerArrayAdapter = new ArrayAdapter<Room>(getActivity(), android.R.layout.simple_spinner_item, rooms);
-            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-            mRoomSpinner.setAdapter(spinnerArrayAdapter);
-
-        }
-        catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -414,7 +410,6 @@ public class SummaryFragment extends ConfigFragment {
             mTxtPatientFullName.setFocusable(true);
             mPatientId.setFocusable(true);
         }
-
     }
 
     @Override

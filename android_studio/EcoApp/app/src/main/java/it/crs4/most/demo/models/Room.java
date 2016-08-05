@@ -7,8 +7,11 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import it.crs4.most.demo.TeleconsultationException;
+
 public class Room implements Serializable {
     private static final long serialVersionUID = 4399813546588966888L;
+    private static final String TAG = "Room";
     private String mId;
     private String mName;
     private String mDescription;
@@ -49,26 +52,41 @@ public class Room implements Serializable {
         mCamera = camera;
     }
 
-    public static Room fromJSON(JSONObject roomData) {
-        Log.d("ROOM", "ROOM_DATA: " + roomData);
+    public static Room fromJSON(JSONObject roomData) throws TeleconsultationException {
+        String id;
+        String name;
+        String description;
+        JSONObject cameraData;
+        JSONObject encoderData;
 
         try {
-            String id = roomData.getString("uuid");
-            String name = roomData.getString("name");
-            String description = roomData.getString("description");
-            JSONObject cameraData = roomData.getJSONObject("devices").getJSONObject("camera");
-            JSONObject encoderData = roomData.getJSONObject("devices").getJSONObject("encoder");
-            Device camera = Device.fromJSON(cameraData);
-            Device encoder = Device.fromJSON(encoderData);
-            Room r = new Room(id, name, description);
-            r.setCamera(camera);
-            r.setEncoder(encoder);
-            return r;
+            id = roomData.getString("uuid");
+            name = roomData.getString("name");
+            description = roomData.getString("description");
         }
         catch (JSONException e) {
-            e.printStackTrace();
+            throw new TeleconsultationException();
         }
-        return null;
+
+        Room r = new Room(id, name, description);
+
+        try {
+            cameraData = roomData.getJSONObject("devices").getJSONObject("camera");
+            Device camera = Device.fromJSON(cameraData);
+            r.setCamera(camera);
+        }
+        catch (JSONException e) {
+            Log.d(TAG, "Camera data not found for the room");
+        }
+        try {
+            encoderData = roomData.getJSONObject("devices").getJSONObject("encoder");
+            Device encoder = Device.fromJSON(encoderData);
+            r.setEncoder(encoder);
+        }
+        catch (JSONException e) {
+            Log.d(TAG, "Encoder data not found for the room");
+        }
+        return r;
     }
 
     @Override

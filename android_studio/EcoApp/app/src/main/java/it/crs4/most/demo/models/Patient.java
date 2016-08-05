@@ -12,8 +12,7 @@ public class Patient implements Serializable {
     private String mName;
     private String mSurname;
 
-    public Patient(String name, String surname, String id)
-    {
+    public Patient(String name, String surname, String id) {
         mId = id;
         mName = name;
         mSurname = surname;

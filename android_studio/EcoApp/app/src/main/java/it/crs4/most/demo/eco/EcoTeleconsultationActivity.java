@@ -100,8 +100,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
 
         TextView textUser = (TextView) findViewById(R.id.text_eco_user);
-        textUser.setText(String.format("%s %s", teleconsultation.getApplicant().getFirstName(),
-                teleconsultation.getApplicant().getLastName()));
+        textUser.setText(String.format("%s %s", teleconsultation.getUser().getFirstName(),
+                teleconsultation.getUser().getLastName()));
     }
 
     protected void notifyTeleconsultationStateChanged() {

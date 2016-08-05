@@ -175,7 +175,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.teleconsultation_eco_menu, menu);
+        getMenuInflater().inflate(R.menu.teleconsultation_spec_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
         mButtonCall = menu.findItem(R.id.button_call);
         mButtonHangup = menu.findItem(R.id.button_hangup);
@@ -342,7 +342,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             @Override
             public void run() {
                 mConfigReader.getSessionState(mTeleconsultation.getLastSession().getId(),
-                        mTeleconsultation.getApplicant().getAccessToken(),
+                        mTeleconsultation.getUser().getAccessToken(),
                         new Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject res) {

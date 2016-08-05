@@ -71,14 +71,14 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         String[] drawerItems = {
-                getString(R.string.settings), getString(R.string.exit)
+            getString(R.string.settings), getString(R.string.exit)
         };
         ListView drawerList = (ListView) findViewById(R.id.left_drawer);
         drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open,
-                R.string.drawer_close);
+            R.string.drawer_close);
 
         // Set the drawer toggle as the DrawerListener
         drawerLayout.setDrawerListener(mDrawerToggle);
@@ -100,19 +100,19 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     private void setupConfigFragments() {
         if (mRole.equals(mRoles[0])) {
             mConfigFragments = new ConfigFragment[]{
-                    UserSelectionFragment.newInstance(this),
-                    EnterCredentialsFragment.newInstance(this,
-                            EnterCredentialsFragment.PASSCODE_CREDENTIALS),
-                    PatientSelectionFragment.newInstance(this),
-                    SummaryFragment.newInstance(this)
+                UserSelectionFragment.newInstance(this),
+                EnterCredentialsFragment.newInstance(this,
+                    EnterCredentialsFragment.PASSCODE_CREDENTIALS),
+                PatientSelectionFragment.newInstance(this),
+                SummaryFragment.newInstance(this)
             };
         }
         else {
             mConfigFragments = new ConfigFragment[]{
-                    UserSelectionFragment.newInstance(this),
-                    EnterCredentialsFragment.newInstance(this,
-                            EnterCredentialsFragment.PASSWORD_CREDENTIALS),
-                    TeleconsultationSelectionFragment.newInstance(this)
+                UserSelectionFragment.newInstance(this),
+                EnterCredentialsFragment.newInstance(this,
+                    EnterCredentialsFragment.PASSWORD_CREDENTIALS),
+                TeleconsultationSelectionFragment.newInstance(this)
             };
         }
     }
@@ -196,9 +196,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
             startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
         }
         else {
-            //TODO: probably it is necessary to insert the specialist
-//            mTeleconsultation = selectedTc;
-//            mTeleconsultation.setSpecialist(getUser());
+            mTeleconsultation.setUser(getUser());
             joinTeleconsultationSession(mTeleconsultation);
         }
     }
@@ -207,41 +205,39 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
         Log.d(TAG, "joining teleconsultation session...");
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
-                ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
-        Log.d(TAG, "IP ADDRESS IS: " + ipAddress);
+            ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
         if (selectedTc.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
             mConfigReader.joinSession(selectedTc.getLastSession().getId(),
-                    getUser().getAccessToken(),
-                    ipAddress,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-
-                            JSONObject sessionData = null;
-                            try {
-                                sessionData = response.getJSONObject("data").getJSONObject("session");
-                                selectedTc.getLastSession().setVoipParams(getApplication(),
-                                        sessionData, 1);
-                                Intent i = new Intent(TeleconsultationSetupActivity.this,
-                                        SpecTeleconsultationActivity.class);
-                                i.putExtra("User", mUser);
-                                Log.d(TAG, "VOIP PARAMS OF SELECTED " + selectedTc.getLastSession().getVoipParams());
-                                i.putExtra("Teleconsultation", selectedTc);
-                                startActivity(i);
-                            }
-                            catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                getUser().getAccessToken(),
+                ipAddress,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject sessionData;
+                        try {
+                            sessionData = response.getJSONObject("data").getJSONObject("session");
+                            String role = QuerySettings.getRole(TeleconsultationSetupActivity.this);
+                            selectedTc.getLastSession().setVoipParams(getApplication(),
+                                sessionData, role);
+                            Intent i = new Intent(TeleconsultationSetupActivity.this,
+                                SpecTeleconsultationActivity.class);
+                            i.putExtra("User", mUser);
+                            i.putExtra("Teleconsultation", selectedTc);
+                            startActivity(i);
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 //                            startTeleconsultationActivity();
-                        }
-                    },
-                    new Response.ErrorListener() {
+                    }
+                },
+                new Response.ErrorListener() {
 
-                        @Override
-                        public void onErrorResponse(VolleyError err) {
-                            Log.d(TAG, "Error in Session Join Response: " + err);
-                        }
-                    });
+                    @Override
+                    public void onErrorResponse(VolleyError err) {
+                        Log.d(TAG, "Error in Session Join Response: " + err);
+                    }
+                });
         }
     }
 

@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import it.crs4.most.demo.TeleconsultationException;
+
 public class Device implements Serializable {
 
     private static final long serialVersionUID = -7284527758558743253L;
@@ -60,7 +62,7 @@ public class Device implements Serializable {
                 mStreamUri, mShotUri, mWebUri, mPtzUri);
     }
 
-    public static Device fromJSON(JSONObject deviceData) {
+    public static Device fromJSON(JSONObject deviceData) throws TeleconsultationException {
         try {
             String name = deviceData.getString("name");
             String pwd = deviceData.getString("password");
@@ -72,8 +74,7 @@ public class Device implements Serializable {
             return new Device(name, streamUri, shotUri, webUri, ptzUri, user, pwd);
         }
         catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+            throw new TeleconsultationException();
         }
     }
 }

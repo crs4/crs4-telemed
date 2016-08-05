@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.voip.Utils;
 
 public class TeleconsultationSession implements Serializable {
@@ -20,19 +21,22 @@ public class TeleconsultationSession implements Serializable {
     private HashMap<String, String> voipParams;
     private Room mRoom;
 
-    public TeleconsultationSession(String id, String specAppAddress, TeleconsultationSessionState state) {
+    //TODO: Should have also the room in the constructor
+    public TeleconsultationSession(String id, String specAppAddress,
+                                   TeleconsultationSessionState state, Room room) {
         mId = id;
         mSpecAppAddress = specAppAddress;
         mSessionState = state;
+        mRoom = room;
     }
 
-    public void setVoipParams(Context context, JSONObject sessionData, int role) {
+    public void setVoipParams(Context context, JSONObject sessionData, String role) {
         JSONObject localExtData;
         String localUser;
         String remoteUser;
         String paramName;
 
-        if (role == 0) {
+        if (role.equals("eco")) {   //TODO: should not be hardwired
             localUser = "applicant";
             remoteUser = "specialist";
             paramName = "specExtension";
@@ -42,8 +46,6 @@ public class TeleconsultationSession implements Serializable {
             remoteUser = "applicant";
             paramName = "ecoExtension";
         }
-        Log.d(TAG, "Setting voip params for: " + localUser + " " + remoteUser + " " + paramName);
-        Log.d(TAG, "DATA ARE: " + sessionData);
         try {
             localExtData = sessionData.getJSONObject("teleconsultation").getJSONObject(localUser).getJSONObject("voip_data");
             String sipServerIp = localExtData.getJSONObject("sip_server").getString("address");
@@ -93,24 +95,6 @@ public class TeleconsultationSession implements Serializable {
         mRoom = room;
     }
 
-    private Device getDevice(JSONObject sessionData, String deviceName) {
-        try {
-            JSONObject jcamera = sessionData.getJSONObject("room").getJSONObject("devices").getJSONObject(deviceName);
-
-            return new Device(jcamera.getString("name"), jcamera.getJSONObject("capabilities").optString("streaming"),
-                    jcamera.getJSONObject("capabilities").optString("shot"),
-                    jcamera.getJSONObject("capabilities").optString("web"),
-                    jcamera.getJSONObject("capabilities").optString("ptz"),
-                    jcamera.getString("user"),
-                    jcamera.getString("password"));
-        }
-        catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public Device getCamera() {
         return mRoom.getCamera();
     }
@@ -139,25 +123,33 @@ public class TeleconsultationSession implements Serializable {
         return mSessionState;
     }
 
-    public static TeleconsultationSession fromJSON(Context context, JSONObject sessionData, int role) {
-        try {
-            String id = sessionData.getString("uuid");
-            String state = sessionData.getString("state");
-            String specAppAddress = sessionData.getString("spec_app_address");
-            JSONObject roomData = sessionData.getJSONObject("room");
-            Room room = Room.fromJSON(roomData);
+    public static TeleconsultationSession fromJSON(Context context, JSONObject sessionData, String role) throws TeleconsultationException {
+        String id;
+        String state;
+        String specAppAddress;
+        JSONObject roomData;
 
-            TeleconsultationSession tcSession = new TeleconsultationSession(id, specAppAddress,
-                    TeleconsultationSessionState.getState(state));
-            tcSession.setRoom(room);
-            tcSession.setVoipParams(context, sessionData, role);
-            return tcSession;
+        try {
+            id = sessionData.getString("uuid");
+            state = sessionData.getString("state");
+            roomData = sessionData.getJSONObject("room");
         }
         catch (JSONException e) {
-            e.printStackTrace();
+            throw new TeleconsultationException();
         }
 
+        try {
+            specAppAddress = sessionData.getString("spec_app_address");
+        }
+        catch (JSONException e) {
+            specAppAddress = null;
+        }
 
-        return null;
+        Room room = Room.fromJSON(roomData);
+        TeleconsultationSession tcSession = new TeleconsultationSession(id, specAppAddress,
+                TeleconsultationSessionState.getState(state), room);
+
+        tcSession.setVoipParams(context, sessionData, role);
+        return tcSession;
     }
 }
