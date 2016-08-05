@@ -38,20 +38,17 @@ public class UserSelectionFragment extends ConfigFragment {
     private ArrayAdapter<User> mEcoArrayAdapter;
     private TaskGroup mSelectedTaskgroup;
 
-    // newInstance constructor for creating fragment with arguments
     public static UserSelectionFragment newInstance(IConfigBuilder config) {
         UserSelectionFragment fragment = new UserSelectionFragment();
         fragment.setConfigBuilder(config);
         return fragment;
     }
 
-    // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.eco_list, container, false);
@@ -81,16 +78,14 @@ public class UserSelectionFragment extends ConfigFragment {
         String taskgroupId = QuerySettings.getTaskGroup(getActivity());
         if (taskgroupId != null) {
             getConfigBuilder().getRemoteConfigReader().
-                    getUsersByTaskgroup(taskgroupId, new Listener<JSONObject>() {
-
+                getUsersByTaskgroup(taskgroupId,
+                    new Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject users) {
-                            Log.d(TAG, "Received taskgroup applicants: " + users.toString());
-                            // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
                             retrieveSelectedUser(users);
                         }
-                    }, new ErrorListener() {
-
+                    },
+                    new ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError arg0) {
                             Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
@@ -102,10 +97,6 @@ public class UserSelectionFragment extends ConfigFragment {
     }
 
     private void retrieveSelectedUser(final JSONObject users_data) {
-        // {"data":{"applicants":[{"lastname":"admin","username":"admin","firstname":"admin"}]},"success":true}
-        // String username = users.getJSONObject("data").getJSONArray("applicants").getJSONObject(0).getString("username");
-        // editUsername.setText(username);
-
         try {
             boolean success = (users_data != null && users_data.getBoolean("success"));
             if (!success) {
@@ -116,20 +107,18 @@ public class UserSelectionFragment extends ConfigFragment {
             final JSONArray users = users_data.getJSONObject("data").getJSONArray("applicants");
 
             for (int i = 0; i < users.length(); i++) {
-                String username = users.getJSONObject(i).getString("username");
-                String lastname = users.getJSONObject(i).getString("lastname");
-                String firstname = users.getJSONObject(i).getString("firstname");
-                mEcoArray.add(new User(firstname, lastname, username, mSelectedTaskgroup));
-
+                User u = User.fromJSON(users.getJSONObject(i));
+                if (u != null) {
+                    u.setTaskGroup(mSelectedTaskgroup);
+                    mEcoArray.add(u);
+                }
             }
             mEcoArrayAdapter.notifyDataSetChanged();
 
         }
         catch (JSONException e) {
             e.printStackTrace();
-            return;
         }
-
     }
 
     @Override
@@ -159,7 +148,7 @@ public class UserSelectionFragment extends ConfigFragment {
             ViewHolder viewHolder;
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.eco_row, null);
                 viewHolder = new ViewHolder();
                 viewHolder.username = (TextView) convertView.findViewById(R.id.text_operator_username);
