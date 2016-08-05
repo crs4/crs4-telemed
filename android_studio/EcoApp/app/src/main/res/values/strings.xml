@@ -56,6 +56,16 @@
     <string name="teleconsultation_title">Teleconsultation Selection</string>
     <string name="hangup_call">Hangup</string>
     <string name="ptz">PTZ</string>
+    <string name="role">Role</string>
+    <string name="ecographist">Ecographist</string>
+    <string name="specialist">Specialist</string>
 
-
+    <string-array name="roles_entries">
+        <item>@string/ecographist</item>
+        <item>@string/specialist</item>
+    </string-array>
+    <string-array name="roles_entries_values">
+        <item>eco_role</item>
+        <item>spec_role</item>
+    </string-array>
 </resources>

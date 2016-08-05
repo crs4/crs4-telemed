@@ -9,6 +9,7 @@ public class QuerySettings {
     private static final String CONFIG_SERVER_IP = "config_server_address";
     private static final String CONFIG_SERVER_PORT = "config_server_port";
     private static final String TASK_GROUP = "select_task_group_preference";
+    private static final String ROLE = "role_preference";
 
     private static String getStoredItem(Context context, String valueType, String defaultValue) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(valueType, defaultValue);
@@ -24,6 +25,11 @@ public class QuerySettings {
 
     public static String getTaskGroup(Context context) {
         return getStoredItem(context, TASK_GROUP, null);
+    }
+
+    public static String getRole(Context context) {
+        String[] roles = context.getResources().getStringArray(R.array.roles_entries_values);
+        return getStoredItem(context, ROLE, roles[0]);
     }
 
 //    public static void setConfigServerAddress(Context context, String value) {

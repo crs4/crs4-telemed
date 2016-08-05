@@ -50,7 +50,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     private Device mCamera;
     private RemoteConfigReader mConfigReader;
     private ActionBarDrawerToggle mDrawerToggle;
-    private int mRole = 1;  // 0 is Ecographist
+    private String[] mRoles;
+    private String mRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-
+        mRoles = getResources().getStringArray(R.array.roles_entries_values);
+        mRole = QuerySettings.getRole(this);
         mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
         setContentView(R.layout.teleconsultation_setup_activity);
         setupConfigFragments();
@@ -96,7 +98,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     }
 
     private void setupConfigFragments() {
-        if (mRole == 0) {  // This should change
+        if (mRole.equals(mRoles[0])) {
             mConfigFragments = new ConfigFragment[]{
                     UserSelectionFragment.newInstance(this),
                     EnterCredentialsFragment.newInstance(this,
@@ -181,7 +183,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     }
 
     private void startTeleconsultationActivity() {
-        if (mRole == 0) {
+        if (mRole.equals(mRoles[0])) {
             Intent i;
             if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
                 i = new Intent(this, AREcoTeleconsultationActivity.class);
@@ -194,6 +196,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
             startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
         }
         else {
+            //TODO: probably it is necessary to insert the specialist
 //            mTeleconsultation = selectedTc;
 //            mTeleconsultation.setSpecialist(getUser());
             joinTeleconsultationSession(mTeleconsultation);

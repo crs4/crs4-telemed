@@ -16,6 +16,12 @@
         android:enabled="false"
         android:title="@string/task_group"
         android:summary="%s"/>
+    <ListPreference
+        android:key="role_preference"
+        android:title="@string/role"
+        android:summary="%s"
+        android:entries="@array/roles_entries"
+        android:entryValues="@array/roles_entries_values"/>
     <EditTextPreference
         android:key="device_id"
         android:title="@string/device_id"
