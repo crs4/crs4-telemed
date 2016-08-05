@@ -301,10 +301,10 @@ public class SummaryFragment extends ConfigFragment {
 
                 @Override
                 public void onResponse(JSONObject sessionData) {
-                    Log.d(TAG, "Session running: " + sessionData);
                     String role = QuerySettings.getRole(getActivity());
                     try {
                         sessionData = sessionData.getJSONObject("data").getJSONObject("session");
+                        Log.d(TAG, "Session running: " + sessionData);
                     }
                     catch (JSONException e) {
                         e.printStackTrace();

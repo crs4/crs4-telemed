@@ -36,7 +36,7 @@ public class TeleconsultationSession implements Serializable {
         String remoteUser;
         String paramName;
 
-        if (role.equals("eco")) {   //TODO: should not be hardwired
+        if (role.equals("eco_role")) {   //TODO: should not be hardwired
             localUser = "applicant";
             remoteUser = "specialist";
             paramName = "specExtension";

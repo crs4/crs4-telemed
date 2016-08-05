@@ -605,7 +605,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     private void subscribeBuddies() {
         String buddyExtension = mVoipParams.get("ecoExtension");
-        Log.d(TAG, "adding buddies...");
+        Log.d(TAG, "adding buddies: " + getBuddyUri(buddyExtension));
         mVoipLib.getAccount().addBuddy(getBuddyUri(buddyExtension));
     }
 
