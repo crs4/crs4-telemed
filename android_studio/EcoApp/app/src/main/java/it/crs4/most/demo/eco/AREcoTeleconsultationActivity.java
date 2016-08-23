@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
+import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Teleconsultation;
