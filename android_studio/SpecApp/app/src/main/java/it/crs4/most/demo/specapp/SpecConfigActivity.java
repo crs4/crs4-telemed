@@ -1,6 +1,7 @@
 package it.crs4.most.demo.specapp;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.Response.ErrorListener;
@@ -11,7 +12,7 @@ import com.android.volley.VolleyError;
 import it.crs4.most.demo.specapp.config_fragments.ConfigFragment;
 import it.crs4.most.demo.specapp.config_fragments.LoginFragment;
 import it.crs4.most.demo.specapp.config_fragments.TeleconsultationSelectionFragment;
-import it.crs4.most.demo.specapp.models.SpecUser;
+import it.crs4.most.demo.specapp.models.User;
 import it.crs4.most.demo.specapp.models.Teleconsultation;
 import it.crs4.most.demo.specapp.models.TeleconsultationSessionState;
 
@@ -32,9 +33,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 
 public class SpecConfigActivity extends AppCompatActivity implements IConfigBuilder {
 
@@ -42,7 +40,7 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
     private static String[] mPages = {"Login", "Teleconsultations"};
 
     private ConfigFragment[] mConfigFragments = null;
-    private SpecUser mSpecUser = null;
+    private User mUser = null;
     private Teleconsultation mTeleconsultation = null;
     private MostViewPager mPager = null;
     private RemoteConfigReader mConfigReader;
@@ -62,7 +60,6 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         mPager = (MostViewPager) findViewById(R.id.vp_pager);
         FragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mPager.setAdapter(pagerAdapter);
-        mPager.setOnPageListener();
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         String[] drawerItems = {
@@ -130,21 +127,19 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         startActivity(i);
     }
 
-    @Override
-    public void setSpecUser(SpecUser user) {
-        mSpecUser = user;
+    public void setUser(User user) {
+        mUser = user;
         mPager.setInternalCurrentItem(1, 0);
     }
 
-    @Override
-    public SpecUser getSpecUser() {
-        return mSpecUser;
+    public User getUser() {
+        return mUser;
     }
 
     @Override
     public void setTeleconsultation(Teleconsultation selectedTc) {
         mTeleconsultation = selectedTc;
-        mTeleconsultation.setSpecialist(getSpecUser());
+        mTeleconsultation.setSpecialist(getUser());
         joinTeleconsultationSession(mTeleconsultation);
     }
 
@@ -152,18 +147,24 @@ public class SpecConfigActivity extends AppCompatActivity implements IConfigBuil
         Log.d(TAG, "joining teleconsultation session...");
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
-                 ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
+                ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
         Log.d(TAG, "IP ADDRESS IS: " + ipAddress);
         if (selectedTc.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
             mConfigReader.joinSession(selectedTc.getLastSession().getId(),
-                    getSpecUser().getAccessToken(),
+                    getUser().getAccessToken(),
                     ipAddress,
                     new Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "Session Join Response:" + response);
-                            selectedTc.getLastSession().setupSessionData(response);
-                            startTeleconsultationActivity();
+                            try {
+                                JSONObject sessionData = response.getJSONObject("data").getJSONObject("session");
+                                selectedTc.getLastSession().setupSessionData(sessionData);
+                                startTeleconsultationActivity();
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     },
                     new ErrorListener() {

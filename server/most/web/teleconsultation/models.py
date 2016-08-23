@@ -127,6 +127,7 @@ class Teleconsultation(models.Model):
             'uuid': self.uuid,
             'description': self.description,
             'created': calendar.timegm(self.created.timetuple()),
+            'severity': self.severity,
             'applicant' : { 'username' : self.applicant.get_full_name() , 'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
             'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() ,
                                          'voip_data' : None if len(self.specialist.account_set.all())<1  else self.specialist.account_set.all()[0].json_dict}
@@ -135,7 +136,7 @@ class Teleconsultation(models.Model):
         #Check sessions
         if self.sessions.count() > 0:
             last_session = self.sessions.order_by('-created')[0]
-            result['last_session'] = last_session.json_dict
+            result['last_session'] = last_session.full_json_dict
 
         return result
 

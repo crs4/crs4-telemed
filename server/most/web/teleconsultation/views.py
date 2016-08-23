@@ -80,7 +80,7 @@ def get_rooms_for_taskgroup(request):
         taskgroup = request.taskgroup
 
         for room in taskgroup.rooms.all():
-            rooms.append(room.json_dict)
+            rooms.append(room.full_json_dict)
 
         return HttpResponse(json.dumps({'success': True, 'data': {'rooms': rooms}}), content_type="application/json")
 
@@ -358,16 +358,13 @@ def get_open_teleconsultations(request):
     logging.error("Taskgroup from token: %s" % request.accesstoken.taskgroup)
 
     teleconsultations = Teleconsultation.objects.filter(task_group__in=taskgroups, updated__lte=today_end, updated__gte=today_start, state="OPEN")
-
+    
     teleconsultation_list = []
-
     for teleconsultation in teleconsultations:
-
         teleconsultation_list.append(teleconsultation.json_dict)
 
 
     result = {
-
         "teleconsultations": teleconsultation_list
     }
     return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")

@@ -10,13 +10,13 @@ public class Teleconsultation implements Serializable {
     private static final long serialVersionUID = -1408055529735190987L;
     private String id;
     private String info;
-    private SpecUser specialist = null;
+    private User specialist = null;
 
-    public SpecUser getSpecialist() {
+    public User getSpecialist() {
         return specialist;
     }
 
-    public void setSpecialist(SpecUser specialist) {
+    public void setSpecialist(User specialist) {
         this.specialist = specialist;
     }
 

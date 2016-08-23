@@ -4,8 +4,7 @@ public enum TeleconsultationState {
      IDLE,
      READY,
      CALLING,
-     HOLDING, 
+     HOLDING,
      REMOTE_HOLDING,
      SESSION_CLOSED
 }
- 

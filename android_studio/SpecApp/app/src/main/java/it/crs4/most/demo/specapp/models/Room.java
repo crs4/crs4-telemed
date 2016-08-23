@@ -3,16 +3,16 @@ package it.crs4.most.demo.specapp.models;
 import java.io.Serializable;
 
 public class Room implements Serializable{
-	
-	
+
+
 	private static final long serialVersionUID = -6536703427287994291L;
 	private String id;
 	private String name;
 	private String description;
-	
+
 	private Device encoder;
 	private Device camera;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -33,20 +33,20 @@ public class Room implements Serializable{
 		this.name = name;
 		this.description = description;
 	}
-	
+
 	public Device getEncoder() {
 		return encoder;
 	}
-	
-	
+
+
 	public void setEncoder(Device encoder) {
 		this.encoder = encoder;
 	}
-	
+
 	public Device getCamera() {
 		return camera;
 	}
-	
+
 	public void setCamera(Device camera) {
 		this.camera = camera;
 	}
