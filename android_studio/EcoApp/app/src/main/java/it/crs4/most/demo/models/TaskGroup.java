@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class TaskGroup implements Serializable {
 
-    private static final long serialVersionUID = 6314390526009668956L;
+    private static final long serialVersionUID = 1L;
     private String mId;
     private String mDescription;
 

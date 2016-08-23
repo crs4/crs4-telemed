@@ -5,9 +5,11 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import it.crs4.most.demo.TeleconsultationException;
+
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 6108801942060044140L;
+    private static final long serialVersionUID = 1L;
 
     private String mUsername = null;
     private String mFirstName = null;
@@ -59,7 +61,7 @@ public class User implements Serializable {
         return getUsername();
     }
 
-    public static User fromJSON(JSONObject userData) {
+    public static User fromJSON(JSONObject userData) throws TeleconsultationException {
         try {
             String firstname = userData.getString("firstname");
             String lastname = userData.getString("lastname");
@@ -67,8 +69,7 @@ public class User implements Serializable {
             return new User(firstname, lastname, username, null);
         }
         catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+            throw new TeleconsultationException();
         }
     }
 }

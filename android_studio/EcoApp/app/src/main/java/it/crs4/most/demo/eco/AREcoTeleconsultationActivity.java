@@ -53,7 +53,7 @@ import jp.epson.moverio.bt200.DisplayControl;
 
 
 public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity implements
-        CameraEventListener {
+    CameraEventListener {
     protected static final String TAG = "LocalARActivity";
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
@@ -67,14 +67,15 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive, intent.getAction() " + intent.getAction());
-            if(intent.getAction().equals("HOLDCALL")){
+            if (intent.getAction().equals("HOLDCALL")) {
                 toggleHoldCall(toggle);
                 toggle = !toggle;
             }
-            else if (intent.getAction().equals("HANGUP")){
+            else if (intent.getAction().equals("HANGUP")) {
                 hangupCall();
             }
         }
@@ -99,39 +100,39 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 if (event == null) {
                     context.sendBroadcast(new Intent("HOLDCALL"));
                 }
-                else{
+                else {
                     int keycode = event.getKeyCode();
                     int action = event.getAction();
                     long eventTime = event.getEventTime();
 
                     Log.d(TAG, "eventTime " + eventTime);
 //                    if (keycode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keycode == KeyEvent.KEYCODE_HEADSETHOOK) {
-                        if (action == KeyEvent.ACTION_DOWN && ! actionDownReceived) {
-                            Log.d("EVENT", "ACTION_DOWN, eventTime " + eventTime);
-                            actionDownTime = eventTime;
-                            actionDownReceived = true;
+                    if (action == KeyEvent.ACTION_DOWN && !actionDownReceived) {
+                        Log.d("EVENT", "ACTION_DOWN, eventTime " + eventTime);
+                        actionDownTime = eventTime;
+                        actionDownReceived = true;
 //                            timer.schedule(new TimerTask() {
 //                                @Override
 //                                public void run() {
 //                                    ctx.sendBroadcast(new Intent("HANGUP"));
 //                                }
 //                            }, 1000);
+                    }
+                    else if (action == KeyEvent.ACTION_UP) {
+                        Log.d("EVENT", "ACTION_UP eventTime " + eventTime);
+                        Log.d("EVENT", "eventTime - actionDownTime " + (eventTime - actionDownTime));
+                        if (eventTime - actionDownTime < 1000) {
+                            Log.d("EVENT", "HOLDCALL intent");
+                            context.sendBroadcast(new Intent("HOLDCALL"));
                         }
-                        else if(action == KeyEvent.ACTION_UP){
-                            Log.d("EVENT", "ACTION_UP eventTime " + eventTime);
-                            Log.d("EVENT", "eventTime - actionDownTime " + (eventTime - actionDownTime));
-                            if (eventTime - actionDownTime < 1000){
-                                Log.d("EVENT", "HOLDCALL intent");
-                                context.sendBroadcast(new Intent("HOLDCALL"));
-                            }
-                            else{
-                                Log.d("EVENT", "HANGUP intent");
-                                ctx.sendBroadcast(new Intent("HANGUP"));
-                            }
-                            actionDownReceived = false;
+                        else {
+                            Log.d("EVENT", "HANGUP intent");
+                            ctx.sendBroadcast(new Intent("HANGUP"));
+                        }
+                        actionDownReceived = false;
 //                            timer.cancel();
 //                            context.sendBroadcast(new Intent("HOLDCALL"));
-                        }
+                    }
 //                    }
                 }
             }
@@ -156,7 +157,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        decorView.setSystemUiVisibility(uiOptions);
 
 
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE) ;
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         ComponentName componentName = new ComponentName(this, RemoteControlReceiver.class);
         am.registerMediaButtonEventReceiver(componentName);
 
@@ -170,7 +171,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         assetHelper.cacheAssetFolder(this, "Data");
 
 
-        if((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))){
+        if ((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))) {
             Log.d(TAG, "loading optical files");
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
         }
@@ -184,16 +185,16 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
         setupVoipLib();
 
-        String specAppAddress =  teleconsultation.getLastSession().getSpecAppAddress();
+        String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
         Log.d(TAG, "SpecApp Address: " + specAppAddress);
         ZMQSubscriber subscriber = new ZMQSubscriber(specAppAddress);
         Thread subThread = new Thread(subscriber);
         subThread.start();
-        if (mOpticalARToolkit != null){
+        if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
             renderer = new OpticalRenderer(this, subscriber, mOpticalARToolkit);
         }
-        else{
+        else {
             renderer = new PubSubARRenderer(this, subscriber);
         }
 
@@ -205,22 +206,24 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     protected void onStart() {
         super.onStart();
         Log.i("ARActivity", "onStart(): Activity starting.");
-        if(!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
+        if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
             (new AlertDialog.Builder(this)).
-                    setMessage("The native library is not loaded. The application cannot continue.").
-                    setTitle("Error").setCancelable(true).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                setMessage("The native library is not loaded. The application cannot continue.").
+                setTitle("Error").setCancelable(true).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     AREcoTeleconsultationActivity.this.finish();
                 }
             }).show();
-        } else {
+        }
+        else {
             this.mainLayout = this.supplyFrameLayout();
-            if(this.mainLayout == null) {
+            if (this.mainLayout == null) {
                 Log.e("ARActivity", "onStart(): Error: supplyFrameLayout did not return a layout.");
             }
         }
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -231,8 +234,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
                     DisplayControl displayControl = new DisplayControl(AREcoTeleconsultationActivity.this);
                     boolean stereo = PreferenceManager.getDefaultSharedPreferences(AREcoTeleconsultationActivity.this).
-                            getBoolean("pref_stereoDisplay", false);
-            displayControl.setMode(DisplayControl.DISPLAY_MODE_3D, stereo);
+                        getBoolean("pref_stereoDisplay", false);
+                    displayControl.setMode(DisplayControl.DISPLAY_MODE_3D, stereo);
 //            Window win = getWindow();
 //            WindowManager.LayoutParams winParams = win.getAttributes();
 ////        winParams.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
@@ -256,20 +259,22 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        this.glView = new GLSurfaceView(this);
         this.glView = new TouchGLSurfaceView(this);
 
-        ActivityManager activityManager = (ActivityManager)this.getSystemService("activity");
+        ActivityManager activityManager = (ActivityManager) this.getSystemService("activity");
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 131072;
-        if(supportsEs2) {
+        if (supportsEs2) {
             Log.i("ARActivity", "onResume(): OpenGL ES 2.x is supported");
-            if((ARRenderer)renderer instanceof ARRendererGLES20) {
+            if ((ARRenderer) renderer instanceof ARRendererGLES20) {
                 this.glView.setEGLContextClientVersion(2);
-            } else {
+            }
+            else {
                 Log.w("ARActivity", "onResume(): OpenGL ES 2.x is supported but only a OpenGL 1.x renderer is available. \n Use ARRendererGLES20 for ES 2.x support. \n Continuing with OpenGL 1.x.");
                 this.glView.setEGLContextClientVersion(1);
             }
-        } else {
+        }
+        else {
             Log.i("ARActivity", "onResume(): Only OpenGL ES 1.x is supported");
-            if((ARRenderer)renderer instanceof ARRendererGLES20) {
+            if ((ARRenderer) renderer instanceof ARRendererGLES20) {
                 throw new RuntimeException("Only OpenGL 1.x available but a OpenGL 2.x renderer was provided.");
             }
 
@@ -277,7 +282,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         }
 
 //        this.glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        Log.d(TAG, "ready to call setRenderer with " + (renderer !=null));
+        Log.d(TAG, "ready to call setRenderer with " + (renderer != null));
         this.glView.getHolder().setFormat(-3);
         this.glView.setRenderer((PubSubARRenderer) renderer);
         Log.d(TAG, "setRenderer called");
@@ -287,14 +292,14 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         this.mainLayout.addView(this.preview, new ViewGroup.LayoutParams(-1, -1));
         this.mainLayout.addView(this.glView, new ViewGroup.LayoutParams(-1, -1));
         Log.i("ARActivity", "onResume(): Views added to main layout.");
-        if(this.glView != null) {
+        if (this.glView != null) {
             this.glView.onResume();
         }
     }
 
     protected void onPause() {
         super.onPause();
-        if(this.glView != null) {
+        if (this.glView != null) {
             this.glView.onPause();
         }
 
@@ -309,10 +314,11 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == org.artoolkit.ar.base.R.id.settings) {
+        if (item.getItemId() == org.artoolkit.ar.base.R.id.settings) {
             this.startActivity(new Intent(this, CameraPreferencesActivity.class));
             return true;
-        } else {
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -326,14 +332,14 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
-        if(ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
+        if (ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
             Log.d(TAG, String.format("Build.MANUFACTURER %s", Build.MANUFACTURER));
             Log.d(TAG, String.format("Build.MODEL %s", Build.MODEL));
 
-            if(mOpticalARToolkit != null){
+            if (mOpticalARToolkit != null) {
                 Log.d(TAG, "loading optical files");
-                if ( mOpticalARToolkit.initialiseAR(
-                        "Data/optical_param_left.dat", "Data/optical_param_right") > 0){
+                if (mOpticalARToolkit.initialiseAR(
+                    "Data/optical_param_left.dat", "Data/optical_param_right") > 0) {
                     Log.d(TAG, "loaded optical files");
                     Log.d(TAG, "getEyeRproject len " + mOpticalARToolkit.getEyeRproject().length);
                 }
@@ -345,21 +351,23 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             Log.i("ARActivity", "getGLView(): Camera initialised");
 
 
-        } else {
+        }
+        else {
             Log.e("ARActivity", "getGLView(): Error initialising camera. Cannot continue.");
             this.finish();
         }
 
-        Toast.makeText(this, "Camera settings: " + width + "x" + height + "@" + rate + "fps", 0).show();
+        Toast.makeText(this, "Camera settings: " + width + "x" + height + "@" + rate + "fps", Toast.LENGTH_SHORT).show();
         this.firstUpdate = true;
     }
 
     public void cameraPreviewFrame(byte[] frame) {
-        if(this.firstUpdate) {
+        if (this.firstUpdate) {
 
-            if(this.renderer.configureARScene()) {
+            if (this.renderer.configureARScene()) {
                 Log.i("ARActivity", "cameraPreviewFrame(): Scene configured successfully");
-            } else {
+            }
+            else {
                 Log.e("ARActivity", "cameraPreviewFrame(): Error configuring scene. Cannot continue.");
                 this.finish();
             }
@@ -367,9 +375,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.firstUpdate = false;
         }
 
-        if(ARToolKit.getInstance().convertAndDetect(frame)) {
+        if (ARToolKit.getInstance().convertAndDetect(frame)) {
 
-            if(this.glView != null) {
+            if (this.glView != null) {
                 this.glView.requestRender();
             }
 

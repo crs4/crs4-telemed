@@ -9,13 +9,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
+import com.android.volley.Response;
 
 import it.crs4.most.demo.ConfigFragment;
 import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.models.TaskGroup;
 
@@ -34,9 +34,9 @@ import android.widget.TextView;
 public class UserSelectionFragment extends ConfigFragment {
     protected static final String TAG = "UserSelectionFragment";
 
-    private ArrayList<User> mEcoArray;
-    private ArrayAdapter<User> mEcoArrayAdapter;
-    private TaskGroup mSelectedTaskgroup;
+    private ArrayList<User> mUsers;
+    private ArrayAdapter<User> mUsersAdapter;
+    private TaskGroup mTaskgroup;
 
     public static UserSelectionFragment newInstance(IConfigBuilder config) {
         UserSelectionFragment fragment = new UserSelectionFragment();
@@ -45,23 +45,18 @@ public class UserSelectionFragment extends ConfigFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.eco_list, container, false);
-        mSelectedTaskgroup = new TaskGroup(QuerySettings.getTaskGroup(getActivity()), null);
-        mEcoArray = new ArrayList<>();
-        mEcoArrayAdapter = new UserArrayAdapter(this, R.layout.eco_row, mEcoArray);
+        View view = inflater.inflate(R.layout.fragment_user_selection_list, container, false);
+        mTaskgroup = new TaskGroup(QuerySettings.getTaskGroup(getActivity()), null);
+        mUsers = new ArrayList<>();
+        mUsersAdapter = new UserAdapter(this, R.layout.fragment_user_selection_item, mUsers);
 
         ListView listView = (ListView) view.findViewById(R.id.operator_list);
-        listView.setAdapter(mEcoArrayAdapter);
+        listView.setAdapter(mUsersAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                User selectedUser = mEcoArray.get(position);
+                User selectedUser = mUsers.get(position);
                 getConfigBuilder().setUser(selectedUser);
             }
         });
@@ -77,47 +72,48 @@ public class UserSelectionFragment extends ConfigFragment {
     private void retrieveUsers() {
         String taskgroupId = QuerySettings.getTaskGroup(getActivity());
         if (taskgroupId != null) {
-            getConfigBuilder().getRemoteConfigReader().
-                getUsersByTaskgroup(taskgroupId,
-                    new Listener<JSONObject>() {
+            getConfigBuilder().getRemoteConfigReader()
+                .getUsersByTaskgroup(taskgroupId,
+                    new Response.Listener<JSONObject>() {
                         @Override
-                        public void onResponse(JSONObject users) {
-                            retrieveSelectedUser(users);
+                        public void onResponse(JSONObject usersData) {
+                            final JSONArray users;
+                            try {
+                                boolean success = usersData != null && usersData.getBoolean("success");
+                                if (!success) {
+                                    Log.e(TAG, "No valid users found for this taskgroup");
+                                    return;
+                                }
+                                users = usersData.getJSONObject("data")
+                                    .getJSONArray("applicants");
+                            }
+                            catch (JSONException e) {
+                                Log.e(TAG, "Error loading user information");
+                                e.printStackTrace();
+                                return;
+                            }
+
+                            for (int i = 0; i < users.length(); i++) {
+                                User u;
+                                try {
+                                    u = User.fromJSON(users.getJSONObject(i));
+                                    u.setTaskGroup(mTaskgroup);
+                                    mUsers.add(u);
+                                    mUsersAdapter.notifyDataSetChanged();
+                                }
+                                catch (TeleconsultationException | JSONException e) {
+                                    Log.e(TAG, "Error loading user information");
+                                }
+                            }
                         }
                     },
-                    new ErrorListener() {
+                    new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError arg0) {
                             Log.e(TAG, "Error retrieving the taskgroup users: " + arg0);
-                            //mLoadingConfigDialog.setMessage("No users found for the selected taskgroup: " + arg0);
                             // [TODO] Handle the error
                         }
                     });
-        }
-    }
-
-    private void retrieveSelectedUser(final JSONObject users_data) {
-        try {
-            boolean success = (users_data != null && users_data.getBoolean("success"));
-            if (!success) {
-                Log.e(TAG, "No valid users found for this taskgroup");
-                return;
-            }
-
-            final JSONArray users = users_data.getJSONObject("data").getJSONArray("applicants");
-
-            for (int i = 0; i < users.length(); i++) {
-                User u = User.fromJSON(users.getJSONObject(i));
-                if (u != null) {
-                    u.setTaskGroup(mSelectedTaskgroup);
-                    mEcoArray.add(u);
-                }
-            }
-            mEcoArrayAdapter.notifyDataSetChanged();
-
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
@@ -131,12 +127,10 @@ public class UserSelectionFragment extends ConfigFragment {
         return R.string.user_selection_title;
     }
 
-    private class UserArrayAdapter extends ArrayAdapter<User> {
+    private class UserAdapter extends ArrayAdapter<User> {
 
-        public UserArrayAdapter(UserSelectionFragment userSelectionFragment, int textViewResourceId,
-                                List<User> objects) {
-
-            super(userSelectionFragment.getActivity(), textViewResourceId, objects);
+        public UserAdapter(UserSelectionFragment fragment, int textViewId, List<User> users) {
+            super(fragment.getActivity(), textViewId, users);
         }
 
         @Override
@@ -149,7 +143,7 @@ public class UserSelectionFragment extends ConfigFragment {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.eco_row, null);
+                convertView = inflater.inflate(R.layout.fragment_user_selection_item, null);
                 viewHolder = new ViewHolder();
                 viewHolder.username = (TextView) convertView.findViewById(R.id.text_operator_username);
                 convertView.setTag(viewHolder);

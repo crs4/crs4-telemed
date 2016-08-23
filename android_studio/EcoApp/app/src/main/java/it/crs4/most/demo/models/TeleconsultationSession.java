@@ -13,13 +13,14 @@ import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.voip.Utils;
 
 public class TeleconsultationSession implements Serializable {
-    private static final long serialVersionUID = -6277133365800493720L;
+    private static final long serialVersionUID = 1L;
     private static final String TAG = "TeleconsultationSession";
     private String mId;
     private String mSpecAppAddress;
     private TeleconsultationSessionState mSessionState;
     private HashMap<String, String> voipParams;
     private Room mRoom;
+    private Context mContext;
 
     //TODO: Should have also the room in the constructor
     public TeleconsultationSession(String id, String specAppAddress,
@@ -35,6 +36,16 @@ public class TeleconsultationSession implements Serializable {
         String localUser;
         String remoteUser;
         String paramName;
+        String sipServerIp;
+        String sipServerPort;
+        String sipServerTransport;
+        String sipUserName;
+        String sipUserPwd;
+        String remoteExtData;
+        String onHoldSoundPath;
+        String incomingCallPath;
+        String onOutcomingCallPath;
+//        String[] mRoles = mContext.getResources().getStringArray(R.array.roles_entries_values);
 
         if (role.equals("eco_role")) {   //TODO: should not be hardwired
             localUser = "applicant";
@@ -48,39 +59,41 @@ public class TeleconsultationSession implements Serializable {
         }
         try {
             localExtData = sessionData.getJSONObject("teleconsultation").getJSONObject(localUser).getJSONObject("voip_data");
-            String sipServerIp = localExtData.getJSONObject("sip_server").getString("address");
-            String sipServerPort = localExtData.getJSONObject("sip_server").getString("port");
-            String sipServerTransport = localExtData.getString("sip_transport");
-            String sipUserName = localExtData.getString("sip_user");
-            String sipUserPwd = localExtData.getString("sip_password");
-            String remoteExtData = sessionData.getJSONObject("teleconsultation").getJSONObject(remoteUser).getJSONObject("voip_data").getString("extension");
-            String onHoldSoundPath = Utils.getResourcePathByAssetCopy(context, "", "test_hold.wav");
-            String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(context, "", "ring_in_call.wav");
-            String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(context, "", "ring_out_call.wav");
-
-            voipParams = new HashMap<>();
-            voipParams.put("sipServerIp", sipServerIp);
-            voipParams.put("sipServerPort", sipServerPort); // default 5060
-            voipParams.put("sipServerTransport", sipServerTransport);
-
-            // used by the app for calling the specified extension, not used directly by the VoipLib (TO CHECK)
-            voipParams.put(paramName, remoteExtData);
-
-            // specialista
-            voipParams.put("sipUserPwd", sipUserPwd);
-            voipParams.put("sipUserName", sipUserName);
-            voipParams.put("onHoldSound", onHoldSoundPath);
-            voipParams.put("onIncomingCallSound", onIncomingCallRingTonePath);
-            voipParams.put("onOutcomingCallSound", onOutcomingCallRingTonePath);
-            //params.put("turnServerIp",  sipServerIp);
-            //params.put("turnServerUser",sipUserName);
-            //params.put("turnServerPwd",sipUserPwd);
-
+            sipServerIp = localExtData.getJSONObject("sip_server").getString("address");
+            sipServerPort = localExtData.getJSONObject("sip_server").getString("port");
+            sipServerTransport = localExtData.getString("sip_transport");
+            sipUserName = localExtData.getString("sip_user");
+            sipUserPwd = localExtData.getString("sip_password");
+            remoteExtData = sessionData.getJSONObject("teleconsultation").getJSONObject(remoteUser).getJSONObject("voip_data").getString("extension");
+            onHoldSoundPath = Utils.getResourcePathByAssetCopy(context, "", "test_hold.wav");
+            incomingCallPath = Utils.getResourcePathByAssetCopy(context, "", "ring_in_call.wav");
+            onOutcomingCallPath = Utils.getResourcePathByAssetCopy(context, "", "ring_out_call.wav");
         }
         catch (JSONException e) {
             // TODO Auto-generated catch block
+            Log.e(TAG, "Error loading voip data");
             e.printStackTrace();
+            return;
         }
+
+        voipParams = new HashMap<>();
+        voipParams.put("sipServerIp", sipServerIp);
+        voipParams.put("sipServerPort", sipServerPort); // default 5060
+        voipParams.put("sipServerTransport", sipServerTransport);
+
+        // used by the app for calling the specified extension, not used directly by the VoipLib (TO CHECK)
+        voipParams.put(paramName, remoteExtData);
+
+        // specialista
+        voipParams.put("sipUserPwd", sipUserPwd);
+        voipParams.put("sipUserName", sipUserName);
+        voipParams.put("onHoldSound", onHoldSoundPath);
+        voipParams.put("onIncomingCallSound", incomingCallPath);
+        voipParams.put("onOutcomingCallSound", onOutcomingCallPath);
+        //params.put("turnServerIp",  sipServerIp);
+        //params.put("turnServerUser",sipUserName);
+        //params.put("turnServerPwd",sipUserPwd);
+
     }
 
     public HashMap<String, String> getVoipParams() {
@@ -147,7 +160,7 @@ public class TeleconsultationSession implements Serializable {
 
         Room room = Room.fromJSON(roomData);
         TeleconsultationSession tcSession = new TeleconsultationSession(id, specAppAddress,
-                TeleconsultationSessionState.getState(state), room);
+            TeleconsultationSessionState.getState(state), room);
 
         tcSession.setVoipParams(context, sessionData, role);
         return tcSession;

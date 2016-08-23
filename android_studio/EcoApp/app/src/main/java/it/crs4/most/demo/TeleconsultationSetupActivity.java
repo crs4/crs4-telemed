@@ -40,7 +40,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 
 public class TeleconsultationSetupActivity extends AppCompatActivity implements IConfigBuilder {
-    private static final String TAG = "MostViewPager";
+    private static final String TAG = "TeleconsultationSetup";
 
     private ConfigFragment[] mConfigFragments;
     private MostViewPager mVpPager;
@@ -98,8 +98,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     }
 
     private void setupConfigFragments() {
-        if (mRole.equals(mRoles[0])) {
-            mConfigFragments = new ConfigFragment[]{
+        if (mRole.equals(mRoles[0])) { // Ecographist
+            mConfigFragments = new ConfigFragment[] {
                 UserSelectionFragment.newInstance(this),
                 EnterCredentialsFragment.newInstance(this,
                     EnterCredentialsFragment.PASSCODE_CREDENTIALS),
@@ -107,8 +107,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
                 SummaryFragment.newInstance(this)
             };
         }
-        else {
-            mConfigFragments = new ConfigFragment[]{
+        else {  // Specialist
+            mConfigFragments = new ConfigFragment[] {
                 UserSelectionFragment.newInstance(this),
                 EnterCredentialsFragment.newInstance(this,
                     EnterCredentialsFragment.PASSWORD_CREDENTIALS),
@@ -135,6 +135,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
         mVpPager.setInternalCurrentItem(0, 0);
     }
 
+    @Override
     public void setUser(User user) {
         mUser = user;
         if (mUser != null) {
@@ -142,6 +143,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
         }
     }
 
+    @Override
     public User getUser() {
         return mUser;
     }
@@ -217,8 +219,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
                         try {
                             sessionData = response.getJSONObject("data").getJSONObject("session");
                             String role = QuerySettings.getRole(TeleconsultationSetupActivity.this);
-                            selectedTc.getLastSession().setVoipParams(getApplication(),
-                                sessionData, role);
+                            selectedTc.getLastSession().setVoipParams(getApplication(), sessionData, role);
                             Intent i = new Intent(TeleconsultationSetupActivity.this,
                                 SpecTeleconsultationActivity.class);
                             i.putExtra("User", mUser);

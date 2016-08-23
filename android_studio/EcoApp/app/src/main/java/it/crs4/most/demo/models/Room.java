@@ -10,7 +10,8 @@ import java.io.Serializable;
 import it.crs4.most.demo.TeleconsultationException;
 
 public class Room implements Serializable {
-    private static final long serialVersionUID = 4399813546588966888L;
+
+    private static final long serialVersionUID = 1L;
     private static final String TAG = "Room";
     private String mId;
     private String mName;

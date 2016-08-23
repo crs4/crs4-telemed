@@ -12,21 +12,18 @@ import it.crs4.most.demo.TeleconsultationException;
 
 public class Teleconsultation implements Serializable {
 
-    private static final long serialVersionUID = -1408055529735190987L;
+    private static final long serialVersionUID = 1L;
     private static final String TAG = "Teleconsultation";
     private String mId;
     private String mDescription;
-    private Room mRoom;
     private String mSeverity;
     private User mUser;
     private TeleconsultationSession mSession;
 
-    public Teleconsultation(String id, String description,
-                            String severity, Room room, User user) {
+    public Teleconsultation(String id, String description, String severity, User user) {
         mId = id;
         mDescription = description;
         mSeverity = severity;
-        mRoom = room;
         mUser = user;
     }
 
@@ -50,10 +47,6 @@ public class Teleconsultation implements Serializable {
         return mUser;
     }
 
-    public Room getRoom() {
-        return mRoom;
-    }
-
     public TeleconsultationSession getLastSession() {
         return mSession;
     }
@@ -62,7 +55,8 @@ public class Teleconsultation implements Serializable {
         mSession = session;
     }
 
-    public static Teleconsultation fromJSON(Context context, JSONObject teleconsultationData, String role) throws TeleconsultationException {
+    public static Teleconsultation fromJSON(Context context, JSONObject teleconsultationData,
+                                            String role) throws TeleconsultationException {
         String id;
         String description;
         String severity;
@@ -76,7 +70,7 @@ public class Teleconsultation implements Serializable {
             throw new TeleconsultationException();
         }
 
-        Teleconsultation t = new Teleconsultation(id, description, severity, null, null);
+        Teleconsultation t = new Teleconsultation(id, description, severity, null);
         try {
             JSONObject lastSessionData = teleconsultationData.getJSONObject("last_session");
             TeleconsultationSession lastSession = TeleconsultationSession.fromJSON(context, lastSessionData, role);

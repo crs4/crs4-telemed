@@ -9,7 +9,7 @@ import it.crs4.most.demo.TeleconsultationException;
 
 public class Device implements Serializable {
 
-    private static final long serialVersionUID = -7284527758558743253L;
+    private static final long serialVersionUID = 1L;
     private String mStreamUri = null;
     private String mShotUri = null;
     private String mWebUri = null;

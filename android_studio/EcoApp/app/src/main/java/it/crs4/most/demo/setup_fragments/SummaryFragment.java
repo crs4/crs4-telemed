@@ -39,7 +39,7 @@ import android.widget.Spinner;
 
 public class SummaryFragment extends ConfigFragment {
 
-    private static String TAG = "MostFragmentSummary";
+    private static String TAG = "SumamryFragment";
 
     private EditText mTxtPatientFullName;
     private EditText mPatientId;
@@ -67,21 +67,92 @@ public class SummaryFragment extends ConfigFragment {
                 createNewTeleconsultation();
             }
         });
-        setupTcSeveritySpinner(view);
-        setupTcRoomSpinner(view);
+        setupSeveritySpinner(view);
+        setupRoomSpinner(view);
 
         return view;
     }
 
+    @Override
+    public void onShow() {
+        Patient patient = getConfigBuilder().getPatient();
+        if (patient != null) {
+            mTxtPatientFullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
+            mPatientId.setText(patient.getId());
+            mTxtPatientFullName.setFocusable(false);
+            mPatientId.setFocusable(false);
+            mPatientId.setFocusable(false);
+        }
+        else {
+            mTxtPatientFullName.setFocusable(true);
+            mPatientId.setFocusable(true);
+        }
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.summary_title;
+    }
+
+    private void setupSeveritySpinner(View view) {
+        mSeveritySpinner = (Spinner) view.findViewById(R.id.spinner_summary_severity);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+            getActivity(), R.array.tc_severities, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSeveritySpinner.setAdapter(adapter);
+    }
+
+    private void setupRoomSpinner(View view) {
+        mRoomSpinner = (Spinner) view.findViewById(R.id.spinner_summary_room);
+        if (getConfigBuilder() != null) {
+            String accessToken = getConfigBuilder().getUser().getAccessToken();
+            getConfigBuilder().getRemoteConfigReader().getRooms(accessToken,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject roomsData) {
+                        ArrayList<Room> rooms = new ArrayList<>();
+                        try {
+                            JSONArray jrooms = roomsData.getJSONObject("data").getJSONArray("rooms");
+
+                            for (int i = 0; i < jrooms.length(); i++) {
+                                JSONObject roomData = jrooms.getJSONObject(i);
+                                Room r = null;
+                                try {
+                                    r = Room.fromJSON(roomData);
+                                    rooms.add(r);
+                                }
+                                catch (TeleconsultationException e) {
+                                    Log.e(TAG, "There's something wrong with the Room's JSON structure");
+                                }
+                            }
+                        }
+                        catch (JSONException e) {
+                            Log.e(TAG, "There's something wrong with the Room's JSON structure");
+                        }
+
+                        ArrayAdapter<Room> adapter = new ArrayAdapter<>(
+                            getActivity(), android.R.layout.simple_spinner_item, rooms);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+                        mRoomSpinner.setAdapter(adapter);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError arg0) {
+                        Log.e(TAG, "Error retrieving rooms:" + arg0);
+                    }
+                });
+        }
+    }
+
     private void createNewTeleconsultation() {
-        final String description = "Teleconsultation 0001";
+        final String description = "Teleconsultation 0001";  //TODO: this should be editable in the summary
         final String severity = mSeveritySpinner.getSelectedItem().toString();
         final Room room = (Room) mRoomSpinner.getSelectedItem();
-//        retrieveRoomDevices(room);  This is not required anymore since getRooms now returns als info about the streaming devices
 
         Log.d(TAG, String.format("Creating teleconsultation with room: %s and desc:%s", room.getId(), description));
-        getConfigBuilder().getRemoteConfigReader().
-            createNewTeleconsultation(
+        getConfigBuilder().getRemoteConfigReader()
+            .createNewTeleconsultation(
                 description,
                 severity,
                 room.getId(),
@@ -98,7 +169,7 @@ public class SummaryFragment extends ConfigFragment {
                                 getJSONObject("teleconsultation").
                                 getString("uuid");
                             Teleconsultation t = new Teleconsultation(uuid, description, severity,
-                                room, getConfigBuilder().getUser());
+                                getConfigBuilder().getUser());
 
                             createTeleconsultationSession(t);
                         }
@@ -107,7 +178,8 @@ public class SummaryFragment extends ConfigFragment {
                             e.printStackTrace();
                         }
                     }
-                }, new Response.ErrorListener() {
+                },
+                new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError err) {
@@ -118,22 +190,22 @@ public class SummaryFragment extends ConfigFragment {
 
     private void createTeleconsultationSession(final Teleconsultation teleconsultation) {
         User user = getConfigBuilder().getUser();
+        final Room room = (Room) mRoomSpinner.getSelectedItem();
         getConfigBuilder().getRemoteConfigReader().createNewTeleconsultationSession(
             teleconsultation.getId(),
-            teleconsultation.getRoom().getId(),
+            room.getId(),
             user.getAccessToken(),
             new Response.Listener<String>() {
-
                 @Override
-                public void onResponse(String tcSessionData) {
-                    Log.d(TAG, "Created teleconsultation session: " + tcSessionData);
+                public void onResponse(String sessionData) {
+                    Log.d(TAG, "Created teleconsultation session: " + sessionData);
                     try {
-                        JSONObject sessionData = new JSONObject(tcSessionData).
+                        JSONObject jsonData = new JSONObject(sessionData).
                             getJSONObject("data").
                             getJSONObject("session");
-                        String sessionUUID = sessionData.getString("uuid");
+                        String sessionUUID = jsonData.getString("uuid");
                         TeleconsultationSession s = new TeleconsultationSession(sessionUUID,
-                            null, TeleconsultationSessionState.NEW, teleconsultation.getRoom());
+                            null, TeleconsultationSessionState.NEW, room);
                         teleconsultation.setLastSession(s);
                         startSession(teleconsultation);
                     }
@@ -171,45 +243,21 @@ public class SummaryFragment extends ConfigFragment {
             });
     }
 
-//    private void retrieveRoomDevices(final Room room) {
-//        User user = getConfigBuilder().getUser();
-//        getConfigBuilder().getRemoteConfigReader().getRoom(
-//            room.getId(),
-//            user.getAccessToken(),
-//            new Response.Listener<JSONObject>() {
-//                @Override
-//                public void onResponse(JSONObject jroom) {
-//                    room.setEncoder(getDevice(jroom, "encoder"));
-//                    room.setCamera(getDevice(jroom, "camera"));
-//                    Log.d(TAG, "TC Encoder: " + room.getEncoder());
-//                    Log.d(TAG, "TC Camera: " + room.getCamera());
-//                }
-//            },
-//            new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError e) {
-//                    Log.e(TAG, "Error retrieving device json data: " + e);
-//
-//                }
-//            });
-//    }
-
-
     private void waitForSpecialist(final Teleconsultation tc) {
-        ProgressDialog waitForSpecialistDialog = new ProgressDialog(getActivity());
-        waitForSpecialistDialog.setTitle(getString(R.string.waiting_for_specialist));
-        waitForSpecialistDialog.setMessage("A consultation request has been sent\nWait for the specialist to respond");
-        waitForSpecialistDialog.setCancelable(false);
-        waitForSpecialistDialog.setCanceledOnTouchOutside(false);
-        waitForSpecialistDialog.setButton(ProgressDialog.BUTTON_NEGATIVE,
+        ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setTitle(getString(R.string.waiting_for_specialist));
+        dialog.setMessage(getString(R.string.wait_for_specialist_message));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setButton(ProgressDialog.BUTTON_NEGATIVE,
             getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(final DialogInterface dialog, int which) {
                     closeSessionAndTeleconsultation(tc);
                 }
             });
-        waitForSpecialistDialog.show();
-        pollForSpecialist(waitForSpecialistDialog, tc);
+        dialog.show();
+        pollForSpecialist(dialog, tc);
     }
 
     private void closeSessionAndTeleconsultation(final Teleconsultation tc) {
@@ -248,7 +296,7 @@ public class SummaryFragment extends ConfigFragment {
             });
     }
 
-    private void pollForSpecialist(final ProgressDialog wfsd, final Teleconsultation tc) {
+    private void pollForSpecialist(final ProgressDialog dialog, final Teleconsultation tc) {
         mWaitForSpecialistHandler = new Handler();
         mWaitForSpecialistTask = new Runnable() {
             @Override
@@ -267,11 +315,11 @@ public class SummaryFragment extends ConfigFragment {
                                     mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 10000);
                                 }
                                 else if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
-                                    wfsd.dismiss();
+                                    dialog.dismiss();
                                 }
                                 else {
                                     tc.getLastSession().setSpecAppAddress(specAppAddress);
-                                    wfsd.dismiss();
+                                    dialog.dismiss();
                                     runSession(tc);
                                 }
                             }
@@ -285,7 +333,7 @@ public class SummaryFragment extends ConfigFragment {
                         @Override
                         public void onErrorResponse(VolleyError arg0) {
                             Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
-                            wfsd.dismiss();
+                            dialog.dismiss();
                         }
                     });
             }
@@ -295,10 +343,10 @@ public class SummaryFragment extends ConfigFragment {
 
     private void runSession(final Teleconsultation tc) {
         User user = getConfigBuilder().getUser();
-        getConfigBuilder().getRemoteConfigReader().runSession(tc.getLastSession().getId(),
+        getConfigBuilder().getRemoteConfigReader().runSession(
+            tc.getLastSession().getId(),
             user.getAccessToken(),
             new Response.Listener<JSONObject>() {
-
                 @Override
                 public void onResponse(JSONObject sessionData) {
                     String role = QuerySettings.getRole(getActivity());
@@ -315,105 +363,9 @@ public class SummaryFragment extends ConfigFragment {
             },
             new Response.ErrorListener() {
                 @Override
-                public void onErrorResponse(VolleyError arg0) {
-                    Log.e(TAG, "Error running the session: " + arg0);
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error running the session: " + error);
                 }
             });
-    }
-
-//    private Device getDevice(JSONObject room, String deviceName) {
-//        JSONObject jsonDevice;
-//        try {
-//            jsonDevice = room.getJSONObject("data").getJSONObject("room").
-//                getJSONObject("devices").getJSONObject(deviceName);
-//            return new Device(jsonDevice.getString("name"),
-//                jsonDevice.getJSONObject("capabilities").getString("streaming"),
-//                jsonDevice.getJSONObject("capabilities").getString("shot"),
-//                jsonDevice.getJSONObject("capabilities").getString("web"),
-//                jsonDevice.getJSONObject("capabilities").getString("ptz"),
-//                jsonDevice.getString("user"),
-//                jsonDevice.getString("password")
-//            );
-//        }
-//        catch (JSONException e) {
-//            Log.e(TAG, "Error retrieving device data: " + e);
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
-    private void setupTcSeveritySpinner(View view) {
-        mSeveritySpinner = (Spinner) view.findViewById(R.id.spinner_summary_severity);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-            R.array.tc_severities, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSeveritySpinner.setAdapter(adapter);
-    }
-
-    private void setupTcRoomSpinner(View view) {
-        mRoomSpinner = (Spinner) view.findViewById(R.id.spinner_summary_room);
-        if (getConfigBuilder() != null) {
-            String accessToken = getConfigBuilder().getUser().getAccessToken();
-            getConfigBuilder().getRemoteConfigReader().getRooms(accessToken,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject roomsData) {
-                        try {
-                            JSONArray jrooms = roomsData.getJSONObject("data").getJSONArray("rooms");
-                            ArrayList<Room> rooms = new ArrayList<>();
-
-                            for (int i = 0; i < jrooms.length(); i++) {
-                                JSONObject roomData = jrooms.getJSONObject(i);
-                                Room r = null;
-                                try {
-                                    r = Room.fromJSON(roomData);
-                                }
-                                catch (TeleconsultationException e) {
-                                    e.printStackTrace();
-                                }
-                                rooms.add(r);
-                            }
-
-                            ArrayAdapter<Room> adapter = new ArrayAdapter<>(getActivity(),
-                                android.R.layout.simple_spinner_item, rooms);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-                            mRoomSpinner.setAdapter(adapter);
-
-                        }
-                        catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError arg0) {
-                        Log.e(TAG, "Error retrieving rooms:" + arg0);
-                    }
-                });
-        }
-    }
-
-    @Override
-    public void onShow() {
-        Patient patient = getConfigBuilder().getPatient();
-        if (patient != null) {
-            mTxtPatientFullName.setText(patient.getName() + " " + patient.getSurname());
-            mPatientId.setText(patient.getId());
-            mTxtPatientFullName.setFocusable(false);
-            mPatientId.setFocusable(false);
-            mPatientId.setFocusable(false);
-        }
-        else {
-            mTxtPatientFullName.setFocusable(true);
-            mPatientId.setFocusable(true);
-        }
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.summary_title;
     }
 }

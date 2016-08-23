@@ -72,10 +72,10 @@ import it.crs4.most.voip.enums.VoipEventType;
 
 
 public class SpecTeleconsultationActivity extends AppCompatActivity implements Handler.Callback,
-        IPtzCommandReceiver,
-        IStreamFragmentCommandListener,
-        IStreamProvider,
-        ARFragment.OnCompleteListener, SurfaceHolder.Callback {
+    IPtzCommandReceiver,
+    IStreamFragmentCommandListener,
+    IStreamProvider,
+    ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
     private final static String TAG = "SpecTeleconsultActivity";
     public final static int ZMQ_LISTENING_PORT = 5556;
@@ -133,9 +133,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 StreamState streamState = ((IStream) event.getData()).getState();
                 Log.d(TAG, "event.getData().streamState " + streamState);
                 if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                        event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED
+                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED
 
-                        ) {
+                    ) {
                     if (streamState == StreamState.PLAYING) {
 
                         Log.d(TAG, "event.getData().streamState " + streamState);
@@ -217,9 +217,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 //            PTZ_ControllerFragment ptzControllerFragment = PTZ_ControllerFragment.newInstance(true, true, true);
             Device camera = mTeleconsultation.getLastSession().getCamera();
             mPTZManager = new PTZ_Manager(this,
-                    camera.getPtzUri(), //     uriProps.getProperty("uri_ptz") ,
-                    camera.getUser(), //  uriProps.getProperty("username_ptz"),
-                    camera.getPwd() //  uriProps.getProperty("password_ptz")
+                camera.getPtzUri(), //     uriProps.getProperty("uri_ptz") ,
+                camera.getUser(), //  uriProps.getProperty("username_ptz"),
+                camera.getPwd() //  uriProps.getProperty("password_ptz")
             );
 
             // Instance the Camera stream
@@ -342,32 +342,32 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             @Override
             public void run() {
                 mConfigReader.getSessionState(mTeleconsultation.getLastSession().getId(),
-                        mTeleconsultation.getUser().getAccessToken(),
-                        new Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject res) {
-                                Log.d(TAG, "Teleconsultation state response:" + res);
-                                try {
-                                    String state = res.getJSONObject("data").getJSONObject("session").getString("state");
-                                    Log.d(TAG, "Teleconsultation state found:" + state);
-                                    if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
-                                        Log.d(TAG, "Closing session");
-                                        t.cancel();
-                                        setTeleconsultationState(TeleconsultationState.SESSION_CLOSED);
-                                    }
-                                }
-                                catch (JSONException e) {
-                                    Log.e(TAG, "Error retrieving session state:" + e);
-                                    e.printStackTrace();
+                    mTeleconsultation.getUser().getAccessToken(),
+                    new Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject res) {
+                            Log.d(TAG, "Teleconsultation state response:" + res);
+                            try {
+                                String state = res.getJSONObject("data").getJSONObject("session").getString("state");
+                                Log.d(TAG, "Teleconsultation state found:" + state);
+                                if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
+                                    Log.d(TAG, "Closing session");
+                                    t.cancel();
+                                    setTeleconsultationState(TeleconsultationState.SESSION_CLOSED);
                                 }
                             }
-                        },
-                        new ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError arg0) {
-                                Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
+                            catch (JSONException e) {
+                                Log.e(TAG, "Error retrieving session state:" + e);
+                                e.printStackTrace();
                             }
-                        });
+                        }
+                    },
+                    new ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError arg0) {
+                            Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
+                        }
+                    });
                 // config.setTeleconsultation(selectedTc);
             }
         }, 0, 5000);
@@ -425,7 +425,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
             @Override
             public void onBitmapDownloadingError(
-                    ImageDownloader imageDownloader, Exception ex) {
+                ImageDownloader imageDownloader, Exception ex) {
                 Toast.makeText(SpecTeleconsultationActivity.this, "Error downloading Image:" + ex.getMessage(), Toast.LENGTH_LONG).show();
 
             }
@@ -440,8 +440,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
         Device camera = mTeleconsultation.getLastSession().getCamera();
         ImageDownloader imageDownloader = new ImageDownloader(receiver, this,
-                camera.getUser(), //   uriProps.getProperty("username_ptz"),
-                camera.getPwd()); // uriProps.getProperty("password_ptz"));
+            camera.getUser(), //   uriProps.getProperty("username_ptz"),
+            camera.getPwd()); // uriProps.getProperty("password_ptz"));
 
         imageDownloader.downloadImage(camera.getShotUri()); //    uriProps.getProperty("uri_still_image"));
     }
@@ -706,7 +706,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 if (event == VoipEvent.BUDDY_CONNECTED) {
                     // Probably the first condition treat cases of lost network
                     if (mainActivity.mTcState == TeleconsultationState.REMOTE_HOLDING ||
-                            mainActivity.mTcState == TeleconsultationState.HOLDING) {
+                        mainActivity.mTcState == TeleconsultationState.HOLDING) {
                         if (mainActivity.mLocalHold) {
                             mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
                         }
@@ -721,7 +721,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 }
                 else if (event == VoipEvent.BUDDY_HOLDING) {
                     if (mainActivity.mVoipLib.getCall().getState() == CallState.ACTIVE ||
-                            mainActivity.mVoipLib.getCall().getState() == CallState.HOLDING) {
+                        mainActivity.mVoipLib.getCall().getState() == CallState.HOLDING) {
                         mainActivity.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
                     }
                 }
@@ -752,7 +752,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 //TODO: check what to do
             }
             else if (event == VoipEvent.LIB_INITIALIZATION_FAILED || event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
-                    event == VoipEvent.LIB_CONNECTION_FAILED || event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED) {
+                event == VoipEvent.LIB_CONNECTION_FAILED || event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED) {
                 showErrorEventAlert(eventBundle);
             }
 
