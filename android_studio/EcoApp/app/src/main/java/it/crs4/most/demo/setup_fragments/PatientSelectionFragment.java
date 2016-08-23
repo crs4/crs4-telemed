@@ -4,7 +4,6 @@ package it.crs4.most.demo.setup_fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.crs4.most.demo.ConfigFragment;
 import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.models.Patient;
@@ -22,7 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class PatientSelectionFragment extends ConfigFragment {
+public class PatientSelectionFragment extends SetupFragment {
     private ArrayList<Patient> mPatients;
     private ArrayAdapter<Patient> mPatientArrayAdapter;
     private View mView;

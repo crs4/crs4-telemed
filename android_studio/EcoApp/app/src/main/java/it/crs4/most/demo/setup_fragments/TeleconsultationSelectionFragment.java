@@ -25,7 +25,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.crs4.most.demo.ConfigFragment;
 import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
@@ -34,7 +33,7 @@ import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.User;
 
-public class TeleconsultationSelectionFragment extends ConfigFragment {
+public class TeleconsultationSelectionFragment extends SetupFragment {
 
     private ArrayList<Teleconsultation> tcArray;
     private ArrayAdapter<Teleconsultation> tcArrayAdapter;

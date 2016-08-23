@@ -1,35 +1,21 @@
 package it.crs4.most.demo;
 
-import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
-import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
-import it.crs4.most.demo.models.TeleconsultationSessionState;
-import it.crs4.most.demo.setup_fragments.EnterCredentialsFragment;
-import it.crs4.most.demo.setup_fragments.PatientSelectionFragment;
-import it.crs4.most.demo.setup_fragments.SummaryFragment;
-import it.crs4.most.demo.setup_fragments.UserSelectionFragment;
-import it.crs4.most.demo.models.Device;
-import it.crs4.most.demo.models.User;
-import it.crs4.most.demo.models.Patient;
-import it.crs4.most.demo.models.Teleconsultation;
-import it.crs4.most.demo.setup_fragments.TeleconsultationSelectionFragment;
-import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
-
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
 import android.util.Log;
-import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
-import android.widget.ListView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -39,10 +25,25 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
+import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
+import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
+import it.crs4.most.demo.models.Device;
+import it.crs4.most.demo.models.Patient;
+import it.crs4.most.demo.models.Teleconsultation;
+import it.crs4.most.demo.models.TeleconsultationSessionState;
+import it.crs4.most.demo.models.User;
+import it.crs4.most.demo.setup_fragments.EnterCredentialsFragment;
+import it.crs4.most.demo.setup_fragments.PatientSelectionFragment;
+import it.crs4.most.demo.setup_fragments.SetupFragment;
+import it.crs4.most.demo.setup_fragments.SummaryFragment;
+import it.crs4.most.demo.setup_fragments.TeleconsultationSelectionFragment;
+import it.crs4.most.demo.setup_fragments.UserSelectionFragment;
+import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
+
 public class TeleconsultationSetupActivity extends AppCompatActivity implements IConfigBuilder {
     private static final String TAG = "TeleconsultationSetup";
 
-    private ConfigFragment[] mConfigFragments;
+    private SetupFragment[] mSetupFragments;
     private MostViewPager mVpPager;
     private User mUser;
     private Patient mPatient;
@@ -99,7 +100,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
     private void setupConfigFragments() {
         if (mRole.equals(mRoles[0])) { // Ecographist
-            mConfigFragments = new ConfigFragment[] {
+            mSetupFragments = new SetupFragment[]{
                 UserSelectionFragment.newInstance(this),
                 EnterCredentialsFragment.newInstance(this,
                     EnterCredentialsFragment.PASSCODE_CREDENTIALS),
@@ -108,7 +109,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
             };
         }
         else {  // Specialist
-            mConfigFragments = new ConfigFragment[] {
+            mSetupFragments = new SetupFragment[]{
                 UserSelectionFragment.newInstance(this),
                 EnterCredentialsFragment.newInstance(this,
                     EnterCredentialsFragment.PASSWORD_CREDENTIALS),
@@ -280,13 +281,13 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
         @Override
         public int getCount() {
-            return mainActivity.mConfigFragments.length;
+            return mainActivity.mSetupFragments.length;
         }
 
         @Override
         public Fragment getItem(int position) {
             if (position >= 0 && position < getCount()) {
-                return mainActivity.mConfigFragments[position];
+                return mainActivity.mSetupFragments[position];
             }
             else {
                 return null;
@@ -295,7 +296,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
         @Override
         public CharSequence getPageTitle(int position) {
-            int resId = mainActivity.mConfigFragments[position].getTitle();
+            int resId = mainActivity.mSetupFragments[position].getTitle();
             return mainActivity.getString(resId);
         }
     }

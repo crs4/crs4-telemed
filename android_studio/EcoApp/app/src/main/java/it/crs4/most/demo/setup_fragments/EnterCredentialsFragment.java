@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
 
-import it.crs4.most.demo.ConfigFragment;
 import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
@@ -28,7 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class EnterCredentialsFragment extends ConfigFragment {
+public class EnterCredentialsFragment extends SetupFragment {
 
     private static String TAG = "EnterCredentialsFragment";
     private static final String CREDENTIALS_TYPE = "it.crs4.most.demo.credentials_type";

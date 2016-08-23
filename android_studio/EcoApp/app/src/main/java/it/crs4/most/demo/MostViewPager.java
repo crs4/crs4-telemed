@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import it.crs4.most.demo.setup_fragments.SetupFragment;
+
 public class MostViewPager extends ViewPager {
 
     private static String TAG = "MostViewPager";
@@ -34,7 +36,7 @@ public class MostViewPager extends ViewPager {
                 " target_position:" + targetPosition + " permitted:" + permittedPos);
 
         super.setCurrentItem(targetPos);
-        ((ConfigFragment) ((TeleconsultationSetupActivity.PagerAdapter) getAdapter()).getItem(targetPos)).onShow();
+        ((SetupFragment) ((TeleconsultationSetupActivity.PagerAdapter) getAdapter()).getItem(targetPos)).onShow();
 
         manualPageChangeEnabled = getCurrentItem() == targetPos && targetPos != permittedPos;
     }

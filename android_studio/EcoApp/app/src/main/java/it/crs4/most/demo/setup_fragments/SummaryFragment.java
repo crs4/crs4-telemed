@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import it.crs4.most.demo.ConfigFragment;
 import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
@@ -37,7 +36,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 
-public class SummaryFragment extends ConfigFragment {
+public class SummaryFragment extends SetupFragment {
 
     private static String TAG = "SumamryFragment";
 

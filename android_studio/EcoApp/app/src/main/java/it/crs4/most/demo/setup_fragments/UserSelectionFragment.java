@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
 
-import it.crs4.most.demo.ConfigFragment;
 import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
@@ -31,7 +30,7 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
-public class UserSelectionFragment extends ConfigFragment {
+public class UserSelectionFragment extends SetupFragment {
     protected static final String TAG = "UserSelectionFragment";
 
     private ArrayList<User> mUsers;

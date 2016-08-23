@@ -52,7 +52,8 @@
             android:layout_marginRight="10dp"
             android:layout_weight="0.20"
             android:gravity="center_vertical"
-            android:text="@string/severity"/>
+            android:text="@string/severity"
+            android:layout_marginLeft="10dp"/>
 
         <Spinner
             android:id="@+id/spinner_summary_severity"
@@ -78,7 +79,8 @@
             android:layout_marginRight="10dp"
             android:layout_weight="0.20"
             android:gravity="center_vertical"
-            android:text="@string/room"/>
+            android:text="@string/room"
+            android:layout_marginLeft="10dp"/>
 
         <Spinner
             android:id="@+id/spinner_summary_room"
@@ -91,6 +93,7 @@
 
     <Button
         android:id="@+id/button_summary_start_emergency"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start_emergency"/>
