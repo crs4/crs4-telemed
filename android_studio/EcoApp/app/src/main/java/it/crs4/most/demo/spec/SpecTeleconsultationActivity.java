@@ -62,7 +62,6 @@ import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
-import it.crs4.most.voip.Utils;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.VoipLib;
 import it.crs4.most.voip.VoipLibBackend;
@@ -78,6 +77,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
     private final static String TAG = "SpecTeleconsultActivity";
+    public static final String TELECONSULTATION_ARG = "teleconsultation";
     public final static int ZMQ_LISTENING_PORT = 5556;
     private String MAIN_STREAM = "MAIN_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
@@ -116,7 +116,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
@@ -133,9 +132,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 StreamState streamState = ((IStream) event.getData()).getState();
                 Log.d(TAG, "event.getData().streamState " + streamState);
                 if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED
-
-                    ) {
+                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
                     if (streamState == StreamState.PLAYING) {
 
                         Log.d(TAG, "event.getData().streamState " + streamState);
@@ -152,7 +149,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             }
         };
 
-        setContentView(R.layout.spec_activity_main);
+        setContentView(R.layout.spec_teleconsultation_activity);
         setupTeleconsultationInfo();
         setTeleconsultationState(TeleconsultationState.IDLE);
         AssetHelper assetHelper = new AssetHelper(getAssets());
@@ -203,13 +200,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     private void setupTeleconsultationInfo() {
         Intent i = getIntent();
-        mTeleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+        mTeleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
 //        TextView txtTeleconsultation = (TextView) findViewById(R.id.txtTeleconsultation);
 //        txtTeleconsultation.setText(mTeleconsultation.getDescription());
     }
 
     private void setupStreamLib() {
-        Log.d(TAG, "setupStreamLib");
         try {
             StreamingLib streamingLib = new StreamingLibBackend();
             streamingLib.initLib(getApplicationContext());
@@ -223,10 +219,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             );
 
             // Instance the Camera stream
-            HashMap<String, String> stream_camera = new HashMap<>();
-            stream_camera.put("name", MAIN_STREAM);
-            stream_camera.put("uri", camera.getStreamUri());
-            mStreamCamera = streamingLib.createStream(stream_camera, mHandlerAR);
+            HashMap<String, String> streamCameraParams = new HashMap<>();
+            streamCameraParams.put("name", MAIN_STREAM);
+            streamCameraParams.put("uri", camera.getStreamUri());
+            mStreamCamera = streamingLib.createStream(streamCameraParams, mHandlerAR);
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setRenderer(mRenderer);
@@ -234,10 +230,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
             // Instance the Eco stream
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
-            HashMap<String, String> stream_eco_params = new HashMap<>();
-            stream_eco_params.put("name", ECO_STREAM);
-            stream_eco_params.put("uri", encoder.getStreamUri());
-            mStreamEco = streamingLib.createStream(stream_eco_params, mStreamHandler);
+            HashMap<String, String> streamEcoParams = new HashMap<>();
+            streamEcoParams.put("name", ECO_STREAM);
+            streamEcoParams.put("uri", encoder.getStreamUri());
+            mStreamEco = streamingLib.createStream(streamEcoParams, mStreamHandler);
             mStreamEcoFragment = StreamViewerFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
         }
@@ -254,10 +250,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     }
 
     private void setupVoipLib() {
-        mVoipParams = getVoipSetupParams();
+        mVoipParams = mTeleconsultation.getLastSession().getVoipParams();
+        mSipServerIp = mVoipParams.get("sipServerIp");
+        mSipServerPort = mVoipParams.get("sipServerPort");
         mEcoExtension = mVoipParams.get("ecoExtension");
 
-        Log.d(TAG, "Initializing the lib...");
         CallHandler voipHandler = new CallHandler(this);
         mVoipLib = new VoipLibBackend();
         mVoipLib.initLib(getApplicationContext(), mVoipParams, voipHandler);
@@ -615,25 +612,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     private void registerAccount() {
         mVoipLib.registerAccount();
-    }
-
-    private HashMap<String, String> getVoipSetupParams() {
-        HashMap<String, String> params = mTeleconsultation.getLastSession().getVoipParams();
-        mSipServerIp = params.get("sipServerIp");
-        mSipServerPort = params.get("sipServerPort");
-
-        String onHoldSoundPath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "test_hold.wav");
-        String onIncomingCallRingTonePath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "ring_in_call.wav");
-        String onOutcomingCallRingTonePath = Utils.getResourcePathByAssetCopy(getApplicationContext(), "", "ring_out_call.wav");
-
-        params.put("onHoldSound", onHoldSoundPath);
-        params.put("onIncomingCallSound", onIncomingCallRingTonePath); // onIncomingCallRingTonePath
-        params.put("onOutcomingCallSound", onOutcomingCallRingTonePath); // onOutcomingCallRingTonePath
-
-        Log.d(TAG, "OnHoldSoundPath:" + onHoldSoundPath);
-
-        return params;
-
     }
 
     @Override

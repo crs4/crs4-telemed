@@ -186,7 +186,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     }
 
     private void startTeleconsultationActivity() {
-        if (mRole.equals(mRoles[0])) {
+        if (mRole.equals(mRoles[0])) {  // Ecographist: we launch a different activity according to the device type
             Intent i;
             if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
                 i = new Intent(this, AREcoTeleconsultationActivity.class);
@@ -194,52 +194,44 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
             else {
                 i = new Intent(this, EcoTeleconsultationActivity.class);
             }
-            i.putExtra("User", mUser);
-            i.putExtra("Teleconsultation", mTeleconsultation);
+            i.putExtra(EcoTeleconsultationActivity.TELECONSULTATION_ARG, mTeleconsultation);
             startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
         }
-        else {
+        else {  // Specialist: we join the session and launch the specialist activity
+            WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+            String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
+                ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
             mTeleconsultation.setUser(getUser());
-            joinTeleconsultationSession(mTeleconsultation);
-        }
-    }
-
-    private void joinTeleconsultationSession(final Teleconsultation selectedTc) {
-        Log.d(TAG, "joining teleconsultation session...");
-        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
-            ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
-        if (selectedTc.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
-            mConfigReader.joinSession(selectedTc.getLastSession().getId(),
-                getUser().getAccessToken(),
-                ipAddress,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        JSONObject sessionData;
-                        try {
-                            sessionData = response.getJSONObject("data").getJSONObject("session");
-                            String role = QuerySettings.getRole(TeleconsultationSetupActivity.this);
-                            selectedTc.getLastSession().setVoipParams(getApplication(), sessionData, role);
-                            Intent i = new Intent(TeleconsultationSetupActivity.this,
-                                SpecTeleconsultationActivity.class);
-                            i.putExtra("User", mUser);
-                            i.putExtra("Teleconsultation", selectedTc);
-                            startActivity(i);
+            if (mTeleconsultation.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
+                mConfigReader.joinSession(mTeleconsultation.getLastSession().getId(),
+                    getUser().getAccessToken(),
+                    ipAddress,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            JSONObject sessionData;
+                            try {
+                                sessionData = response.getJSONObject("data").getJSONObject("session");
+                                String role = QuerySettings.getRole(TeleconsultationSetupActivity.this);
+                                // Only in this mooment the voipParam are complete with specialist information, so we set them
+                                mTeleconsultation.getLastSession().setVoipParams(getApplication(), sessionData, role);
+                                Intent i = new Intent(TeleconsultationSetupActivity.this,
+                                    SpecTeleconsultationActivity.class);
+                                i.putExtra(SpecTeleconsultationActivity.TELECONSULTATION_ARG, mTeleconsultation);
+                                startActivity(i);
+                            }
+                            catch (JSONException e) {
+                                Log.e(TAG, "Something wrong happened with the JSON structure");
+                            }
                         }
-                        catch (JSONException e) {
-                            e.printStackTrace();
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError err) {
+                            Log.d(TAG, "Error in Session Join Response: " + err);
                         }
-//                            startTeleconsultationActivity();
-                    }
-                },
-                new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError err) {
-                        Log.d(TAG, "Error in Session Join Response: " + err);
-                    }
-                });
+                    });
+            }
         }
     }
 

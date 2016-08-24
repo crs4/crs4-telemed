@@ -35,18 +35,18 @@ import it.crs4.most.demo.models.User;
 
 public class TeleconsultationSelectionFragment extends SetupFragment {
 
-    private ArrayList<Teleconsultation> tcArray;
-    private ArrayAdapter<Teleconsultation> tcArrayAdapter;
+    private static String TAG = "TeleconsultationSelectionFragment";
+    private ArrayList<Teleconsultation> mTeleconsultations;
+    private ArrayAdapter<Teleconsultation> mTcsArrayAdapter;
     private RemoteConfigReader mConfigReader;
     private Runnable mGetTeleconsultationsTask;
     private Handler mGetTeleconsultationsHandler;
     private View mView;
-    private static String TAG = "TeleconsultationSelectionFragment";
 
     public static TeleconsultationSelectionFragment newInstance(IConfigBuilder config) {
-        TeleconsultationSelectionFragment fragmentTeleconsultationSel = new TeleconsultationSelectionFragment();
-        fragmentTeleconsultationSel.setConfigBuilder(config);
-        return fragmentTeleconsultationSel;
+        TeleconsultationSelectionFragment fragment = new TeleconsultationSelectionFragment();
+        fragment.setConfigBuilder(config);
+        return fragment;
     }
 
     @Override
@@ -59,14 +59,14 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.teleconsultation_list, container, false);
         ListView listView = (ListView) mView.findViewById(R.id.teleconsultation_list);
-        tcArray = new ArrayList<>();
-        tcArrayAdapter = new TcArrayAdapter(this, R.layout.teleconsultation_row, tcArray);
+        mTeleconsultations = new ArrayList<>();
+        mTcsArrayAdapter = new TeleconsultationAdapter(this, R.layout.teleconsultation_row, mTeleconsultations);
 
-        listView.setAdapter(tcArrayAdapter);
+        listView.setAdapter(mTcsArrayAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Teleconsultation selectedTc = tcArray.get(position);
+                Teleconsultation selectedTc = mTeleconsultations.get(position);
                 getConfigBuilder().setTeleconsultation(selectedTc);
             }
         });
@@ -80,16 +80,14 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     }
 
     private void retrieveTeleconsultations() {
-        Log.d(TAG, "called retrieveTeleconsultations()");
         mConfigReader = getConfigBuilder().getRemoteConfigReader();
         final User user = getConfigBuilder().getUser();
 
         mGetTeleconsultationsTask = new Runnable() {
             @Override
             public void run() {
-                tcArrayAdapter.clear();
+                mTeleconsultations.clear();
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 5000);
-                Log.d(TAG, "Running again");
                 mConfigReader.getTeleconsultationsByTaskgroup(
                     user.getTaskGroup().getId(),
                     user.getAccessToken(),
@@ -98,9 +96,9 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                         public void onResponse(JSONObject response) {
                             try {
                                 Log.d(TAG, "Teleconsultation list response: " + response);
-                                final JSONArray teleconsultations = response.
-                                    getJSONObject("data").
-                                    getJSONArray("teleconsultations");
+                                final JSONArray teleconsultations = response
+                                    .getJSONObject("data")
+                                    .getJSONArray("teleconsultations");
 
                                 for (int i = 0; i < teleconsultations.length(); i++) {
                                     JSONObject item = teleconsultations.getJSONObject(i);
@@ -111,13 +109,14 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                         t = Teleconsultation.fromJSON(getActivity(), item, role);
                                     }
                                     catch (TeleconsultationException e) {
-                                        e.printStackTrace();
+                                        Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                                     }
-                                    tcArrayAdapter.add(t);
+                                    mTeleconsultations.add(t);
                                 }
+                                mTcsArrayAdapter.notifyDataSetChanged();
                             }
                             catch (JSONException e) {
-                                e.printStackTrace();
+                                Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                             }
 //                                handler.postDelayed(mGetTeleconsultationsTask, 5000);
                         }
@@ -147,11 +146,11 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         return R.string.teleconsultation_title;
     }
 
-    private static class TcArrayAdapter extends ArrayAdapter<Teleconsultation> {
+    private static class TeleconsultationAdapter extends ArrayAdapter<Teleconsultation> {
 
-        public TcArrayAdapter(TeleconsultationSelectionFragment fragment_PatientSelection,
-                              int textViewResourceId, List<Teleconsultation> objects) {
-            super(fragment_PatientSelection.getActivity(), textViewResourceId, objects);
+        public TeleconsultationAdapter(TeleconsultationSelectionFragment fragment,
+                                       int textViewId, List<Teleconsultation> objects) {
+            super(fragment.getActivity(), textViewId, objects);
         }
 
         @Override

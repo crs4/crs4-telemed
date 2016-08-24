@@ -41,7 +41,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     private static final String TAG = "EcoTeleconsultActivity";
 
-    public static final String TELECONSULTATION_ARG = "Teleconsultation";
+    public static final String TELECONSULTATION_ARG = "teleconsultation";
     public static final int TELECONSULT_ENDED_REQUEST = 0;
 
     private StreamViewerFragment mStreamCameraFragment;
@@ -59,7 +59,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teleconsultation);
+        setContentView(R.layout.eco_teleconsultation_activity);
         txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);

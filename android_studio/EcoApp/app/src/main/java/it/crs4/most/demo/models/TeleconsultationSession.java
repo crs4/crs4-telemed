@@ -70,9 +70,7 @@ public class TeleconsultationSession implements Serializable {
             onOutcomingCallPath = Utils.getResourcePathByAssetCopy(context, "", "ring_out_call.wav");
         }
         catch (JSONException e) {
-            // TODO Auto-generated catch block
             Log.e(TAG, "Error loading voip data");
-            e.printStackTrace();
             return;
         }
 
