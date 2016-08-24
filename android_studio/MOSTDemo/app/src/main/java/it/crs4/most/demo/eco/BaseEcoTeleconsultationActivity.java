@@ -32,7 +32,7 @@ import it.crs4.most.voip.enums.VoipEventType;
 public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity {
 
     private static final String TAG = "EcoTeleconsultActivity";
-
+    public static final String TELECONSULTATION_ARG = "teleconsultation";
     protected TeleconsultationState mTcState = TeleconsultationState.IDLE;
     private String mSipServerIp;
     private String mSipServerPort;

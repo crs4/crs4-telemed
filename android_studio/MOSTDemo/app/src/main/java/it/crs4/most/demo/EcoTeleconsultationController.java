@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 
 import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
+import it.crs4.most.demo.eco.BaseEcoTeleconsultationActivity;
 import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.setup_fragments.EnterCredentialsFragment;
@@ -34,7 +35,7 @@ public class EcoTeleconsultationController extends TeleconsultationController {
         else {
             i = new Intent(activity, EcoTeleconsultationActivity.class);
         }
-        i.putExtra(EcoTeleconsultationActivity.TELECONSULTATION_ARG, teleconsultation);
+        i.putExtra(BaseEcoTeleconsultationActivity.TELECONSULTATION_ARG, teleconsultation);
         activity.startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
     }
 }

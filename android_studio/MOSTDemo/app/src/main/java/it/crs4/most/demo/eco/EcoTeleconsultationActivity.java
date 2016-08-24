@@ -41,7 +41,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
     private static final String TAG = "EcoTeleconsultActivity";
 
-    public static final String TELECONSULTATION_ARG = "teleconsultation";
+
     public static final int TELECONSULT_ENDED_REQUEST = 0;
 
     private StreamViewerFragment mStreamCameraFragment;

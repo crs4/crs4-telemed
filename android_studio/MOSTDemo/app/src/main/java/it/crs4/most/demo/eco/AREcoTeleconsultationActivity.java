@@ -152,7 +152,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        init();
         setTeleconsultationState(TeleconsultationState.IDLE);
         Intent i = getIntent();
-        teleconsultation = (Teleconsultation) i.getExtras().getSerializable("Teleconsultation");
+        teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
         setupVoipLib();
 
         String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
