@@ -56,7 +56,7 @@ public class Teleconsultation implements Serializable {
     }
 
     public static Teleconsultation fromJSON(Context context, JSONObject teleconsultationData,
-                                            String role) throws TeleconsultationException {
+                                            String role, User user) throws TeleconsultationException {
         String id;
         String description;
         String severity;
@@ -70,7 +70,7 @@ public class Teleconsultation implements Serializable {
             throw new TeleconsultationException();
         }
 
-        Teleconsultation t = new Teleconsultation(id, description, severity, null);
+        Teleconsultation t = new Teleconsultation(id, description, severity, user);
         try {
             JSONObject lastSessionData = teleconsultationData.getJSONObject("last_session");
             TeleconsultationSession lastSession = TeleconsultationSession.fromJSON(context, lastSessionData, role);

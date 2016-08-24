@@ -1,15 +1,12 @@
 package it.crs4.most.demo;
 
 import android.content.Intent;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,33 +14,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
 
-import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
 import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Teleconsultation;
-import it.crs4.most.demo.models.TeleconsultationSessionState;
 import it.crs4.most.demo.models.User;
-import it.crs4.most.demo.setup_fragments.EnterCredentialsFragment;
-import it.crs4.most.demo.setup_fragments.PatientSelectionFragment;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
-import it.crs4.most.demo.setup_fragments.SummaryFragment;
-import it.crs4.most.demo.setup_fragments.TeleconsultationSelectionFragment;
-import it.crs4.most.demo.setup_fragments.UserSelectionFragment;
-import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
+
 
 public class TeleconsultationSetupActivity extends AppCompatActivity implements IConfigBuilder {
-    private static final String TAG = "TeleconsultationSetup";
+    private static final String TAG = "TeleconsultSetupAct";
 
     private SetupFragment[] mSetupFragments;
+    private TeleconsultationController mTcController;
     private MostViewPager mVpPager;
     private User mUser;
     private Patient mPatient;
@@ -51,8 +36,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     private Device mCamera;
     private RemoteConfigReader mConfigReader;
     private ActionBarDrawerToggle mDrawerToggle;
-    private String[] mRoles;
-    private String mRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +43,10 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mRoles = getResources().getStringArray(R.array.roles_entries_values);
-        mRole = QuerySettings.getRole(this);
         mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
         setContentView(R.layout.teleconsultation_setup_activity);
-        setupConfigFragments();
+        mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
+        mSetupFragments = mTcController.getFragments(this);
 
         mVpPager = (MostViewPager) findViewById(R.id.vp_pager);
         SmartFragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
@@ -96,26 +78,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
-    }
-
-    private void setupConfigFragments() {
-        if (mRole.equals(mRoles[0])) { // Ecographist
-            mSetupFragments = new SetupFragment[]{
-                UserSelectionFragment.newInstance(this),
-                EnterCredentialsFragment.newInstance(this,
-                    EnterCredentialsFragment.PASSCODE_CREDENTIALS),
-                PatientSelectionFragment.newInstance(this),
-                SummaryFragment.newInstance(this)
-            };
-        }
-        else {  // Specialist
-            mSetupFragments = new SetupFragment[]{
-                UserSelectionFragment.newInstance(this),
-                EnterCredentialsFragment.newInstance(this,
-                    EnterCredentialsFragment.PASSWORD_CREDENTIALS),
-                TeleconsultationSelectionFragment.newInstance(this)
-            };
-        }
     }
 
     @Override
@@ -186,53 +148,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
     }
 
     private void startTeleconsultationActivity() {
-        if (mRole.equals(mRoles[0])) {  // Ecographist: we launch a different activity according to the device type
-            Intent i;
-            if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
-                i = new Intent(this, AREcoTeleconsultationActivity.class);
-            }
-            else {
-                i = new Intent(this, EcoTeleconsultationActivity.class);
-            }
-            i.putExtra(EcoTeleconsultationActivity.TELECONSULTATION_ARG, mTeleconsultation);
-            startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
-        }
-        else {  // Specialist: we join the session and launch the specialist activity
-            WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-            String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
-                ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
-            mTeleconsultation.setUser(getUser());
-            if (mTeleconsultation.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
-                mConfigReader.joinSession(mTeleconsultation.getLastSession().getId(),
-                    getUser().getAccessToken(),
-                    ipAddress,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            JSONObject sessionData;
-                            try {
-                                sessionData = response.getJSONObject("data").getJSONObject("session");
-                                String role = QuerySettings.getRole(TeleconsultationSetupActivity.this);
-                                // Only in this mooment the voipParam are complete with specialist information, so we set them
-                                mTeleconsultation.getLastSession().setVoipParams(getApplication(), sessionData, role);
-                                Intent i = new Intent(TeleconsultationSetupActivity.this,
-                                    SpecTeleconsultationActivity.class);
-                                i.putExtra(SpecTeleconsultationActivity.TELECONSULTATION_ARG, mTeleconsultation);
-                                startActivity(i);
-                            }
-                            catch (JSONException e) {
-                                Log.e(TAG, "Something wrong happened with the JSON structure");
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError err) {
-                            Log.d(TAG, "Error in Session Join Response: " + err);
-                        }
-                    });
-            }
-        }
+        mTcController.startTeleconsultationActivity(this, mTeleconsultation);
     }
 
     @Override

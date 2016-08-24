@@ -1,0 +1,79 @@
+package it.crs4.most.demo;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.net.wifi.WifiManager;
+import android.text.format.Formatter;
+import android.util.Log;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import it.crs4.most.demo.models.Teleconsultation;
+import it.crs4.most.demo.models.TeleconsultationSessionState;
+import it.crs4.most.demo.setup_fragments.EnterCredentialsFragment;
+import it.crs4.most.demo.setup_fragments.SetupFragment;
+import it.crs4.most.demo.setup_fragments.TeleconsultationSelectionFragment;
+import it.crs4.most.demo.setup_fragments.UserSelectionFragment;
+import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
+
+public class SpecTeleconsultationController extends TeleconsultationController {
+
+
+    private static final String TAG = "SpecTeleconsultSetup";
+
+    @Override
+    public SetupFragment[] getFragments(IConfigBuilder builder) {
+        return new SetupFragment[]{
+            UserSelectionFragment.newInstance(builder),
+            EnterCredentialsFragment.newInstance(builder,
+                EnterCredentialsFragment.PASSWORD_CREDENTIALS),
+            TeleconsultationSelectionFragment.newInstance(builder)
+        };
+    }
+
+    @Override
+    public void startTeleconsultationActivity(final Activity callingActivity, final Teleconsultation teleconsultation) {
+        WifiManager wifiManager = (WifiManager) callingActivity.getSystemService(Activity.WIFI_SERVICE);
+        String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress()) +
+            ":" + SpecTeleconsultationActivity.ZMQ_LISTENING_PORT;
+
+        String configServerIP = QuerySettings.getConfigServerAddress(callingActivity);
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(callingActivity));
+        RemoteConfigReader mConfigReader = new RemoteConfigReader(callingActivity, configServerIP, configServerPort);
+        if (teleconsultation.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
+            mConfigReader.joinSession(teleconsultation.getLastSession().getId(),
+                teleconsultation.getUser().getAccessToken(),
+                ipAddress,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject sessionData;
+                        try {
+                            sessionData = response.getJSONObject("data").getJSONObject("session");
+                            String role = QuerySettings.getRole(callingActivity);
+                            // Only in this mooment the voipParam are complete with specialist information, so we set them
+                            teleconsultation.getLastSession().setVoipParams(callingActivity, sessionData, role);
+                            Intent i = new Intent(callingActivity,
+                                SpecTeleconsultationActivity.class);
+                            i.putExtra(SpecTeleconsultationActivity.TELECONSULTATION_ARG, teleconsultation);
+                            callingActivity.startActivity(i);
+                        }
+                        catch (JSONException e) {
+                            Log.e(TAG, "Something wrong happened with the JSON structure");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError err) {
+                        Log.d(TAG, "Error in Session Join Response: " + err);
+                    }
+                });
+        }
+
+    }
+}

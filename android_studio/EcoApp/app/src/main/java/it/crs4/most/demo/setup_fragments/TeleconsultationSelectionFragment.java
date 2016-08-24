@@ -106,7 +106,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                     Teleconsultation t = null;
                                     try {
                                         String role = QuerySettings.getRole(getActivity());
-                                        t = Teleconsultation.fromJSON(getActivity(), item, role);
+                                        t = Teleconsultation.fromJSON(getActivity(), item, role, user);
                                     }
                                     catch (TeleconsultationException e) {
                                         Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
