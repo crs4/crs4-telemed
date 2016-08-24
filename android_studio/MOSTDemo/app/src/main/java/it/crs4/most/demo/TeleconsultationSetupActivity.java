@@ -137,16 +137,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
         }
     }
 
-    @Override
-    public Device getCamera() {
-        return mCamera;
-    }
-
-    @Override
-    public void setCamera(Device camera) {
-        mCamera = camera;
-    }
-
     private void startTeleconsultationActivity() {
         mTcController.startTeleconsultationActivity(this, mTeleconsultation);
     }
@@ -157,9 +147,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
             if (resultCode == RESULT_OK) {
                 setUser(null);
                 setPatient(null);
-                setCamera(null);
                 setTeleconsultation(null);
-                mVpPager.setInternalCurrentItem(0, 0);
+                listUsers();
             }
         }
     }

@@ -13,8 +13,6 @@ public interface IConfigBuilder {
 	void listPatients();
 	void setUser(User user);
 	User getUser();
-	Device getCamera();
-	void setCamera(Device device);
 	void setPatient(Patient selectedUser);
 	Patient getPatient();
 	void setTeleconsultation(Teleconsultation teleconsultation);
