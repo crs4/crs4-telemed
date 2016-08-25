@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -79,7 +81,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private final static String TAG = "SpecTeleconsultActivity";
 
     public static final String TELECONSULTATION_ARG = "teleconsultation";
-    public static final int TELECONSULT_ENDED_REQUEST = 0;
+    public static final int TELECONSULT_ENDED_REQUEST = 1;
+
+    private static final float DEFAULT_FRAME_SIZE = 0.5f;
+    private static final float CAMERA_SMALL = 0.3f;
+    private static final float ECO_LARGE = 0.7f;
 
     public final static int ZMQ_LISTENING_PORT = 5556;
     private String MAIN_STREAM = "MAIN_STREAM";
@@ -93,6 +99,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private IStream mStreamEco;
     private ARFragment mStreamCameraFragment;
     private StreamViewerFragment mStreamEcoFragment;
+    private FrameLayout mCameraFrame;
+    private FrameLayout mEcoFrame;
     private TeleconsultationState mTcState = TeleconsultationState.IDLE;
     private TcStateTextView mTextTcState;
     private PTZ_Manager mPTZManager;
@@ -104,8 +112,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private Teleconsultation mTeleconsultation;
     private PTZ_ControllerPopupWindowFactory mPTZPopupWindowController;
     private String mEcoExtension;
-    private MenuItem mButtonCall;
-    private MenuItem mButtonHangup;
+    private MenuItem mCallMenuItem;
+    private MenuItem mHangupMenuItem;
+    private MenuItem mChangeEcoSizeMenuItem;
     private HashMap<String, String> mVoipParams;
     private RemoteConfigReader mConfigReader;
     private boolean mLocalHold = false;
@@ -177,8 +186,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.teleconsultation_spec_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
-        mButtonCall = menu.findItem(R.id.button_call);
-        mButtonHangup = menu.findItem(R.id.button_hangup);
+        mCallMenuItem = menu.findItem(R.id.button_call);
+        mHangupMenuItem = menu.findItem(R.id.button_hangup);
+        mChangeEcoSizeMenuItem = menu.findItem(R.id.change_eco_stream_size);
+
         return res;
     }
 
@@ -197,8 +208,32 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             case R.id.button_hangup:
                 hangupCall();
                 break;
+            case R.id.change_eco_stream_size:
+                changeEcoStreamSize();
+                break;
         }
         return false;
+    }
+
+    private void changeEcoStreamSize() {
+        LinearLayout.LayoutParams cameraParams = (LinearLayout.LayoutParams) mCameraFrame.getLayoutParams();
+        LinearLayout.LayoutParams ecoParams = (LinearLayout.LayoutParams) mEcoFrame.getLayoutParams();
+        String title;
+        if (cameraParams.weight == CAMERA_SMALL) {
+            cameraParams.weight = DEFAULT_FRAME_SIZE;
+            ecoParams.weight = DEFAULT_FRAME_SIZE;
+            title = getString(R.string.increase_eco_stream);
+
+        }
+        else {
+            cameraParams.weight = CAMERA_SMALL;
+            ecoParams.weight = ECO_LARGE;
+            title = getString(R.string.decrease_eco_stream);
+        }
+
+        mCameraFrame.setLayoutParams(cameraParams);
+        mEcoFrame.setLayoutParams(ecoParams);
+        mChangeEcoSizeMenuItem.setTitle(title);
     }
 
     private void setupTeleconsultationInfo() {
@@ -226,6 +261,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             streamCameraParams.put("name", MAIN_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
             mStreamCamera = streamingLib.createStream(streamCameraParams, mHandlerAR);
+            mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setRenderer(mRenderer);
@@ -237,6 +273,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             streamEcoParams.put("name", ECO_STREAM);
             streamEcoParams.put("uri", encoder.getStreamUri());
             mStreamEco = streamingLib.createStream(streamEcoParams, mStreamHandler);
+            mEcoFrame = (FrameLayout) findViewById(R.id.container_stream_eco);
             mStreamEcoFragment = StreamViewerFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
         }
@@ -287,17 +324,17 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
         try {
             if (mTcState == TeleconsultationState.IDLE) {
-                mButtonCall.setTitle("Call");
-                mButtonCall.setEnabled(false);
-                mButtonHangup.setEnabled(false);
+                mCallMenuItem.setTitle("Call");
+                mCallMenuItem.setEnabled(false);
+                mHangupMenuItem.setEnabled(false);
                 mLocalHold = false;
                 mAccountRegistered = false;
                 pauseStreams();
             }
             else if (mTcState == TeleconsultationState.READY) {
-                mButtonCall.setTitle("Call");
-                mButtonCall.setEnabled(true);
-                mButtonHangup.setEnabled(false);
+                mCallMenuItem.setTitle("Call");
+                mCallMenuItem.setEnabled(true);
+                mHangupMenuItem.setEnabled(false);
                 mLocalHold = false;
                 mAccountRegistered = true;
                 pauseStreams();
@@ -307,23 +344,23 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 }
             }
             else if (mTcState == TeleconsultationState.CALLING) {
-                mButtonCall.setTitle("Hold");
-                mButtonCall.setEnabled(true);
-                mButtonHangup.setEnabled(true);
+                mCallMenuItem.setTitle("Hold");
+                mCallMenuItem.setEnabled(true);
+                mHangupMenuItem.setEnabled(true);
                 mLocalHold = false;
                 mFirstCallStarted = true;
                 playStreams();
             }
             else if (mTcState == TeleconsultationState.HOLDING) {
-                mButtonCall.setTitle("Call");
-                mButtonCall.setEnabled(true);
-                mButtonHangup.setEnabled(true);
+                mCallMenuItem.setTitle("Call");
+                mCallMenuItem.setEnabled(true);
+                mHangupMenuItem.setEnabled(true);
                 mLocalHold = true;
                 pauseStreams();
             }
             else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
-                mButtonCall.setEnabled(false);
-                mButtonHangup.setEnabled(true);
+                mCallMenuItem.setEnabled(false);
+                mHangupMenuItem.setEnabled(true);
                 pauseStreams();
             }
             else if (mTcState == TeleconsultationState.SESSION_CLOSED) {

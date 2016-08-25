@@ -3,10 +3,10 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--<item-->
-        <!--android:id="@+id/button_close_session"-->
-        <!--android:enabled="false"-->
-        <!--android:title="@string/close_session"-->
-        <!--app:showAsAction="always"/>-->
+    <!--android:id="@+id/button_close_session"-->
+    <!--android:enabled="false"-->
+    <!--android:title="@string/close_session"-->
+    <!--app:showAsAction="always"/>-->
 
     <item
         android:id="@+id/button_call"
@@ -23,6 +23,11 @@
         android:id="@+id/button_ptz"
         android:title="@string/ptz"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/change_eco_stream_size"
+        android:title="@string/increase_eco_stream"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/button_exit"
