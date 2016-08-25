@@ -77,7 +77,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
     private final static String TAG = "SpecTeleconsultActivity";
+
     public static final String TELECONSULTATION_ARG = "teleconsultation";
+    public static final int TELECONSULT_ENDED_REQUEST = 0;
+
     public final static int ZMQ_LISTENING_PORT = 5556;
     private String MAIN_STREAM = "MAIN_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
@@ -446,20 +449,20 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     @Override
     public boolean handleMessage(Message streamingMessage) {
         // The bundle containing all available informations and resources about the incoming event
-        StreamingEventBundle myEvent = (StreamingEventBundle) streamingMessage.obj;
+        StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
 
-        String infoMsg = "Event Type:" + myEvent.getEventType() + " ->" + myEvent.getEvent() + ":" + myEvent.getInfo();
+        String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
         Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
 
 
         // for simplicity, in this example we only handle events of type STREAM_EVENT
-        if (myEvent.getEventType() == StreamingEventType.STREAM_EVENT)
-            if (myEvent.getEvent() == StreamingEvent.STREAM_STATE_CHANGED || myEvent.getEvent() == StreamingEvent.STREAM_ERROR) {
+        if (event.getEventType() == StreamingEventType.STREAM_EVENT)
+            if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED || event.getEvent() == StreamingEvent.STREAM_ERROR) {
 
                 // All events of type STREAM_EVENT provide a reference to the stream that triggered it.
                 // In this case we are handling two streams, so we need to check what stream triggered the event.
                 // Note that we are only interested to the new state of the stream
-                IStream stream = (IStream) myEvent.getData();
+                IStream stream = (IStream) event.getData();
                 String streamName = stream.getName();
 
                 if (mStreamCamera.getState() == StreamState.DEINITIALIZED && exitFromAppRequest) {
@@ -560,10 +563,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public void onSurfaceViewDestroyed(String streamId) {
-        if (streamId.equals(MAIN_STREAM))
+        if (streamId.equals(MAIN_STREAM)) {
             mStreamCamera.destroy();
-        else if (streamId.equals(ECO_STREAM))
+        }
+        else if (streamId.equals(ECO_STREAM)) {
             mStreamEco.destroy();
+        }
     }
 
     @Override
@@ -724,6 +729,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             }
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
+                mainActivity.setResult(RESULT_OK);
                 mainActivity.finish();
             }
             else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {

@@ -66,34 +66,34 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
         //TODO: think of putting this in the TeleconsultationSetupActivity
         final User user = teleconsultation.getUser();
         mConfigReader.closeSession(teleconsultation.getLastSession().getId(),
-                user.getAccessToken(),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject sessionData) {
-                        mConfigReader.closeTeleconsultation(
-                                teleconsultation.getId(),
-                                user.getAccessToken(),
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
+            user.getAccessToken(),
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject sessionData) {
+                    mConfigReader.closeTeleconsultation(
+                        teleconsultation.getId(),
+                        user.getAccessToken(),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
 
-                                    }
-                                },
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
 
-                                    }
-                                });
-                        Log.d(TAG, "Session closed: " + sessionData);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError err) {
-                        Log.e(TAG, "Error closing the session: " + err);
-                    }
-                });
+                            }
+                        });
+                    Log.d(TAG, "Session closed: " + sessionData);
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError err) {
+                    Log.e(TAG, "Error closing the session: " + err);
+                }
+            });
     }
 
     protected void answerCall() {
@@ -190,7 +190,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                     // the remote buddy is no longer on Hold State
                     mainActivity.remoteHold = false;
                     if (mainActivity.mTcState == TeleconsultationState.REMOTE_HOLDING ||
-                            mainActivity.mTcState == TeleconsultationState.HOLDING) {
+                        mainActivity.mTcState == TeleconsultationState.HOLDING) {
                         if (mainActivity.localHold) {
                             mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
                         }
@@ -236,11 +236,12 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
                 mainActivity.exitFromApp();
             }
-            else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {}
+            else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
+            }
             else if (event == VoipEvent.LIB_INITIALIZATION_FAILED ||
-                    event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
-                    event == VoipEvent.LIB_CONNECTION_FAILED ||
-                    event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
+                event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
+                event == VoipEvent.LIB_CONNECTION_FAILED ||
+                event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
                 showErrorEventAlert(eventBundle);
         }
 

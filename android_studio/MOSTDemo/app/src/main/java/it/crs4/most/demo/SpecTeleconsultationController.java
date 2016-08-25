@@ -60,7 +60,7 @@ public class SpecTeleconsultationController extends TeleconsultationController {
                             Intent i = new Intent(callingActivity,
                                 SpecTeleconsultationActivity.class);
                             i.putExtra(SpecTeleconsultationActivity.TELECONSULTATION_ARG, teleconsultation);
-                            callingActivity.startActivity(i);
+                            callingActivity.startActivityForResult(i, SpecTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);
                         }
                         catch (JSONException e) {
                             Log.e(TAG, "Something wrong happened with the JSON structure");

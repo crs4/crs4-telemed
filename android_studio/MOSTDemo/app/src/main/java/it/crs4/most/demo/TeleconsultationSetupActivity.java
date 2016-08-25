@@ -22,6 +22,7 @@ import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
+import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
 
 public class TeleconsultationSetupActivity extends AppCompatActivity implements IConfigBuilder {
@@ -143,7 +144,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST) {
+        if (requestCode == EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST ||
+            requestCode == SpecTeleconsultationActivity.TELECONSULT_ENDED_REQUEST) {
             if (resultCode == RESULT_OK) {
                 setUser(null);
                 setPatient(null);
