@@ -79,6 +79,15 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         super.onPause();
     }
 
+    private void addTeleconsultation(Teleconsultation teleconsultation) {
+        for (Teleconsultation t : mTeleconsultations) {
+            if (t.getId().equals(teleconsultation.getId())) {
+                return;
+            }
+        }
+        mTeleconsultations.add(teleconsultation);
+    }
+
     private void retrieveTeleconsultations() {
         mConfigReader = getConfigBuilder().getRemoteConfigReader();
         final User user = getConfigBuilder().getUser();
@@ -86,7 +95,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         mGetTeleconsultationsTask = new Runnable() {
             @Override
             public void run() {
-                mTeleconsultations.clear();
+//                mTeleconsultations.clear();
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 5000);
                 mConfigReader.getTeleconsultationsByTaskgroup(
                     user.getTaskGroup().getId(),
@@ -111,7 +120,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                     catch (TeleconsultationException e) {
                                         Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                                     }
-                                    mTeleconsultations.add(t);
+                                    addTeleconsultation(t);
                                 }
                                 mTcsArrayAdapter.notifyDataSetChanged();
                             }

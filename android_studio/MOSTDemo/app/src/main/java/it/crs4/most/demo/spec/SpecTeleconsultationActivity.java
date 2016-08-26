@@ -56,6 +56,7 @@ import it.crs4.most.streaming.utils.ImageDownloader;
 import it.crs4.most.streaming.utils.ImageDownloader.IBitmapReceiver;
 import it.crs4.most.visualization.IPtzCommandReceiver;
 import it.crs4.most.visualization.IStreamFragmentCommandListener;
+import it.crs4.most.visualization.PTZ_ControllerFragment;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.StreamViewerFragment;
@@ -248,7 +249,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             StreamingLib streamingLib = new StreamingLibBackend();
             streamingLib.initLib(getApplicationContext());
 
-//            PTZ_ControllerFragment ptzControllerFragment = PTZ_ControllerFragment.newInstance(true, true, true);
+            PTZ_ControllerFragment ptzControllerFragment = PTZ_ControllerFragment.newInstance(true, true, true);
             Device camera = mTeleconsultation.getLastSession().getCamera();
             mPTZManager = new PTZ_Manager(this,
                 camera.getPtzUri(), //     uriProps.getProperty("uri_ptz") ,
