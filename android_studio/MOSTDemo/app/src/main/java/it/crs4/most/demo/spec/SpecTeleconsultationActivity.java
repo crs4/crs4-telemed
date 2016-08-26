@@ -442,8 +442,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public void onGoHome() {
-        String homePreset = "home";// configProps.getProperty("home_preset_ptz");
-        mPTZManager.goTo(homePreset);
+        mPTZManager.goTo("home");
     }
 
     @Override

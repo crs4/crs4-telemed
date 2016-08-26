@@ -69,8 +69,8 @@ public class Device implements Serializable {
             String user = deviceData.getString("user");
             String streamUri = deviceData.getJSONObject("capabilities").getString("streaming");
             String shotUri = deviceData.getJSONObject("capabilities").getString("shot");
-            String webUri = deviceData.getJSONObject("capabilities").getString("ptz");
-            String ptzUri = deviceData.getJSONObject("capabilities").getString("web");
+            String webUri = deviceData.getJSONObject("capabilities").getString("web");
+            String ptzUri = deviceData.getJSONObject("capabilities").getString("ptz");
             return new Device(name, streamUri, shotUri, webUri, ptzUri, user, pwd);
         }
         catch (JSONException e) {
