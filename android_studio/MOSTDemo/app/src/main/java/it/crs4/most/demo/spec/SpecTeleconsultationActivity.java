@@ -149,10 +149,14 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         pubThread.start();
 
         Arrow arrow = new Arrow("arrow");
+        arrow.setMarker("single;Data/hiro.patt;80");
         mMeshes.put(arrow.getId(), arrow);
+        Arrow arrow2 = new Arrow("arrow2");
+        arrow2.setMarker("single;Data/kanji.patt;80");
+        mMeshes.put(arrow2.getId(), arrow2);
         arrow.publisher = publisher;
-        mRenderer = new PubSubARRenderer(this, publisher);
-        mRenderer.setMeshes(mMeshes);
+        arrow2.publisher = publisher;
+        mRenderer = new PubSubARRenderer(this, publisher,mMeshes);
 
         setupStreamLib();
         setupPtzPopupWindow();
