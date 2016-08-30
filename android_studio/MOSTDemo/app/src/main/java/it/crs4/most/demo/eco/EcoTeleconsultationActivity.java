@@ -17,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import java.util.HashMap;
 
@@ -58,7 +57,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eco_teleconsultation_activity);
-        txtTcState = (TcStateTextView) findViewById(R.id.txtTcState);
+        txtTcState = (TcStateTextView) findViewById(R.id.txt_tc_state);
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
@@ -91,15 +90,6 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
                 break;
         }
         return true;
-    }
-
-    private void setupTeleconsultationInfo() {
-        Intent i = getIntent();
-        teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
-
-        TextView textUser = (TextView) findViewById(R.id.text_eco_user);
-        textUser.setText(String.format("%s %s", teleconsultation.getUser().getFirstName(),
-            teleconsultation.getUser().getLastName()));
     }
 
     protected void notifyTeleconsultationStateChanged() {
