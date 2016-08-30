@@ -46,6 +46,7 @@ import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
+import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
@@ -62,7 +63,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private TouchGLSurfaceView glView;
     private boolean firstUpdate = false;
     private OpticalARToolkit mOpticalARToolkit;
-    private HashMap<String, Mesh> meshes = new HashMap<>();
+    private MeshManager meshManager = new MeshManager();
     private boolean arInitialized = false;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -173,17 +174,17 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         Arrow arrow = new Arrow("arrow");
         arrow.setMarker("single;Data/hiro.patt;80");
-        meshes.put(arrow.getId(), arrow);
+        meshManager.addMesh(arrow);
         Arrow arrow2 = new Arrow("arrow2");
         arrow2.setMarker("single;Data/kanji.patt;80");
-        meshes.put(arrow2.getId(), arrow2);
+        meshManager.addMesh(arrow2);
 
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
-            renderer = new OpticalRenderer(this, subscriber, mOpticalARToolkit, meshes);
+            renderer = new OpticalRenderer(this, subscriber, mOpticalARToolkit, meshManager);
         }
         else {
-            renderer = new PubSubARRenderer(this, subscriber, meshes);
+            renderer = new PubSubARRenderer(this, subscriber, meshManager);
         }
     }
 

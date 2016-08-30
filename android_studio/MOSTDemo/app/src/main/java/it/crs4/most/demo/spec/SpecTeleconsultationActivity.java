@@ -63,6 +63,7 @@ import it.crs4.most.visualization.StreamViewerFragment;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
+import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
@@ -118,6 +119,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private boolean mFirstCallStarted = false;
     private boolean mStreamCameraPrepared = false;
     private HashMap<String, Mesh> mMeshes = new HashMap<>();
+    private MeshManager meshManager = new MeshManager();
     private PubSubARRenderer mRenderer;
     private Handler mHandlerAR;
     private AudioManager mAudioManager;
@@ -150,13 +152,14 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
         Arrow arrow = new Arrow("arrow");
         arrow.setMarker("single;Data/hiro.patt;80");
-        mMeshes.put(arrow.getId(), arrow);
         Arrow arrow2 = new Arrow("arrow2");
         arrow2.setMarker("single;Data/kanji.patt;80");
-        mMeshes.put(arrow2.getId(), arrow2);
+        meshManager.addMesh(arrow);
+        meshManager.addMesh(arrow2);
+
         arrow.publisher = publisher;
         arrow2.publisher = publisher;
-        mRenderer = new PubSubARRenderer(this, publisher,mMeshes);
+        mRenderer = new PubSubARRenderer(this, publisher,meshManager);
 
         setupStreamLib();
         setupPtzPopupWindow();
@@ -597,7 +600,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        mStreamCameraFragment.getGlView().setMeshes(mMeshes);
+        mStreamCameraFragment.getGlView().setMeshManager(meshManager);
 
     }
 
