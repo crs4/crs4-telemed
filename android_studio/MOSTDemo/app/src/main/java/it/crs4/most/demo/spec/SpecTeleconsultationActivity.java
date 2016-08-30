@@ -2,6 +2,7 @@ package it.crs4.most.demo.spec;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -10,11 +11,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -185,13 +188,19 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mStreamCameraFragment.setPlayerButtonsVisible(false);
+        mStreamEcoFragment.setPlayerButtonsVisible(false);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.teleconsultation_spec_menu, menu);
         boolean res = super.onCreateOptionsMenu(menu);
         mCallMenuItem = menu.findItem(R.id.button_call);
         mHangupMenuItem = menu.findItem(R.id.button_hangup);
         mChangeEcoSizeMenuItem = menu.findItem(R.id.change_eco_stream_size);
-
         return res;
     }
 
@@ -444,11 +453,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     }
 
     @Override
-    public void onSnaphot() {
+    public void onSnapshot() {
         IBitmapReceiver receiver = new IBitmapReceiver() {
             @Override
             public void onBitmapSaved(ImageDownloader imageDownloader, String filename) {
-                Log.d(TAG, "Saved Image:" + filename);
                 Toast.makeText(SpecTeleconsultationActivity.this, "Image saved:" + filename, Toast.LENGTH_LONG).show();
                 imageDownloader.logAppFileNames();
             }
@@ -459,17 +467,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             }
 
             @Override
-            public void onBitmapDownloadingError(
-                ImageDownloader imageDownloader, Exception ex) {
+            public void onBitmapDownloadingError(ImageDownloader imageDownloader, Exception ex) {
                 Toast.makeText(SpecTeleconsultationActivity.this, "Error downloading Image:" + ex.getMessage(), Toast.LENGTH_LONG).show();
-
             }
 
             @Override
-            public void onBitmapSavingError(ImageDownloader imageDownloader,
-                                            Exception ex) {
+            public void onBitmapSavingError(ImageDownloader imageDownloader, Exception ex) {
                 Toast.makeText(SpecTeleconsultationActivity.this, "Error saving Image:" + ex.getMessage(), Toast.LENGTH_LONG).show();
-
             }
         };
 
