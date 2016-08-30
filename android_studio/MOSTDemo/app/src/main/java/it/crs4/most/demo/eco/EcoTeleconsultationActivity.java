@@ -1,22 +1,6 @@
 package it.crs4.most.demo.eco;
 
 
-import java.util.HashMap;
-
-import it.crs4.most.demo.QuerySettings;
-import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
-import it.crs4.most.demo.TeleconsultationState;
-import it.crs4.most.streaming.IStream;
-import it.crs4.most.streaming.StreamingLib;
-import it.crs4.most.streaming.StreamingLibBackend;
-import it.crs4.most.streaming.enums.StreamState;
-import it.crs4.most.visualization.IStreamFragmentCommandListener;
-import it.crs4.most.visualization.StreamViewerFragment;
-
-import it.crs4.most.demo.models.Teleconsultation;
-import it.crs4.most.demo.ui.TcStateTextView;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.FragmentTransaction;
@@ -35,12 +19,26 @@ import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
+import it.crs4.most.demo.QuerySettings;
+import it.crs4.most.demo.R;
+import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.TeleconsultationState;
+import it.crs4.most.demo.models.Teleconsultation;
+import it.crs4.most.demo.ui.TcStateTextView;
+import it.crs4.most.streaming.IStream;
+import it.crs4.most.streaming.StreamingLib;
+import it.crs4.most.streaming.StreamingLibBackend;
+import it.crs4.most.streaming.enums.StreamState;
+import it.crs4.most.visualization.IStreamFragmentCommandListener;
+import it.crs4.most.visualization.StreamViewerFragment;
+
 @SuppressLint("InlinedApi")
 public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
-        implements IStreamFragmentCommandListener {
+    implements IStreamFragmentCommandListener {
 
     private static final String TAG = "EcoTeleconsultActivity";
-
 
     public static final int TELECONSULT_ENDED_REQUEST = 0;
 
@@ -101,7 +99,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
         TextView textUser = (TextView) findViewById(R.id.text_eco_user);
         textUser.setText(String.format("%s %s", teleconsultation.getUser().getFirstName(),
-                teleconsultation.getUser().getLastName()));
+            teleconsultation.getUser().getLastName()));
     }
 
     protected void notifyTeleconsultationStateChanged() {
@@ -118,31 +116,30 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
             localHold = false;
             accountRegistered = false;
-            remoteHold = false;
             pauseStream();
         }
         else if (mTcState == TeleconsultationState.READY) {
             try {
                 mButCall.setEnabled(false);
             }
-            catch (NullPointerException ex) {}
+            catch (NullPointerException ex) {
+            }
             popupHoldButton.setEnabled(false);
             popupHangupButton.setEnabled(false);
 
             localHold = false;
             accountRegistered = true;
-            remoteHold = false;
             pauseStream();
         }
         else if (mTcState == TeleconsultationState.CALLING) {
             try {
                 mButCall.setEnabled(true);
             }
-            catch (NullPointerException ne) {}
+            catch (NullPointerException ne) {
+            }
             popupHoldButton.setEnabled(true);
             popupHangupButton.setEnabled(true);
 
-            remoteHold = false;
             localHold = false;
             playStream();
         }
@@ -150,7 +147,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             try {
                 mButCall.setEnabled(true);
             }
-            catch (NullPointerException ne) {}
+            catch (NullPointerException ne) {
+            }
             popupHoldButton.setEnabled(true);
             popupHangupButton.setEnabled(true);
 
@@ -161,10 +159,10 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             try {
                 mButCall.setEnabled(true);
             }
-            catch (NullPointerException ne) {}
+            catch (NullPointerException ne) {
+            }
             popupHoldButton.setEnabled(false);
             popupHangupButton.setEnabled(true);
-            remoteHold = true;
             pauseStream();
         }
         else if (mTcState == TeleconsultationState.FINISHED) {
@@ -173,7 +171,8 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
                 popupHangupButton.setEnabled(false);
                 popupHoldButton.setEnabled(false);
             }
-            catch (NullPointerException ne) {}
+            catch (NullPointerException ne) {
+            }
             stopStream();
         }
     }
@@ -202,7 +201,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private void setupStreamLib() {
         mStreamHandler = new StreamHandler();
 
-        String streamName = "Teleconsultation Stream";
+        String streamName = "CAMERA_STREAM";
         String streamUri = teleconsultation.getLastSession().getRoom().getCamera().getStreamUri();
         StreamingLib streamingLib = new StreamingLibBackend();
         HashMap<String, String> cameraStream = new HashMap<>();

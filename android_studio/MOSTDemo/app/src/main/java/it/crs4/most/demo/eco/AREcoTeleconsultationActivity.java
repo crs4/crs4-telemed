@@ -19,10 +19,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -34,6 +32,7 @@ import org.artoolkit.ar.base.camera.CameraPreferencesActivity;
 import org.artoolkit.ar.base.camera.CaptureCameraPreview;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
+
 import java.util.HashMap;
 import java.util.Timer;
 
@@ -67,6 +66,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive, intent.getAction() " + intent.getAction());
@@ -101,24 +101,24 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                     long eventTime = event.getEventTime();
 
                     Log.d(TAG, "eventTime " + eventTime);
-                        if (action == KeyEvent.ACTION_DOWN && ! actionDownReceived) {
-                            Log.d("EVENT", "ACTION_DOWN, eventTime " + eventTime);
-                            actionDownTime = eventTime;
-                            actionDownReceived = true;
+                    if (action == KeyEvent.ACTION_DOWN && !actionDownReceived) {
+                        Log.d("EVENT", "ACTION_DOWN, eventTime " + eventTime);
+                        actionDownTime = eventTime;
+                        actionDownReceived = true;
+                    }
+                    else if (action == KeyEvent.ACTION_UP) {
+                        Log.d("EVENT", "ACTION_UP eventTime " + eventTime);
+                        Log.d("EVENT", "eventTime - actionDownTime " + (eventTime - actionDownTime));
+                        if (eventTime - actionDownTime < 1000) {
+                            Log.d("EVENT", "HOLDCALL intent");
+                            context.sendBroadcast(new Intent("HOLDCALL"));
                         }
-                        else if(action == KeyEvent.ACTION_UP){
-                            Log.d("EVENT", "ACTION_UP eventTime " + eventTime);
-                            Log.d("EVENT", "eventTime - actionDownTime " + (eventTime - actionDownTime));
-                            if (eventTime - actionDownTime < 1000){
-                                Log.d("EVENT", "HOLDCALL intent");
-                                context.sendBroadcast(new Intent("HOLDCALL"));
-                            }
-                            else{
-                                Log.d("EVENT", "HANGUP intent");
-                                context.sendBroadcast(new Intent("HANGUP"));
-                            }
-                            actionDownReceived = false;
+                        else {
+                            Log.d("EVENT", "HANGUP intent");
+                            context.sendBroadcast(new Intent("HANGUP"));
                         }
+                        actionDownReceived = false;
+                    }
                 }
             }
         }
@@ -172,6 +172,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         renderer.setMeshes(meshes);
     }
 
+    @Override
     protected void onStart() {
         super.onStart();
         Log.i("ARActivity", "onStart(): Activity starting.");
@@ -206,16 +207,18 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
                     DisplayControl displayControl = new DisplayControl(AREcoTeleconsultationActivity.this);
                     boolean stereo = PreferenceManager.getDefaultSharedPreferences(AREcoTeleconsultationActivity.this).
-                            getBoolean("pref_stereoDisplay", false);
+                        getBoolean("pref_stereoDisplay", false);
                     displayControl.setMode(DisplayControl.DISPLAY_MODE_3D, stereo);
                 }
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {}
+            public void surfaceDestroyed(SurfaceHolder holder) {
+            }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
         this.glView = new TouchGLSurfaceView(this);
@@ -250,11 +253,12 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         mainLayout.addView(this.preview, new ViewGroup.LayoutParams(-1, -1));
         mainLayout.addView(this.glView, new ViewGroup.LayoutParams(-1, -1));
 
-        if(this.glView != null) {
+        if (this.glView != null) {
             this.glView.onResume();
         }
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
         if (this.glView != null) {
@@ -266,12 +270,13 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         unregisterReceiver(broadcastReceiver);
     }
 
+    @Override
     public void onStop() {
         Log.i("ARActivity", "onStop(): Activity stopping.");
         super.onStop();
     }
 
-
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == org.artoolkit.ar.base.R.id.settings) {
             this.startActivity(new Intent(this, CameraPreferencesActivity.class));
@@ -292,14 +297,14 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
         Log.d(TAG, "cameraPreviewStarted");
-        if (arInitialized){
+        if (arInitialized) {
             ARToolKit.getInstance().cleanup();
-            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())){
+            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
                 this.finish();
             }
             arInitialized = false;
         }
-        if(ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
+        if (ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
             Log.d(TAG, String.format("Build.MANUFACTURER %s", Build.MANUFACTURER));
             Log.d(TAG, String.format("Build.MODEL %s", Build.MODEL));
 
@@ -329,7 +334,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     public void cameraPreviewFrame(byte[] frame) {
-        if(this.firstUpdate && !arInitialized) {
+        if (this.firstUpdate && !arInitialized) {
 
             if (this.renderer.configureARScene()) {
                 Log.i("ARActivity", "cameraPreviewFrame(): Scene configured successfully");
@@ -382,5 +387,6 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     @Override
-    protected void notifyTeleconsultationStateChanged() {}
+    protected void notifyTeleconsultationStateChanged() {
+    }
 }

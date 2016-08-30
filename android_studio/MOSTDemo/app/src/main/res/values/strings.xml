@@ -60,7 +60,7 @@
     <string name="wait_for_specialist_message">A consultation request has been sent\\nWait for the specialist to respond</string>
     <string name="paused">PAUSED</string>
     <string name="increase_eco_stream">Increase eco stream size</string>
-    <string name="decrease_eco_stream">Increase eco stream size</string>
+    <string name="decrease_eco_stream">Decrease eco stream size</string>
 
     <string-array name="roles_entries">
         <item>@string/ecographist</item>

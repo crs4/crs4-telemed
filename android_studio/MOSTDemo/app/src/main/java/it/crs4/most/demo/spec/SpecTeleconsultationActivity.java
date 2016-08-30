@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -56,7 +57,6 @@ import it.crs4.most.streaming.utils.ImageDownloader;
 import it.crs4.most.streaming.utils.ImageDownloader.IBitmapReceiver;
 import it.crs4.most.visualization.IPtzCommandReceiver;
 import it.crs4.most.visualization.IStreamFragmentCommandListener;
-import it.crs4.most.visualization.PTZ_ControllerFragment;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.StreamViewerFragment;
@@ -89,7 +89,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private static final float ECO_LARGE = 0.7f;
 
     public final static int ZMQ_LISTENING_PORT = 5556;
-    private String MAIN_STREAM = "MAIN_STREAM";
+    private String CAMERA_STREAM = "CAMERA_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
 
     //ID for the menu exit option
@@ -129,6 +129,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
@@ -249,17 +250,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             StreamingLib streamingLib = new StreamingLibBackend();
             streamingLib.initLib(getApplicationContext());
 
-            PTZ_ControllerFragment ptzControllerFragment = PTZ_ControllerFragment.newInstance(true, true, true);
             Device camera = mTeleconsultation.getLastSession().getCamera();
-            mPTZManager = new PTZ_Manager(this,
-                camera.getPtzUri(), //     uriProps.getProperty("uri_ptz") ,
-                camera.getUser(), //  uriProps.getProperty("username_ptz"),
-                camera.getPwd() //  uriProps.getProperty("password_ptz")
-            );
-
-            // Instance the Camera stream
             HashMap<String, String> streamCameraParams = new HashMap<>();
-            streamCameraParams.put("name", MAIN_STREAM);
+            streamCameraParams.put("name", CAMERA_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
             mStreamCamera = streamingLib.createStream(streamCameraParams, mHandlerAR);
             mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
@@ -267,8 +260,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             mStreamCameraFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setRenderer(mRenderer);
             mStreamCameraFragment.setStreamAR(mStreamCamera);
+            mStreamCameraFragment.setGlSurfaceViewCallback(this);
+            mPTZManager = new PTZ_Manager(this,
+                camera.getPtzUri(),
+                camera.getUser(),
+                camera.getPwd()
+            );
 
-            // Instance the Eco stream
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
             streamEcoParams.put("name", ECO_STREAM);
@@ -279,9 +277,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             mStreamEcoFragment.setPlayerButtonsVisible(false);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error creating streams");
+            return;
         }
-        mStreamCameraFragment.setGlSurfaceViewCallback(this);
 
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -491,7 +489,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
         Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
 
-
         // for simplicity, in this example we only handle events of type STREAM_EVENT
         if (event.getEventType() == StreamingEventType.STREAM_EVENT)
             if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED || event.getEvent() == StreamingEvent.STREAM_ERROR) {
@@ -561,29 +558,18 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public void onPlay(String streamId) {
-        if (streamId.equals(MAIN_STREAM)) {
-            mStreamCamera.play();
-        }
-        else if (streamId.equals(ECO_STREAM)) {
-            mStreamEco.play();
-        }
+        // It is necessary to set the volume control here because Gstreamer override it
+        setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
     }
 
     @Override
     public void onPause(String streamId) {
-        if (streamId.equals(MAIN_STREAM)) {
-            mStreamCamera.pause();
-        }
-        else if (streamId.equals(ECO_STREAM)) {
-            mStreamEco.pause();
-        }
     }
 
     @Override
     public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
-        Log.d("TAG", "onSurfaceViewCreated");
         if (surfaceView != null) {
-            if (streamId.equals(MAIN_STREAM)) {
+            if (streamId.equals(CAMERA_STREAM)) {
                 if (!mStreamPrepared) {
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
@@ -600,7 +586,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     @Override
     public void onSurfaceViewDestroyed(String streamId) {
-        if (streamId.equals(MAIN_STREAM)) {
+        if (streamId.equals(CAMERA_STREAM)) {
             mStreamCamera.destroy();
         }
         else if (streamId.equals(ECO_STREAM)) {
@@ -623,7 +609,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         streamProps.add(StreamProperty.STATE);
         return streamProps;
     }
-
 
     // VOIP METHODS AND LOGIC
     private void handleButMakeCallClicked() {
@@ -690,17 +675,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             mOuterRef = new WeakReference<>(outerRef);
         }
 
-        protected VoipEventBundle getEventBundle(Message voipMessage) {
-            //int msg_type = voipMessage.what;
-            VoipEventBundle myState = (VoipEventBundle) voipMessage.obj;
-            String infoMsg = "Event:" + myState.getEvent() + ": Type:" + myState.getEventType() + " : " + myState.getInfo();
-            Log.d(TAG, "Called handleMessage with event info:" + infoMsg);
-            return myState;
-        }
-
         @Override
         public void handleMessage(Message voipMessage) {
-            VoipEventBundle eventBundle = getEventBundle(voipMessage);
+            VoipEventBundle eventBundle = (VoipEventBundle) voipMessage.obj;
             VoipEvent event = eventBundle.getEvent();
             SpecTeleconsultationActivity mainActivity = mOuterRef.get();
             Log.d(TAG, "HANDLE EVENT TYPE:" + eventBundle.getEventType() + " EVENT:" + eventBundle.getEvent());
@@ -719,9 +696,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
                 mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
             }
             else if (eventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
-                Log.d(TAG, "In handle Message for BUDDY EVENT");
-                //IBuddy myBuddy = (IBuddy) myEventBundle.getData();
-
                 // There is only one subscribed buddy in this app, so we don't need to get IBuddy informations
                 if (event == VoipEvent.BUDDY_CONNECTED) {
                     // Probably the first condition treat cases of lost network
@@ -786,6 +760,5 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             AlertDialog alert = miaAlert.create();
             alert.show();
         }
-
     }
 }

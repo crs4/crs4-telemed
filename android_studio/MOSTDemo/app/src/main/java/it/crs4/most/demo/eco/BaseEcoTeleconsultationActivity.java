@@ -2,8 +2,11 @@ package it.crs4.most.demo.eco;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.media.AudioManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -50,6 +53,12 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected RemoteConfigReader mConfigReader;
 
     protected abstract void notifyTeleconsultationStateChanged();
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+    }
 
     protected void setTeleconsultationState(TeleconsultationState tcState) {
         mTcState = tcState;
@@ -124,23 +133,11 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected void setupVoipLib() {
         // Voip Lib Initialization Params
         voipParams = teleconsultation.getLastSession().getVoipParams();
-
         mSipServerIp = voipParams.get("sipServerIp");
         mSipServerPort = voipParams.get("sipServerPort");
-
-        Log.d(TAG, "Initializing the lib...");
-        if (mVoipLib == null) {
-            Log.d(TAG, "Voip null... Initialization.....");
-            mVoipLib = new VoipLibBackend();
-            voipHandler = new CallHandler(this);
-            mVoipLib.initLib(getApplicationContext(), voipParams, voipHandler);
-        }
-        else {
-            Log.d(TAG, "Voip is not null... Destroying the lib before reinitializing.....");
-            // Reinitialization will be done after deinitialization event callback
-            voipHandler.mReinitRequest = true;
-            mVoipLib.destroyLib();
-        }
+        mVoipLib = new VoipLibBackend();
+        voipHandler = new CallHandler(this);
+        mVoipLib.initLib(getApplicationContext(), voipParams, voipHandler);
     }
 
     protected void subscribeBuddies() {
@@ -157,7 +154,6 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected static class CallHandler extends Handler {
 
         private final WeakReference<BaseEcoTeleconsultationActivity> mOuterRef;
-        public boolean mReinitRequest = false;
 
         private CallHandler(BaseEcoTeleconsultationActivity outerRef) {
             mOuterRef = new WeakReference<>(outerRef);
@@ -188,7 +184,6 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                 // There is only one subscribed buddy in this mMainActivity, so we don't need to get IBuddy informations
                 if (event == VoipEvent.BUDDY_CONNECTED) {
                     // the remote buddy is no longer on Hold State
-                    mainActivity.remoteHold = false;
                     if (mainActivity.mTcState == TeleconsultationState.REMOTE_HOLDING ||
                         mainActivity.mTcState == TeleconsultationState.HOLDING) {
                         if (mainActivity.localHold) {
@@ -217,13 +212,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                 mainActivity.answerCall();
             }
             else if (event == VoipEvent.CALL_ACTIVE) {
-                if (mainActivity.remoteHold) {
-                    //TODO: why?
-                    mainActivity.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
-                }
-                else {
-                    mainActivity.setTeleconsultationState(TeleconsultationState.CALLING);
-                }
+                mainActivity.setTeleconsultationState(TeleconsultationState.CALLING);
             }
             else if (event == VoipEvent.CALL_HOLDING) {
                 mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
