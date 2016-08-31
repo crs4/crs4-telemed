@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.opengl.GLSurfaceView;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,8 +60,8 @@ import it.crs4.most.visualization.IPtzCommandReceiver;
 import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
-import it.crs4.most.visualization.StreamViewerFragment;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
+import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
@@ -95,7 +96,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private IStream mStreamCamera;
     private IStream mStreamEco;
     private ARFragment mStreamCameraFragment;
-    private StreamViewerFragment mStreamEcoFragment;
+    private ARFragment mStreamEcoFragment;
     private FrameLayout mCameraFrame;
     private FrameLayout mEcoFrame;
     private TeleconsultationState mTcState = TeleconsultationState.IDLE;
@@ -119,8 +120,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private boolean mFirstCallStarted = false;
     private boolean mStreamCameraPrepared = false;
     private HashMap<String, Mesh> mMeshes = new HashMap<>();
-    private MeshManager meshManager = new MeshManager();
-    private PubSubARRenderer mRenderer;
+    private MeshManager cameraMeshManager = new MeshManager();
+    private MeshManager ecoMeshManager = new MeshManager();
+    private PubSubARRenderer mARCameraRenderer;
+    private PubSubARRenderer mAREcoRenderer;
     private Handler mHandlerAR;
     private AudioManager mAudioManager;
     private int mOriginalAudioMode;
@@ -150,16 +153,17 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         Thread pubThread = new Thread(publisher);
         pubThread.start();
 
-        Arrow arrow = new Arrow("arrow");
-        arrow.setMarker("single;Data/hiro.patt;80");
-        Arrow arrow2 = new Arrow("arrow2");
-        arrow2.setMarker("single;Data/kanji.patt;80");
-        meshManager.addMesh(arrow);
-        meshManager.addMesh(arrow2);
+        Arrow cameraArrow = new Arrow("arrow");
+        cameraArrow.setMarker("single;Data/hiro.patt;80");
+        Arrow ecoArrow = new Arrow("ecoArrow", 0.01f);
+        cameraMeshManager.addMesh(cameraArrow);
+        ecoMeshManager.addMesh(ecoArrow);
 
-        arrow.publisher = publisher;
-        arrow2.publisher = publisher;
-        mRenderer = new PubSubARRenderer(this, publisher,meshManager);
+        cameraArrow.publisher = publisher;
+        ecoArrow.publisher = publisher;
+        mARCameraRenderer = new PubSubARRenderer(this, publisher, cameraMeshManager);
+        mAREcoRenderer= new PubSubARRenderer(this, publisher, ecoMeshManager);
+        ecoMeshManager.configureScene();
 
         setupStreamLib();
         setupPtzPopupWindow();
@@ -246,7 +250,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
-            mStreamCameraFragment.setRenderer(mRenderer);
+            mStreamCameraFragment.setRenderer(mARCameraRenderer);
             mStreamCameraFragment.setStreamAR(mStreamCamera);
             mStreamCameraFragment.setGlSurfaceViewCallback(this);
             mPTZManager = new PTZ_Manager(this,
@@ -261,13 +265,54 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             streamEcoParams.put("uri", encoder.getStreamUri());
             mStreamEco = streamingLib.createStream(streamEcoParams, mStreamHandler);
             mEcoFrame = (FrameLayout) findViewById(R.id.container_stream_eco);
-            mStreamEcoFragment = StreamViewerFragment.newInstance(mStreamEco.getName());
+            mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
+            mStreamEcoFragment.setRenderer(mAREcoRenderer);
         }
         catch (Exception e) {
             Log.e(TAG, "Error creating streams");
             return;
         }
+        mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
+
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
+
+
+        mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
+            @Override
+            public void surfaceRedrawNeeded(SurfaceHolder holder) {
+                mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
+            }
+
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
 
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -520,13 +565,17 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 if (!mStreamCameraPrepared) {
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
-//                mStreamCameraFragment.setRenderer(mRenderer);
+//                mStreamCameraFragment.setRenderer(mARCameraRenderer);
                     mStreamCameraFragment.prepareRemoteAR();
                     mStreamCameraPrepared = true;
                 }
             }
             else if (streamId.equals(ECO_STREAM)) {
                 mStreamEco.prepare(surfaceView);
+                TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
+                glView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+                glView.setZOrderMediaOverlay(true);
+                glView.setMoveNormFactor(300f);
             }
         }
     }
@@ -600,7 +649,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        mStreamCameraFragment.getGlView().setMeshManager(meshManager);
+        mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
 
     }
 
