@@ -89,9 +89,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private String CAMERA_STREAM = "CAMERA_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
 
-    //ID for the menu exit option
-    private boolean exitFromAppRequest = false;
-
     private Handler mStreamHandler;
     private IStream mStreamCamera;
     private IStream mStreamEco;
@@ -180,7 +177,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 showPTZPopupWindow();
                 break;
             case R.id.button_exit:
-                exitFromApp();
+                endTeleconsultation();
                 break;
             case R.id.button_call:
                 handleButMakeCallClicked();
@@ -448,14 +445,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         imageDownloader.downloadImage(camera.getShotUri()); //    uriProps.getProperty("uri_still_image"));
     }
 
-    private void exitFromApp() {
-        exitFromAppRequest = true;
-        if (mVoipLib != null) {
-            stopStreams();
-            mVoipLib.destroyLib();
-        }
-    }
-
     private void playStreams() {
         if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
             mStreamCameraFragment.setStreamVisible();
@@ -493,8 +482,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     }
 
     private void endTeleconsultation() {
-        mVoipLib.destroyLib();
-        stopStreams();
+        if (mVoipLib.getCall().getState().equals(CallState.ACTIVE)) {
+            mVoipLib.hangupCall();
+        }
+        else {
+            mVoipLib.destroyLib();
+        }
     }
 
     @Override
@@ -682,6 +675,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
                 mainActivity.setResult(RESULT_OK);
+                mainActivity.stopStreams();
                 mainActivity.finish();
             }
             else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
@@ -720,19 +714,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 if (event.getEvent() == StreamingEvent.STREAM_ERROR) {
                     mOuterRef.get().mStreamEcoFragment.setStreamInvisible("ERROR");
                 }
-//                if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED || event.getEvent() == StreamingEvent.STREAM_ERROR) {
-//
-//                    // All events of type STREAM_EVENT provide a reference to the stream that triggered it.
-//                    // In this case we are handling two streams, so we need to check what stream triggered the event.
-//                    // Note that we are only interested to the new state of the stream
-//                    IStream stream = (IStream) event.getData();
-//                    String streamName = stream.getName();
-//
-//                    if (mStreamCamera.getState() == StreamState.DEINITIALIZED && exitFromAppRequest) {
-//                        Log.d(TAG, "Stream " + streamName + " deinitialized..");
-//                        exitFromApp();
-//                    }
-
             }
         }
     }

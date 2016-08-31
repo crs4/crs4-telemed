@@ -39,7 +39,6 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected TeleconsultationState mTcState = TeleconsultationState.IDLE;
     private String mSipServerIp;
     private String mSipServerPort;
-
     private VoipLib mVoipLib;
     private CallHandler voipHandler;
     protected StreamHandler mStreamHandler;
@@ -54,6 +53,8 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
 
     protected abstract void notifyTeleconsultationStateChanged();
 
+    protected void stopStream() {}
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +66,14 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
         notifyTeleconsultationStateChanged();
     }
 
-    protected void exitFromApp() {
+    protected void endTeleconsultation() {
         closeSession();
-        setResult(RESULT_OK);
-        finish();
+        if (mVoipLib.getCall().getState().equals(CallState.ACTIVE)) {
+            hangupCall();
+        }
+        else {
+            mVoipLib.destroyLib();
+        }
     }
 
     protected void closeSession() {
@@ -218,12 +223,13 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
                 mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
             }
             else if (event == VoipEvent.CALL_HANGUP || event == VoipEvent.CALL_REMOTE_HANGUP) {
-                mainActivity.setTeleconsultationState(TeleconsultationState.FINISHED);
-                mainActivity.mVoipLib.destroyLib();
+                mainActivity.endTeleconsultation();
             }
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
-                mainActivity.exitFromApp();
+                mainActivity.setResult(RESULT_OK);
+                mainActivity.stopStream();
+                mainActivity.finish();
             }
             else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
             }
