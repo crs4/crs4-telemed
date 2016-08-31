@@ -2,22 +2,18 @@ package it.crs4.most.demo.spec;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -37,8 +33,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.crs4.most.demo.R;
 import it.crs4.most.demo.QuerySettings;
+import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Device;
@@ -76,10 +72,8 @@ import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
 
 
-public class SpecTeleconsultationActivity extends AppCompatActivity implements Handler.Callback,
-    IPtzCommandReceiver,
-    IStreamFragmentCommandListener,
-    IStreamProvider,
+public class SpecTeleconsultationActivity extends AppCompatActivity implements IPtzCommandReceiver,
+    IStreamFragmentCommandListener, IStreamProvider,
     ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
     private final static String TAG = "SpecTeleconsultActivity";
@@ -124,7 +118,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     private boolean mLocalHold = false;
     private boolean mAccountRegistered = false;
     private boolean mFirstCallStarted = false;
-    private boolean mStreamPrepared = false;
+    private boolean mStreamCameraPrepared = false;
     private HashMap<String, Mesh> mMeshes = new HashMap<>();
     private PubSubARRenderer mRenderer;
     private Handler mHandlerAR;
@@ -138,33 +132,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
 
-        mStreamHandler = new Handler(this);
-        mHandlerAR = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message streamingMessage) {
-                StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
-                String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
-                Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-
-                StreamState streamState = ((IStream) event.getData()).getState();
-                Log.d(TAG, "event.getData().streamState " + streamState);
-                if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
-                    if (streamState == StreamState.PLAYING) {
-
-                        Log.d(TAG, "event.getData().streamState " + streamState);
-                        Log.d(TAG, "ready to call cameraPreviewStarted");
-
-                        //FIXME should be dynamically set
-                        int width = 704;
-                        int height = 576;
-                        Log.d(TAG, "width " + width);
-                        Log.d(TAG, "height " + height);
-                        mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
-                    }
-                }
-            }
-        };
+        mStreamHandler = new EcoStreamHandler(this);
+        mHandlerAR = new CameraStreamHandler(this);
 
         setContentView(R.layout.spec_teleconsultation_activity);
         setupTeleconsultationInfo();
@@ -323,11 +292,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     }
 
     private void notifyTeleconsultationStateChanged() {
-
 //        if (mTextTcState == null) {
 //            mTextTcState = (TcStateTextView) findViewById(R.id.txtTcState);
 //        }
-//
 //        mTextTcState.setTeleconsultationState(mTcState);
 
         try {
@@ -419,21 +386,17 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     }
 
     private void startReportActivity() {
-        Log.d(TAG, "Do report... Call activity!");
 //        Intent i = new Intent(this, InnerArchetypeViewerActivity.class);
-        Log.d(TAG, "STARTING ACTIVITY InnerArchetypeViewerActivity");
 //        startActivity(i);
     }
 
     @Override
     public void onPTZstartMove(PTZ_Direction dir) {
-        Log.d(TAG, "Called onPTZstartMove for direction:" + dir);
         mPTZManager.startMove(dir);
     }
 
     @Override
     public void onPTZstopMove(PTZ_Direction dir) {
-        Log.d(TAG, "Called onPTZstoptMove for direction:" + dir);
         mPTZManager.stopMove();
     }
 
@@ -485,32 +448,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         imageDownloader.downloadImage(camera.getShotUri()); //    uriProps.getProperty("uri_still_image"));
     }
 
-    @Override
-    public boolean handleMessage(Message streamingMessage) {
-        // The bundle containing all available informations and resources about the incoming event
-        StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
-
-        String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
-        Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-
-        // for simplicity, in this example we only handle events of type STREAM_EVENT
-        if (event.getEventType() == StreamingEventType.STREAM_EVENT)
-            if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED || event.getEvent() == StreamingEvent.STREAM_ERROR) {
-
-                // All events of type STREAM_EVENT provide a reference to the stream that triggered it.
-                // In this case we are handling two streams, so we need to check what stream triggered the event.
-                // Note that we are only interested to the new state of the stream
-                IStream stream = (IStream) event.getData();
-                String streamName = stream.getName();
-
-                if (mStreamCamera.getState() == StreamState.DEINITIALIZED && exitFromAppRequest) {
-                    Log.d(TAG, "Stream " + streamName + " deinitialized..");
-                    exitFromApp();
-                }
-            }
-        return false;
-    }
-
     private void exitFromApp() {
         exitFromAppRequest = true;
         if (mVoipLib != null) {
@@ -533,13 +470,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
 
     private void pauseStreams() {
         if (mStreamCamera != null && mStreamCamera.getState() == StreamState.PLAYING) {
-            mStreamCamera.pause();
             mStreamCameraFragment.setStreamInvisible("PAUSED");
+            mStreamCamera.pause();
         }
 
         if (mStreamEco != null && mStreamEco.getState() == StreamState.PLAYING) {
-            mStreamEco.pause();
             mStreamEcoFragment.setStreamInvisible("PAUSED");
+            mStreamEco.pause();
         }
     }
 
@@ -574,12 +511,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
         if (surfaceView != null) {
             if (streamId.equals(CAMERA_STREAM)) {
-                if (!mStreamPrepared) {
+                if (!mStreamCameraPrepared) {
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
 //                mStreamCameraFragment.setRenderer(mRenderer);
                     mStreamCameraFragment.prepareRemoteAR();
-                    mStreamPrepared = true;
+                    mStreamCameraPrepared = true;
                 }
             }
             else if (streamId.equals(ECO_STREAM)) {
@@ -680,11 +617,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
         }
 
         @Override
-        public void handleMessage(Message voipMessage) {
-            VoipEventBundle eventBundle = (VoipEventBundle) voipMessage.obj;
+        public void handleMessage(Message msg) {
+            VoipEventBundle eventBundle = (VoipEventBundle) msg.obj;
             VoipEvent event = eventBundle.getEvent();
             SpecTeleconsultationActivity mainActivity = mOuterRef.get();
-            Log.d(TAG, "HANDLE EVENT TYPE:" + eventBundle.getEventType() + " EVENT:" + eventBundle.getEvent());
+            Log.d(TAG, "Received VOIP event: " + eventBundle.getEvent() + " of type:" + eventBundle.getEventType());
 
             // Register the account after the Lib Initialization
             if (event == VoipEvent.LIB_INITIALIZED) {
@@ -765,4 +702,75 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
             alert.show();
         }
     }
+
+    private static class EcoStreamHandler extends Handler {
+        private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
+
+        private EcoStreamHandler(SpecTeleconsultationActivity outerRef) {
+            mOuterRef = new WeakReference<>(outerRef);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            // The bundle containing all available informations and resources about the incoming event
+            StreamingEventBundle event = (StreamingEventBundle) msg.obj;
+            Log.d(TAG, "Received ECO STREAM event: " + event.getEventType() + " of type: " + event.getEvent());
+
+            if (event.getEventType() == StreamingEventType.STREAM_EVENT) {
+                if (event.getEvent() == StreamingEvent.STREAM_ERROR) {
+                    mOuterRef.get().mStreamEcoFragment.setStreamInvisible("ERROR");
+                }
+//                if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED || event.getEvent() == StreamingEvent.STREAM_ERROR) {
+//
+//                    // All events of type STREAM_EVENT provide a reference to the stream that triggered it.
+//                    // In this case we are handling two streams, so we need to check what stream triggered the event.
+//                    // Note that we are only interested to the new state of the stream
+//                    IStream stream = (IStream) event.getData();
+//                    String streamName = stream.getName();
+//
+//                    if (mStreamCamera.getState() == StreamState.DEINITIALIZED && exitFromAppRequest) {
+//                        Log.d(TAG, "Stream " + streamName + " deinitialized..");
+//                        exitFromApp();
+//                    }
+
+            }
+        }
+    }
+
+    private static class CameraStreamHandler extends Handler {
+        private static final String TAG = "CameraStreamHandler";
+        private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
+
+        private CameraStreamHandler(SpecTeleconsultationActivity outerRef) {
+            mOuterRef = new WeakReference<>(outerRef);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            StreamingEventBundle event = (StreamingEventBundle) msg.obj;
+            Log.d(TAG, "Received CAMERA STREAM event: " + event.getEventType() + " of type: " + event.getEvent());
+            StreamState streamState = ((IStream) event.getData()).getState();
+            SpecTeleconsultationActivity act = mOuterRef.get();
+            if (event.getEventType() == StreamingEventType.STREAM_EVENT) {
+                if (event.getEvent() == StreamingEvent.STREAM_ERROR) {
+                    act.mStreamCameraFragment.setStreamInvisible("ERROR");
+                    if (act.mStreamCameraFragment.isARRunning()) {
+                        act.mStreamCameraFragment.cameraPreviewStopped();
+                    }
+                }
+                else if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+                    Log.d(TAG, "Stream state: " + streamState);
+                    if (streamState == StreamState.PLAYING) {
+                        //FIXME should be dynamically set
+                        int width = 704;
+                        int height = 576;
+                        Log.d(TAG, "width " + width);
+                        Log.d(TAG, "height " + height);
+                        act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
+                    }
+                }
+            }
+        }
+    }
+
 }
