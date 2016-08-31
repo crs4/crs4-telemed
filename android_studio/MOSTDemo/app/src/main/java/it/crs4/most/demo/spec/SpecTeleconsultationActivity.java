@@ -88,8 +88,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements H
     public static final int TELECONSULT_ENDED_REQUEST = 1;
 
     private static final float DEFAULT_FRAME_SIZE = 0.5f;
-    private static final float CAMERA_SMALL = 0.3f;
-    private static final float ECO_LARGE = 0.7f;
+    private static final float CAMERA_SMALL = 0.25f;
+    private static final float ECO_LARGE = 0.75f;
 
     public final static int ZMQ_LISTENING_PORT = 5556;
     private String CAMERA_STREAM = "CAMERA_STREAM";
