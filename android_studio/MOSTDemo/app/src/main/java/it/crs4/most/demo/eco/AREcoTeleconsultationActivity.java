@@ -143,8 +143,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         File[] files = cacheFolder.listFiles();
         if (files != null){
             for (File file : files) {
-                if (!file.delete())
-                    throw new RuntimeException("cannot delete cached files");
+                if (!file.delete()){
+//                    throw new RuntimeException("cannot delete cached files");
+                }
             }
         }
         AssetHelper assetHelper = new AssetHelper(getAssets());
@@ -174,10 +175,15 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         Arrow arrow = new Arrow("arrow");
         arrow.setMarker("single;Data/hiro.patt;80");
-        meshManager.addMesh(arrow);
-        Arrow arrow2 = new Arrow("arrow2");
-        arrow2.setMarker("single;Data/kanji.patt;80");
-        meshManager.addMesh(arrow2);
+//        meshManager.addMesh(arrow);
+//        Arrow arrow2 = new Arrow("arrow2");
+//        arrow2.setMarker("single;Data/kanji.patt;80");
+//        meshManager.addMesh(arrow2);
+
+        Arrow ecoArrow = new Arrow("ecoArrow");
+        ecoArrow.setMarker("multi;Data/multi/markers.dat");
+        meshManager.addMesh(ecoArrow);
+
 
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
@@ -263,6 +269,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.glView.setEGLContextClientVersion(1);
         }
 
+//        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
 

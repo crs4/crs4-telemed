@@ -63,6 +63,7 @@ import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
+import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
@@ -156,6 +157,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         Arrow cameraArrow = new Arrow("arrow");
         cameraArrow.setMarker("single;Data/hiro.patt;80");
         Arrow ecoArrow = new Arrow("ecoArrow", 0.01f);
+        ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
         cameraMeshManager.addMesh(cameraArrow);
         ecoMeshManager.addMesh(ecoArrow);
 
