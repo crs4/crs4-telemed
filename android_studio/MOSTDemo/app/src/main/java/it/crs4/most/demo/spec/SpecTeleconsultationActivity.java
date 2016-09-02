@@ -92,6 +92,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     public final static int ZMQ_LISTENING_PORT = 5556;
     private String CAMERA_STREAM = "CAMERA_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
+    private String ECO_ARROW_ID = "ecoArrow";
 
     private Handler mStreamHandler;
     private IStream mStreamCamera;
@@ -156,8 +157,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
         Arrow cameraArrow = new Arrow("arrow");
         cameraArrow.setMarker("single;Data/hiro.patt;80");
-        Arrow ecoArrow = new Arrow("ecoArrow", 0.01f);
+        Arrow ecoArrow = new Arrow(ECO_ARROW_ID, 0.01f);
         ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
+        ecoArrow.setxLimits(-1f, 1f);
+        ecoArrow.setyLimits(-1f, 1f);
         cameraMeshManager.addMesh(cameraArrow);
         ecoMeshManager.addMesh(ecoArrow);
 
@@ -312,7 +315,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
             }
 
             @Override
