@@ -260,6 +260,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 camera.getUser(),
                 camera.getPwd()
             );
+            mStreamCameraFragment.setFixedSize(new int [] {704, 576}); //FIXME should be dynamically set
 
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
