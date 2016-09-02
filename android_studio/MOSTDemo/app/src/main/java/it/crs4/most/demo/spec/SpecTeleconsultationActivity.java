@@ -280,6 +280,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
+                mStreamCameraFragment.setPlayerButtonsVisible(false);
+
 
             }
 
@@ -299,6 +301,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             @Override
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
                 mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
+                mStreamEcoFragment.setPlayerButtonsVisible(false);
+
             }
 
             @Override
