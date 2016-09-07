@@ -589,7 +589,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             else if (streamId.equals(ECO_STREAM)) {
                 mStreamEco.prepare(surfaceView);
                 TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
-                glView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
                 glView.setZOrderMediaOverlay(true);
                 glView.setMoveNormFactor(300f);
             }
