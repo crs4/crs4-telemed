@@ -301,6 +301,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
 
         mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
+            private int prevHeight = -1;
+            private int prevWidth = -1;
             @Override
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
                 mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
@@ -315,6 +317,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                if (prevHeight > -1){
+                    ecoMeshManager.getMeshByID(ECO_ARROW_ID).scale( prevWidth/ (float) width, prevHeight/ (float )height, 1);
+                }
+                prevWidth = width;
+                prevHeight = height;
             }
 
             @Override
