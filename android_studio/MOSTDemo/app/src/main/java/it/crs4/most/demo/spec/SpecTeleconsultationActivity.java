@@ -274,6 +274,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
             mStreamEcoFragment.setRenderer(mAREcoRenderer);
+            mStreamEcoFragment.setEnabled(false);
+
         }
         catch (Exception e) {
             Log.e(TAG, "Error creating streams");
@@ -396,6 +398,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 mLocalHold = false;
                 mFirstCallStarted = true;
                 playStreams();
+                mStreamEcoFragment.setEnabled(true);
             }
             else if (mTcState == TeleconsultationState.HOLDING) {
                 mCallMenuItem.setTitle("Call");
@@ -403,6 +406,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 mHangupMenuItem.setEnabled(true);
                 mLocalHold = true;
                 pauseStreams();
+                mStreamEcoFragment.setEnabled(false);
             }
             else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
                 mCallMenuItem.setEnabled(false);
