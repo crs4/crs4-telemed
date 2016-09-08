@@ -175,7 +175,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         Arrow arrow = new Arrow("arrow");
         arrow.setMarker("single;Data/hiro.patt;80");
-//        meshManager.addMesh(arrow);
+        meshManager.addMesh(arrow);
 //        Arrow arrow2 = new Arrow("arrow2");
 //        arrow2.setMarker("single;Data/kanji.patt;80");
 //        meshManager.addMesh(arrow2);
