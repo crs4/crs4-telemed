@@ -2,6 +2,7 @@ package it.crs4.most.demo.spec;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -119,11 +120,16 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private HashMap<String, Mesh> mMeshes = new HashMap<>();
     private PubSubARRenderer mRenderer;
     private Handler mHandlerAR;
+    private AudioManager mAudioManager;
+    private int mOriginalAudioMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mOriginalAudioMode = mAudioManager.getMode();
+        Log.d(TAG, "Audio mode is: " + mOriginalAudioMode);
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
@@ -613,48 +619,48 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         public void handleMessage(Message msg) {
             VoipEventBundle eventBundle = (VoipEventBundle) msg.obj;
             VoipEvent event = eventBundle.getEvent();
-            SpecTeleconsultationActivity mainActivity = mOuterRef.get();
+            SpecTeleconsultationActivity act = mOuterRef.get();
             Log.d(TAG, "Received VOIP event: " + eventBundle.getEvent() + " of type:" + eventBundle.getEventType());
 
             // Register the account after the Lib Initialization
             if (event == VoipEvent.LIB_INITIALIZED) {
-                mainActivity.registerAccount();
+                act.registerAccount();
             }
             else if (event == VoipEvent.ACCOUNT_REGISTERED) {
-                if (!mainActivity.mAccountRegistered) {
-                    mainActivity.subscribeBuddies();
-                    mainActivity.mAccountRegistered = true;
+                if (!act.mAccountRegistered) {
+                    act.subscribeBuddies();
+                    act.mAccountRegistered = true;
                 }
             }
             else if (event == VoipEvent.ACCOUNT_UNREGISTERED) {
-                mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
+                act.setTeleconsultationState(TeleconsultationState.IDLE);
             }
             else if (eventBundle.getEventType() == VoipEventType.BUDDY_EVENT) {
                 // There is only one subscribed buddy in this app, so we don't need to get IBuddy informations
                 if (event == VoipEvent.BUDDY_CONNECTED) {
                     // Probably the first condition treat cases of lost network
-                    if (mainActivity.mTcState == TeleconsultationState.REMOTE_HOLDING ||
-                        mainActivity.mTcState == TeleconsultationState.HOLDING) {
-                        if (mainActivity.mLocalHold) {
-                            mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
+                    if (act.mTcState == TeleconsultationState.REMOTE_HOLDING ||
+                        act.mTcState == TeleconsultationState.HOLDING) {
+                        if (act.mLocalHold) {
+                            act.setTeleconsultationState(TeleconsultationState.HOLDING);
                         }
                         else {
-                            mainActivity.setTeleconsultationState(TeleconsultationState.CALLING);
+                            act.setTeleconsultationState(TeleconsultationState.CALLING);
                         }
                     }
-                    else if (mainActivity.mTcState == TeleconsultationState.IDLE) {
-                        mainActivity.setTeleconsultationState(TeleconsultationState.READY);
+                    else if (act.mTcState == TeleconsultationState.IDLE) {
+                        act.setTeleconsultationState(TeleconsultationState.READY);
                     }
 
                 }
                 else if (event == VoipEvent.BUDDY_HOLDING) {
-                    if (mainActivity.mVoipLib.getCall().getState() == CallState.ACTIVE ||
-                        mainActivity.mVoipLib.getCall().getState() == CallState.HOLDING) {
-                        mainActivity.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
+                    if (act.mVoipLib.getCall().getState() == CallState.ACTIVE ||
+                        act.mVoipLib.getCall().getState() == CallState.HOLDING) {
+                        act.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
                     }
                 }
                 else if (event == VoipEvent.BUDDY_DISCONNECTED) {
-                    mainActivity.setTeleconsultationState(TeleconsultationState.IDLE);
+                    act.setTeleconsultationState(TeleconsultationState.IDLE);
                 }
             }
 
@@ -664,19 +670,27 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
             }
             else if (event == VoipEvent.CALL_ACTIVE) {
-                mainActivity.setTeleconsultationState(TeleconsultationState.CALLING);
+                act.mAudioManager.setMode(AudioManager.MODE_IN_CALL);
+                if (!act.mAudioManager.isWiredHeadsetOn()) {
+                    act.mAudioManager.setSpeakerphoneOn(true);
+                }
+                else {
+                    act.mAudioManager.setSpeakerphoneOn(false);
+                }
+                act.setTeleconsultationState(TeleconsultationState.CALLING);
             }
             else if (event == VoipEvent.CALL_HOLDING) {
-                mainActivity.setTeleconsultationState(TeleconsultationState.HOLDING);
+                act.setTeleconsultationState(TeleconsultationState.HOLDING);
             }
             else if (event == VoipEvent.CALL_HANGUP || event == VoipEvent.CALL_REMOTE_HANGUP) {
-                mainActivity.endTeleconsultation();
+                act.endTeleconsultation();
+                act.mAudioManager.setMode(act.mOriginalAudioMode);
             }
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
-                mainActivity.setResult(RESULT_OK);
-                mainActivity.stopStreams();
-                mainActivity.finish();
+                act.setResult(RESULT_OK);
+                act.stopStreams();
+                act.finish();
             }
             else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
                 //TODO: check what to do
