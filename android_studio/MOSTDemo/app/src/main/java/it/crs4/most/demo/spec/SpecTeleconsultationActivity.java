@@ -5,7 +5,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.opengl.GLSurfaceView;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,6 +55,7 @@ import it.crs4.most.streaming.enums.StreamingEventType;
 import it.crs4.most.streaming.ptz.PTZ_Manager;
 import it.crs4.most.streaming.utils.ImageDownloader;
 import it.crs4.most.streaming.utils.ImageDownloader.IBitmapReceiver;
+import it.crs4.most.streaming.utils.Size;
 import it.crs4.most.visualization.IPtzCommandReceiver;
 import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
@@ -94,7 +94,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
 
-    private Handler mStreamHandler;
+    private Handler mEcoStreamHandler;
     private IStream mStreamCamera;
     private IStream mStreamEco;
     private ARFragment mStreamCameraFragment;
@@ -126,7 +126,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private MeshManager ecoMeshManager = new MeshManager();
     private PubSubARRenderer mARCameraRenderer;
     private PubSubARRenderer mAREcoRenderer;
-    private Handler mHandlerAR;
+    private Handler mCameraStreamHandler;
     private AudioManager mAudioManager;
     private int mOriginalAudioMode;
 
@@ -142,8 +142,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
 
-        mStreamHandler = new EcoStreamHandler(this);
-        mHandlerAR = new CameraStreamHandler(this);
+
+        mEcoStreamHandler = new EcoStreamHandler(this);
+
+        mCameraStreamHandler = new CameraStreamHandler(this);
 
         setContentView(R.layout.spec_teleconsultation_activity);
         setupTeleconsultationInfo();
@@ -160,7 +162,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         Arrow ecoArrow = new Arrow(ECO_ARROW_ID, 0.005f);
         ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
         ecoArrow.setxLimits(-1f, 1f);
-        ecoArrow.setyLimits(-1f, 1f);
+        ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
         cameraMeshManager.addMesh(cameraArrow);
         ecoMeshManager.addMesh(ecoArrow);
 
@@ -169,6 +171,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mARCameraRenderer = new PubSubARRenderer(this, publisher, cameraMeshManager);
         mAREcoRenderer= new PubSubARRenderer(this, publisher, ecoMeshManager);
         ecoMeshManager.configureScene();
+
+
 
         setupStreamLib();
         setupPtzPopupWindow();
@@ -251,25 +255,25 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             HashMap<String, String> streamCameraParams = new HashMap<>();
             streamCameraParams.put("name", CAMERA_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
-            mStreamCamera = streamingLib.createStream(streamCameraParams, mHandlerAR);
+            mStreamCamera = streamingLib.createStream(streamCameraParams, mCameraStreamHandler);
             mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setRenderer(mARCameraRenderer);
             mStreamCameraFragment.setStreamAR(mStreamCamera);
+//            mStreamCameraFragment.setFixedSize(new int [] {704, 576}); //FIXME should be dynamically set
             mStreamCameraFragment.setGlSurfaceViewCallback(this);
             mPTZManager = new PTZ_Manager(this,
                 camera.getPtzUri(),
                 camera.getUser(),
                 camera.getPwd()
             );
-            mStreamCameraFragment.setFixedSize(new int [] {704, 576}); //FIXME should be dynamically set
 
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
             streamEcoParams.put("name", ECO_STREAM);
             streamEcoParams.put("uri", encoder.getStreamUri());
-            mStreamEco = streamingLib.createStream(streamEcoParams, mStreamHandler);
+            mStreamEco = streamingLib.createStream(streamEcoParams, mEcoStreamHandler);
             mEcoFrame = (FrameLayout) findViewById(R.id.container_stream_eco);
             mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
@@ -788,21 +792,35 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     private static class EcoStreamHandler extends Handler {
         private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
+        private int width;
+        private int height;
 
         private EcoStreamHandler(SpecTeleconsultationActivity outerRef) {
             mOuterRef = new WeakReference<>(outerRef);
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            // The bundle containing all available informations and resources about the incoming event
-            StreamingEventBundle event = (StreamingEventBundle) msg.obj;
-            Log.d(TAG, "Received ECO STREAM event: " + event.getEventType() + " of type: " + event.getEvent());
+        public void handleMessage(Message streamingMessage) {
+            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
+            String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
+            Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
+            SpecTeleconsultationActivity act = mOuterRef.get();
 
-            if (event.getEventType() == StreamingEventType.STREAM_EVENT) {
-                if (event.getEvent() == StreamingEvent.STREAM_ERROR) {
-                    mOuterRef.get().mStreamEcoFragment.setStreamInvisible("ERROR");
+            StreamState streamState = ((IStream) event.getData()).getState();
+            Log.d(TAG, "event.getData().streamState " + streamState);
+            if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
+                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+
+                Log.d(TAG, "event.getData().streamState " + streamState);
+                Log.d(TAG, "ready to call cameraPreviewStarted");
+
+                Size videoSize = ((IStream) event.getData()).getVideoSize();
+                if(videoSize != null){
+                    width = videoSize.getWidth();
+                    height = videoSize.getHeight();
+                    act.mAREcoRenderer.setViewportAspectRatio(Float.valueOf(width)/height);
                 }
+
             }
         }
     }
@@ -816,29 +834,41 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            StreamingEventBundle event = (StreamingEventBundle) msg.obj;
-            Log.d(TAG, "Received CAMERA STREAM event: " + event.getEventType() + " of type: " + event.getEvent());
-            StreamState streamState = ((IStream) event.getData()).getState();
+        public void handleMessage(Message streamingMessage) {
+            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
+            String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
+            Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
             SpecTeleconsultationActivity act = mOuterRef.get();
-            if (event.getEventType() == StreamingEventType.STREAM_EVENT) {
-                if (event.getEvent() == StreamingEvent.STREAM_ERROR) {
-                    act.mStreamCameraFragment.setStreamInvisible("ERROR");
-                    if (act.mStreamCameraFragment.isARRunning()) {
-                        act.mStreamCameraFragment.cameraPreviewStopped();
-                    }
+
+            StreamState streamState = ((IStream) event.getData()).getState();
+            Log.d(TAG, "event.getData().streamState " + streamState);
+            if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
+                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+//                    if (streamState == StreamState.PLAYING) {
+
+                Log.d(TAG, "event.getData().streamState " + streamState);
+                Log.d(TAG, "ready to call cameraPreviewStarted");
+
+                Size videoSize = ((IStream) event.getData()).getVideoSize();
+
+                int width, height;
+                if(videoSize != null) {
+                    width = videoSize.getWidth();
+                    height = videoSize.getHeight();
                 }
-                else if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
-                    Log.d(TAG, "Stream state: " + streamState);
-                    if (streamState == StreamState.PLAYING) {
-                        //FIXME should be dynamically set
-                        int width = 704;
-                        int height = 576;
-                        Log.d(TAG, "width " + width);
-                        Log.d(TAG, "height " + height);
-                        act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
-                    }
+                else { //FIXME
+                    width = 704;
+                    height = 576;
+
+
                 }
+                Log.d(TAG, "width " + width);
+                Log.d(TAG, "height " + height);
+                act.mStreamCameraFragment.setFixedSize(new int [] {width, height});
+                act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
+
+
+//                    }
             }
         }
     }
