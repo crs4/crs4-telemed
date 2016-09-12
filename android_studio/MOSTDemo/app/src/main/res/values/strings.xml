@@ -70,4 +70,9 @@
         <item>eco_role</item>
         <item>spec_role</item>
     </string-array>
+
+    <string name="most_demo_fragment_instructions">You should set %1$s in Settings</string>
+    <string name="set_server">server address, port</string>
+    <string name="select_taskgroup">taskgroup</string>
+    <string name="select_role">role</string>
 </resources>

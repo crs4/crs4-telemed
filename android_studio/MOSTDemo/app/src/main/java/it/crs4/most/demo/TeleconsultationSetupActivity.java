@@ -53,11 +53,11 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
         SmartFragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mVpPager.setAdapter(pagerAdapter);
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.most_demo_drawer_layout);
         String[] drawerItems = {
             getString(R.string.settings), getString(R.string.exit)
         };
-        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
+        ListView drawerList = (ListView) findViewById(R.id.most_demo_left_drawer);
         drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
 

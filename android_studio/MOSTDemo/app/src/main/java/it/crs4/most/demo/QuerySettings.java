@@ -29,7 +29,7 @@ public class QuerySettings {
 
     public static String getRole(Context context) {
         String[] roles = context.getResources().getStringArray(R.array.roles_entries_values);
-        return getStoredItem(context, ROLE, roles[0]);
+        return getStoredItem(context, ROLE, null);
     }
 
 //    public static void setConfigServerAddress(Context context, String value) {
