@@ -33,6 +33,7 @@ import org.artoolkit.ar.base.camera.CaptureCameraPreview;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Timer;
 
@@ -45,6 +46,7 @@ import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
+import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
@@ -61,7 +63,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private TouchGLSurfaceView glView;
     private boolean firstUpdate = false;
     private OpticalARToolkit mOpticalARToolkit;
-    private HashMap<String, Mesh> meshes = new HashMap<>();
+    private MeshManager meshManager = new MeshManager();
     private boolean arInitialized = false;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -136,6 +138,16 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
+        File cacheFolder = new File(getCacheDir().getAbsolutePath() + "/Data");
+        File[] files = cacheFolder.listFiles();
+        if (files != null){
+            for (File file : files) {
+                if (!file.delete()){
+//                    throw new RuntimeException("cannot delete cached files");
+                }
+            }
+        }
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
@@ -160,16 +172,26 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         ZMQSubscriber subscriber = new ZMQSubscriber(specAppAddress);
         Thread subThread = new Thread(subscriber);
         subThread.start();
+
+        Arrow arrow = new Arrow("arrow");
+        arrow.setMarker("single;Data/hiro.patt;80");
+        meshManager.addMesh(arrow);
+//        Arrow arrow2 = new Arrow("arrow2");
+//        arrow2.setMarker("single;Data/kanji.patt;80");
+//        meshManager.addMesh(arrow2);
+
+        Arrow ecoArrow = new Arrow("ecoArrow");
+        ecoArrow.setMarker("multi;Data/multi/markers.dat");
+        meshManager.addMesh(ecoArrow);
+
+
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
-            renderer = new OpticalRenderer(this, subscriber, mOpticalARToolkit);
+            renderer = new OpticalRenderer(this, subscriber, mOpticalARToolkit, meshManager);
         }
         else {
-            renderer = new PubSubARRenderer(this, subscriber);
+            renderer = new PubSubARRenderer(this, subscriber, meshManager);
         }
-        Arrow arrow = new Arrow("arrow");
-        meshes.put(arrow.getId(), arrow);
-        renderer.setMeshes(meshes);
     }
 
     @Override
@@ -221,7 +243,10 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
-        this.glView = new TouchGLSurfaceView(this);
+        glView = new TouchGLSurfaceView(this);
+        if (mOpticalARToolkit != null) {
+            glView.setEnabled(false);
+        }
 
         ActivityManager activityManager = (ActivityManager) this.getSystemService("activity");
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -244,6 +269,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.glView.setEGLContextClientVersion(1);
         }
 
+//        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
 

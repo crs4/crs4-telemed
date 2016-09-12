@@ -55,14 +55,17 @@ import it.crs4.most.streaming.enums.StreamingEventType;
 import it.crs4.most.streaming.ptz.PTZ_Manager;
 import it.crs4.most.streaming.utils.ImageDownloader;
 import it.crs4.most.streaming.utils.ImageDownloader.IBitmapReceiver;
+import it.crs4.most.streaming.utils.Size;
 import it.crs4.most.visualization.IPtzCommandReceiver;
 import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
-import it.crs4.most.visualization.StreamViewerFragment;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
+import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
+import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
+import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
@@ -89,12 +92,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     public final static int ZMQ_LISTENING_PORT = 5556;
     private String CAMERA_STREAM = "CAMERA_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
+    private String ECO_ARROW_ID = "ecoArrow";
 
-    private Handler mStreamHandler;
+    private Handler mEcoStreamHandler;
     private IStream mStreamCamera;
     private IStream mStreamEco;
     private ARFragment mStreamCameraFragment;
-    private StreamViewerFragment mStreamEcoFragment;
+    private ARFragment mStreamEcoFragment;
     private FrameLayout mCameraFrame;
     private FrameLayout mEcoFrame;
     private TeleconsultationState mTcState = TeleconsultationState.IDLE;
@@ -118,8 +122,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private boolean mFirstCallStarted = false;
     private boolean mStreamCameraPrepared = false;
     private HashMap<String, Mesh> mMeshes = new HashMap<>();
-    private PubSubARRenderer mRenderer;
-    private Handler mHandlerAR;
+    private MeshManager cameraMeshManager = new MeshManager();
+    private MeshManager ecoMeshManager = new MeshManager();
+    private PubSubARRenderer mARCameraRenderer;
+    private PubSubARRenderer mAREcoRenderer;
+    private Handler mCameraStreamHandler;
     private AudioManager mAudioManager;
     private int mOriginalAudioMode;
 
@@ -135,8 +142,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
 
-        mStreamHandler = new EcoStreamHandler(this);
-        mHandlerAR = new CameraStreamHandler(this);
+
+        mEcoStreamHandler = new EcoStreamHandler(this);
+
+        mCameraStreamHandler = new CameraStreamHandler(this);
 
         setContentView(R.layout.spec_teleconsultation_activity);
         setupTeleconsultationInfo();
@@ -148,11 +157,22 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         Thread pubThread = new Thread(publisher);
         pubThread.start();
 
-        Arrow arrow = new Arrow("arrow");
-        mMeshes.put(arrow.getId(), arrow);
-        arrow.publisher = publisher;
-        mRenderer = new PubSubARRenderer(this, publisher);
-        mRenderer.setMeshes(mMeshes);
+        Arrow cameraArrow = new Arrow("arrow");
+        cameraArrow.setMarker("single;Data/hiro.patt;80");
+        Arrow ecoArrow = new Arrow(ECO_ARROW_ID, 0.005f);
+        ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
+        ecoArrow.setxLimits(-1f, 1f);
+        ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
+        cameraMeshManager.addMesh(cameraArrow);
+        ecoMeshManager.addMesh(ecoArrow);
+
+        cameraArrow.publisher = publisher;
+        ecoArrow.publisher = publisher;
+        mARCameraRenderer = new PubSubARRenderer(this, publisher, cameraMeshManager);
+        mAREcoRenderer= new PubSubARRenderer(this, publisher, ecoMeshManager);
+        ecoMeshManager.configureScene();
+
+
 
         setupStreamLib();
         setupPtzPopupWindow();
@@ -235,12 +255,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             HashMap<String, String> streamCameraParams = new HashMap<>();
             streamCameraParams.put("name", CAMERA_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
-            mStreamCamera = streamingLib.createStream(streamCameraParams, mHandlerAR);
+            mStreamCamera = streamingLib.createStream(streamCameraParams, mCameraStreamHandler);
             mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
-            mStreamCameraFragment.setRenderer(mRenderer);
+            mStreamCameraFragment.setRenderer(mARCameraRenderer);
             mStreamCameraFragment.setStreamAR(mStreamCamera);
+//            mStreamCameraFragment.setFixedSize(new int [] {704, 576}); //FIXME should be dynamically set
             mStreamCameraFragment.setGlSurfaceViewCallback(this);
             mPTZManager = new PTZ_Manager(this,
                 camera.getPtzUri(),
@@ -252,15 +273,68 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             HashMap<String, String> streamEcoParams = new HashMap<>();
             streamEcoParams.put("name", ECO_STREAM);
             streamEcoParams.put("uri", encoder.getStreamUri());
-            mStreamEco = streamingLib.createStream(streamEcoParams, mStreamHandler);
+            mStreamEco = streamingLib.createStream(streamEcoParams, mEcoStreamHandler);
             mEcoFrame = (FrameLayout) findViewById(R.id.container_stream_eco);
-            mStreamEcoFragment = StreamViewerFragment.newInstance(mStreamEco.getName());
+            mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
+            mStreamEcoFragment.setRenderer(mAREcoRenderer);
+            mStreamEcoFragment.setEnabled(false);
+
         }
         catch (Exception e) {
             Log.e(TAG, "Error creating streams");
             return;
         }
+        mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
+                mStreamCameraFragment.setPlayerButtonsVisible(false);
+
+
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
+
+
+        mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
+            private int prevHeight = -1;
+            private int prevWidth = -1;
+            @Override
+            public void surfaceRedrawNeeded(SurfaceHolder holder) {
+                mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
+                mStreamEcoFragment.setPlayerButtonsVisible(false);
+
+            }
+
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                if (prevHeight > -1){
+                    ecoMeshManager.getMeshByID(ECO_ARROW_ID).scale( prevWidth/ (float) width, prevHeight/ (float )height, 1);
+                }
+                prevWidth = width;
+                prevHeight = height;
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
 
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -328,6 +402,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 mLocalHold = false;
                 mFirstCallStarted = true;
                 playStreams();
+                mStreamEcoFragment.setEnabled(true);
             }
             else if (mTcState == TeleconsultationState.HOLDING) {
                 mCallMenuItem.setTitle("Call");
@@ -335,6 +410,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 mHangupMenuItem.setEnabled(true);
                 mLocalHold = true;
                 pauseStreams();
+                mStreamEcoFragment.setEnabled(false);
             }
             else if (mTcState == TeleconsultationState.REMOTE_HOLDING) {
                 mCallMenuItem.setEnabled(false);
@@ -513,13 +589,16 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 if (!mStreamCameraPrepared) {
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
-//                mStreamCameraFragment.setRenderer(mRenderer);
+//                mStreamCameraFragment.setRenderer(mARCameraRenderer);
                     mStreamCameraFragment.prepareRemoteAR();
                     mStreamCameraPrepared = true;
                 }
             }
             else if (streamId.equals(ECO_STREAM)) {
                 mStreamEco.prepare(surfaceView);
+                TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
+                glView.setZOrderMediaOverlay(true);
+                glView.setMoveNormFactor(300f);
             }
         }
     }
@@ -593,7 +672,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        mStreamCameraFragment.getGlView().setMeshes(mMeshes);
+        mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
 
     }
 
@@ -713,21 +792,35 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     private static class EcoStreamHandler extends Handler {
         private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
+        private int width;
+        private int height;
 
         private EcoStreamHandler(SpecTeleconsultationActivity outerRef) {
             mOuterRef = new WeakReference<>(outerRef);
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            // The bundle containing all available informations and resources about the incoming event
-            StreamingEventBundle event = (StreamingEventBundle) msg.obj;
-            Log.d(TAG, "Received ECO STREAM event: " + event.getEventType() + " of type: " + event.getEvent());
+        public void handleMessage(Message streamingMessage) {
+            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
+            String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
+            Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
+            SpecTeleconsultationActivity act = mOuterRef.get();
 
-            if (event.getEventType() == StreamingEventType.STREAM_EVENT) {
-                if (event.getEvent() == StreamingEvent.STREAM_ERROR) {
-                    mOuterRef.get().mStreamEcoFragment.setStreamInvisible("ERROR");
+            StreamState streamState = ((IStream) event.getData()).getState();
+            Log.d(TAG, "event.getData().streamState " + streamState);
+            if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
+                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+
+                Log.d(TAG, "event.getData().streamState " + streamState);
+                Log.d(TAG, "ready to call cameraPreviewStarted");
+
+                Size videoSize = ((IStream) event.getData()).getVideoSize();
+                if(videoSize != null){
+                    width = videoSize.getWidth();
+                    height = videoSize.getHeight();
+                    act.mAREcoRenderer.setViewportAspectRatio(Float.valueOf(width)/height);
                 }
+
             }
         }
     }
@@ -741,29 +834,41 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            StreamingEventBundle event = (StreamingEventBundle) msg.obj;
-            Log.d(TAG, "Received CAMERA STREAM event: " + event.getEventType() + " of type: " + event.getEvent());
-            StreamState streamState = ((IStream) event.getData()).getState();
+        public void handleMessage(Message streamingMessage) {
+            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
+            String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
+            Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
             SpecTeleconsultationActivity act = mOuterRef.get();
-            if (event.getEventType() == StreamingEventType.STREAM_EVENT) {
-                if (event.getEvent() == StreamingEvent.STREAM_ERROR) {
-                    act.mStreamCameraFragment.setStreamInvisible("ERROR");
-                    if (act.mStreamCameraFragment.isARRunning()) {
-                        act.mStreamCameraFragment.cameraPreviewStopped();
-                    }
+
+            StreamState streamState = ((IStream) event.getData()).getState();
+            Log.d(TAG, "event.getData().streamState " + streamState);
+            if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
+                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+//                    if (streamState == StreamState.PLAYING) {
+
+                Log.d(TAG, "event.getData().streamState " + streamState);
+                Log.d(TAG, "ready to call cameraPreviewStarted");
+
+                Size videoSize = ((IStream) event.getData()).getVideoSize();
+
+                int width, height;
+                if(videoSize != null) {
+                    width = videoSize.getWidth();
+                    height = videoSize.getHeight();
                 }
-                else if (event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
-                    Log.d(TAG, "Stream state: " + streamState);
-                    if (streamState == StreamState.PLAYING) {
-                        //FIXME should be dynamically set
-                        int width = 704;
-                        int height = 576;
-                        Log.d(TAG, "width " + width);
-                        Log.d(TAG, "height " + height);
-                        act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
-                    }
+                else { //FIXME
+                    width = 704;
+                    height = 576;
+
+
                 }
+                Log.d(TAG, "width " + width);
+                Log.d(TAG, "height " + height);
+                act.mStreamCameraFragment.setFixedSize(new int [] {width, height});
+                act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
+
+
+//                    }
             }
         }
     }
