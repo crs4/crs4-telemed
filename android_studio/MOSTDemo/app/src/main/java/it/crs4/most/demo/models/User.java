@@ -15,9 +15,9 @@ public class User implements Serializable {
     private String mFirstName = null;
     private String mLastName = null;
     private String mAccessToken = null;
-    private TaskGroup mTaskGroup = null;
+    private String mTaskGroup = null;
 
-    public User(String firstName, String lastName, String username, TaskGroup taskGroup) {
+    public User(String firstName, String lastName, String username, String taskGroup) {
         mFirstName = firstName;
         mLastName = lastName;
         mUsername = username;
@@ -40,11 +40,11 @@ public class User implements Serializable {
         return mUsername;
     }
 
-    public void setTaskGroup(TaskGroup taskGroup) {
+    public void setTaskGroup(String taskGroup) {
         mTaskGroup = taskGroup;
     }
 
-    public TaskGroup getTaskGroup() {
+    public String getTaskGroup() {
         return mTaskGroup;
     }
 
@@ -58,7 +58,8 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return getUsername();
+        return  String.format("%s %s (%s)", getFirstName(), getLastName(), getUsername());
+
     }
 
     public static User fromJSON(JSONObject userData) throws TeleconsultationException {

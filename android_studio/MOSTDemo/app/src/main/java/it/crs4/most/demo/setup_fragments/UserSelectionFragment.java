@@ -16,7 +16,6 @@ import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.models.User;
-import it.crs4.most.demo.models.TaskGroup;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -31,11 +30,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 public class UserSelectionFragment extends SetupFragment {
-    protected static final String TAG = "UserSelectionFragment";
+    protected static final java.lang.String TAG = "UserSelectionFragment";
 
     private ArrayList<User> mUsers;
     private ArrayAdapter<User> mUsersAdapter;
-    private TaskGroup mTaskgroup;
+    private String mTaskgroup;
 
     public static UserSelectionFragment newInstance(IConfigBuilder config) {
         UserSelectionFragment fragment = new UserSelectionFragment();
@@ -46,7 +45,7 @@ public class UserSelectionFragment extends SetupFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_selection_list, container, false);
-        mTaskgroup = new TaskGroup(QuerySettings.getTaskGroup(getActivity()), null);
+        mTaskgroup = QuerySettings.getTaskGroup(getActivity());
         mUsers = new ArrayList<>();
         mUsersAdapter = new UserAdapter(this, R.layout.fragment_user_selection_item, mUsers);
 
@@ -69,7 +68,7 @@ public class UserSelectionFragment extends SetupFragment {
      * Retrieves the applicants associated to a specific taskgroup
      */
     private void retrieveUsers() {
-        String taskgroupId = QuerySettings.getTaskGroup(getActivity());
+        java.lang.String taskgroupId = QuerySettings.getTaskGroup(getActivity());
         if (taskgroupId != null) {
             getConfigBuilder().getRemoteConfigReader()
                 .getUsersByTaskgroup(taskgroupId,
@@ -151,7 +150,7 @@ public class UserSelectionFragment extends SetupFragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             User user = getItem(position);
-            viewHolder.username.setText(String.format("%s %s", user.getLastName(), user.getFirstName()));
+            viewHolder.username.setText(java.lang.String.format("%s %s", user.getLastName(), user.getFirstName()));
             return convertView;
         }
 

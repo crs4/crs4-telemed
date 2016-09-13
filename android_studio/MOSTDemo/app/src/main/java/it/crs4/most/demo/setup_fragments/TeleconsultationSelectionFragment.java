@@ -98,7 +98,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
 //                mTeleconsultations.clear();
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 5000);
                 mConfigReader.getTeleconsultationsByTaskgroup(
-                    user.getTaskGroup().getId(),
+                    user.getTaskGroup(),
                     user.getAccessToken(),
                     new Response.Listener<JSONObject>() {
                         @Override

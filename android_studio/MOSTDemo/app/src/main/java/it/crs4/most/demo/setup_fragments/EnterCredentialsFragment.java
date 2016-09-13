@@ -119,7 +119,7 @@ public class EnterCredentialsFragment extends SetupFragment {
 
     private void retrieveAccessToken(String pincode) {
         String username = getConfigBuilder().getUser().getUsername();
-        String taskgroupId = getConfigBuilder().getUser().getTaskGroup().getId();
+        String taskgroupId = getConfigBuilder().getUser().getTaskGroup();
         String grantType = mCredentialsType == PASSCODE_CREDENTIALS ?
             RemoteConfigReader.GRANT_TYPE_PINCODE :
             RemoteConfigReader.GRANT_TYPE_PASSWORD;

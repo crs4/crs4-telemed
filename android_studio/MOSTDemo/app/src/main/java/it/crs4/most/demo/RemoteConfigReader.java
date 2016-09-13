@@ -138,7 +138,7 @@ public class RemoteConfigReader {
     }
 
     /**
-     * Retrieve the users associated to the specified TaskGroup ID
+     * Retrieve the users associated to the specified String ID
      *
      * @param taskgroupId   the id of the taskgroup
      * @param listener      the listener where to receive the Taskgroup user(s)

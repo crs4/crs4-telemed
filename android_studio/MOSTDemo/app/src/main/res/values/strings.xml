@@ -4,7 +4,7 @@
     <string name="app_name">MOST Demo</string>
     <string name="login_user">Username:</string>
     <string name="login_password">Password:</string>
-    <string name="login_button">Login</string>
+    <string name="login">Login</string>
 
     <string name="lbl_ip_address">Ip Address</string>
     <string name="lbl_enter_passcode">Enter your passcode:</string>
@@ -75,4 +75,9 @@
     <string name="set_server">server address, port</string>
     <string name="select_taskgroup">taskgroup</string>
     <string name="select_role">role</string>
-</resources>
+    <string name="login_instructions">Login to proceed</string>
+    <string name="cannot_contact_server">Cannot contact the server. Check your connection</string>
+    <string name="loading_users">Loading users. Please wait....</string>
+    <string name="title_activity_login_activity_prova">Sign in</string>
+
+    </resources>

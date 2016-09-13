@@ -13,9 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import it.crs4.most.demo.models.Teleconsultation;
 
 public class MostDemoActivity extends SingleFragmentActivity {
 
@@ -32,7 +29,7 @@ public class MostDemoActivity extends SingleFragmentActivity {
         try {
             DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.most_demo_drawer_layout);
             String[] drawerItems = {
-                getString(R.string.settings), getString(R.string.exit)
+                getString(R.string.settings), getString(R.string.login), getString(R.string.exit)
             };
             ListView drawerList = (ListView) findViewById(R.id.most_demo_left_drawer);
             drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
@@ -48,7 +45,7 @@ public class MostDemoActivity extends SingleFragmentActivity {
             Log.d(TAG, "Activity support action bar found");
         }
         catch (NullPointerException ex) {
-            Log.d(TAG, "There's no actionbar");
+            Log.e(TAG, "There's something wrong with the layout");
         }
     }
 
@@ -70,10 +67,7 @@ public class MostDemoActivity extends SingleFragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -83,6 +77,10 @@ public class MostDemoActivity extends SingleFragmentActivity {
             if (value.equals(getString(R.string.settings))) {
                 Intent settingsIntent = new Intent(MostDemoActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
+            }
+            else if (value.equals(getString(R.string.login))) {
+                Intent loginIntent = new Intent(MostDemoActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
             }
             else if (value.equals(getString(R.string.exit))) {
                 finish();

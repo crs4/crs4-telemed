@@ -158,5 +158,7 @@ public class SettingsFragment extends PreferenceFragment {
         mTaskGroupPreference.setValue(null);
 //        QuerySettings.setTaskGroup(getActivity(), "");
     }
+
+
 }
 
