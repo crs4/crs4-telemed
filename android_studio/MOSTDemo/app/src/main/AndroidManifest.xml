@@ -28,6 +28,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
         <!-- <activity -->
         <!-- android:name=".TeleconsultationSetupActivity" -->
@@ -44,7 +45,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MostDemoActivity"/>
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".LoginActivity"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MostDemoActivity"/>

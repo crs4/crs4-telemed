@@ -29,6 +29,7 @@ import it.crs4.most.demo.models.User;
 public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
+    private static final String USERS = "users";
 
     private TextView mPasswordText;
     private Spinner mUsernameSpinner;
@@ -44,26 +45,43 @@ public class LoginFragment extends Fragment {
         return new LoginFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.login_fragment, container, false);
-        mUsernameSpinner = (Spinner) v.findViewById(R.id.username_spinner);
-        mPasswordText = (TextView) v.findViewById(R.id.passcode_text);
-
-        mUsers = new ArrayList<>();
-        mUsersAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown, mUsers);
-        mUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
-        mUsernameSpinner.setAdapter(mUsersAdapter);
-
         mServerIP = QuerySettings.getConfigServerAddress(getActivity());
         mServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
         mAccessToken = QuerySettings.getAccessToken(getActivity());
-
         mRemCfg = new RemoteConfigReader(getActivity(), mServerIP, mServerPort);
-        loadUsers();
+
+        View v = inflater.inflate(R.layout.login_fragment, container, false);
+        mUsernameSpinner = (Spinner) v.findViewById(R.id.username_spinner);
+        mPasswordText = (TextView) v.findViewById(R.id.passcode_text);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(USERS)) {
+            mUsers = (ArrayList<User>) savedInstanceState.getSerializable(USERS);
+        }
+        else {
+            mUsers = new ArrayList<>();
+            loadUsers();
+        }
+        mUsersAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown, mUsers);
+        mUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
+        mUsernameSpinner.setAdapter(mUsersAdapter);
+
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("USERS", mUsers);
     }
 
     private void loadUsers() {
