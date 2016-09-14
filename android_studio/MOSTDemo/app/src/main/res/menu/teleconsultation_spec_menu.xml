@@ -17,8 +17,9 @@
         android:id="@+id/button_ar"
         android:title="@string/ar_toggle"
         android:checkable="true"
-        android:checked="true"
-        app:showAsAction="always"/>
+        android:checked="false"
+        android:icon="@android:drawable/checkbox_off_background"
+        app:showAsAction="always|withText"/>
 
     <item
         android:id="@+id/button_ptz"

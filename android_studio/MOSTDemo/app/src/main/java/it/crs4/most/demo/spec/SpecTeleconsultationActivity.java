@@ -5,10 +5,13 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -215,9 +218,18 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             case R.id.change_eco_stream_size:
                 changeEcoStreamSize();
                 break;
-
             case R.id.button_ar:
                 boolean isChecked = !item.isChecked();
+                if(isChecked) {
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_on_background));
+
+//                    item.getIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.MULTIPLY);
+                }
+                else {
+//                    item.getIcon().clearColorFilter();
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
+                }
+
                 item.setChecked(isChecked);
                 if (mStreamCameraFragment != null) mStreamCameraFragment.setEnabled(isChecked);
                 if (mStreamEcoFragment!= null) mStreamEcoFragment.setEnabled(isChecked);
