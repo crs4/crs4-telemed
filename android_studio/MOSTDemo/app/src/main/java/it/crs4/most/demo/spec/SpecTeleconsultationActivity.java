@@ -115,6 +115,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private MenuItem mCallMenuItem;
     private MenuItem mHangupMenuItem;
     private MenuItem mChangeEcoSizeMenuItem;
+    private MenuItem mARToggle;
     private HashMap<String, String> mVoipParams;
     private RESTClient mRESTClient;
     private boolean mLocalHold = false;
@@ -129,6 +130,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private Handler mCameraStreamHandler;
     private AudioManager mAudioManager;
     private int mOriginalAudioMode;
+    private boolean arOnBoot = false;
+    private ZMQPublisher publisher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +154,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
-        ZMQPublisher publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
+        publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
         Thread pubThread = new Thread(publisher);
         pubThread.start();
 
@@ -166,8 +169,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
         cameraArrow.publisher = publisher;
         ecoArrow.publisher = publisher;
-        mARCameraRenderer = new PubSubARRenderer(this, publisher, cameraMeshManager);
-        mAREcoRenderer= new PubSubARRenderer(this, publisher, ecoMeshManager);
+        mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
+        mAREcoRenderer= new PubSubARRenderer(this, ecoMeshManager);
         ecoMeshManager.configureScene();
 
         setupStreamLib();
@@ -189,6 +192,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mCallMenuItem = menu.findItem(R.id.button_call);
         mHangupMenuItem = menu.findItem(R.id.button_hangup);
         mChangeEcoSizeMenuItem = menu.findItem(R.id.change_eco_stream_size);
+        mARToggle = menu.findItem(R.id.button_ar);
+        mARToggle.setChecked(arOnBoot);
         return res;
     }
 
@@ -210,6 +215,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             case R.id.change_eco_stream_size:
                 changeEcoStreamSize();
                 break;
+
+            case R.id.button_ar:
+                boolean isChecked = !item.isChecked();
+                item.setChecked(isChecked);
+                if (mStreamCameraFragment != null) mStreamCameraFragment.setEnabled(isChecked);
+                if (mStreamEcoFragment!= null) mStreamEcoFragment.setEnabled(isChecked);
+                return true;
         }
         return false;
     }
@@ -264,6 +276,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 camera.getUser(),
                 camera.getPwd()
             );
+            mStreamCameraFragment.setEnabled(arOnBoot);
 
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
@@ -285,6 +298,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
+                mStreamCameraFragment.getGlView().setPublisher(publisher);
                 mStreamCameraFragment.setPlayerButtonsVisible(false);
             }
 
@@ -301,6 +315,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             @Override
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
                 mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
+                mStreamEcoFragment.getGlView().setPublisher(publisher);
                 mStreamEcoFragment.setPlayerButtonsVisible(false);
             }
 
@@ -386,7 +401,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 mLocalHold = false;
                 mFirstCallStarted = true;
                 playStreams();
-                mStreamEcoFragment.setEnabled(true);
+                mStreamEcoFragment.setEnabled(mARToggle.isChecked());
             }
             else if (mTcState == TeleconsultationState.HOLDING) {
                 mCallMenuItem.setTitle("Call");

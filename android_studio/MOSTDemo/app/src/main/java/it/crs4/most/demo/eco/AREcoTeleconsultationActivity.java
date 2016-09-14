@@ -63,6 +63,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private OpticalARToolkit mOpticalARToolkit;
     private MeshManager meshManager = new MeshManager();
     private boolean arInitialized = false;
+    private boolean arEnabled = false;
+    private ZMQSubscriber subscriber;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
@@ -79,6 +81,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         }
     };
+
 
     public static class RemoteControlReceiver extends BroadcastReceiver {
         String TAG = "RemoteControlReceiver";
@@ -167,7 +170,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
         Log.d(TAG, "SpecApp Address: " + specAppAddress);
-        ZMQSubscriber subscriber = new ZMQSubscriber(specAppAddress);
+        subscriber = new ZMQSubscriber(specAppAddress);
         Thread subThread = new Thread(subscriber);
         subThread.start();
 
@@ -185,11 +188,12 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
-            renderer = new OpticalRenderer(this, subscriber, mOpticalARToolkit, meshManager);
+            renderer = new OpticalRenderer(this, mOpticalARToolkit, meshManager);
         }
         else {
-            renderer = new PubSubARRenderer(this, subscriber, meshManager);
+            renderer = new PubSubARRenderer(this,  meshManager);
         }
+        renderer.setEnabled(arEnabled);
     }
 
     @Override
@@ -267,9 +271,11 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.glView.setEGLContextClientVersion(1);
         }
 
-//        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
+        glView.setSubscriber(subscriber);
+        glView.setMeshManager(meshManager);
 
         glView.setRenderMode(0);
         glView.setZOrderMediaOverlay(true);
@@ -372,13 +378,17 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             arInitialized = true;
         }
 
-        if (ARToolKit.getInstance().convertAndDetect(frame)) {
+        if(renderer.isEnabled()){
+            if (ARToolKit.getInstance().convertAndDetect(frame)) {
 
-            if (this.glView != null) {
-                this.glView.requestRender();
+                if (this.glView != null) {
+                    this.glView.requestRender();
+                }
+                this.onFrameProcessed();
             }
-            this.onFrameProcessed();
         }
+
+
     }
 
     public void onFrameProcessed() {

@@ -41,7 +41,7 @@ public class EcoTeleconsultationController extends TeleconsultationController {
             i = new Intent(activity, AREcoTeleconsultationActivity.class);
         }
         else {
-            i = new Intent(activity, EcoTeleconsultationActivity.class);
+            i = new Intent(activity, AREcoTeleconsultationActivity.class);
         }
         i.putExtra(BaseEcoTeleconsultationActivity.TELECONSULTATION_ARG, teleconsultation);
         activity.startActivityForResult(i, EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST);

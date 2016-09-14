@@ -14,6 +14,13 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/button_ar"
+        android:title="@string/ar_toggle"
+        android:checkable="true"
+        android:checked="true"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/button_ptz"
         android:title="@string/ptz"
         app:showAsAction="always"/>
@@ -28,4 +35,5 @@
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:title="@string/exit"
         app:showAsAction="ifRoom"/>
+
 </menu>
