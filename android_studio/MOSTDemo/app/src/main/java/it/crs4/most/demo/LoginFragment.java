@@ -1,15 +1,20 @@
 package it.crs4.most.demo;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import it.crs4.most.demo.models.User;
 
@@ -30,14 +34,13 @@ public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
     private static final String USERS = "users";
+    private static final int PASSCODE_LEN = 5;
 
     private TextView mPasswordText;
     private Spinner mUsernameSpinner;
     private ArrayList<User> mUsers; //TODO: change to User and implement an Adapter
     private RemoteConfigReader mRemCfg;
     private String mAccessToken;
-    private String mServerIP;
-    private Integer mServerPort;
     private String mTaskGroup;
     private ArrayAdapter<User> mUsersAdapter;
 
@@ -54,15 +57,16 @@ public class LoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mServerIP = QuerySettings.getConfigServerAddress(getActivity());
-        mServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
+        String serverIP = QuerySettings.getConfigServerAddress(getActivity());
+        Integer serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
         mAccessToken = QuerySettings.getAccessToken(getActivity());
-        mRemCfg = new RemoteConfigReader(getActivity(), mServerIP, mServerPort);
+        mRemCfg = new RemoteConfigReader(getActivity(), serverIP, serverPort);
 
         View v = inflater.inflate(R.layout.login_fragment, container, false);
         mUsernameSpinner = (Spinner) v.findViewById(R.id.username_spinner);
-        mPasswordText = (TextView) v.findViewById(R.id.passcode_text);
+        mPasswordText = (TextView) v.findViewById(R.id.password_text);
+        Button sendPassword = (Button) v.findViewById(R.id.password_button);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(USERS)) {
             mUsers = (ArrayList<User>) savedInstanceState.getSerializable(USERS);
@@ -75,13 +79,47 @@ public class LoginFragment extends Fragment {
         mUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
         mUsernameSpinner.setAdapter(mUsersAdapter);
 
+        if (isEco()) {
+            mPasswordText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            mPasswordText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String passcode = mPasswordText.getText().toString();
+                    if (passcode.length() == PASSCODE_LEN) {
+                        retrieveAccessToken(passcode);
+                        mPasswordText.setText("");
+                    }
+                }
+            });
+            sendPassword.setVisibility(View.INVISIBLE);
+        }
+        else {
+            sendPassword.setVisibility(View.VISIBLE);
+            sendPassword.setEnabled(true);
+            sendPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String password = mPasswordText.getText().toString();
+                    retrieveAccessToken(password);
+                }
+            });
+        }
+
         return v;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("USERS", mUsers);
+        outState.putSerializable(USERS, mUsers);
     }
 
     private void loadUsers() {
@@ -103,8 +141,7 @@ public class LoginFragment extends Fragment {
                         Log.e(TAG, "No valid users found for this taskgroup");
                         return;
                     }
-                    users = usersData.getJSONObject("data")
-                        .getJSONArray("applicants");
+                    users = usersData.getJSONObject("data").getJSONArray("applicants");
                 }
                 catch (JSONException e) {
                     Log.e(TAG, "Error loading user information");
@@ -125,6 +162,7 @@ public class LoginFragment extends Fragment {
                 }
                 mUsersAdapter.notifyDataSetChanged();
                 loadUserDialog.dismiss();
+                mPasswordText.setEnabled(true);
             }
         };
 
@@ -137,5 +175,66 @@ public class LoginFragment extends Fragment {
         };
 
         mRemCfg.getUsersByTaskgroup(mTaskGroup, listener, errorListener);
+    }
+
+    private void retrieveAccessToken(String password) {
+        User selectedUser = (User) mUsernameSpinner.getSelectedItem();
+        String username = selectedUser.getUsername();
+        String grantType = isEco() ? RemoteConfigReader.GRANT_TYPE_PINCODE : RemoteConfigReader.GRANT_TYPE_PASSWORD;
+
+        Response.Listener<String> listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Query Response:" + response);
+                try {
+                    JSONObject jsonresponse = new JSONObject(response);
+                    Log.d(TAG, "ACCESS TOKEN: " + jsonresponse.getString("access_token"));
+                    String accessToken = jsonresponse.getString("access_token");
+
+                    if (accessToken != null) {
+                        QuerySettings.setAccessToken(getActivity(), accessToken);
+                        getActivity().finish();
+                    }
+                    else {
+                        showLoginErrorAlert();
+                    }
+                }
+                catch (JSONException e) {
+                    Log.e(TAG, "error parsing json response: " + e);
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError e) {
+                Log.e(TAG, "Invalid password");
+                e.printStackTrace();
+                showLoginErrorAlert();
+            }
+        };
+
+        mRemCfg.getAccessToken(username, mTaskGroup, grantType, password, listener, errorListener);
+    }
+
+    private boolean isEco() {
+        String role = QuerySettings.getRole(getActivity());
+        String[] roles = getResources().getStringArray(R.array.roles_entries_values);
+        return role.equals(roles[0]);
+    }
+
+    private void showLoginErrorAlert() {
+        new AlertDialog.Builder(getActivity())
+            .setTitle(R.string.login_error)
+            .setMessage(R.string.login_error_details)
+            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+            .create()
+            .show();
     }
 }

@@ -2,6 +2,7 @@ package it.crs4.most.demo;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 
 public class QuerySettings {
 
@@ -17,6 +18,13 @@ public class QuerySettings {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(valueType, defaultValue);
     }
 
+    public static void storeItem(Context context, String valueType, String value) {
+        PreferenceManager.getDefaultSharedPreferences(context).
+            edit().
+            putString(valueType, value).
+            apply();
+    }
+
     public static String getConfigServerAddress(Context context) {
         return getStoredItem(context, CONFIG_SERVER_IP, null);
     }
@@ -30,7 +38,6 @@ public class QuerySettings {
     }
 
     public static String getRole(Context context) {
-        String[] roles = context.getResources().getStringArray(R.array.roles_entries_values);
         return getStoredItem(context, ROLE, null);
     }
 
@@ -41,6 +48,11 @@ public class QuerySettings {
     public static String getAccessToken(Context context) {
         return getStoredItem(context, ACCESS_TOKEN, null);
     }
+
+    public static void setAccessToken(Context context, String accessToken) {
+        storeItem(context, ACCESS_TOKEN, accessToken);
+    }
+
 }
 
 

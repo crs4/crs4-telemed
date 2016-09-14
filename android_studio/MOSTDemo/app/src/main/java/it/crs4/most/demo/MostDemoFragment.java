@@ -3,6 +3,7 @@ package it.crs4.most.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,17 +62,24 @@ public class MostDemoFragment extends Fragment {
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
         mRole = QuerySettings.getRole(getActivity());
 
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (checkSettings()) {
             mRemCfg = new RemoteConfigReader(getActivity(), mServerIP, mServerPort);
             mUser = QuerySettings.getUser(getActivity());
             mAccessToken = QuerySettings.getAccessToken(getActivity());
+            Log.d(TAG, "Access token is: " + mAccessToken);
             if (mAccessToken == null) {
-                mMsgText.setText(R.string.login_instructions);
-                mMsgText.setVisibility(View.VISIBLE);
+                setTextMessage(getString(R.string.login_instructions));
+            }
+            else {
+                setTextMessage(null);
             }
         }
-
-        return v;
     }
 
     public boolean checkSettings() {
@@ -96,11 +104,20 @@ public class MostDemoFragment extends Fragment {
                 msgParts = new StringBuilder(msgParts).replace(pos, pos + 1, " and").toString();
             }
             String msg = String.format(getString(R.string.most_demo_fragment_instructions), msgParts);
-            mMsgText.setText(msg);
-            mMsgText.setVisibility(View.VISIBLE);
+            setTextMessage(msg);
             return false;
         }
         return true;
+    }
+
+    private void setTextMessage(@Nullable String message) {
+        mMsgText.setText(message);
+        if (message == null) {
+            mMsgText.setVisibility(View.INVISIBLE);
+        }
+        else {
+            mMsgText.setVisibility(View.VISIBLE);
+        }
     }
 
 }

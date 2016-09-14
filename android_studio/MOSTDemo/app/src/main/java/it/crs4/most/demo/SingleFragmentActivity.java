@@ -8,16 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
+    protected Fragment mFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         FragmentManager fm = getSupportFragmentManager();
-        Fragment f = fm.findFragmentById(R.id.fragment_container);
-        if (f == null) {
-            f = createFragment();
+        mFragment = fm.findFragmentById(R.id.fragment_container);
+        if (mFragment == null) {
+            mFragment = createFragment();
             fm.beginTransaction()
-                    .add(R.id.fragment_container, f)
+                    .add(R.id.fragment_container, mFragment)
                     .commit();
         }
     }

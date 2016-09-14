@@ -79,5 +79,6 @@
     <string name="cannot_contact_server">Cannot contact the server. Check your connection</string>
     <string name="loading_users">Loading users. Please wait....</string>
     <string name="title_activity_login_activity_prova">Sign in</string>
+    <string name="logout">Logout</string>
 
-    </resources>
+</resources>

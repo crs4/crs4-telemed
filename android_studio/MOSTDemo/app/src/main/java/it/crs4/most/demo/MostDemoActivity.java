@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +21,9 @@ public class MostDemoActivity extends SingleFragmentActivity {
 
     private static final String TAG = "MostDemoActivity";
     private ActionBarDrawerToggle mDrawerToggle;
+    private String[] mDrawerItems;
+    private ArrayAdapter<String> mDrawerAdapter;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,37 +32,67 @@ public class MostDemoActivity extends SingleFragmentActivity {
     }
 
     private void setDrawer() {
+        mDrawerItems = new String[3];
+        mDrawerItems[0] = getString(R.string.settings);
+        mDrawerItems[2] = getString(R.string.exit);
+        if (isLoggedIn()) {
+            mDrawerItems[1] = getString(R.string.logout);
+        }
+        else {
+            mDrawerItems[1] = getString(R.string.login);
+        }
+
         try {
-            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.most_demo_drawer_layout);
-            String[] drawerItems = {
-                getString(R.string.settings), getString(R.string.login), getString(R.string.exit)
-            };
+            mDrawerLayout = (DrawerLayout) findViewById(R.id.most_demo_drawer_layout);
             ListView drawerList = (ListView) findViewById(R.id.most_demo_left_drawer);
-            drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
+            mDrawerAdapter = new ArrayAdapter<>(this, R.layout.drawer_list_item, mDrawerItems);
+            drawerList.setAdapter(mDrawerAdapter);
             drawerList.setOnItemClickListener(new DrawerItemClickListener());
-            mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close);
+            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close);
 
             // Set the drawer toggle as the DrawerListener
-            drawerLayout.addDrawerListener(mDrawerToggle);
+            mDrawerLayout.addDrawerListener(mDrawerToggle);
 
             ActionBar actionBar = getSupportActionBar();
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            Log.d(TAG, "Activity support action bar found");
         }
         catch (NullPointerException ex) {
             Log.e(TAG, "There's something wrong with the layout");
         }
     }
 
-    @Override
-    protected int getLayout() {
-        return R.layout.activity_fragment_with_drawer;
+    private void refreshFragment() {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.detach(mFragment);
+        ft.attach(mFragment);
+        ft.commit();
+    }
+
+    private boolean isLoggedIn() {
+        return QuerySettings.getAccessToken(this) != null;
     }
 
     @Override
     protected Fragment createFragment() {
         return MostDemoFragment.newInstance();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_fragment_with_drawer;
     }
 
     @Override
@@ -81,6 +117,15 @@ public class MostDemoActivity extends SingleFragmentActivity {
             else if (value.equals(getString(R.string.login))) {
                 Intent loginIntent = new Intent(MostDemoActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
+                mDrawerItems[1] = getString(R.string.logout);
+                mDrawerAdapter.notifyDataSetChanged();
+            }
+            else if (value.equals(getString(R.string.logout))) {
+                QuerySettings.setAccessToken(MostDemoActivity.this, null);
+                mDrawerItems[1] = getString(R.string.login);
+                mDrawerAdapter.notifyDataSetChanged();
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                refreshFragment();
             }
             else if (value.equals(getString(R.string.exit))) {
                 finish();

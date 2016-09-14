@@ -28,19 +28,14 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings_preferences);
-        EditTextPreference configServerAddr = (EditTextPreference)
-                findPreference("config_server_address");
+        EditTextPreference configServerAddr = (EditTextPreference) findPreference("config_server_address");
         configServerAddr.setSummary(configServerAddr.getText());
 
-        EditTextPreference configServerPort = (EditTextPreference)
-                findPreference("config_server_port");
+        EditTextPreference configServerPort = (EditTextPreference) findPreference("config_server_port");
         configServerPort.setSummary(configServerPort.getText());
 
-        EditTextPreference deviceID = (EditTextPreference)
-                findPreference("device_id");
-        deviceID.setSummary(Settings.Secure.getString(getActivity().getContentResolver(),
-                Settings.Secure.ANDROID_ID));
-
+        EditTextPreference deviceID = (EditTextPreference) findPreference("device_id");
+        deviceID.setSummary(Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         mTaskGroupPreference = (ListPreference) findPreference("select_task_group_preference");
 
