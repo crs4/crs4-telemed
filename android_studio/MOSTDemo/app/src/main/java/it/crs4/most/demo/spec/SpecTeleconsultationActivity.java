@@ -336,11 +336,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                if (prevHeight > -1){
-                    ecoMeshManager.getMeshByID(ECO_ARROW_ID).scale( prevWidth/ (float) width, prevHeight/ (float )height, 1);
-                }
-                prevWidth = width;
-                prevHeight = height;
+//                if (prevHeight > -1){
+//                    ecoMeshManager.getMeshByID(ECO_ARROW_ID).scale( prevWidth/ (float) width, prevHeight/ (float )height, 1);
+//                }
+//                prevWidth = width;
+//                prevHeight = height;
             }
 
             @Override
