@@ -45,6 +45,10 @@ public class QuerySettings {
         return getStoredItem(context, USER, null);
     }
 
+    public static void setUser(Context context, String user) {
+        storeItem(context, USER, user);
+    }
+
     public static String getAccessToken(Context context) {
         return getStoredItem(context, ACCESS_TOKEN, null);
     }

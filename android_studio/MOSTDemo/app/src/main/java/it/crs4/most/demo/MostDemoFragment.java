@@ -2,25 +2,20 @@ package it.crs4.most.demo;
 
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
-import it.crs4.most.demo.models.User;
 
 
 /**
@@ -39,6 +34,12 @@ public class MostDemoFragment extends Fragment {
     private TextView mMsgText;
     private String mAccessToken;
     private String mUser;
+    private LinearLayout mLoginFrame;
+    private LinearLayout mNewTeleFrame;
+    private LinearLayout mOldTeleFrame;
+    private MenuItem mLoginMenuItem;
+    private ImageButton mNewTeleButton;
+    private ImageButton mOldTeleButton;
 
     public MostDemoFragment() {
         // Required empty public constructor
@@ -51,12 +52,25 @@ public class MostDemoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_most_demo, container, false);
+        View v = inflater.inflate(R.layout.most_demo_fragment, container, false);
         mMsgText = (TextView) v.findViewById(R.id.msg_text);
+
+        mNewTeleFrame = (LinearLayout) v.findViewById(R.id.new_teleconsultation_frame);
+        mNewTeleButton = (ImageButton) v.findViewById(R.id.new_teleconsultation_button);
+        mNewTeleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        mOldTeleFrame = (LinearLayout) v.findViewById(R.id.old_teleconsultation_frame);
+        mOldTeleButton = (ImageButton) v.findViewById(R.id.old_teleconsultation_button);
+
         mServerIP = QuerySettings.getConfigServerAddress(getActivity());
         mServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
@@ -73,17 +87,9 @@ public class MostDemoFragment extends Fragment {
             mUser = QuerySettings.getUser(getActivity());
             mAccessToken = QuerySettings.getAccessToken(getActivity());
             Log.d(TAG, "Access token is: " + mAccessToken);
-            if (mAccessToken == null) {
-                setTextMessage(getString(R.string.login_instructions));
-            }
-            else {
-                setTextMessage(null);
-            }
+            updateLoginState();
         }
-    }
-
-    public boolean checkSettings() {
-        if (mServerIP == null || mTaskGroup == null || mRole == null) {
+        else {
             String msgParts = "";
             int nullCounter = 0;
             if (mServerIP == null) {
@@ -105,19 +111,92 @@ public class MostDemoFragment extends Fragment {
             }
             String msg = String.format(getString(R.string.most_demo_fragment_instructions), msgParts);
             setTextMessage(msg);
-            return false;
+
+            setLoginButton();
         }
-        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.most_demo_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        mLoginMenuItem = menu.findItem(R.id.login_menu_item);
+        setLoginButton();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.login_menu_item:
+                if (!isLoggedIn()) {
+                    Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(loginIntent);
+                }
+                else {
+                    logout();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void updateLoginState() {
+        if (isLoggedIn()) {
+            mNewTeleFrame.setVisibility(View.VISIBLE);
+            mOldTeleFrame.setVisibility(View.VISIBLE);
+            setTextMessage(null);
+        }
+        else {
+            mNewTeleFrame.setVisibility(View.GONE);
+            mOldTeleFrame.setVisibility(View.GONE);
+            setTextMessage(getString(R.string.login_instructions));
+        }
+        setLoginButton();
+    }
+
+    private void logout() {
+        QuerySettings.setAccessToken(getActivity(), null);
+        QuerySettings.setUser(getActivity(), null);
+        updateLoginState();
+    }
+
+    public boolean checkSettings() {
+        return !(mServerIP == null || mTaskGroup == null || mRole == null);
     }
 
     private void setTextMessage(@Nullable String message) {
         mMsgText.setText(message);
         if (message == null) {
-            mMsgText.setVisibility(View.INVISIBLE);
+            mMsgText.setVisibility(View.GONE);
         }
         else {
             mMsgText.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setLoginButton() {
+        if (mLoginMenuItem != null) {
+            Drawable icon;
+            if (isLoggedIn()) {
+                icon = getResources().getDrawable(R.drawable.logout);
+            }
+            else {
+                icon = getResources().getDrawable(R.drawable.login);
+            }
+            mLoginMenuItem.setIcon(icon);
+
+            if (checkSettings()) {
+                mLoginMenuItem.setEnabled(true);
+            }
+            else {
+                mLoginMenuItem.setEnabled(false);
+            }
+
+        }
+    }
+
+    private boolean isLoggedIn() {
+        return QuerySettings.getAccessToken(getActivity()) != null;
     }
 
 }

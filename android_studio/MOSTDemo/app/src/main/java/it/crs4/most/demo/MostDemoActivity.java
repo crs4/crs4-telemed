@@ -21,8 +21,6 @@ public class MostDemoActivity extends SingleFragmentActivity {
 
     private static final String TAG = "MostDemoActivity";
     private ActionBarDrawerToggle mDrawerToggle;
-    private String[] mDrawerItems;
-    private ArrayAdapter<String> mDrawerAdapter;
     private DrawerLayout mDrawerLayout;
 
     @Override
@@ -32,21 +30,15 @@ public class MostDemoActivity extends SingleFragmentActivity {
     }
 
     private void setDrawer() {
-        mDrawerItems = new String[3];
-        mDrawerItems[0] = getString(R.string.settings);
-        mDrawerItems[2] = getString(R.string.exit);
-        if (isLoggedIn()) {
-            mDrawerItems[1] = getString(R.string.logout);
-        }
-        else {
-            mDrawerItems[1] = getString(R.string.login);
-        }
+        String[] drawerItems = new String[2];
+        drawerItems[0] = getString(R.string.settings);
+        drawerItems[1] = getString(R.string.exit);
 
         try {
             mDrawerLayout = (DrawerLayout) findViewById(R.id.most_demo_drawer_layout);
             ListView drawerList = (ListView) findViewById(R.id.most_demo_left_drawer);
-            mDrawerAdapter = new ArrayAdapter<>(this, R.layout.drawer_list_item, mDrawerItems);
-            drawerList.setAdapter(mDrawerAdapter);
+            ArrayAdapter<String> drawerAdapter = new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems);
+            drawerList.setAdapter(drawerAdapter);
             drawerList.setOnItemClickListener(new DrawerItemClickListener());
             mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close);
 
@@ -60,17 +52,6 @@ public class MostDemoActivity extends SingleFragmentActivity {
         catch (NullPointerException ex) {
             Log.e(TAG, "There's something wrong with the layout");
         }
-    }
-
-    private void refreshFragment() {
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.detach(mFragment);
-        ft.attach(mFragment);
-        ft.commit();
-    }
-
-    private boolean isLoggedIn() {
-        return QuerySettings.getAccessToken(this) != null;
     }
 
     @Override
@@ -113,19 +94,6 @@ public class MostDemoActivity extends SingleFragmentActivity {
             if (value.equals(getString(R.string.settings))) {
                 Intent settingsIntent = new Intent(MostDemoActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
-            }
-            else if (value.equals(getString(R.string.login))) {
-                Intent loginIntent = new Intent(MostDemoActivity.this, LoginActivity.class);
-                startActivity(loginIntent);
-                mDrawerItems[1] = getString(R.string.logout);
-                mDrawerAdapter.notifyDataSetChanged();
-            }
-            else if (value.equals(getString(R.string.logout))) {
-                QuerySettings.setAccessToken(MostDemoActivity.this, null);
-                mDrawerItems[1] = getString(R.string.login);
-                mDrawerAdapter.notifyDataSetChanged();
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                refreshFragment();
             }
             else if (value.equals(getString(R.string.exit))) {
                 finish();

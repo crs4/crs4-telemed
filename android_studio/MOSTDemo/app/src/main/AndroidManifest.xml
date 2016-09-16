@@ -47,7 +47,8 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:label="@string/login">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MostDemoActivity"/>
@@ -72,10 +73,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".LoginActivityProva"
-            android:label="@string/title_activity_login_activity_prova">
-        </activity>
     </application>
 
 </manifest>

@@ -270,10 +270,10 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
         if (mTcState != TeleconsultationState.READY && mTcState != TeleconsultationState.IDLE) {
             mIsOnHold = !mIsOnHold;
             if (mIsOnHold) {
-                popupHoldButton.setImageResource(R.drawable.ic_call_white_36dp);
+                popupHoldButton.setImageResource(R.drawable.call);
             }
             else {
-                popupHoldButton.setImageResource(R.drawable.ic_phone_paused_white_36dp);
+                popupHoldButton.setImageResource(R.drawable.hold);
             }
             toggleHoldCall(mIsOnHold);
         }

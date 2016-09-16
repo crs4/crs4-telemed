@@ -38,7 +38,7 @@ public class LoginFragment extends Fragment {
 
     private TextView mPasswordText;
     private Spinner mUsernameSpinner;
-    private ArrayList<User> mUsers; //TODO: change to User and implement an Adapter
+    private ArrayList<User> mUsers;
     private RemoteConfigReader mRemCfg;
     private String mAccessToken;
     private String mTaskGroup;
@@ -124,7 +124,6 @@ public class LoginFragment extends Fragment {
 
     private void loadUsers() {
         final ProgressDialog loadUserDialog = new ProgressDialog(getActivity());
-//        loadingConfigDialog.setTitle("Connecting to the remote server");
         loadUserDialog.setMessage(getString(R.string.loading_users));
         loadUserDialog.setCancelable(false);
         loadUserDialog.setCanceledOnTouchOutside(false);
@@ -169,8 +168,8 @@ public class LoginFragment extends Fragment {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error ");
                 loadUserDialog.dismiss();
+                showError(R.string.server_connection_error);
             }
         };
 
@@ -196,7 +195,7 @@ public class LoginFragment extends Fragment {
                         getActivity().finish();
                     }
                     else {
-                        showLoginErrorAlert();
+                        showError(R.string.login_error_details);
                     }
                 }
                 catch (JSONException e) {
@@ -209,9 +208,8 @@ public class LoginFragment extends Fragment {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.e(TAG, "Invalid password");
                 e.printStackTrace();
-                showLoginErrorAlert();
+                showError(R.string.server_connection_error);
             }
         };
 
@@ -224,13 +222,14 @@ public class LoginFragment extends Fragment {
         return role.equals(roles[0]);
     }
 
-    private void showLoginErrorAlert() {
+    private void showError(int errorMsgId) {
         new AlertDialog.Builder(getActivity())
-            .setTitle(R.string.login_error)
-            .setMessage(R.string.login_error_details)
+            .setTitle(R.string.error)
+            .setMessage(errorMsgId)
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    getActivity().finish();
                     dialog.dismiss();
                 }
             })

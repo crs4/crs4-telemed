@@ -47,6 +47,7 @@ public class SettingsFragment extends PreferenceFragment {
                 retrieveTaskgroups(newValue.toString(),
                         QuerySettings.getConfigServerPort(getActivity()));
                 preference.setSummary(newValue.toString());
+                logout();
                 return true;
             }
         });
@@ -56,6 +57,7 @@ public class SettingsFragment extends PreferenceFragment {
                 preference.setSummary(newValue.toString());
                 retrieveTaskgroups(QuerySettings.getConfigServerAddress(getActivity()),
                         newValue.toString());
+                logout();
                 return true;
             }
         });
@@ -125,7 +127,7 @@ public class SettingsFragment extends PreferenceFragment {
                     public void onErrorResponse(VolleyError arg0) {
                         Log.e(TAG, "Error contacting the configuration server");
                         loadingConfigDialog.dismiss();
-                        showAlertDialog(R.string.error_contacting_the_server);
+                        showAlertDialog(R.string.server_connection_error);
                         updateTaskGroupPreference();
                     }
                 }
@@ -154,6 +156,9 @@ public class SettingsFragment extends PreferenceFragment {
 //        QuerySettings.setTaskGroup(getActivity(), "");
     }
 
-
+    private void logout() {
+        QuerySettings.setAccessToken(getActivity(), null);
+        QuerySettings.setUser(getActivity(), null);
+    }
 }
 
