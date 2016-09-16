@@ -2,21 +2,22 @@ package it.crs4.most.demo.setup_fragments;
 
 import android.support.v4.app.Fragment;
 
-import it.crs4.most.demo.IConfigBuilder;
+import it.crs4.most.demo.TeleconsultationSetup;
 
 public abstract class SetupFragment extends Fragment {
 
-    private IConfigBuilder mConfigBuilder = null;
-
-    public void setConfigBuilder(IConfigBuilder config) {
-        this.mConfigBuilder = config;
+    protected TeleconsultationSetup mTeleconsultationSetup;
+    public SetupFragment() {
     }
 
-    public IConfigBuilder getConfigBuilder() {
-        return mConfigBuilder;
+    public TeleconsultationSetup getTeleconsultationSetup() {
+        return mTeleconsultationSetup;
+    }
+
+    public void setTeleconsultationSetup(TeleconsultationSetup teleconsultationSetup) {
+        mTeleconsultationSetup = teleconsultationSetup;
     }
 
     public abstract void onShow();
 
-    public abstract int getTitle();
 }

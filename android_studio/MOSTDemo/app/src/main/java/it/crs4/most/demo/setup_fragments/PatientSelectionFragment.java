@@ -4,8 +4,8 @@ package it.crs4.most.demo.setup_fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Patient;
 
 
@@ -15,7 +15,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -26,9 +25,9 @@ public class PatientSelectionFragment extends SetupFragment {
     private ArrayAdapter<Patient> mPatientArrayAdapter;
     private View mView;
 
-    public static PatientSelectionFragment newInstance(IConfigBuilder config) {
+    public static PatientSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         PatientSelectionFragment fragment = new PatientSelectionFragment();
-        fragment.setConfigBuilder(config);
+        fragment.setTeleconsultationSetup(teleconsultationSetup);
         return fragment;
     }
 
@@ -44,7 +43,7 @@ public class PatientSelectionFragment extends SetupFragment {
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getConfigBuilder().setPatient(null);
+                mTeleconsultationSetup.setPatient(null);
             }
         });
 
@@ -56,7 +55,7 @@ public class PatientSelectionFragment extends SetupFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Patient selected = mPatients.get(position);
-                getConfigBuilder().setPatient(selected);
+                mTeleconsultationSetup.setPatient(selected);
             }
         });
         retrievePatients();
@@ -64,22 +63,16 @@ public class PatientSelectionFragment extends SetupFragment {
         return mView;
     }
 
+    @Override
+    public void onShow() {
+
+    }
+
     private void retrievePatients() {
         mPatients.add(new Patient("Mario", "Rossi", "MRSI1234636R243R"));
         mPatients.add(new Patient("Carlo", "Verdi", "VRLI1334636R243P"));
         mPatients.add(new Patient("Gianni", "Bianchi", "BHGI3334636R243V"));
         mPatientArrayAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onShow() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.patient_selection_title;
     }
 
     public class PatientAdapter extends ArrayAdapter<Patient> {

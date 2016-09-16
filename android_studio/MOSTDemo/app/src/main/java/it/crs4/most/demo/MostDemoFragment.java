@@ -65,7 +65,8 @@ public class MostDemoFragment extends Fragment {
         mNewTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent i = new Intent(getActivity(), TeleconsultationSetupActivity.class);
+                startActivity(i);
             }
         });
         mOldTeleFrame = (LinearLayout) v.findViewById(R.id.old_teleconsultation_frame);

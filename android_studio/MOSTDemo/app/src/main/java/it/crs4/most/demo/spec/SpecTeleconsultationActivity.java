@@ -428,12 +428,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     private void checkForSessionClosed() {
         final Timer t = new Timer();
-
+        final String accessToken = QuerySettings.getAccessToken(this);
         t.schedule(new TimerTask() {
             @Override
             public void run() {
                 mConfigReader.getSessionState(mTeleconsultation.getLastSession().getId(),
-                    mTeleconsultation.getUser().getAccessToken(),
+                    accessToken,
                     new Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject res) {

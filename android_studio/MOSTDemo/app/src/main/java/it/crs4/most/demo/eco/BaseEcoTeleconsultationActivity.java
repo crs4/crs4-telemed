@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.RemoteConfigReader;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.User;
@@ -84,15 +85,15 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
 
     protected void closeSession() {
         //TODO: think of putting this in the TeleconsultationSetupActivity
-        final User user = teleconsultation.getUser();
+        final String accessToken = QuerySettings.getAccessToken(this);
         mConfigReader.closeSession(teleconsultation.getLastSession().getId(),
-            user.getAccessToken(),
+            accessToken,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject sessionData) {
                     mConfigReader.closeTeleconsultation(
                         teleconsultation.getId(),
-                        user.getAccessToken(),
+                        accessToken,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {

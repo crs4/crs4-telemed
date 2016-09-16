@@ -17,14 +17,12 @@ public class Teleconsultation implements Serializable {
     private String mId;
     private String mDescription;
     private String mSeverity;
-    private User mUser;
     private TeleconsultationSession mSession;
 
-    public Teleconsultation(String id, String description, String severity, User user) {
+    public Teleconsultation(String id, String description, String severity) {
         mId = id;
         mDescription = description;
         mSeverity = severity;
-        mUser = user;
     }
 
     public String getId() {
@@ -37,14 +35,6 @@ public class Teleconsultation implements Serializable {
 
     public String getSeverity() {
         return mSeverity;
-    }
-
-    public void setUser(User user) {
-        mUser = user;
-    }
-
-    public User getUser() {
-        return mUser;
     }
 
     public TeleconsultationSession getLastSession() {
@@ -70,7 +60,7 @@ public class Teleconsultation implements Serializable {
             throw new TeleconsultationException();
         }
 
-        Teleconsultation t = new Teleconsultation(id, description, severity, user);
+        Teleconsultation t = new Teleconsultation(id, description, severity);
         try {
             JSONObject lastSessionData = teleconsultationData.getJSONObject("last_session");
             TeleconsultationSession lastSession = TeleconsultationSession.fromJSON(context, lastSessionData, role);
