@@ -9,24 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RemoteConfigReader;
-import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Room;
@@ -39,10 +33,8 @@ public class SummaryFragment extends SetupFragment {
 
     private static String TAG = "SumamryFragment";
 
-    private EditText mTxtPatientFullName;
-    private EditText mPatientId;
-    private Spinner mSeveritySpinner;
-    private Spinner mRoomSpinner;
+    private TextView mTxtPatientFullName;
+    private TextView mPatientId;
     private Runnable mWaitForSpecialistTask;
     private Handler mWaitForSpecialistHandler;
     private RemoteConfigReader mRemCfg;
@@ -55,9 +47,9 @@ public class SummaryFragment extends SetupFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_summary, container, false);
-        mTxtPatientFullName = (EditText) view.findViewById(R.id.text_summary_patient_full_name);
-        mPatientId = (EditText) view.findViewById(R.id.text_summary_patient_id);
+        View view = inflater.inflate(R.layout.summary_fragment, container, false);
+        mTxtPatientFullName = (TextView) view.findViewById(R.id.text_summary_patient_full_name);
+        mPatientId = (TextView) view.findViewById(R.id.text_summary_patient_id);
         Button butStartEmergency = (Button) view.findViewById(R.id.button_summary_start_emergency);
         butStartEmergency.setOnClickListener(new OnClickListener() {
             @Override
@@ -70,10 +62,6 @@ public class SummaryFragment extends SetupFragment {
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mRemCfg = new RemoteConfigReader(getActivity(), configServerIP, configServerPort);
-
-        setupSeveritySpinner(view);
-        setupRoomSpinner(view);
-
         return view;
     }
 
@@ -93,59 +81,10 @@ public class SummaryFragment extends SetupFragment {
         }
     }
 
-    private void setupSeveritySpinner(View view) {
-        mSeveritySpinner = (Spinner) view.findViewById(R.id.spinner_summary_severity);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-            getActivity(), R.array.tc_severities, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSeveritySpinner.setAdapter(adapter);
-    }
-
-    private void setupRoomSpinner(View view) {
-        mRoomSpinner = (Spinner) view.findViewById(R.id.spinner_summary_room);
-        String accessToken = QuerySettings.getAccessToken(getActivity());
-        mRemCfg.getRooms(accessToken,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject roomsData) {
-                    ArrayList<Room> rooms = new ArrayList<>();
-                    try {
-                        JSONArray jrooms = roomsData.getJSONObject("data").getJSONArray("rooms");
-
-                        for (int i = 0; i < jrooms.length(); i++) {
-                            JSONObject roomData = jrooms.getJSONObject(i);
-                            Room r = null;
-                            try {
-                                r = Room.fromJSON(roomData);
-                                rooms.add(r);
-                            }
-                            catch (TeleconsultationException e) {
-                                Log.e(TAG, "There's something wrong with the Room's JSON structure");
-                            }
-                        }
-                    }
-                    catch (JSONException e) {
-                        Log.e(TAG, "There's something wrong with the Room's JSON structure");
-                    }
-
-                    ArrayAdapter<Room> adapter = new ArrayAdapter<>(
-                        getActivity(), android.R.layout.simple_spinner_item, rooms);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-                    mRoomSpinner.setAdapter(adapter);
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError arg0) {
-                    Log.e(TAG, "Error retrieving rooms:" + arg0);
-                }
-            });
-    }
-
     private void createNewTeleconsultation() {
         final String description = "Teleconsultation 0001";  //TODO: this should be editable in the summary
-        final String severity = mSeveritySpinner.getSelectedItem().toString();
-        final Room room = (Room) mRoomSpinner.getSelectedItem();
+        final String severity = mTeleconsultationSetup.getUrgency();
+        final Room room = mTeleconsultationSetup.getRoom();
 
         Log.d(TAG, String.format("Creating teleconsultation with room: %s and desc:%s", room.getId(), description));
         mRemCfg
@@ -185,7 +124,7 @@ public class SummaryFragment extends SetupFragment {
     }
 
     private void createTeleconsultationSession(final Teleconsultation teleconsultation) {
-        final Room room = (Room) mRoomSpinner.getSelectedItem();
+        final Room room = mTeleconsultationSetup.getRoom();
         mRemCfg.createNewTeleconsultationSession(
             teleconsultation.getId(),
             room.getId(),

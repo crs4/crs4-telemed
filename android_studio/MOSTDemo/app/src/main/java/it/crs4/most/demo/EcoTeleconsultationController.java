@@ -11,12 +11,14 @@ import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.setup_fragments.PatientSelectionFragment;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
 import it.crs4.most.demo.setup_fragments.SummaryFragment;
+import it.crs4.most.demo.setup_fragments.UrgencyRoomFragment;
 
 public class EcoTeleconsultationController extends TeleconsultationController {
     @Override
     public SetupFragment[] getFragments(TeleconsultationSetup teleconsultationSetup) {
         return new SetupFragment[] {
             PatientSelectionFragment.newInstance(teleconsultationSetup),
+            UrgencyRoomFragment.newInstance(teleconsultationSetup),
             SummaryFragment.newInstance(teleconsultationSetup)
         };
     }

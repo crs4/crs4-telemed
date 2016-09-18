@@ -25,14 +25,19 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
         </activity>
         <activity
             android:name=".TeleconsultationSetupActivity"
             android:label="@string/teleconsultation_setup">
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/teleconsultation_setup">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MostDemoActivity"/>
         </activity>
         <activity
             android:name=".LoginActivity"

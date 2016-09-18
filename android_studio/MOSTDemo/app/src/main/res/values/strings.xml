@@ -70,6 +70,11 @@
         <item>eco_role</item>
         <item>spec_role</item>
     </string-array>
+    <string-array name="urgency_values">
+        <item>LOW</item> , , ,
+        <item>NORMAL</item>
+        <item>URGENT</item>
+    </string-array>
 
     <string name="most_demo_fragment_instructions">You should set %1$s in Settings</string>
     <string name="set_server">server address, port</string>
@@ -81,7 +86,9 @@
     <string name="title_activity_login_activity_prova">Sign in</string>
     <string name="logout">Logout</string>
     <string name="new_teleconsultation">New\nTeleconsultation</string>
-    <string name="continue_teleconsultation">Continue Teleconsultation</string>
+    <string name="continue_teleconsultation">Continue\nTeleconsultation</string>
     <string name="teleconsultation_setup">Teleconsultation Setup</string>
+    <string name="confirm">Confirm</string>
+    <string name="urgency_and_room_selection_title">Urgency and Room selection</string>
 
 </resources>

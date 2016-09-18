@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +9,6 @@
         android:id="@+id/msg_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:gravity="center"
         android:paddingEnd="5dp"
         android:paddingLeft="5dp"
@@ -20,25 +19,27 @@
 
     <LinearLayout
         android:id="@+id/new_teleconsultation_frame"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
+        android:layout_marginRight="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_weight="0.5"
         android:orientation="vertical"
         android:visibility="gone">
 
         <ImageButton
             android:id="@+id/new_teleconsultation_button"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="end"
             android:background="@drawable/circle_button"
-            android:contentDescription="@string/login"
+            android:contentDescription="@string/new_teleconsultation"
             android:src="@drawable/add"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="end"
             android:clickable="false"
             android:gravity="center"
             android:text="@string/new_teleconsultation"/>
@@ -46,29 +47,29 @@
 
     <LinearLayout
         android:id="@+id/old_teleconsultation_frame"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_toEndOf="@+id/new_teleconsultation_frame"
-        android:layout_toRightOf="@+id/new_teleconsultation_frame"
-        android:gravity="center"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_weight="0.5"
         android:orientation="vertical"
         android:visibility="gone">
 
         <ImageButton
             android:id="@+id/old_teleconsultation_button"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="start"
             android:background="@drawable/circle_button"
-            android:contentDescription="@string/login"
+            android:contentDescription="@string/continue_teleconsultation"
             android:src="@drawable/search"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="start"
             android:clickable="false"
             android:gravity="center"
             android:text="@string/continue_teleconsultation"/>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

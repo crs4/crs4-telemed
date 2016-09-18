@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="tc_severities">
-        <item>LOW</item> , , , 
-        <item>NORMAL</item>
-        <item>URGENCY</item>
-        <item>EMERGENCY</item>
-    </string-array>
-</resources>

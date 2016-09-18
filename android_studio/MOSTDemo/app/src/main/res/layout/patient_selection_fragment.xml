@@ -10,9 +10,9 @@
         android:orientation="vertical">
 
         <TextView
+            style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/title_textview_background"
             android:gravity="center"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"

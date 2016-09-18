@@ -19,4 +19,9 @@ public class MostViewPager extends ViewPager {
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.view.ViewPager;
 
 import it.crs4.most.demo.models.Patient;
+import it.crs4.most.demo.models.Room;
 import it.crs4.most.demo.models.Teleconsultation;
 
 public class TeleconsultationSetup {
@@ -11,6 +12,8 @@ public class TeleconsultationSetup {
     private TeleconsultationSetupActivity mActivity;
     private Patient mPatient;
     private Teleconsultation mTeleconsultation;
+    private String mUrgency;
+    private Room mRoom;
 
     public TeleconsultationSetup(TeleconsultationSetupActivity activity) {
         mActivity = activity;
@@ -22,7 +25,6 @@ public class TeleconsultationSetup {
 
     public void setPatient(Patient patient) {
         mPatient = patient;
-        mActivity.nextStep();
     }
 
     public Teleconsultation getTeleconsultation() {
@@ -32,5 +34,25 @@ public class TeleconsultationSetup {
     public void setTeleconsultation(Teleconsultation teleconsultation) {
         mTeleconsultation = teleconsultation;
         mActivity.startTeleconsultationActivity(teleconsultation);
+    }
+
+    public String getUrgency() {
+        return mUrgency;
+    }
+
+    public void setUrgency(String urgency) {
+        mUrgency = urgency;
+    }
+
+    public Room getRoom() {
+        return mRoom;
+    }
+
+    public void setRoom(Room room) {
+        mRoom = room;
+    }
+
+    public void nextStep() {
+        mActivity.nextStep();
     }
 }
