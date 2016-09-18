@@ -31,7 +31,7 @@ import it.crs4.most.demo.models.TeleconsultationSessionState;
 
 public class SummaryFragment extends SetupFragment {
 
-    private static String TAG = "SumamryFragment";
+    private static String TAG = "SummaryFragment";
 
     private TextView mTxtPatientFullName;
     private TextView mPatientId;
@@ -41,8 +41,15 @@ public class SummaryFragment extends SetupFragment {
 
     public static SummaryFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         SummaryFragment fragment = new SummaryFragment();
-        fragment.setTeleconsultationSetup(teleconsultationSetup);
+        Bundle args = new Bundle();
+        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -66,18 +73,20 @@ public class SummaryFragment extends SetupFragment {
     }
 
     @Override
-    public void onShow() {
-        Patient patient = mTeleconsultationSetup.getPatient();
-        if (patient != null) {
-            mTxtPatientFullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
-            mPatientId.setText(patient.getId());
-            mTxtPatientFullName.setFocusable(false);
-            mPatientId.setFocusable(false);
-            mPatientId.setFocusable(false);
-        }
-        else {
-            mTxtPatientFullName.setFocusable(true);
-            mPatientId.setFocusable(true);
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            Patient patient = mTeleconsultationSetup.getPatient();
+            if (patient != null) {
+                mTxtPatientFullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
+                mPatientId.setText(patient.getId());
+                mTxtPatientFullName.setFocusable(false);
+                mPatientId.setFocusable(false);
+                mPatientId.setFocusable(false);
+            }
+            else {
+                mTxtPatientFullName.setFocusable(true);
+                mPatientId.setFocusable(true);
+            }
         }
     }
 

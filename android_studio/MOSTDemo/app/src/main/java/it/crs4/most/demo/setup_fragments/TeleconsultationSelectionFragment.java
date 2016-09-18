@@ -34,7 +34,9 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
 
     public static TeleconsultationSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         TeleconsultationSelectionFragment fragment = new TeleconsultationSelectionFragment();
-        fragment.setTeleconsultationSetup(teleconsultationSetup);
+        Bundle args = new Bundle();
+        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -133,10 +135,12 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     }
 
     @Override
-    public void onShow() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
-        retrieveTeleconsultations();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
+            retrieveTeleconsultations();
+        }
     }
 
     private static class TeleconsultationAdapter extends ArrayAdapter<Teleconsultation> {

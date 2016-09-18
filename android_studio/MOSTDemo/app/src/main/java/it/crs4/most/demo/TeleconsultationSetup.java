@@ -1,22 +1,19 @@
 package it.crs4.most.demo;
 
-import android.content.Intent;
-import android.support.v4.view.ViewPager;
+import java.io.Serializable;
 
 import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Room;
 import it.crs4.most.demo.models.Teleconsultation;
 
-public class TeleconsultationSetup {
+public class TeleconsultationSetup implements Serializable{
 
-    private TeleconsultationSetupActivity mActivity;
     private Patient mPatient;
     private Teleconsultation mTeleconsultation;
     private String mUrgency;
     private Room mRoom;
 
-    public TeleconsultationSetup(TeleconsultationSetupActivity activity) {
-        mActivity = activity;
+    public TeleconsultationSetup() {
     }
 
     public Patient getPatient() {
@@ -33,7 +30,6 @@ public class TeleconsultationSetup {
 
     public void setTeleconsultation(Teleconsultation teleconsultation) {
         mTeleconsultation = teleconsultation;
-        mActivity.startTeleconsultationActivity(teleconsultation);
     }
 
     public String getUrgency() {
@@ -52,7 +48,9 @@ public class TeleconsultationSetup {
         mRoom = room;
     }
 
-    public void nextStep() {
-        mActivity.nextStep();
+    @Override
+    public String toString() {
+        return String.format("TeleconsultationSetup object with Patient: %1$s, Urgency %2$s, Room: ",
+            getPatient(), getUrgency(), getRoom());
     }
 }

@@ -35,9 +35,11 @@ public class UrgencyRoomFragment extends SetupFragment {
     private RemoteConfigReader mRemCfg;
 
     public static SetupFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
-        UrgencyRoomFragment f = new UrgencyRoomFragment();
-        f.setTeleconsultationSetup(teleconsultationSetup);
-        return f;
+        UrgencyRoomFragment fragment = new UrgencyRoomFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -46,6 +48,8 @@ public class UrgencyRoomFragment extends SetupFragment {
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mRemCfg = new RemoteConfigReader(getActivity(), configServerIP, configServerPort);
+        mTeleconsultationSetup = (TeleconsultationSetup) getArguments()
+            .getSerializable(SetupFragment.TELECONSULTATION_SETUP);
     }
 
     @Nullable
@@ -60,17 +64,12 @@ public class UrgencyRoomFragment extends SetupFragment {
             public void onClick(View v) {
                 String urgency = mUrgencySpinner.getSelectedItem().toString();
                 Room room = (Room) mRoomSpinner.getSelectedItem();
-                mTeleconsultationSetup.setUrgency(urgency);
-                mTeleconsultationSetup.setRoom(room);
-                mTeleconsultationSetup.nextStep();
+                getTeleconsultationSetup().setUrgency(urgency);
+                getTeleconsultationSetup().setRoom(room);
+                nextStep();
             }
         });
         return v;
-    }
-
-    @Override
-    public void onShow() {
-
     }
 
     private void setupUrgencySpinner(View view) {

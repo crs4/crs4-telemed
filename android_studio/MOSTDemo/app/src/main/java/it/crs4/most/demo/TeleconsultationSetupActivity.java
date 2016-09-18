@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -16,13 +17,13 @@ import java.lang.ref.WeakReference;
 
 import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
 import it.crs4.most.demo.models.Device;
-import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
 import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
 
 public class TeleconsultationSetupActivity extends AppCompatActivity {
+    private static final String TELECONSULTATION_SETUP = "it.crs4.most.demo.teleconsultation_setup";
     private static final String TAG = "TeleconsultSetupAct";
 
     private SetupFragment[] mSetupFragments;
@@ -30,29 +31,32 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
     private ViewPager mVpPager;
     private Device mCamera;
     private ActionBarDrawerToggle mDrawerToggle;
+    private TeleconsultationSetup mTeleconsultationSetup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.teleconsultation_setup_activity);
 
-        TeleconsultationSetup teleconsultationSetup = new TeleconsultationSetup(this);
+        try {
+            mTeleconsultationSetup = (TeleconsultationSetup) savedInstanceState.getSerializable(TELECONSULTATION_SETUP);
+        }
+        catch (NullPointerException ex) {
+            mTeleconsultationSetup = new TeleconsultationSetup();
+        }
+        Log.d(TAG, "TELECONSUTATION SETUP: " + mTeleconsultationSetup);
         mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
-        mSetupFragments = mTcController.getFragments(teleconsultationSetup);
+        mSetupFragments = mTcController.getFragments(mTeleconsultationSetup);
 
         mVpPager = (ViewPager) findViewById(R.id.vp_pager);
         FragmentStatePagerAdapter pagerAdapter = new CustomPagerAdapter(this, getSupportFragmentManager());
         mVpPager.setAdapter(pagerAdapter);
+        super.onCreate(savedInstanceState);
     }
 
-    public void nextStep() {
-        int newItem = mVpPager.getCurrentItem() + 1;
-        mVpPager.setCurrentItem(newItem);
-        mSetupFragments[newItem].onShow();
-    }
-
-    public void startTeleconsultationActivity(Teleconsultation teleconsultation) {
-        mTcController.startTeleconsultationActivity(this, teleconsultation);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(TELECONSULTATION_SETUP, mTeleconsultationSetup);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -64,6 +68,15 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 //                setTeleconsultation(null);
             }
         }
+    }
+
+    public void nextStep() {
+        int newItem = mVpPager.getCurrentItem() + 1;
+        mVpPager.setCurrentItem(newItem);
+    }
+
+    public void startTeleconsultationActivity(Teleconsultation teleconsultation) {
+        mTcController.startTeleconsultationActivity(this, teleconsultation);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

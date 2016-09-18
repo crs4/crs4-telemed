@@ -26,7 +26,9 @@ public class PatientSelectionFragment extends SetupFragment {
 
     public static PatientSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         PatientSelectionFragment fragment = new PatientSelectionFragment();
-        fragment.setTeleconsultationSetup(teleconsultationSetup);
+        Bundle args = new Bundle();
+        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -54,18 +56,12 @@ public class PatientSelectionFragment extends SetupFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Patient selected = mPatients.get(position);
-                mTeleconsultationSetup.setPatient(selected);
-                mTeleconsultationSetup.nextStep();
+                getTeleconsultationSetup().setPatient(selected);
+                nextStep();
             }
         });
         retrievePatients();
-
         return view;
-    }
-
-    @Override
-    public void onShow() {
-
     }
 
     private void retrievePatients() {

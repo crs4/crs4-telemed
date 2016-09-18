@@ -34,7 +34,7 @@
             android:layout_gravity="end"
             android:background="@drawable/circle_button"
             android:contentDescription="@string/new_teleconsultation"
-            android:src="@drawable/add"/>
+            android:src="@drawable/add_large"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
         android:layout_marginStart="25dp"
         android:layout_weight="0.5"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageButton
             android:id="@+id/old_teleconsultation_button"
@@ -62,14 +62,14 @@
             android:layout_gravity="start"
             android:background="@drawable/circle_button"
             android:contentDescription="@string/continue_teleconsultation"
-            android:src="@drawable/search"/>
+            android:src="@drawable/search_large"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:clickable="false"
-            android:gravity="center"
-            android:text="@string/continue_teleconsultation"/>
+            android:text="@string/continue_teleconsultation"
+            android:gravity="center"/>
     </LinearLayout>
 </LinearLayout>
