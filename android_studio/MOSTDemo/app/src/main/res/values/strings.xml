@@ -90,5 +90,7 @@
     <string name="teleconsultation_setup">Teleconsultation Setup</string>
     <string name="confirm">Confirm</string>
     <string name="urgency_and_room_selection_title">Urgency and Room selection</string>
+    <string name="back">Back</string>
+    <string name="next">Continue</string>
 
 </resources>

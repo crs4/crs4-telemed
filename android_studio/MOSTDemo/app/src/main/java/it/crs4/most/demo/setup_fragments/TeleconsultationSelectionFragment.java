@@ -70,6 +70,11 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         super.onPause();
     }
 
+    @Override
+    protected int getTitle() {
+        return R.string.teleconsultation_title;
+    }
+
     private void addTeleconsultation(Teleconsultation teleconsultation) {
         for (Teleconsultation t : mTeleconsultations) {
             if (t.getId().equals(teleconsultation.getId())) {

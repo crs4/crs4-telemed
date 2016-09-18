@@ -55,7 +55,8 @@ public class UrgencyRoomFragment extends SetupFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.urgency_room_fragment, container, false);
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+//        View v = inflater.inflate(R.layout.urgency_room_fragment, container, false);
         setupUrgencySpinner(v);
         setupRoomSpinner(v);
         Button confirmButton = (Button) v.findViewById(R.id.confirm_button);
@@ -70,6 +71,16 @@ public class UrgencyRoomFragment extends SetupFragment {
             }
         });
         return v;
+    }
+
+    @Override
+    protected int getTitle() {
+        return R.string.urgency_and_room_selection_title;
+    }
+
+    @Override
+    protected int getLayoutContent() {
+        return R.layout.urgency_room_fragment;
     }
 
     private void setupUrgencySpinner(View view) {

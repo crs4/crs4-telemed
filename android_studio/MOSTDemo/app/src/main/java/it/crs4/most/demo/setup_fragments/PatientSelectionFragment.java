@@ -12,11 +12,14 @@ import it.crs4.most.demo.models.Patient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,8 +42,8 @@ public class PatientSelectionFragment extends SetupFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.patient_selection_fragment, container, false);
-        FloatingActionButton addPatient = (FloatingActionButton) view.findViewById(R.id.button_patients_add);
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        FloatingActionButton addPatient = (FloatingActionButton) v.findViewById(R.id.button_patients_add);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,7 +51,7 @@ public class PatientSelectionFragment extends SetupFragment {
             }
         });
 
-        ListView listView = (ListView) view.findViewById(R.id.patients_list);
+        ListView listView = (ListView) v.findViewById(R.id.patients_list);
         mPatients = new ArrayList<>();
         mPatientArrayAdapter = new PatientAdapter(this, R.layout.patient_selection_fragment_item, mPatients);
         listView.setAdapter(mPatientArrayAdapter);
@@ -61,7 +64,17 @@ public class PatientSelectionFragment extends SetupFragment {
             }
         });
         retrievePatients();
-        return view;
+        return v;
+    }
+
+    @Override
+    protected int getTitle() {
+        return R.string.patient_selection_title;
+    }
+
+    @Override
+    protected int getLayoutContent() {
+        return R.layout.patient_selection_fragment;
     }
 
     private void retrievePatients() {

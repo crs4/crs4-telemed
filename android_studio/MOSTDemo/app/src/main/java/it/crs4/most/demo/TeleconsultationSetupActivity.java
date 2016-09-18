@@ -6,9 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -43,13 +45,17 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         catch (NullPointerException ex) {
             mTeleconsultationSetup = new TeleconsultationSetup();
         }
-        Log.d(TAG, "TELECONSUTATION SETUP: " + mTeleconsultationSetup);
         mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
         mSetupFragments = mTcController.getFragments(mTeleconsultationSetup);
 
         mVpPager = (ViewPager) findViewById(R.id.vp_pager);
         FragmentStatePagerAdapter pagerAdapter = new CustomPagerAdapter(this, getSupportFragmentManager());
         mVpPager.setAdapter(pagerAdapter);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+
         super.onCreate(savedInstanceState);
     }
 
@@ -70,8 +76,23 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mVpPager.getCurrentItem() != 0) {
+            previousStep();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
     public void nextStep() {
         int newItem = mVpPager.getCurrentItem() + 1;
+        mVpPager.setCurrentItem(newItem);
+    }
+
+    public void previousStep() {
+        int newItem = mVpPager.getCurrentItem() - 1;
         mVpPager.setCurrentItem(newItem);
     }
 

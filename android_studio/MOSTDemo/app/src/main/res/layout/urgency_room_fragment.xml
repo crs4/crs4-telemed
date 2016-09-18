@@ -5,17 +5,6 @@
               android:gravity="center_horizontal"
               android:orientation="vertical">
 
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:text="@string/urgency_and_room_selection_title"
-        android:textAllCaps="true"
-        android:textSize="20sp"/>
-
     <Spinner
         android:id="@+id/urgency_spinner"
         android:layout_width="300dp"

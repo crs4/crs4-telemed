@@ -4,30 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/patients_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/patient_selection_title"
-            android:textAllCaps="true"
-            android:textSize="20sp"/>
-
-        <ListView
-            android:id="@+id/patients_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:descendantFocusability="beforeDescendants"
-            android:focusable="true"/>
-
-    </LinearLayout>
+        android:descendantFocusability="beforeDescendants"
+        android:focusable="true"/>
 
 
     <android.support.design.widget.FloatingActionButton

@@ -54,10 +54,11 @@ public class SummaryFragment extends SetupFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.summary_fragment, container, false);
-        mTxtPatientFullName = (TextView) view.findViewById(R.id.text_summary_patient_full_name);
-        mPatientId = (TextView) view.findViewById(R.id.text_summary_patient_id);
-        Button butStartEmergency = (Button) view.findViewById(R.id.button_summary_start_emergency);
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+//        View view = inflater.inflate(R.layout.summary_fragment, container, false);
+        mTxtPatientFullName = (TextView) v.findViewById(R.id.text_summary_patient_full_name);
+        mPatientId = (TextView) v.findViewById(R.id.text_summary_patient_id);
+        Button butStartEmergency = (Button) v.findViewById(R.id.button_summary_start_emergency);
         butStartEmergency.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +70,7 @@ public class SummaryFragment extends SetupFragment {
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mRemCfg = new RemoteConfigReader(getActivity(), configServerIP, configServerPort);
-        return view;
+        return v;
     }
 
     @Override
@@ -88,6 +89,16 @@ public class SummaryFragment extends SetupFragment {
                 mPatientId.setFocusable(true);
             }
         }
+    }
+
+    @Override
+    protected int getTitle() {
+        return R.string.summary_title;
+    }
+
+    @Override
+    protected int getLayoutContent() {
+        return R.layout.summary_fragment;
     }
 
     private void createNewTeleconsultation() {
