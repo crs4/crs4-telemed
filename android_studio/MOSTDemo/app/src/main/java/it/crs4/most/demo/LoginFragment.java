@@ -39,8 +39,7 @@ public class LoginFragment extends Fragment {
     private TextView mPasswordText;
     private Spinner mUsernameSpinner;
     private ArrayList<User> mUsers;
-    private RESTClient mRemCfg;
-    private String mAccessToken;
+    private RESTClient mRESTClient;
     private String mTaskGroup;
     private ArrayAdapter<User> mUsersAdapter;
 
@@ -60,8 +59,8 @@ public class LoginFragment extends Fragment {
         String serverIP = QuerySettings.getConfigServerAddress(getActivity());
         Integer serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
-        mAccessToken = QuerySettings.getAccessToken(getActivity());
-        mRemCfg = new RESTClient(getActivity(), serverIP, serverPort);
+        String accessToken = QuerySettings.getAccessToken(getActivity());
+        mRESTClient = new RESTClient(getActivity(), serverIP, serverPort);
 
         View v = inflater.inflate(R.layout.login_fragment, container, false);
         mUsernameSpinner = (Spinner) v.findViewById(R.id.username_spinner);
@@ -81,6 +80,7 @@ public class LoginFragment extends Fragment {
 
         if (isEco()) {
             mPasswordText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            mPasswordText.setHint(R.string.lbl_enter_passcode);
             mPasswordText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -102,6 +102,7 @@ public class LoginFragment extends Fragment {
             sendPassword.setVisibility(View.INVISIBLE);
         }
         else {
+            mPasswordText.setHint(R.string.lbl_enter_password);
             sendPassword.setVisibility(View.VISIBLE);
             sendPassword.setEnabled(true);
             sendPassword.setOnClickListener(new View.OnClickListener() {
@@ -169,11 +170,11 @@ public class LoginFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 loadUserDialog.dismiss();
-                showError(R.string.server_connection_error);
+                showError(R.string.server_connection_error, true);
             }
         };
 
-        mRemCfg.getUsersByTaskgroup(mTaskGroup, listener, errorListener);
+        mRESTClient.getUsersByTaskgroup(mTaskGroup, listener, errorListener);
     }
 
     private void retrieveAccessToken(String password) {
@@ -195,7 +196,7 @@ public class LoginFragment extends Fragment {
                         getActivity().finish();
                     }
                     else {
-                        showError(R.string.login_error_details);
+                        showError(R.string.login_error_details, false);
                     }
                 }
                 catch (JSONException e) {
@@ -209,11 +210,11 @@ public class LoginFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError e) {
                 e.printStackTrace();
-                showError(R.string.server_connection_error);
+                showError(R.string.login_error_details, false);
             }
         };
 
-        mRemCfg.getAccessToken(username, mTaskGroup, grantType, password, listener, errorListener);
+        mRESTClient.getAccessToken(username, mTaskGroup, grantType, password, listener, errorListener);
     }
 
     private boolean isEco() {
@@ -222,15 +223,17 @@ public class LoginFragment extends Fragment {
         return role.equals(roles[0]);
     }
 
-    private void showError(int errorMsgId) {
+    private void showError(int errorMsgId, final boolean finishActivity) {
         new AlertDialog.Builder(getActivity())
             .setTitle(R.string.error)
             .setMessage(errorMsgId)
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    getActivity().finish();
                     dialog.dismiss();
+                    if (finishActivity) {
+                        getActivity().finish();
+                    }
                 }
             })
             .create()

@@ -48,8 +48,6 @@ public class UrgencyRoomFragment extends SetupFragment {
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mRESTClient = new RESTClient(getActivity(), configServerIP, configServerPort);
-        mTeleconsultationSetup = (TeleconsultationSetup) getArguments()
-            .getSerializable(SetupFragment.TELECONSULTATION_SETUP);
     }
 
     @Nullable

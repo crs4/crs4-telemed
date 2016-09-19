@@ -8,6 +8,7 @@
 
     <string name="lbl_ip_address">Ip Address</string>
     <string name="lbl_enter_passcode">Enter your passcode…</string>
+    <string name="lbl_enter_password">Enter your password…</string>
     <string name="lbl_patients_title">Patient</string>
     <string name="lbl_teleconsultation_title">Teleconsultation</string>
 
@@ -86,7 +87,7 @@
     <string name="title_activity_login_activity_prova">Sign in</string>
     <string name="logout">Logout</string>
     <string name="new_teleconsultation">New\nTeleconsultation</string>
-    <string name="continue_teleconsultation">Continue\nTeleconsultation</string>
+    <string name="search_teleconsultation">Search\nTeleconsultation</string>
     <string name="teleconsultation_setup">Teleconsultation Setup</string>
     <string name="confirm">Confirm</string>
     <string name="urgency_and_room_selection_title">Urgency and Room selection</string>

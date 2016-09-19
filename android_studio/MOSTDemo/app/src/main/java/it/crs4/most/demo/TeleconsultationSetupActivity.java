@@ -31,8 +31,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
     private SetupFragment[] mSetupFragments;
     private TeleconsultationController mTcController;
     private ViewPager mVpPager;
-    private Device mCamera;
-    private ActionBarDrawerToggle mDrawerToggle;
     private TeleconsultationSetup mTeleconsultationSetup;
 
     @Override
@@ -77,8 +75,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         if (requestCode == EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST ||
             requestCode == SpecTeleconsultationActivity.TELECONSULT_ENDED_REQUEST) {
             if (resultCode == RESULT_OK) {
-//                setPatient(null);
-//                setTeleconsultation(null);
+                mTeleconsultationSetup = null;
+                finish();
             }
         }
     }
@@ -95,7 +93,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 
     public void nextStep() {
         int newItem = mVpPager.getCurrentItem() + 1;
-        if (newItem > mVpPager.getChildCount()) {
+        Log.d(TAG, "NEW ITEM: " + newItem + " PAGER CHILD: " + mVpPager.getChildCount());
+        if (newItem >= mVpPager.getChildCount()) {
             startTeleconsultationActivity(mTeleconsultationSetup.getTeleconsultation());
         }
         else {
@@ -110,20 +109,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 
     public void startTeleconsultationActivity(Teleconsultation teleconsultation) {
         mTcController.startTeleconsultationActivity(this, teleconsultation);
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            String value = (String) parent.getItemAtPosition(position);
-            if (value.equals(getString(R.string.settings))) {
-                Intent settingsIntent = new Intent(TeleconsultationSetupActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
-            }
-            else if (value.equals(getString(R.string.exit))) {
-                finish();
-            }
-        }
     }
 
     public static class CustomPagerAdapter extends FragmentStatePagerAdapter {

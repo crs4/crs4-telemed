@@ -46,7 +46,7 @@ public class Teleconsultation implements Serializable {
     }
 
     public static Teleconsultation fromJSON(Context context, JSONObject teleconsultationData,
-                                            String role, User user) throws TeleconsultationException {
+                                            String role) throws TeleconsultationException {
         String id;
         String description;
         String severity;

@@ -26,7 +26,6 @@ import android.widget.TextView;
 public class MostDemoFragment extends Fragment {
 
     private static final String TAG = "MostDemoFragment";
-    private RESTClient mRemCfg;
     private String mServerIP;
     private int mServerPort;
     private String mTaskGroup;
@@ -34,12 +33,11 @@ public class MostDemoFragment extends Fragment {
     private TextView mMsgText;
     private String mAccessToken;
     private String mUser;
-    private LinearLayout mLoginFrame;
     private LinearLayout mNewTeleFrame;
-    private LinearLayout mOldTeleFrame;
+    private LinearLayout mSearchTeleFrame;
     private MenuItem mLoginMenuItem;
     private ImageButton mNewTeleButton;
-    private ImageButton mOldTeleButton;
+    private ImageButton mSearchTeleButton;
 
     public MostDemoFragment() {
         // Required empty public constructor
@@ -65,12 +63,18 @@ public class MostDemoFragment extends Fragment {
         mNewTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), TeleconsultationSetupActivity.class);
-                startActivity(i);
+                launchTeleconsultationSetupActivity();
             }
         });
-        mOldTeleFrame = (LinearLayout) v.findViewById(R.id.old_teleconsultation_frame);
-        mOldTeleButton = (ImageButton) v.findViewById(R.id.old_teleconsultation_button);
+
+        mSearchTeleFrame = (LinearLayout) v.findViewById(R.id.old_teleconsultation_frame);
+        mSearchTeleButton = (ImageButton) v.findViewById(R.id.old_teleconsultation_button);
+        mSearchTeleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTeleconsultationSetupActivity();
+            }
+        });
 
         mServerIP = QuerySettings.getConfigServerAddress(getActivity());
         mServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
@@ -84,7 +88,6 @@ public class MostDemoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (checkSettings()) {
-            mRemCfg = new RESTClient(getActivity(), mServerIP, mServerPort);
             mUser = QuerySettings.getUser(getActivity());
             mAccessToken = QuerySettings.getAccessToken(getActivity());
             Log.d(TAG, "Access token is: " + mAccessToken);
@@ -144,12 +147,12 @@ public class MostDemoFragment extends Fragment {
     private void updateLoginState() {
         if (isLoggedIn()) {
             mNewTeleFrame.setVisibility(View.VISIBLE);
-            mOldTeleFrame.setVisibility(View.VISIBLE);
+            mSearchTeleFrame.setVisibility(View.VISIBLE);
             setTextMessage(null);
         }
         else {
             mNewTeleFrame.setVisibility(View.GONE);
-            mOldTeleFrame.setVisibility(View.GONE);
+            mSearchTeleFrame.setVisibility(View.GONE);
             setTextMessage(getString(R.string.login_instructions));
         }
         setLoginButton();
@@ -198,6 +201,11 @@ public class MostDemoFragment extends Fragment {
 
     private boolean isLoggedIn() {
         return QuerySettings.getAccessToken(getActivity()) != null;
+    }
+
+    private void launchTeleconsultationSetupActivity() {
+        Intent i = new Intent(getActivity(), TeleconsultationSetupActivity.class);
+        startActivity(i);
     }
 
 }

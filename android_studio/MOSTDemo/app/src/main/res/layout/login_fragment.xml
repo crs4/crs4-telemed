@@ -30,6 +30,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/textview_shape"
             android:enabled="false"
+            android:inputType="textPassword"
             android:hint="@string/lbl_enter_passcode"/>
 
         <Button
