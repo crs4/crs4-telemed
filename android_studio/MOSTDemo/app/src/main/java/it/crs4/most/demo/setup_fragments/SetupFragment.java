@@ -26,7 +26,6 @@ public abstract class SetupFragment extends Fragment {
     protected TeleconsultationSetup mTeleconsultationSetup;
     private ArrayList<StepEventListener> mEventListeners;
 
-
     public SetupFragment() {
         mEventListeners = new ArrayList<>();
     }

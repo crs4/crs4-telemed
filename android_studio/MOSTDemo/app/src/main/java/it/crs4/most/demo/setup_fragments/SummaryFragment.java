@@ -312,6 +312,7 @@ public class SummaryFragment extends SetupFragment {
                     }
                     tc.getLastSession().setVoipParams(getActivity(), sessionData, role);
                     mTeleconsultationSetup.setTeleconsultation(tc);
+                    stepDone();
                 }
             },
             new Response.ErrorListener() {
