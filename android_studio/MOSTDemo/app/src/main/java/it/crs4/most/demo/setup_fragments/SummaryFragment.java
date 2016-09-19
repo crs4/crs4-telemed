@@ -20,7 +20,7 @@ import org.json.JSONObject;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Room;
@@ -37,7 +37,7 @@ public class SummaryFragment extends SetupFragment {
     private TextView mPatientId;
     private Runnable mWaitForSpecialistTask;
     private Handler mWaitForSpecialistHandler;
-    private RemoteConfigReader mRemCfg;
+    private RESTClient mRESTClient;
 
     public static SummaryFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         SummaryFragment fragment = new SummaryFragment();
@@ -69,8 +69,14 @@ public class SummaryFragment extends SetupFragment {
 
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
-        mRemCfg = new RemoteConfigReader(getActivity(), configServerIP, configServerPort);
+        mRESTClient = new RESTClient(getActivity(), configServerIP, configServerPort);
         return v;
+    }
+
+    @Override
+    public void onPause() {
+        mRESTClient.cancelRequests();
+        super.onPause();
     }
 
     @Override
@@ -107,7 +113,7 @@ public class SummaryFragment extends SetupFragment {
         final Room room = mTeleconsultationSetup.getRoom();
 
         Log.d(TAG, String.format("Creating teleconsultation with room: %s and desc:%s", room.getId(), description));
-        mRemCfg
+        mRESTClient
             .createNewTeleconsultation(
                 description,
                 severity,
@@ -145,7 +151,7 @@ public class SummaryFragment extends SetupFragment {
 
     private void createTeleconsultationSession(final Teleconsultation teleconsultation) {
         final Room room = mTeleconsultationSetup.getRoom();
-        mRemCfg.createNewTeleconsultationSession(
+        mRESTClient.createNewTeleconsultationSession(
             teleconsultation.getId(),
             room.getId(),
             getAccessToken(),
@@ -178,7 +184,7 @@ public class SummaryFragment extends SetupFragment {
     }
 
     private void startSession(final Teleconsultation tc) {
-        mRemCfg.startSession(
+        mRESTClient.startSession(
             tc.getLastSession().getId(),
             getAccessToken(),
             new Response.Listener<JSONObject>() {
@@ -215,14 +221,14 @@ public class SummaryFragment extends SetupFragment {
 
     private void closeSessionAndTeleconsultation(final Teleconsultation tc) {
         final String accessToken = getAccessToken();
-        mRemCfg.closeSession(
+        mRESTClient.closeSession(
             tc.getLastSession().getId(),
             accessToken,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Sessione closed");
-                    mRemCfg.closeTeleconsultation(
+                    mRESTClient.closeTeleconsultation(
                         tc.getId(),
                         accessToken,
                         new Response.Listener<JSONObject>() {
@@ -253,7 +259,7 @@ public class SummaryFragment extends SetupFragment {
         mWaitForSpecialistTask = new Runnable() {
             @Override
             public void run() {
-                mRemCfg.getSessionState(
+                mRESTClient.getSessionState(
                     tc.getLastSession().getId(),
                     getAccessToken(),
                     new Response.Listener<JSONObject>() {
@@ -294,7 +300,7 @@ public class SummaryFragment extends SetupFragment {
     }
 
     private void runSession(final Teleconsultation tc) {
-        mRemCfg.runSession(
+        mRESTClient.runSession(
             tc.getLastSession().getId(),
             getAccessToken(),
             new Response.Listener<JSONObject>() {

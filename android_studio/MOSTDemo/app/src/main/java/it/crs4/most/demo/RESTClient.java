@@ -42,13 +42,15 @@ import com.android.volley.toolbox.Volley;
  * client secret: 29df85c27354579d87f026cb33007f350398a491
  */
 
-public class RemoteConfigReader {
+public class RESTClient {
 
-    private static final String TAG = "RemoteConfigReader";
+    private static final String TAG = "RESTClient";
+
     private static final String OAUTH_CLIENT_ID = "9db4f27b3d9c8e352b5c";
     private static final String OAUTH_CLIENT_SECRET = "00ea399c013349a716ea3e47d8f8002502e2e982";
     public static final String GRANT_TYPE_PINCODE = "pincode";
     public static final String GRANT_TYPE_PASSWORD = "password";
+    private static final String REQ_TAG = "it.crs4.most.demo.request_tag";
 
     private RequestQueue mRequestQueue;
     private String mDeviceID;
@@ -59,10 +61,19 @@ public class RemoteConfigReader {
      * @param serverIp   the ip of the remote configuration server
      * @param serverPort the port of the remote configuration server
      */
-    public RemoteConfigReader(Context context, String serverIp, int serverPort) {
+    public RESTClient(Context context, String serverIp, int serverPort) {
         mDeviceID = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         mUrlPrefix = "http://" + serverIp + ":" + String.valueOf(serverPort) + "/";
         mRequestQueue = Volley.newRequestQueue(context);
+    }
+
+    private void addRequest(Request request) {
+        request.setTag(REQ_TAG);
+        mRequestQueue.add(request);
+    }
+
+    public void cancelRequests() {
+        mRequestQueue.cancelAll(REQ_TAG);
     }
 
     /**
@@ -76,7 +87,7 @@ public class RemoteConfigReader {
                               Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/taskgroups/%s/", mUrlPrefix, mDeviceID);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        addRequest(req);
     }
 
     public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
@@ -84,7 +95,7 @@ public class RemoteConfigReader {
                                                 Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/today/open/?access_token=%s", mUrlPrefix, accessToken);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(postReq);
+        addRequest(postReq);
     }
 
     public void startSession(String sessionId,
@@ -94,7 +105,7 @@ public class RemoteConfigReader {
         String uri = String.format("%steleconsultation/session/%s/start?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        addRequest(req);
     }
 
     public void runSession(String sessionId,
@@ -104,7 +115,7 @@ public class RemoteConfigReader {
         String uri = String.format("%steleconsultation/session/%s/run?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        addRequest(req);
     }
 
     public void closeSession(String sessionId,
@@ -114,7 +125,7 @@ public class RemoteConfigReader {
         String uri = String.format("%steleconsultation/session/%s/close?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        addRequest(req);
     }
 
     public void closeTeleconsultation(String teleconsultationId,
@@ -124,7 +135,7 @@ public class RemoteConfigReader {
         String uri = String.format("%steleconsultation/close/%s/?access_token=%s",
             mUrlPrefix, teleconsultationId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        addRequest(req);
     }
 
     public void getSessionState(String sessionId,
@@ -134,7 +145,7 @@ public class RemoteConfigReader {
         String uri = String.format("%steleconsultation/session/%s/?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        addRequest(req);
     }
 
     /**
@@ -149,7 +160,7 @@ public class RemoteConfigReader {
                                     Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/applicants/%s/", mUrlPrefix, taskgroupId);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(postReq);
+        addRequest(postReq);
     }
 
     /**
@@ -167,7 +178,7 @@ public class RemoteConfigReader {
         String uri = String.format("%steleconsultation/room/%s/?access_token=%s", mUrlPrefix, roomId, accessToken);
         Log.d(TAG, "getRoomDataUri: " + uri);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(postReq);
+        addRequest(postReq);
     }
 
     /**
@@ -182,7 +193,7 @@ public class RemoteConfigReader {
                          Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/rooms/?access_token=%s", mUrlPrefix, accessToken);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(postReq);
+        addRequest(postReq);
     }
 
     /**
@@ -222,7 +233,7 @@ public class RemoteConfigReader {
             }
         };
 
-        mRequestQueue.add(postReq);
+        addRequest(postReq);
         Log.d(TAG, "Request added to the queue");
     }
 
@@ -254,7 +265,7 @@ public class RemoteConfigReader {
             }
         };
 
-        mRequestQueue.add(postReq);
+        addRequest(postReq);
     }
 
     /**
@@ -283,7 +294,7 @@ public class RemoteConfigReader {
             }
         };
 
-        mRequestQueue.add(postReq);
+        addRequest(postReq);
     }
 
     public void joinSession(String sessionId, String accessToken, String ipAddress,
@@ -292,25 +303,26 @@ public class RemoteConfigReader {
         String uri = String.format("%steleconsultation/session/%s/%s/join?access_token=%s",
             mUrlPrefix, sessionId, ipAddress, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
-        mRequestQueue.add(req);
+        addRequest(req);
     }
+
     /*
     public void  getAccounts(Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		JsonObjectRequest postReq = new JsonObjectRequest( mUrlPrefix + "accounts/?access_token=" + accessToken, null, listener, errorListener);
-		mRequestQueue.add(postReq);
+		addRequest(postReq);
 		Log.d("most_example", "getAccountsRequest Sent");
 	}
 
 
 	public void getAccount(int accountId , Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		JsonObjectRequest postReq = new JsonObjectRequest( mUrlPrefix + "accounts/" + String.valueOf(accountId)+"/?access_token=" + accessToken, null, listener, errorListener);
-		mRequestQueue.add(postReq);
+		addRequest(postReq);
 	}
 
 	
 	public void  getBuddies(int accountId , Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
 		JsonObjectRequest postReq = new JsonObjectRequest( mUrlPrefix + "buddies/" + String.valueOf(accountId)+"/?access_token=" + accessToken, null, listener, errorListener);
-		mRequestQueue.add(postReq);
+		addRequest(postReq);
 	}
   */
 }

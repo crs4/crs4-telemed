@@ -34,18 +34,16 @@ import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
-import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
@@ -160,7 +158,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
+        mConfigReader = new RESTClient(this, configServerIP, configServerPort);
 //        init();
         setTeleconsultationState(TeleconsultationState.IDLE);
         Intent i = getIntent();

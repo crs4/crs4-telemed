@@ -39,7 +39,7 @@ public class LoginFragment extends Fragment {
     private TextView mPasswordText;
     private Spinner mUsernameSpinner;
     private ArrayList<User> mUsers;
-    private RemoteConfigReader mRemCfg;
+    private RESTClient mRemCfg;
     private String mAccessToken;
     private String mTaskGroup;
     private ArrayAdapter<User> mUsersAdapter;
@@ -61,7 +61,7 @@ public class LoginFragment extends Fragment {
         Integer serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
         mAccessToken = QuerySettings.getAccessToken(getActivity());
-        mRemCfg = new RemoteConfigReader(getActivity(), serverIP, serverPort);
+        mRemCfg = new RESTClient(getActivity(), serverIP, serverPort);
 
         View v = inflater.inflate(R.layout.login_fragment, container, false);
         mUsernameSpinner = (Spinner) v.findViewById(R.id.username_spinner);
@@ -179,7 +179,7 @@ public class LoginFragment extends Fragment {
     private void retrieveAccessToken(String password) {
         User selectedUser = (User) mUsernameSpinner.getSelectedItem();
         String username = selectedUser.getUsername();
-        String grantType = isEco() ? RemoteConfigReader.GRANT_TYPE_PINCODE : RemoteConfigReader.GRANT_TYPE_PASSWORD;
+        String grantType = isEco() ? RESTClient.GRANT_TYPE_PINCODE : RESTClient.GRANT_TYPE_PASSWORD;
 
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override

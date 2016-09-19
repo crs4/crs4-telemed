@@ -26,7 +26,7 @@ import android.widget.TextView;
 public class MostDemoFragment extends Fragment {
 
     private static final String TAG = "MostDemoFragment";
-    private RemoteConfigReader mRemCfg;
+    private RESTClient mRemCfg;
     private String mServerIP;
     private int mServerPort;
     private String mTaskGroup;
@@ -84,7 +84,7 @@ public class MostDemoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (checkSettings()) {
-            mRemCfg = new RemoteConfigReader(getActivity(), mServerIP, mServerPort);
+            mRemCfg = new RESTClient(getActivity(), mServerIP, mServerPort);
             mUser = QuerySettings.getUser(getActivity());
             mAccessToken = QuerySettings.getAccessToken(getActivity());
             Log.d(TAG, "Access token is: " + mAccessToken);

@@ -36,7 +36,7 @@ public class SpecTeleconsultationController extends TeleconsultationController {
 
         String configServerIP = QuerySettings.getConfigServerAddress(callingActivity);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(callingActivity));
-        RemoteConfigReader mConfigReader = new RemoteConfigReader(callingActivity, configServerIP, configServerPort);
+        RESTClient mConfigReader = new RESTClient(callingActivity, configServerIP, configServerPort);
         String accessToken = QuerySettings.getAccessToken(callingActivity);
         if (teleconsultation.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
             mConfigReader.joinSession(teleconsultation.getLastSession().getId(),

@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.ui.TcStateTextView;
@@ -61,7 +61,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
+        mConfigReader = new RESTClient(this, configServerIP, configServerPort);
         Intent i = getIntent();
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
         mIsOnHold = false;

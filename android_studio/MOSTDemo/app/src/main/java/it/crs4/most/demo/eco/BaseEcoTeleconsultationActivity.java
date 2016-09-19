@@ -20,9 +20,8 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import it.crs4.most.demo.QuerySettings;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
-import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.streaming.StreamingEventBundle;
 import it.crs4.most.voip.VoipEventBundle;
@@ -53,7 +52,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected boolean accountRegistered = false;
 
     protected Teleconsultation teleconsultation;
-    protected RemoteConfigReader mConfigReader;
+    protected RESTClient mConfigReader;
 
     protected abstract void notifyTeleconsultationStateChanged();
 

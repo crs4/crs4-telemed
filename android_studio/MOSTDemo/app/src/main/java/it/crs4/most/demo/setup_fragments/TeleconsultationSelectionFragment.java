@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Teleconsultation;
 
@@ -27,7 +27,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     private static String TAG = "TeleconsultationSelectionFragment";
     private ArrayList<Teleconsultation> mTeleconsultations;
     private ArrayAdapter<Teleconsultation> mTcsArrayAdapter;
-    private RemoteConfigReader mConfigReader;
+    private RESTClient mRESTClient;
     private Runnable mGetTeleconsultationsTask;
     private Handler mGetTeleconsultationsHandler;
     private View mView;
@@ -67,6 +67,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     @Override
     public void onPause() {
         mGetTeleconsultationsHandler.removeCallbacks(mGetTeleconsultationsTask);
+        mRESTClient.cancelRequests();
         super.onPause();
     }
 
@@ -85,7 +86,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     }
 
     private void retrieveTeleconsultations() {
-//        mConfigReader = getConfigBuilder().getRemoteConfigReader();
+//        mRESTClient = getConfigBuilder().getRemoteConfigReader();
 //        final User user = getConfigBuilder().getUser();
 //
 //        mGetTeleconsultationsTask = new Runnable() {
@@ -93,7 +94,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
 //            public void run() {
 ////                mTeleconsultations.clear();
 //                mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 5000);
-//                mConfigReader.getTeleconsultationsByTaskgroup(
+//                mRESTClient.getTeleconsultationsByTaskgroup(
 //                    user.getTaskGroup(),
 //                    user.getAccessToken(),
 //                    new Response.Listener<JSONObject>() {

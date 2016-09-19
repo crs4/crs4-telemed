@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Room;
@@ -32,7 +32,7 @@ public class UrgencyRoomFragment extends SetupFragment {
     private static final String TAG = "UrgencyRoomFragment";
     private Spinner mUrgencySpinner;
     private Spinner mRoomSpinner;
-    private RemoteConfigReader mRemCfg;
+    private RESTClient mRESTClient;
 
     public static SetupFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         UrgencyRoomFragment fragment = new UrgencyRoomFragment();
@@ -47,7 +47,7 @@ public class UrgencyRoomFragment extends SetupFragment {
         super.onCreate(savedInstanceState);
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
-        mRemCfg = new RemoteConfigReader(getActivity(), configServerIP, configServerPort);
+        mRESTClient = new RESTClient(getActivity(), configServerIP, configServerPort);
         mTeleconsultationSetup = (TeleconsultationSetup) getArguments()
             .getSerializable(SetupFragment.TELECONSULTATION_SETUP);
     }
@@ -74,6 +74,12 @@ public class UrgencyRoomFragment extends SetupFragment {
     }
 
     @Override
+    public void onPause() {
+        mRESTClient.cancelRequests();
+        super.onPause();
+    }
+
+    @Override
     protected int getTitle() {
         return R.string.urgency_and_room_selection_title;
     }
@@ -95,7 +101,7 @@ public class UrgencyRoomFragment extends SetupFragment {
     private void setupRoomSpinner(View view) {
         mRoomSpinner = (Spinner) view.findViewById(R.id.room_spinner);
         String accessToken = QuerySettings.getAccessToken(getActivity());
-        mRemCfg.getRooms(accessToken,
+        mRESTClient.getRooms(accessToken,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject roomsData) {

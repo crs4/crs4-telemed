@@ -67,7 +67,7 @@ public class SettingsFragment extends PreferenceFragment {
         if (addressValue == null) {
             return;
         }
-        RemoteConfigReader configReader = new RemoteConfigReader(
+        RESTClient configReader = new RESTClient(
                 getActivity(),
                 addressValue,
                 Integer.valueOf(portValue)
