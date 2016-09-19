@@ -12,25 +12,30 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.EventListener;
+
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.TeleconsultationSetupActivity;
 
 public abstract class SetupFragment extends Fragment {
 
-    protected static final String TELECONSULTATION_SETUP = "TELECONSULTATION_SETUP";
     private static final String TAG = "SetupFragment";
+    protected static final String TELECONSULTATION_SETUP = "TELECONSULTATION_SETUP";
     protected TeleconsultationSetup mTeleconsultationSetup;
+    private ArrayList<StepEventListener> mEventListeners;
+
 
     public SetupFragment() {
+        mEventListeners = new ArrayList<>();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTeleconsultationSetup = (TeleconsultationSetup) getArguments().getSerializable(TELECONSULTATION_SETUP);
+        setTeleconsultationSetup((TeleconsultationSetup) getArguments().getSerializable(TELECONSULTATION_SETUP));
     }
-
 
     @Nullable
     @Override
@@ -51,24 +56,31 @@ public abstract class SetupFragment extends Fragment {
         return super.getContext();
     }
 
-
-
     public TeleconsultationSetup getTeleconsultationSetup() {
         return mTeleconsultationSetup;
     }
 
     public void setTeleconsultationSetup(TeleconsultationSetup teleconsultationSetup) {
         mTeleconsultationSetup = teleconsultationSetup;
-        Log.d(TAG, "Received TC SETUP " + teleconsultationSetup);
     }
 
-    protected void nextStep() {
-        ((TeleconsultationSetupActivity) getActivity()).nextStep();
+    protected void stepDone() {
+        for (StepEventListener listener: mEventListeners) {
+            listener.onStepDone();
+        }
+    }
+
+    public void addEventListener(StepEventListener listener) {
+        mEventListeners.add(listener);
     }
 
     protected abstract int getTitle();
 
     protected int getLayoutContent() {
         return -1;
+    }
+
+    public interface StepEventListener extends EventListener {
+        void onStepDone();
     }
 }

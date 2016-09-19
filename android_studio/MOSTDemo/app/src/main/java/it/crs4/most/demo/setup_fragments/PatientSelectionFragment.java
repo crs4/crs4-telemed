@@ -12,14 +12,11 @@ import it.crs4.most.demo.models.Patient;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -60,7 +57,7 @@ public class PatientSelectionFragment extends SetupFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Patient selected = mPatients.get(position);
                 getTeleconsultationSetup().setPatient(selected);
-                nextStep();
+                stepDone();
             }
         });
         retrievePatients();

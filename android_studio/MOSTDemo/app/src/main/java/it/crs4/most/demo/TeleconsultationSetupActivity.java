@@ -47,7 +47,14 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         }
         mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
         mSetupFragments = mTcController.getFragments(mTeleconsultationSetup);
-
+        for(SetupFragment f: mSetupFragments) {
+            f.addEventListener(new SetupFragment.StepEventListener() {
+                @Override
+                public void onStepDone() {
+                    TeleconsultationSetupActivity.this.nextStep();
+                }
+            });
+        }
         mVpPager = (ViewPager) findViewById(R.id.vp_pager);
         FragmentStatePagerAdapter pagerAdapter = new CustomPagerAdapter(this, getSupportFragmentManager());
         mVpPager.setAdapter(pagerAdapter);
