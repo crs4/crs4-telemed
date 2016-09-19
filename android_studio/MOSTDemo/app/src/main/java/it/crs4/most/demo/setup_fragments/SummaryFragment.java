@@ -38,6 +38,8 @@ public class SummaryFragment extends SetupFragment {
     private Runnable mWaitForSpecialistTask;
     private Handler mWaitForSpecialistHandler;
     private RESTClient mRESTClient;
+    private TextView mUrgency;
+    private TextView mRoom;
 
     public static SummaryFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         SummaryFragment fragment = new SummaryFragment();
@@ -55,9 +57,10 @@ public class SummaryFragment extends SetupFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-//        View view = inflater.inflate(R.layout.summary_fragment, container, false);
         mTxtPatientFullName = (TextView) v.findViewById(R.id.text_summary_patient_full_name);
         mPatientId = (TextView) v.findViewById(R.id.text_summary_patient_id);
+        mUrgency = (TextView) v.findViewById(R.id.text_summary_urgency);
+        mRoom = (TextView) v.findViewById(R.id.text_summary_room);
         Button butStartEmergency = (Button) v.findViewById(R.id.button_summary_start_emergency);
         butStartEmergency.setOnClickListener(new OnClickListener() {
             @Override
@@ -83,17 +86,10 @@ public class SummaryFragment extends SetupFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             Patient patient = mTeleconsultationSetup.getPatient();
-            if (patient != null) {
-                mTxtPatientFullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
-                mPatientId.setText(patient.getId());
-                mTxtPatientFullName.setFocusable(false);
-                mPatientId.setFocusable(false);
-                mPatientId.setFocusable(false);
-            }
-            else {
-                mTxtPatientFullName.setFocusable(true);
-                mPatientId.setFocusable(true);
-            }
+            mTxtPatientFullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
+            mPatientId.setText(patient.getId());
+            mUrgency.setText(mTeleconsultationSetup.getUrgency());
+            mRoom.setText(mTeleconsultationSetup.getRoom().toString());
         }
     }
 

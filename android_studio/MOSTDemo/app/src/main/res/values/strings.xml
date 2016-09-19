@@ -36,8 +36,8 @@
     <string name="task_group">Task Group</string>
     <string name="text_summary_patient_hint">Insert patient name</string>
     <string name="severity">SEVERITY:</string>
-    <string name="room">ROOM:</string>
-    <string name="start_emergency">START EMERGENCY</string>
+    <string name="room">ROOM</string>
+    <string name="start_session">Start Session</string>
     <string name="login_error">Login Error</string>
     <string name="login_error_details">Invalid password/pincode. Please retry.</string>
     <string name="waiting_for_specialist">Waiting for specialist…</string>
@@ -92,5 +92,6 @@
     <string name="urgency_and_room_selection_title">Urgency and Room selection</string>
     <string name="back">Back</string>
     <string name="next">Continue</string>
+    <string name="urgency">Urgency</string>
 
 </resources>

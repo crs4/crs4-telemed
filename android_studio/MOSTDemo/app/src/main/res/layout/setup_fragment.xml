@@ -12,7 +12,7 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:textAllCaps="true"
-        android:textSize="20sp"/>
+        android:textSize="@dimen/title_text_size"/>
 
     <FrameLayout
         android:id="@+id/setup_fragment_container"
