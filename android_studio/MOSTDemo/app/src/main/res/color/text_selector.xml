@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!-- For the font selection states to work, a drawable needs to be specified as well 
-    (even though it is not used) not sure why.-->
-
-<selector xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <!-- Tab is active  -->
-    <item   android:state_checked="true" 
-            android:color="#FFAA00"
-            /> 
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="#FFAA00"
+          android:state_checked="true"/>
 
     <!-- Default -->
-    <item  android:color="#22FF22"
-           /> 
+    <item android:color="#22FF22"/>
 
 </selector>

@@ -1,0 +1,49 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="it.crs4.most.demo.LoginActivity">
+
+        <Spinner
+            android:id="@+id/username_spinner"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/textview_shape"
+            android:dropDownVerticalOffset="70dp"
+            android:gravity="start"/>
+
+        <EditText
+            android:id="@+id/password_text"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/textview_shape"
+            android:enabled="false"
+            android:inputType="textPassword"
+            android:hint="@string/lbl_enter_passcode"/>
+
+        <Button
+            android:id="@+id/password_button"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/circle_button"
+            android:text="@string/login"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+</ScrollView>

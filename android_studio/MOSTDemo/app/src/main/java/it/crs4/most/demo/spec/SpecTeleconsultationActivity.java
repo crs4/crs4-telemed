@@ -36,7 +36,7 @@ import java.util.TimerTask;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
@@ -116,7 +116,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private MenuItem mHangupMenuItem;
     private MenuItem mChangeEcoSizeMenuItem;
     private HashMap<String, String> mVoipParams;
-    private RemoteConfigReader mConfigReader;
+    private RESTClient mConfigReader;
     private boolean mLocalHold = false;
     private boolean mAccountRegistered = false;
     private boolean mFirstCallStarted = false;
@@ -140,7 +140,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
+        mConfigReader = new RESTClient(this, configServerIP, configServerPort);
 
 
         mEcoStreamHandler = new EcoStreamHandler(this);
@@ -428,12 +428,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     private void checkForSessionClosed() {
         final Timer t = new Timer();
-
+        final String accessToken = QuerySettings.getAccessToken(this);
         t.schedule(new TimerTask() {
             @Override
             public void run() {
                 mConfigReader.getSessionState(mTeleconsultation.getLastSession().getId(),
-                    mTeleconsultation.getUser().getAccessToken(),
+                    accessToken,
                     new Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject res) {

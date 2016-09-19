@@ -4,11 +4,11 @@ package it.crs4.most.demo.setup_fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -25,81 +25,87 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RemoteConfigReader;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationException;
+import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Teleconsultation;
-import it.crs4.most.demo.models.User;
 
 public class TeleconsultationSelectionFragment extends SetupFragment {
 
     private static String TAG = "TeleconsultationSelectionFragment";
     private ArrayList<Teleconsultation> mTeleconsultations;
     private ArrayAdapter<Teleconsultation> mTcsArrayAdapter;
-    private RemoteConfigReader mConfigReader;
+    private RESTClient mRESTClient;
     private Runnable mGetTeleconsultationsTask;
     private Handler mGetTeleconsultationsHandler;
-    private View mView;
 
-    public static TeleconsultationSelectionFragment newInstance(IConfigBuilder config) {
+    public static TeleconsultationSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         TeleconsultationSelectionFragment fragment = new TeleconsultationSelectionFragment();
-        fragment.setConfigBuilder(config);
+        Bundle args = new Bundle();
+        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mGetTeleconsultationsHandler = new Handler();
         super.onCreate(savedInstanceState);
+        mGetTeleconsultationsHandler = new Handler();
+        String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
+        mRESTClient = new RESTClient(getActivity(), configServerIP, configServerPort);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.teleconsultation_list, container, false);
-        ListView listView = (ListView) mView.findViewById(R.id.teleconsultation_list);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        ListView listView = (ListView) view.findViewById(R.id.teleconsultation_list);
         mTeleconsultations = new ArrayList<>();
-        mTcsArrayAdapter = new TeleconsultationAdapter(this, R.layout.teleconsultation_row, mTeleconsultations);
+        mTcsArrayAdapter = new TeleconsultationAdapter(this, R.layout.teleconsultation_selection_fragment_item, mTeleconsultations);
 
         listView.setAdapter(mTcsArrayAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Teleconsultation selectedTc = mTeleconsultations.get(position);
-                getConfigBuilder().setTeleconsultation(selectedTc);
+                mTeleconsultationSetup.setTeleconsultation(selectedTc);
+                stepDone();
             }
         });
-        return mView;
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("select_task_group_preference", null);
+        retrieveTeleconsultations();
+        return view;
     }
 
     @Override
     public void onPause() {
         mGetTeleconsultationsHandler.removeCallbacks(mGetTeleconsultationsTask);
+        mRESTClient.cancelRequests();
         super.onPause();
     }
 
-    private void addTeleconsultation(Teleconsultation teleconsultation) {
-        for (Teleconsultation t : mTeleconsultations) {
-            if (t.getId().equals(teleconsultation.getId())) {
-                return;
-            }
-        }
-        mTeleconsultations.add(teleconsultation);
+    @Override
+    protected int getTitle() {
+        return R.string.teleconsultation_title;
+    }
+
+    @Override
+    protected int getLayoutContent() {
+        return R.layout.teleconsultation_selection_fragment;
     }
 
     private void retrieveTeleconsultations() {
-        mConfigReader = getConfigBuilder().getRemoteConfigReader();
-        final User user = getConfigBuilder().getUser();
-
+        final String accessToken = QuerySettings.getAccessToken(getActivity());
+        final String taskGroup = QuerySettings.getTaskGroup(getActivity());
         mGetTeleconsultationsTask = new Runnable() {
             @Override
             public void run() {
-//                mTeleconsultations.clear();
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 5000);
-                mConfigReader.getTeleconsultationsByTaskgroup(
-                    user.getTaskGroup().getId(),
-                    user.getAccessToken(),
+                mRESTClient.getTeleconsultationsByTaskgroup(
+                    taskGroup,
+                    accessToken,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -115,7 +121,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                     Teleconsultation t = null;
                                     try {
                                         String role = QuerySettings.getRole(getActivity());
-                                        t = Teleconsultation.fromJSON(getActivity(), item, role, user);
+                                        t = Teleconsultation.fromJSON(getActivity(), item, role);
                                     }
                                     catch (TeleconsultationException e) {
                                         Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
@@ -143,16 +149,13 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         mGetTeleconsultationsHandler.post(mGetTeleconsultationsTask);
     }
 
-    @Override
-    public void onShow() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
-        retrieveTeleconsultations();
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.teleconsultation_title;
+    private void addTeleconsultation(Teleconsultation teleconsultation) {
+        for (Teleconsultation t : mTeleconsultations) {
+            if (t.getId().equals(teleconsultation.getId())) {
+                return;
+            }
+        }
+        mTeleconsultations.add(teleconsultation);
     }
 
     private static class TeleconsultationAdapter extends ArrayAdapter<Teleconsultation> {
@@ -172,7 +175,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.teleconsultation_row, null);
+                convertView = inflater.inflate(R.layout.teleconsultation_selection_fragment_item, null);
                 viewHolder = new ViewHolder();
                 viewHolder.fullName = (TextView) convertView.findViewById(R.id.text_tc_name);
                 viewHolder.id = (TextView) convertView.findViewById(R.id.text_tc_id);

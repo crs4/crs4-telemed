@@ -14,24 +14,17 @@ import org.json.JSONObject;
 
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
-import it.crs4.most.demo.setup_fragments.EnterCredentialsFragment;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
 import it.crs4.most.demo.setup_fragments.TeleconsultationSelectionFragment;
-import it.crs4.most.demo.setup_fragments.UserSelectionFragment;
 import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
 public class SpecTeleconsultationController extends TeleconsultationController {
-
-
     private static final String TAG = "SpecTeleconsultSetup";
 
     @Override
-    public SetupFragment[] getFragments(IConfigBuilder builder) {
+    public SetupFragment[] getFragments(TeleconsultationSetup teleconsultationSetup) {
         return new SetupFragment[]{
-            UserSelectionFragment.newInstance(builder),
-            EnterCredentialsFragment.newInstance(builder,
-                EnterCredentialsFragment.PASSWORD_CREDENTIALS),
-            TeleconsultationSelectionFragment.newInstance(builder)
+            TeleconsultationSelectionFragment.newInstance(teleconsultationSetup)
         };
     }
 
@@ -43,10 +36,11 @@ public class SpecTeleconsultationController extends TeleconsultationController {
 
         String configServerIP = QuerySettings.getConfigServerAddress(callingActivity);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(callingActivity));
-        RemoteConfigReader mConfigReader = new RemoteConfigReader(callingActivity, configServerIP, configServerPort);
+        RESTClient mConfigReader = new RESTClient(callingActivity, configServerIP, configServerPort);
+        String accessToken = QuerySettings.getAccessToken(callingActivity);
         if (teleconsultation.getLastSession().getState() == TeleconsultationSessionState.WAITING) {
             mConfigReader.joinSession(teleconsultation.getLastSession().getId(),
-                teleconsultation.getUser().getAccessToken(),
+                accessToken,
                 ipAddress,
                 new Response.Listener<JSONObject>() {
                     @Override

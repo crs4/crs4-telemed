@@ -2,6 +2,7 @@ package it.crs4.most.demo;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 
 public class QuerySettings {
 
@@ -10,9 +11,18 @@ public class QuerySettings {
     private static final String CONFIG_SERVER_PORT = "config_server_port";
     private static final String TASK_GROUP = "select_task_group_preference";
     private static final String ROLE = "role_preference";
+    private static final String USER = "user";
+    private static final String ACCESS_TOKEN = "access_token";
 
     private static String getStoredItem(Context context, String valueType, String defaultValue) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(valueType, defaultValue);
+    }
+
+    public static void storeItem(Context context, String valueType, String value) {
+        PreferenceManager.getDefaultSharedPreferences(context).
+            edit().
+            putString(valueType, value).
+            apply();
     }
 
     public static String getConfigServerAddress(Context context) {
@@ -28,31 +38,24 @@ public class QuerySettings {
     }
 
     public static String getRole(Context context) {
-        String[] roles = context.getResources().getStringArray(R.array.roles_entries_values);
-        return getStoredItem(context, ROLE, roles[0]);
+        return getStoredItem(context, ROLE, null);
     }
 
-//    public static void setConfigServerAddress(Context context, String value) {
-//        PreferenceManager.getDefaultSharedPreferences(context).
-//                edit().
-//                putString(CONFIG_SERVER_IP, value).
-//                apply();
-//    }
+    public static String getUser(Context context) {
+        return getStoredItem(context, USER, null);
+    }
 
-//    public static void setTaskGroup(Context context, String value) {
-//        PreferenceManager.getDefaultSharedPreferences(context).
-//                edit().
-//                putString(TASK_GROUP, value).
-//                apply();
-//
-//    }
+    public static void setUser(Context context, String user) {
+        storeItem(context, USER, user);
+    }
 
-//    public static void setConfigServerPort(Context context, int value) {
-//        PreferenceManager.getDefaultSharedPreferences(context).
-//                edit().
-//                putInt(CONFIG_SERVER_PORT, value).
-//                apply();
-//    }
+    public static String getAccessToken(Context context) {
+        return getStoredItem(context, ACCESS_TOKEN, null);
+    }
+
+    public static void setAccessToken(Context context, String accessToken) {
+        storeItem(context, ACCESS_TOKEN, accessToken);
+    }
 
 }
 

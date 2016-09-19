@@ -4,8 +4,8 @@ package it.crs4.most.demo.setup_fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.crs4.most.demo.IConfigBuilder;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Patient;
 
 
@@ -15,7 +15,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,11 +23,12 @@ import android.widget.TextView;
 public class PatientSelectionFragment extends SetupFragment {
     private ArrayList<Patient> mPatients;
     private ArrayAdapter<Patient> mPatientArrayAdapter;
-    private View mView;
 
-    public static PatientSelectionFragment newInstance(IConfigBuilder config) {
+    public static PatientSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         PatientSelectionFragment fragment = new PatientSelectionFragment();
-        fragment.setConfigBuilder(config);
+        Bundle args = new Bundle();
+        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -39,29 +39,39 @@ public class PatientSelectionFragment extends SetupFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_patient_selection, container, false);
-        FloatingActionButton addPatient = (FloatingActionButton) mView.findViewById(R.id.button_patients_add);
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        FloatingActionButton addPatient = (FloatingActionButton) v.findViewById(R.id.button_patients_add);
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getConfigBuilder().setPatient(null);
+                mTeleconsultationSetup.setPatient(null);
             }
         });
 
-        ListView listView = (ListView) mView.findViewById(R.id.patients_list);
+        ListView listView = (ListView) v.findViewById(R.id.patients_list);
         mPatients = new ArrayList<>();
-        mPatientArrayAdapter = new PatientAdapter(this, R.layout.fragment_patient_selection_item, mPatients);
+        mPatientArrayAdapter = new PatientAdapter(this, R.layout.patient_selection_fragment_item, mPatients);
         listView.setAdapter(mPatientArrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Patient selected = mPatients.get(position);
-                getConfigBuilder().setPatient(selected);
+                getTeleconsultationSetup().setPatient(selected);
+                stepDone();
             }
         });
         retrievePatients();
+        return v;
+    }
 
-        return mView;
+    @Override
+    protected int getTitle() {
+        return R.string.patient_selection_title;
+    }
+
+    @Override
+    protected int getLayoutContent() {
+        return R.layout.patient_selection_fragment;
     }
 
     private void retrievePatients() {
@@ -69,17 +79,6 @@ public class PatientSelectionFragment extends SetupFragment {
         mPatients.add(new Patient("Carlo", "Verdi", "VRLI1334636R243P"));
         mPatients.add(new Patient("Gianni", "Bianchi", "BHGI3334636R243V"));
         mPatientArrayAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onShow() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.patient_selection_title;
     }
 
     public class PatientAdapter extends ArrayAdapter<Patient> {
@@ -98,7 +97,7 @@ public class PatientSelectionFragment extends SetupFragment {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.fragment_patient_selection_item, null);
+                convertView = inflater.inflate(R.layout.patient_selection_fragment_item, null);
                 viewHolder = new ViewHolder();
                 viewHolder.fullName = (TextView) convertView.findViewById(R.id.patient_full_name_text);
                 viewHolder.id = (TextView) convertView.findViewById(R.id.patient_id_text);

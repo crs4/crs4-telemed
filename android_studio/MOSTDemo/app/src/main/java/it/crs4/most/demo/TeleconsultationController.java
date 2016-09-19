@@ -7,7 +7,7 @@ import it.crs4.most.demo.setup_fragments.SetupFragment;
 
 public abstract class TeleconsultationController {
 
-    public abstract SetupFragment[] getFragments(IConfigBuilder builder);
+    public abstract SetupFragment[] getFragments(TeleconsultationSetup teleconsultationSetup);
 
     public abstract void startTeleconsultationActivity(Activity activity, Teleconsultation teleconsultation);
 }

@@ -4,142 +4,70 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.lang.ref.WeakReference;
 
 import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
 import it.crs4.most.demo.models.Device;
-import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Teleconsultation;
-import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
 import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
 
-public class TeleconsultationSetupActivity extends AppCompatActivity implements IConfigBuilder {
+public class TeleconsultationSetupActivity extends AppCompatActivity {
+    private static final String TELECONSULTATION_SETUP = "it.crs4.most.demo.teleconsultation_setup";
     private static final String TAG = "TeleconsultSetupAct";
 
     private SetupFragment[] mSetupFragments;
     private TeleconsultationController mTcController;
-    private MostViewPager mVpPager;
-    private User mUser;
-    private Patient mPatient;
-    private Teleconsultation mTeleconsultation;
-    private Device mCamera;
-    private RemoteConfigReader mConfigReader;
-    private ActionBarDrawerToggle mDrawerToggle;
+    private ViewPager mVpPager;
+    private TeleconsultationSetup mTeleconsultationSetup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        String configServerIP = QuerySettings.getConfigServerAddress(this);
-        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mConfigReader = new RemoteConfigReader(this, configServerIP, configServerPort);
         setContentView(R.layout.teleconsultation_setup_activity);
-        mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
-        mSetupFragments = mTcController.getFragments(this);
 
-        mVpPager = (MostViewPager) findViewById(R.id.vp_pager);
-        SmartFragmentStatePagerAdapter pagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
-        mVpPager.setAdapter(pagerAdapter);
-
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        String[] drawerItems = {
-            getString(R.string.settings), getString(R.string.exit)
-        };
-        ListView drawerList = (ListView) findViewById(R.id.left_drawer);
-        drawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, drawerItems));
-        drawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open,
-            R.string.drawer_close);
-
-        // Set the drawer toggle as the DrawerListener
-        drawerLayout.setDrawerListener(mDrawerToggle);
         try {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+            mTeleconsultationSetup = (TeleconsultationSetup) savedInstanceState.getSerializable(TELECONSULTATION_SETUP);
         }
         catch (NullPointerException ex) {
-            Log.d(TAG, "There's no actionbar");
+            mTeleconsultationSetup = new TeleconsultationSetup();
         }
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
+        mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
+        mSetupFragments = mTcController.getFragments(mTeleconsultationSetup);
+        for(SetupFragment f: mSetupFragments) {
+            f.addEventListener(new SetupFragment.StepEventListener() {
+                @Override
+                public void onStepDone() {
+                    TeleconsultationSetupActivity.this.nextStep();
+                }
+            });
         }
-        return super.onOptionsItemSelected(item);
+        mVpPager = (ViewPager) findViewById(R.id.vp_pager);
+        FragmentStatePagerAdapter pagerAdapter = new CustomPagerAdapter(this, getSupportFragmentManager());
+        mVpPager.setAdapter(pagerAdapter);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    public RemoteConfigReader getRemoteConfigReader() {
-        return mConfigReader;
-    }
-
-    @Override
-    public void listUsers() {
-        mVpPager.setInternalCurrentItem(0, 0);
-    }
-
-    @Override
-    public void setUser(User user) {
-        mUser = user;
-        if (mUser != null) {
-            mVpPager.setInternalCurrentItem(1, 0);
-        }
-    }
-
-    @Override
-    public User getUser() {
-        return mUser;
-    }
-
-    @Override
-    public void listPatients() {
-        mVpPager.setInternalCurrentItem(2, 0);
-    }
-
-    @Override
-    public void setPatient(Patient selectedPatient) {
-        mPatient = selectedPatient;
-        if (mPatient != null) {
-            mVpPager.setInternalCurrentItem(3, 2);
-        }
-    }
-
-    @Override
-    public Patient getPatient() {
-        return mPatient;
-    }
-
-    @Override
-    public void setTeleconsultation(Teleconsultation teleconsultation) {
-        mTeleconsultation = teleconsultation;
-        if (mTeleconsultation != null) {
-            startTeleconsultationActivity();
-        }
-    }
-
-    private void startTeleconsultationActivity() {
-        mTcController.startTeleconsultationActivity(this, mTeleconsultation);
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(TELECONSULTATION_SETUP, mTeleconsultationSetup);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -147,56 +75,63 @@ public class TeleconsultationSetupActivity extends AppCompatActivity implements 
         if (requestCode == EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST ||
             requestCode == SpecTeleconsultationActivity.TELECONSULT_ENDED_REQUEST) {
             if (resultCode == RESULT_OK) {
-                setUser(null);
-                setPatient(null);
-                setTeleconsultation(null);
-                listUsers();
-            }
-        }
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            String value = (String) parent.getItemAtPosition(position);
-            if (value.equals(getString(R.string.settings))) {
-                Intent settingsIntent = new Intent(TeleconsultationSetupActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
-            }
-            else if (value.equals(getString(R.string.exit))) {
+                mTeleconsultationSetup = null;
                 finish();
             }
         }
     }
 
-    public static class PagerAdapter extends SmartFragmentStatePagerAdapter {
+    @Override
+    public void onBackPressed() {
+        if (mVpPager.getCurrentItem() != 0) {
+            previousStep();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
 
-        private TeleconsultationSetupActivity mainActivity;
+    public void nextStep() {
+        int newItem = mVpPager.getCurrentItem() + 1;
+        Log.d(TAG, "NEW ITEM: " + newItem + " PAGER CHILD: " + mVpPager.getChildCount());
+        if (newItem >= mVpPager.getChildCount()) {
+            startTeleconsultationActivity(mTeleconsultationSetup.getTeleconsultation());
+        }
+        else {
+            mVpPager.setCurrentItem(newItem);
+        }
+    }
 
-        public PagerAdapter(TeleconsultationSetupActivity outerRef, FragmentManager fragmentManager) {
+    public void previousStep() {
+        int newItem = mVpPager.getCurrentItem() - 1;
+        mVpPager.setCurrentItem(newItem);
+    }
+
+    public void startTeleconsultationActivity(Teleconsultation teleconsultation) {
+        mTcController.startTeleconsultationActivity(this, teleconsultation);
+    }
+
+    public static class CustomPagerAdapter extends FragmentStatePagerAdapter {
+        private TeleconsultationSetupActivity act;
+
+        public CustomPagerAdapter(TeleconsultationSetupActivity outerRef, FragmentManager fragmentManager) {
             super(fragmentManager);
-            mainActivity = new WeakReference<>(outerRef).get();
+            act = new WeakReference<>(outerRef).get();
         }
 
         @Override
         public int getCount() {
-            return mainActivity.mSetupFragments.length;
+            return act.mSetupFragments.length;
         }
 
         @Override
         public Fragment getItem(int position) {
             if (position >= 0 && position < getCount()) {
-                return mainActivity.mSetupFragments[position];
+                return act.mSetupFragments[position];
             }
             else {
                 return null;
             }
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            int resId = mainActivity.mSetupFragments[position].getTitle();
-            return mainActivity.getString(resId);
         }
     }
 }

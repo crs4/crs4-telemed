@@ -28,19 +28,14 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings_preferences);
-        EditTextPreference configServerAddr = (EditTextPreference)
-                findPreference("config_server_address");
+        EditTextPreference configServerAddr = (EditTextPreference) findPreference("config_server_address");
         configServerAddr.setSummary(configServerAddr.getText());
 
-        EditTextPreference configServerPort = (EditTextPreference)
-                findPreference("config_server_port");
+        EditTextPreference configServerPort = (EditTextPreference) findPreference("config_server_port");
         configServerPort.setSummary(configServerPort.getText());
 
-        EditTextPreference deviceID = (EditTextPreference)
-                findPreference("device_id");
-        deviceID.setSummary(Settings.Secure.getString(getActivity().getContentResolver(),
-                Settings.Secure.ANDROID_ID));
-
+        EditTextPreference deviceID = (EditTextPreference) findPreference("device_id");
+        deviceID.setSummary(Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         mTaskGroupPreference = (ListPreference) findPreference("select_task_group_preference");
 
@@ -52,6 +47,7 @@ public class SettingsFragment extends PreferenceFragment {
                 retrieveTaskgroups(newValue.toString(),
                         QuerySettings.getConfigServerPort(getActivity()));
                 preference.setSummary(newValue.toString());
+                logout();
                 return true;
             }
         });
@@ -61,6 +57,7 @@ public class SettingsFragment extends PreferenceFragment {
                 preference.setSummary(newValue.toString());
                 retrieveTaskgroups(QuerySettings.getConfigServerAddress(getActivity()),
                         newValue.toString());
+                logout();
                 return true;
             }
         });
@@ -70,7 +67,7 @@ public class SettingsFragment extends PreferenceFragment {
         if (addressValue == null) {
             return;
         }
-        RemoteConfigReader configReader = new RemoteConfigReader(
+        RESTClient configReader = new RESTClient(
                 getActivity(),
                 addressValue,
                 Integer.valueOf(portValue)
@@ -130,7 +127,7 @@ public class SettingsFragment extends PreferenceFragment {
                     public void onErrorResponse(VolleyError arg0) {
                         Log.e(TAG, "Error contacting the configuration server");
                         loadingConfigDialog.dismiss();
-                        showAlertDialog(R.string.error_contacting_the_server);
+                        showAlertDialog(R.string.server_connection_error);
                         updateTaskGroupPreference();
                     }
                 }
@@ -157,6 +154,11 @@ public class SettingsFragment extends PreferenceFragment {
         mTaskGroupPreference.setEntryValues(null);
         mTaskGroupPreference.setValue(null);
 //        QuerySettings.setTaskGroup(getActivity(), "");
+    }
+
+    private void logout() {
+        QuerySettings.setAccessToken(getActivity(), null);
+        QuerySettings.setUser(getActivity(), null);
     }
 }
 

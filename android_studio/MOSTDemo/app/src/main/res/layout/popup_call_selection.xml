@@ -18,7 +18,7 @@
             android:layout_weight=".5"
             android:background="@drawable/circle_button"
             android:contentDescription="@string/call_hangup"
-            android:src="@drawable/ic_call_end_white_36dp"
+            android:src="@drawable/hangup"
             android:text="@string/call_hangup"/>
 
         <ImageButton
@@ -29,7 +29,7 @@
             android:layout_margin="10dp"
             android:layout_weight=".5"
             android:background="@drawable/circle_button"
-            android:src="@drawable/ic_phone_paused_white_36dp"
+            android:src="@drawable/hold"
             android:contentDescription="@string/call_onHold"/>
 
     </LinearLayout>
