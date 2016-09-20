@@ -61,7 +61,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mConfigReader = new RESTClient(this, configServerIP, configServerPort);
+        mRESTClient = new RESTClient(this, configServerIP, configServerPort);
         Intent i = getIntent();
         teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
         mIsOnHold = false;

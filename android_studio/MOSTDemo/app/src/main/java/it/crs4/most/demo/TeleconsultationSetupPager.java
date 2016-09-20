@@ -6,12 +6,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 
-public class MostViewPager extends ViewPager {
-    public MostViewPager(Context context, AttributeSet attrs) {
+public class TeleconsultationSetupPager extends ViewPager {
+    public TeleconsultationSetupPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MostViewPager(Context context) {
+    public TeleconsultationSetupPager(Context context) {
         super(context);
     }
 

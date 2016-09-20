@@ -93,7 +93,7 @@ public class RESTClient {
     public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
                                                 Response.Listener<JSONObject> listener,
                                                 Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/today/open/?access_token=%s", mUrlPrefix, accessToken);
+        String uri = String.format("%steleconsultation/today/waiting/?access_token=%s", mUrlPrefix, accessToken);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(postReq);
     }
@@ -102,7 +102,7 @@ public class RESTClient {
                              String accessToken,
                              Response.Listener<JSONObject> listener,
                              Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/start?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/start/?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
@@ -112,7 +112,7 @@ public class RESTClient {
                            String accessToken,
                            Response.Listener<JSONObject> listener,
                            Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/run?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/run/?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
@@ -122,7 +122,7 @@ public class RESTClient {
                              String accessToken,
                              Response.Listener<JSONObject> listener,
                              Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/close?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/close/?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
@@ -300,7 +300,7 @@ public class RESTClient {
     public void joinSession(String sessionId, String accessToken, String ipAddress,
                             Response.Listener<JSONObject> listener,
                             Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/%s/join?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/%s/join/?access_token=%s",
             mUrlPrefix, sessionId, ipAddress, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);

@@ -96,9 +96,10 @@ class Teleconsultation(models.Model):
 
     TELECONSULTATION_STATE = (
         ('NEW', 'New Teleconsultation'), #Created from applicant
-        ('OPEN', 'At Least one Session Open - (SESSION WAITING STATE)'),
+        ('WAITING', 'At Least one Session Open - (SESSION WAITING STATE)'),
         ('ACTIVE', 'Last Session in progress'),
-        ('CLOSE', 'Last Session is closed')
+        ('SESSION_CLOSE', 'Last Session is closed'),
+        ('CLOSE', 'Teleconsultation closed')
     )
 
     URGENCY_STATE = (

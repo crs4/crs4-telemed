@@ -116,7 +116,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private MenuItem mHangupMenuItem;
     private MenuItem mChangeEcoSizeMenuItem;
     private HashMap<String, String> mVoipParams;
-    private RESTClient mConfigReader;
+    private RESTClient mRESTClient;
     private boolean mLocalHold = false;
     private boolean mAccountRegistered = false;
     private boolean mFirstCallStarted = false;
@@ -140,11 +140,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mConfigReader = new RESTClient(this, configServerIP, configServerPort);
-
+        mRESTClient = new RESTClient(this, configServerIP, configServerPort);
 
         mEcoStreamHandler = new EcoStreamHandler(this);
-
         mCameraStreamHandler = new CameraStreamHandler(this);
 
         setContentView(R.layout.spec_teleconsultation_activity);
@@ -171,8 +169,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mARCameraRenderer = new PubSubARRenderer(this, publisher, cameraMeshManager);
         mAREcoRenderer= new PubSubARRenderer(this, publisher, ecoMeshManager);
         ecoMeshManager.configureScene();
-
-
 
         setupStreamLib();
         setupPtzPopupWindow();
@@ -290,8 +286,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             public void surfaceCreated(SurfaceHolder holder) {
                 mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
                 mStreamCameraFragment.setPlayerButtonsVisible(false);
-
-
             }
 
             @Override
@@ -432,7 +426,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                mConfigReader.getSessionState(mTeleconsultation.getLastSession().getId(),
+                mRESTClient.getSessionState(mTeleconsultation.getLastSession().getId(),
                     accessToken,
                     new Listener<JSONObject>() {
                         @Override

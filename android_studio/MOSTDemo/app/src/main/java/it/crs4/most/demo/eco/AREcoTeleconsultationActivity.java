@@ -158,7 +158,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mConfigReader = new RESTClient(this, configServerIP, configServerPort);
+        mRESTClient = new RESTClient(this, configServerIP, configServerPort);
 //        init();
         setTeleconsultationState(TeleconsultationState.IDLE);
         Intent i = getIntent();

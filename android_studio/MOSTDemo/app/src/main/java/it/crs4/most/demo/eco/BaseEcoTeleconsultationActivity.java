@@ -52,7 +52,7 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected boolean accountRegistered = false;
 
     protected Teleconsultation teleconsultation;
-    protected RESTClient mConfigReader;
+    protected RESTClient mRESTClient;
 
     protected abstract void notifyTeleconsultationStateChanged();
 
@@ -85,26 +85,26 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
     protected void closeSession() {
         //TODO: think of putting this in the TeleconsultationSetupActivity
         final String accessToken = QuerySettings.getAccessToken(this);
-        mConfigReader.closeSession(teleconsultation.getLastSession().getId(),
+        mRESTClient.closeSession(teleconsultation.getLastSession().getId(),
             accessToken,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject sessionData) {
-                    mConfigReader.closeTeleconsultation(
-                        teleconsultation.getId(),
-                        accessToken,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-                        });
+//                    mRESTClient.closeTeleconsultation(
+//                        teleconsultation.getId(),
+//                        accessToken,
+//                        new Response.Listener<JSONObject>() {
+//                            @Override
+//                            public void onResponse(JSONObject response) {
+//
+//                            }
+//                        },
+//                        new Response.ErrorListener() {
+//                            @Override
+//                            public void onErrorResponse(VolleyError error) {
+//
+//                            }
+//                        });
                     Log.d(TAG, "Session closed: " + sessionData);
                 }
             },
