@@ -96,7 +96,7 @@ class Teleconsultation(models.Model):
 
     TELECONSULTATION_STATE = (
         ('NEW', 'New Teleconsultation'), #Created from applicant
-        ('OPEN', 'At Least one Session Open - (SESSION WAITING STATE'),
+        ('OPEN', 'At Least one Session Open - (SESSION WAITING STATE)'),
         ('ACTIVE', 'Last Session in progress'),
         ('CLOSE', 'Last Session is closed')
     )
@@ -128,7 +128,8 @@ class Teleconsultation(models.Model):
             'description': self.description,
             'created': calendar.timegm(self.created.timetuple()),
             'severity': self.severity,
-            'applicant' : { 'username' : self.applicant.get_full_name() , 'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
+            'applicant' : { 'firstname': self.applicant.first_name, 'lastname': self.applicant.last_name,
+                'username' : self.applicant.username , 'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
             'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() ,
                                          'voip_data' : None if len(self.specialist.account_set.all())<1  else self.specialist.account_set.all()[0].json_dict}
         }
@@ -148,7 +149,9 @@ class Teleconsultation(models.Model):
             'uuid': self.uuid,
             'description': self.description,
             'task_group': self.task_group.json_dict,
-            'applicant' : { 'username' : self.applicant.get_full_name() , 'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
+            'applicant' : { 'firstname': self.applicant.first_name, 'lastname': self.applicant.last_name,
+                            'username' : self.applicant.username,
+                            'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
             'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() ,
                                          'voip_data' : None if len(self.specialist.account_set.all())<1  else self.specialist.account_set.all()[0].json_dict}
         }

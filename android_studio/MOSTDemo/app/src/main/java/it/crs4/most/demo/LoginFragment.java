@@ -78,7 +78,7 @@ public class LoginFragment extends Fragment {
         mUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
         mUsernameSpinner.setAdapter(mUsersAdapter);
 
-        if (isEco()) {
+        if (QuerySettings.isEcographist(getActivity())) {
             mPasswordText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
             mPasswordText.setHint(R.string.lbl_enter_passcode);
             mPasswordText.addTextChangedListener(new TextWatcher() {
@@ -180,7 +180,9 @@ public class LoginFragment extends Fragment {
     private void retrieveAccessToken(String password) {
         User selectedUser = (User) mUsernameSpinner.getSelectedItem();
         String username = selectedUser.getUsername();
-        String grantType = isEco() ? RESTClient.GRANT_TYPE_PINCODE : RESTClient.GRANT_TYPE_PASSWORD;
+        String grantType = QuerySettings.isEcographist(getActivity()) ?
+            RESTClient.GRANT_TYPE_PINCODE :
+            RESTClient.GRANT_TYPE_PASSWORD;
 
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override

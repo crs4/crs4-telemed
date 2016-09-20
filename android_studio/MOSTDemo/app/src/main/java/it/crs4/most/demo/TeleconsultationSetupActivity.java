@@ -75,7 +75,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         if (requestCode == EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST ||
             requestCode == SpecTeleconsultationActivity.TELECONSULT_ENDED_REQUEST) {
             if (resultCode == RESULT_OK) {
-                mTeleconsultationSetup = null;
                 finish();
             }
         }
@@ -93,7 +92,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 
     public void nextStep() {
         int newItem = mVpPager.getCurrentItem() + 1;
-        Log.d(TAG, "NEW ITEM: " + newItem + " PAGER CHILD: " + mVpPager.getChildCount());
         if (newItem >= mVpPager.getChildCount()) {
             startTeleconsultationActivity(mTeleconsultationSetup.getTeleconsultation());
         }
@@ -111,10 +109,10 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         mTcController.startTeleconsultationActivity(this, teleconsultation);
     }
 
-    public static class CustomPagerAdapter extends FragmentStatePagerAdapter {
+    private static class CustomPagerAdapter extends FragmentStatePagerAdapter {
         private TeleconsultationSetupActivity act;
 
-        public CustomPagerAdapter(TeleconsultationSetupActivity outerRef, FragmentManager fragmentManager) {
+        CustomPagerAdapter(TeleconsultationSetupActivity outerRef, FragmentManager fragmentManager) {
             super(fragmentManager);
             act = new WeakReference<>(outerRef).get();
         }

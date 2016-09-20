@@ -57,6 +57,18 @@ public class QuerySettings {
         storeItem(context, ACCESS_TOKEN, accessToken);
     }
 
+    public static boolean isEcographist(Context context) {
+        String role = QuerySettings.getRole(context);
+        String[] roles = context.getResources().getStringArray(R.array.roles_entries_values);
+        return role.equals(roles[0]);
+    }
+
+    public static boolean isSpecialist(Context context) {
+        String role = QuerySettings.getRole(context);
+        String[] roles = context.getResources().getStringArray(R.array.roles_entries_values);
+        return role.equals(roles[1]);
+    }
+
 }
 
 

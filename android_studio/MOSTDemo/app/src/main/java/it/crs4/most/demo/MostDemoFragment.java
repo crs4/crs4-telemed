@@ -27,17 +27,12 @@ public class MostDemoFragment extends Fragment {
 
     private static final String TAG = "MostDemoFragment";
     private String mServerIP;
-    private int mServerPort;
     private String mTaskGroup;
     private String mRole;
     private TextView mMsgText;
-    private String mAccessToken;
-    private String mUser;
     private LinearLayout mNewTeleFrame;
     private LinearLayout mSearchTeleFrame;
     private MenuItem mLoginMenuItem;
-    private ImageButton mNewTeleButton;
-    private ImageButton mSearchTeleButton;
 
     public MostDemoFragment() {
         // Required empty public constructor
@@ -59,17 +54,17 @@ public class MostDemoFragment extends Fragment {
         mMsgText = (TextView) v.findViewById(R.id.msg_text);
 
         mNewTeleFrame = (LinearLayout) v.findViewById(R.id.new_teleconsultation_frame);
-        mNewTeleButton = (ImageButton) v.findViewById(R.id.new_teleconsultation_button);
-        mNewTeleButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton newTeleButton = (ImageButton) v.findViewById(R.id.new_teleconsultation_button);
+        newTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchTeleconsultationSetupActivity();
             }
         });
 
-        mSearchTeleFrame = (LinearLayout) v.findViewById(R.id.old_teleconsultation_frame);
-        mSearchTeleButton = (ImageButton) v.findViewById(R.id.old_teleconsultation_button);
-        mSearchTeleButton.setOnClickListener(new View.OnClickListener() {
+        mSearchTeleFrame = (LinearLayout) v.findViewById(R.id.search_teleconsultation_frame);
+        ImageButton searchTeleButton = (ImageButton) v.findViewById(R.id.search_teleconsultation_button);
+        searchTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchTeleconsultationSetupActivity();
@@ -77,7 +72,7 @@ public class MostDemoFragment extends Fragment {
         });
 
         mServerIP = QuerySettings.getConfigServerAddress(getActivity());
-        mServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
+        int serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
         mRole = QuerySettings.getRole(getActivity());
 
@@ -88,9 +83,8 @@ public class MostDemoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (checkSettings()) {
-            mUser = QuerySettings.getUser(getActivity());
-            mAccessToken = QuerySettings.getAccessToken(getActivity());
-            Log.d(TAG, "Access token is: " + mAccessToken);
+            String accessToken = QuerySettings.getAccessToken(getActivity());
+            Log.d(TAG, "Access token is: " + accessToken);
             updateLoginState();
         }
         else {
@@ -146,7 +140,9 @@ public class MostDemoFragment extends Fragment {
 
     private void updateLoginState() {
         if (isLoggedIn()) {
-            mNewTeleFrame.setVisibility(View.VISIBLE);
+            if (QuerySettings.isEcographist(getActivity())) {  //
+                mNewTeleFrame.setVisibility(View.VISIBLE);
+            }
             mSearchTeleFrame.setVisibility(View.VISIBLE);
             setTextMessage(null);
         }

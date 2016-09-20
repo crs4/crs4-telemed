@@ -17,12 +17,14 @@ public class Teleconsultation implements Serializable {
     private String mId;
     private String mDescription;
     private String mSeverity;
+    private User mApplicant;
     private TeleconsultationSession mSession;
 
-    public Teleconsultation(String id, String description, String severity) {
+    public Teleconsultation(String id, String description, String severity, User applicant) {
         mId = id;
         mDescription = description;
         mSeverity = severity;
+        mApplicant = applicant;
     }
 
     public String getId() {
@@ -45,22 +47,32 @@ public class Teleconsultation implements Serializable {
         mSession = session;
     }
 
+    public User getApplicant() {
+        return mApplicant;
+    }
+
+    public void setApplicant(User applicant) {
+        mApplicant = applicant;
+    }
+
     public static Teleconsultation fromJSON(Context context, JSONObject teleconsultationData,
                                             String role) throws TeleconsultationException {
         String id;
         String description;
         String severity;
-
+        User applicant;
         try {
             id = teleconsultationData.getString("uuid");
             severity = teleconsultationData.getString("severity");
             description = teleconsultationData.getString("description");
+            Log.d(TAG, teleconsultationData.getJSONObject("applicant").toString());
+            applicant = User.fromJSON(teleconsultationData.getJSONObject("applicant"));
         }
         catch (JSONException e) {
             throw new TeleconsultationException();
         }
 
-        Teleconsultation t = new Teleconsultation(id, description, severity);
+        Teleconsultation t = new Teleconsultation(id, description, severity, applicant);
         try {
             JSONObject lastSessionData = teleconsultationData.getJSONObject("last_session");
             TeleconsultationSession lastSession = TeleconsultationSession.fromJSON(context, lastSessionData, role);

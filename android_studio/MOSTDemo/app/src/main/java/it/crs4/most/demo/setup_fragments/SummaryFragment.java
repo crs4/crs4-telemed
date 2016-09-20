@@ -126,7 +126,7 @@ public class SummaryFragment extends SetupFragment {
                             String uuid = tcData.getJSONObject("data").
                                 getJSONObject("teleconsultation").
                                 getString("uuid");
-                            Teleconsultation t = new Teleconsultation(uuid, description, severity);
+                            Teleconsultation t = new Teleconsultation(uuid, description, severity, null);
 
                             createTeleconsultationSession(t);
                         }

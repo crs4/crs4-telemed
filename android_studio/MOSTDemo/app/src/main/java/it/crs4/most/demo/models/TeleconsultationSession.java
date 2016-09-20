@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.voip.Utils;
 
@@ -22,9 +23,7 @@ public class TeleconsultationSession implements Serializable {
     private Room mRoom;
     private Context mContext;
 
-    //TODO: Should have also the room in the constructor
-    public TeleconsultationSession(String id, String specAppAddress,
-                                   TeleconsultationSessionState state, Room room) {
+    public TeleconsultationSession(String id, String specAppAddress, TeleconsultationSessionState state, Room room) {
         mId = id;
         mSpecAppAddress = specAppAddress;
         mSessionState = state;
@@ -45,9 +44,8 @@ public class TeleconsultationSession implements Serializable {
         String onHoldSoundPath;
         String incomingCallPath;
         String onOutcomingCallPath;
-//        String[] mRoles = mContext.getResources().getStringArray(R.array.roles_entries_values);
 
-        if (role.equals("eco_role")) {   //TODO: should not be hardwired
+        if (QuerySettings.isEcographist(context)) {
             localUser = "applicant";
             remoteUser = "specialist";
             paramName = "specExtension";

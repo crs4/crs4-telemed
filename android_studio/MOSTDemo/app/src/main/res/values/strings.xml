@@ -2,17 +2,11 @@
 <resources>
 
     <string name="app_name">MOST Demo</string>
-    <string name="login_user">Username:</string>
-    <string name="login_password">Password:</string>
     <string name="login">Login</string>
-
-    <string name="lbl_ip_address">Ip Address</string>
     <string name="lbl_enter_passcode">Enter your passcode…</string>
     <string name="lbl_enter_password">Enter your password…</string>
-    <string name="lbl_patients_title">Patient</string>
-    <string name="lbl_teleconsultation_title">Teleconsultation</string>
+    <string name="lbl_patients">Patient</string>
 
-    <string name="title_activity_waiting">WaitingActivity</string>
     <string name="action_call">Call</string>
     <string name="action_exit">Exit</string>
     <string name="title_activity_teleconsultation">TeleconsultationActivity</string>
@@ -72,7 +66,8 @@
         <item>spec_role</item>
     </string-array>
     <string-array name="urgency_values">
-        <item>LOW</item> , , ,
+        <item>LOW</item>
+        , , ,
         <item>NORMAL</item>
         <item>URGENT</item>
     </string-array>
@@ -94,5 +89,6 @@
     <string name="back">Back</string>
     <string name="next">Continue</string>
     <string name="urgency">Urgency</string>
+    <string name="empty_teleconsultation_list">There\'s no teleconsultation requests</string>
 
 </resources>
