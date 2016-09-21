@@ -106,7 +106,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
             @Override
             public void run() {
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 10000);
-                mRESTClient.getTeleconsultationsByTaskgroup(
+                mRESTClient.getWaitingTeleconsultationsByTaskgroup(
                     taskGroup,
                     accessToken,
                     new Response.Listener<JSONObject>() {

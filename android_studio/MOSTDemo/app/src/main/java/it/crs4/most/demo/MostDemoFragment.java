@@ -17,6 +17,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONObject;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +36,8 @@ public class MostDemoFragment extends Fragment {
     private String mRole;
     private TextView mMsgText;
     private LinearLayout mNewTeleFrame;
-    private LinearLayout mSearchTeleFrame;
+    private LinearLayout mContinueTeleFrame;
+    private LinearLayout mSearchTeleframe;
     private MenuItem mLoginMenuItem;
 
     public MostDemoFragment() {
@@ -58,24 +64,45 @@ public class MostDemoFragment extends Fragment {
         newTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchTeleconsultationSetupActivity();
+                launchTeleconsultationSetupActivity(TeleconsultationSetupActivity.ACTION_NEW_TELE);
             }
         });
 
-        mSearchTeleFrame = (LinearLayout) v.findViewById(R.id.search_teleconsultation_frame);
-        ImageButton searchTeleButton = (ImageButton) v.findViewById(R.id.search_teleconsultation_button);
-        searchTeleButton.setOnClickListener(new View.OnClickListener() {
+        mContinueTeleFrame = (LinearLayout) v.findViewById(R.id.continue_teleconsultation_frame);
+        ImageButton continueTeleButton = (ImageButton) v.findViewById(R.id.continue_teleconsultation_button);
+        continueTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchTeleconsultationSetupActivity();
+//                launchTeleconsultationSetupActivity(TeleconsultationSetupActivity.ACTION_CONTINUE_TELE);
+            }
+        });
+
+        mSearchTeleframe = (LinearLayout) v.findViewById(R.id.search_teleconsultation_frame);
+        ImageButton mSearchTeleButton = (ImageButton) v.findViewById(R.id.search_teleconsultation_button);
+        mSearchTeleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTeleconsultationSetupActivity(TeleconsultationSetupActivity.ACTION_NEW_TELE);
             }
         });
 
         mServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
+        String accessToken = QuerySettings.getAccessToken(getActivity());
         mRole = QuerySettings.getRole(getActivity());
+        RESTClient restClient = new RESTClient(getActivity(), mServerIP, serverPort);
+        restClient.getOpenedTeleconsultationsByTaskgroup(mTaskGroup, accessToken, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, "OPENED: " + response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
+            }
+        });
         return v;
     }
 
@@ -142,13 +169,17 @@ public class MostDemoFragment extends Fragment {
         if (isLoggedIn()) {
             if (QuerySettings.isEcographist(getActivity())) {  //
                 mNewTeleFrame.setVisibility(View.VISIBLE);
+                mContinueTeleFrame.setVisibility(View.VISIBLE);
             }
-            mSearchTeleFrame.setVisibility(View.VISIBLE);
+            else {
+                mSearchTeleframe.setVisibility(View.VISIBLE);
+            }
             setTextMessage(null);
         }
         else {
+            mSearchTeleframe.setVisibility(View.VISIBLE);
             mNewTeleFrame.setVisibility(View.GONE);
-            mSearchTeleFrame.setVisibility(View.GONE);
+            mContinueTeleFrame.setVisibility(View.GONE);
             setTextMessage(getString(R.string.login_instructions));
         }
         setLoginButton();
@@ -199,8 +230,11 @@ public class MostDemoFragment extends Fragment {
         return QuerySettings.getAccessToken(getActivity()) != null;
     }
 
-    private void launchTeleconsultationSetupActivity() {
+    private void launchTeleconsultationSetupActivity(String action) {
         Intent i = new Intent(getActivity(), TeleconsultationSetupActivity.class);
+        Bundle args = new Bundle();
+        args.putString(TeleconsultationSetupActivity.ACTION_ARG, action);
+        i.putExtras(args);
         startActivity(i);
     }
 

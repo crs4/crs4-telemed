@@ -25,6 +25,10 @@ import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
 
 public class TeleconsultationSetupActivity extends AppCompatActivity {
+    public static final String ACTION_ARG = "it.crs4.most.demo.action";
+    public static final String ACTION_NEW_TELE = "it.crs4.most.demo.action_new_tele";
+    public static final String ACTION_CONTINUE_TELE = "it.crs4.most.demo.action_continue_tele";
+
     private static final String TELECONSULTATION_SETUP = "it.crs4.most.demo.teleconsultation_setup";
     private static final String TAG = "TeleconsultSetupAct";
 
@@ -36,7 +40,6 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.teleconsultation_setup_activity);
-
         try {
             mTeleconsultationSetup = (TeleconsultationSetup) savedInstanceState.getSerializable(TELECONSULTATION_SETUP);
         }
@@ -44,7 +47,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
             mTeleconsultationSetup = new TeleconsultationSetup();
         }
         mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
-        mSetupFragments = mTcController.getFragments(mTeleconsultationSetup);
+        String action = getIntent().getExtras().getString(ACTION_ARG);
+        mSetupFragments = mTcController.getFragments(mTeleconsultationSetup, action);
         for(SetupFragment f: mSetupFragments) {
             f.addEventListener(new SetupFragment.StepEventListener() {
                 @Override

@@ -20,9 +20,11 @@
 
     <LinearLayout
         android:id="@+id/new_teleconsultation_frame"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
@@ -46,12 +48,38 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/search_teleconsultation_frame"
-        android:layout_width="wrap_content"
+        android:id="@+id/continue_teleconsultation_frame"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignTop="@+id/new_teleconsultation_frame"
         android:layout_toEndOf="@+id/new_teleconsultation_frame"
         android:layout_toRightOf="@+id/new_teleconsultation_frame"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/continue_teleconsultation_button"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="start"
+            android:background="@drawable/circle_button"
+            android:contentDescription="@string/continue_teleconsultation"
+            android:src="@drawable/search_large"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:clickable="false"
+            android:gravity="center"
+            android:text="@string/continue_teleconsultation"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_teleconsultation_frame"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
@@ -70,7 +98,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:clickable="false"
-            android:text="@string/search_teleconsultation"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:text="@string/search_teleconsultation"/>
     </LinearLayout>
+
 </RelativeLayout>

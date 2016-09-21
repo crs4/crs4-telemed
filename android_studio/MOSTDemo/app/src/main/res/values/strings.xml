@@ -83,6 +83,7 @@
     <string name="logout">Logout</string>
     <string name="new_teleconsultation">New\nTeleconsultation</string>
     <string name="search_teleconsultation">Search\nTeleconsultation</string>
+    <string name="continue_teleconsultation">Continue\nTeleconsultation</string>
     <string name="teleconsultation_setup">Teleconsultation Setup</string>
     <string name="confirm">Confirm</string>
     <string name="urgency_and_room_selection_title">Urgency and Room selection</string>

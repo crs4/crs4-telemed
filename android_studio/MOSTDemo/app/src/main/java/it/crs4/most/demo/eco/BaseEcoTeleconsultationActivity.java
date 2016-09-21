@@ -90,21 +90,21 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject sessionData) {
-//                    mRESTClient.closeTeleconsultation(
-//                        teleconsultation.getId(),
-//                        accessToken,
-//                        new Response.Listener<JSONObject>() {
-//                            @Override
-//                            public void onResponse(JSONObject response) {
-//
-//                            }
-//                        },
-//                        new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//
-//                            }
-//                        });
+                    mRESTClient.closeTeleconsultation(
+                        teleconsultation.getId(),
+                        accessToken,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        });
                     Log.d(TAG, "Session closed: " + sessionData);
                 }
             },

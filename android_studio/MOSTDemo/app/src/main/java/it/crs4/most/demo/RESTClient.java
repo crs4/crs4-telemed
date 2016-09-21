@@ -90,10 +90,18 @@ public class RESTClient {
         addRequest(req);
     }
 
-    public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
-                                                Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
+    public void getWaitingTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
+                                                       Response.Listener<JSONObject> listener,
+                                                       Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/today/waiting/?access_token=%s", mUrlPrefix, accessToken);
+        JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
+        addRequest(postReq);
+    }
+
+    public void getOpenedTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
+                                                       Response.Listener<JSONObject> listener,
+                                                       Response.ErrorListener errorListener) {
+        String uri = String.format("%steleconsultation/today/open/?access_token=%s", mUrlPrefix, accessToken);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(postReq);
     }
