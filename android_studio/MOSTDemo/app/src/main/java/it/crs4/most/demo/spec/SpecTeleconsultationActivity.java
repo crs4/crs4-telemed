@@ -67,8 +67,10 @@ import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
+import it.crs4.most.visualization.augmentedreality.mesh.Cube;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
+import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
@@ -161,12 +163,21 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         Thread pubThread = new Thread(publisher);
         pubThread.start();
 
+        float [] redColor = new float []{
+                0, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f
+        };
+
         Arrow cameraArrow = new Arrow("arrow");
         cameraArrow.setMarker("single;Data/hiro.patt;80");
-        Arrow ecoArrow = new Arrow(ECO_ARROW_ID, 0.005f);
+        Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
         ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
         ecoArrow.setxLimits(-1f, 1f);
         ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
+        ecoArrow.setColors(redColor);
         cameraMeshManager.addMesh(cameraArrow);
         ecoMeshManager.addMesh(ecoArrow);
 

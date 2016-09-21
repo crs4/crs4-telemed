@@ -10,6 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ConfigurationInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -44,7 +48,9 @@ import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
+import it.crs4.most.visualization.augmentedreality.mesh.Cube;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
+import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
@@ -53,7 +59,7 @@ import jp.epson.moverio.bt200.DisplayControl;
 
 
 public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity implements
-    CameraEventListener {
+    CameraEventListener, SensorEventListener {
     protected static final String TAG = "LocalARActivity";
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
@@ -65,6 +71,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private boolean arInitialized = false;
     private boolean arEnabled = false;
     private ZMQSubscriber subscriber;
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    protected float accX, accY, accZ;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
@@ -81,6 +90,18 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         }
     };
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        accX = event.values[0];
+        accY = event.values[1];
+        accZ = event.values[2];
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 
 
     public static class RemoteControlReceiver extends BroadcastReceiver {
@@ -174,6 +195,14 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         Thread subThread = new Thread(subscriber);
         subThread.start();
 
+        float [] redColor = new float []{
+                0, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f
+        };
+
         Arrow arrow = new Arrow("arrow");
         arrow.setMarker("single;Data/hiro.patt;80");
         meshManager.addMesh(arrow);
@@ -181,8 +210,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        arrow2.setMarker("single;Data/kanji.patt;80");
 //        meshManager.addMesh(arrow2);
 
-        Arrow ecoArrow = new Arrow("ecoArrow");
+        Pyramid ecoArrow = new Pyramid(5f, 5f, 5f, "ecoArrow");
         ecoArrow.setMarker("multi;Data/multi/markers.dat");
+        ecoArrow.setColors(redColor);
         meshManager.addMesh(ecoArrow);
 
 
@@ -194,6 +224,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             renderer = new PubSubARRenderer(this,  meshManager);
         }
         renderer.setEnabled(arEnabled);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
     }
 
     @Override
@@ -286,6 +319,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         if (this.glView != null) {
             this.glView.onResume();
         }
+
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -298,6 +333,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         this.mainLayout.removeView(this.glView);
         this.mainLayout.removeView(this.preview);
         unregisterReceiver(broadcastReceiver);
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -378,17 +414,15 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             arInitialized = true;
         }
 
-        if(renderer.isEnabled()){
+        final float accLimit = 0.03f;
+        if(renderer.isEnabled() && (accX > accLimit || accY > accLimit|| accZ > accLimit)){
             if (ARToolKit.getInstance().convertAndDetect(frame)) {
-
                 if (this.glView != null) {
                     this.glView.requestRender();
                 }
                 this.onFrameProcessed();
             }
         }
-
-
     }
 
     public void onFrameProcessed() {
