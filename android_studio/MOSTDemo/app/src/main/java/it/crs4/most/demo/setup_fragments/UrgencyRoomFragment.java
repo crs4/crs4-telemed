@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
+import it.crs4.most.demo.ResponseHandlerDecorator;
 import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Room;
@@ -54,7 +55,6 @@ public class UrgencyRoomFragment extends SetupFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-//        View v = inflater.inflate(R.layout.urgency_room_fragment, container, false);
         setupUrgencySpinner(v);
         setupRoomSpinner(v);
         Button confirmButton = (Button) v.findViewById(R.id.confirm_button);
@@ -99,7 +99,8 @@ public class UrgencyRoomFragment extends SetupFragment {
     private void setupRoomSpinner(View view) {
         mRoomSpinner = (Spinner) view.findViewById(R.id.room_spinner);
         String accessToken = QuerySettings.getAccessToken(getActivity());
-        mRESTClient.getRooms(accessToken,
+
+        Response.Listener<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject roomsData) {
@@ -128,7 +129,11 @@ public class UrgencyRoomFragment extends SetupFragment {
                     adapter.setDropDownViewResource(R.layout.spinner_dropdown);
                     mRoomSpinner.setAdapter(adapter);
                 }
-            },
+            });
+
+
+        mRESTClient.getRooms(accessToken,
+            listener,
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError arg0) {

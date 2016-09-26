@@ -1,6 +1,8 @@
 package it.crs4.most.demo;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,6 +19,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONObject;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,18 +33,18 @@ import android.widget.TextView;
 public class MostDemoFragment extends Fragment {
 
     private static final String TAG = "MostDemoFragment";
+    private static final String LOGIN_VALID = "it.crs4.most.demo.login_valid";
     private String mServerIP;
-    private int mServerPort;
     private String mTaskGroup;
     private String mRole;
     private TextView mMsgText;
-    private String mAccessToken;
-    private String mUser;
     private LinearLayout mNewTeleFrame;
-    private LinearLayout mSearchTeleFrame;
+    private LinearLayout mContinueTeleFrame;
+    private LinearLayout mSearchTeleframe;
     private MenuItem mLoginMenuItem;
-    private ImageButton mNewTeleButton;
-    private ImageButton mSearchTeleButton;
+    private RESTClient mRestClient;
+    private String mAccessToken;
+    private ProgressDialog mProgress;
 
     public MostDemoFragment() {
         // Required empty public constructor
@@ -51,6 +58,12 @@ public class MostDemoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mServerIP = QuerySettings.getConfigServerAddress(getActivity());
+        int serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
+        mTaskGroup = QuerySettings.getTaskGroup(getActivity());
+        mAccessToken = QuerySettings.getAccessToken(getActivity());
+        mRole = QuerySettings.getRole(getActivity());
+        mRestClient = new RESTClient(getActivity(), mServerIP, serverPort);
     }
 
     @Override
@@ -59,27 +72,31 @@ public class MostDemoFragment extends Fragment {
         mMsgText = (TextView) v.findViewById(R.id.msg_text);
 
         mNewTeleFrame = (LinearLayout) v.findViewById(R.id.new_teleconsultation_frame);
-        mNewTeleButton = (ImageButton) v.findViewById(R.id.new_teleconsultation_button);
-        mNewTeleButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton newTeleButton = (ImageButton) v.findViewById(R.id.new_teleconsultation_button);
+        newTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchTeleconsultationSetupActivity();
+                launchTeleconsultationSetupActivity(TeleconsultationSetupActivity.ACTION_NEW_TELE);
             }
         });
 
-        mSearchTeleFrame = (LinearLayout) v.findViewById(R.id.old_teleconsultation_frame);
-        mSearchTeleButton = (ImageButton) v.findViewById(R.id.old_teleconsultation_button);
+        mContinueTeleFrame = (LinearLayout) v.findViewById(R.id.continue_teleconsultation_frame);
+        ImageButton continueTeleButton = (ImageButton) v.findViewById(R.id.continue_teleconsultation_button);
+        continueTeleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                launchTeleconsultationSetupActivity(TeleconsultationSetupActivity.ACTION_CONTINUE_TELE);
+            }
+        });
+
+        mSearchTeleframe = (LinearLayout) v.findViewById(R.id.search_teleconsultation_frame);
+        ImageButton mSearchTeleButton = (ImageButton) v.findViewById(R.id.search_teleconsultation_button);
         mSearchTeleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchTeleconsultationSetupActivity();
+                launchTeleconsultationSetupActivity(TeleconsultationSetupActivity.ACTION_NEW_TELE);
             }
         });
-
-        mServerIP = QuerySettings.getConfigServerAddress(getActivity());
-        mServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
-        mTaskGroup = QuerySettings.getTaskGroup(getActivity());
-        mRole = QuerySettings.getRole(getActivity());
 
         return v;
     }
@@ -87,11 +104,16 @@ public class MostDemoFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (mProgress != null) {
+            mProgress.dismiss();
+        }
         if (checkSettings()) {
-            mUser = QuerySettings.getUser(getActivity());
-            mAccessToken = QuerySettings.getAccessToken(getActivity());
-            Log.d(TAG, "Access token is: " + mAccessToken);
-            updateLoginState();
+            if (isLoggedIn() && !QuerySettings.isLoginChecked(getActivity())) {
+                checkLogin();
+            }
+            else {
+                updateLoginState();
+            }
         }
         else {
             String msgParts = "";
@@ -133,8 +155,7 @@ public class MostDemoFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.login_menu_item:
                 if (!isLoggedIn()) {
-                    Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
-                    startActivity(loginIntent);
+                    launchLoginActivity();
                 }
                 else {
                     logout();
@@ -144,23 +165,58 @@ public class MostDemoFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void checkLogin() {
+        mProgress = new ProgressDialog(getActivity());
+        mProgress.setTitle(getString(R.string.check_login_title));
+        mProgress.setMessage(getString(R.string.check_login_message));
+//        progress.setMax(10);
+        mProgress.show();
+
+        ResponseHandlerDecorator<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
+            new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                    mProgress.dismiss();
+                    QuerySettings.setLoginChecked(getActivity(), true);
+                    updateLoginState();
+                }
+            });
+
+        mRestClient.checkLogin(mAccessToken, listener, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgress.dismiss();
+            }
+        });
+    }
+
     private void updateLoginState() {
         if (isLoggedIn()) {
-            mNewTeleFrame.setVisibility(View.VISIBLE);
-            mSearchTeleFrame.setVisibility(View.VISIBLE);
+            if (QuerySettings.isEcographist(getActivity())) {  //
+                mNewTeleFrame.setVisibility(View.VISIBLE);
+                mContinueTeleFrame.setVisibility(View.VISIBLE);
+            }
+            else {
+                mSearchTeleframe.setVisibility(View.VISIBLE);
+            }
             setTextMessage(null);
         }
         else {
+            mSearchTeleframe.setVisibility(View.GONE);
             mNewTeleFrame.setVisibility(View.GONE);
-            mSearchTeleFrame.setVisibility(View.GONE);
+            mContinueTeleFrame.setVisibility(View.GONE);
             setTextMessage(getString(R.string.login_instructions));
         }
         setLoginButton();
     }
 
-    private void logout() {
+    private void deleteAuthenticationData() {
         QuerySettings.setAccessToken(getActivity(), null);
         QuerySettings.setUser(getActivity(), null);
+    }
+
+    private void logout() {
+        deleteAuthenticationData();
         updateLoginState();
     }
 
@@ -195,7 +251,6 @@ public class MostDemoFragment extends Fragment {
             else {
                 mLoginMenuItem.setEnabled(false);
             }
-
         }
     }
 
@@ -203,9 +258,17 @@ public class MostDemoFragment extends Fragment {
         return QuerySettings.getAccessToken(getActivity()) != null;
     }
 
-    private void launchTeleconsultationSetupActivity() {
+    private void launchTeleconsultationSetupActivity(String action) {
         Intent i = new Intent(getActivity(), TeleconsultationSetupActivity.class);
+        Bundle args = new Bundle();
+        args.putString(TeleconsultationSetupActivity.ACTION_ARG, action);
+        i.putExtras(args);
         startActivity(i);
     }
 
+    private void launchLoginActivity() {
+        Intent i = new Intent(getActivity(), LoginActivity.class);
+//        startActivityForResult(i, LoginFragment.LOGGED_IN_RESULT);
+        startActivity(i);
+    }
 }

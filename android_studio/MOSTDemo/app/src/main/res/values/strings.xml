@@ -2,17 +2,11 @@
 <resources>
 
     <string name="app_name">MOST Demo</string>
-    <string name="login_user">Username:</string>
-    <string name="login_password">Password:</string>
     <string name="login">Login</string>
-
-    <string name="lbl_ip_address">Ip Address</string>
     <string name="lbl_enter_passcode">Enter your passcode…</string>
     <string name="lbl_enter_password">Enter your password…</string>
-    <string name="lbl_patients_title">Patient</string>
-    <string name="lbl_teleconsultation_title">Teleconsultation</string>
+    <string name="lbl_patients">Patient</string>
 
-    <string name="title_activity_waiting">WaitingActivity</string>
     <string name="action_call">Call</string>
     <string name="action_exit">Exit</string>
     <string name="title_activity_teleconsultation">TeleconsultationActivity</string>
@@ -72,7 +66,8 @@
         <item>spec_role</item>
     </string-array>
     <string-array name="urgency_values">
-        <item>LOW</item> , , ,
+        <item>LOW</item>
+        , , ,
         <item>NORMAL</item>
         <item>URGENT</item>
     </string-array>
@@ -83,16 +78,24 @@
     <string name="select_role">role</string>
     <string name="login_instructions">Login to start a teleconsultation</string>
     <string name="cannot_contact_server">Cannot contact the server. Check your connection</string>
-    <string name="loading_users">Loading users. Please wait....</string>
+    <string name="loading_users">Loading users. Please wait…</string>
     <string name="title_activity_login_activity_prova">Sign in</string>
     <string name="logout">Logout</string>
     <string name="new_teleconsultation">New\nTeleconsultation</string>
     <string name="search_teleconsultation">Search\nTeleconsultation</string>
+    <string name="continue_teleconsultation">Continue\nTeleconsultation</string>
     <string name="teleconsultation_setup">Teleconsultation Setup</string>
     <string name="confirm">Confirm</string>
     <string name="urgency_and_room_selection_title">Urgency and Room selection</string>
     <string name="back">Back</string>
     <string name="next">Continue</string>
     <string name="urgency">Urgency</string>
+    <string name="empty_teleconsultation_list">There\'s no teleconsultation requests</string>
+    <string name="token_expired_title">Session expired</string>
+    <string name="token_expired_message">Please reinsert your password or login with another user</string>
+    <string name="load_taskgroups_title">Connection to the remote server</string>
+    <string name="load_taskgroups_message">Loading taskgroups associated to this device. Please wait…</string>
+    <string name="check_login_title">Checking login</string>
+    <string name="check_login_message">Checking if your session is still valid</string>
 
 </resources>

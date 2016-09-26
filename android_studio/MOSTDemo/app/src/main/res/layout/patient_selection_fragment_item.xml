@@ -13,7 +13,7 @@
         android:layout_marginRight="@dimen/default_edge_margin"
         android:layout_weight=".45"
         android:gravity="center_vertical"
-        android:padding="10dp"
+        android:padding="@dimen/default_edge_margin"
         android:textSize="@dimen/textview_text_size"/>
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_marginRight="@dimen/default_edge_margin"
         android:layout_weight=".55"
         android:gravity="center_vertical"
-        android:padding="10dp"
+        android:padding="@dimen/default_edge_margin"
         android:textSize="@dimen/textview_text_size"/>
 
 </LinearLayout>

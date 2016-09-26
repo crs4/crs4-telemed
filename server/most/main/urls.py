@@ -4,9 +4,10 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'mostserver.views.home', name='home'),
+urlpatterns = patterns(
+    '',
+    url(r'^authentication/', include('most.web.authentication.urls')),
+    # url(r'^authentication/test', 'most.web.authentication.views.test_auth'),
     url(r'^teleconsultation/', include('most.web.teleconsultation.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,18 +29,21 @@ import java.util.List;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
+import it.crs4.most.demo.ResponseHandlerDecorator;
 import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Teleconsultation;
 
 public class TeleconsultationSelectionFragment extends SetupFragment {
 
-    private static String TAG = "TeleconsultationSelectionFragment";
+    private static String TAG = "TeleconsultSelFragment";
     private ArrayList<Teleconsultation> mTeleconsultations;
-    private ArrayAdapter<Teleconsultation> mTcsArrayAdapter;
+    private ArrayAdapter<Teleconsultation> mAdapter;
     private RESTClient mRESTClient;
     private Runnable mGetTeleconsultationsTask;
     private Handler mGetTeleconsultationsHandler;
+    private ListView mListView;
+    private TextView mEmptyView;
 
     public static TeleconsultationSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         TeleconsultationSelectionFragment fragment = new TeleconsultationSelectionFragment();
@@ -61,12 +65,12 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        ListView listView = (ListView) view.findViewById(R.id.teleconsultation_list);
+        mListView = (ListView) view.findViewById(R.id.teleconsultation_list);
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         mTeleconsultations = new ArrayList<>();
-        mTcsArrayAdapter = new TeleconsultationAdapter(this, R.layout.teleconsultation_selection_fragment_item, mTeleconsultations);
-
-        listView.setAdapter(mTcsArrayAdapter);
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        mAdapter = new TeleconsultationAdapter(this, R.layout.teleconsultation_selection_fragment_item, mTeleconsultations);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Teleconsultation selectedTc = mTeleconsultations.get(position);
@@ -102,10 +106,8 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         mGetTeleconsultationsTask = new Runnable() {
             @Override
             public void run() {
-                mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 5000);
-                mRESTClient.getTeleconsultationsByTaskgroup(
-                    taskGroup,
-                    accessToken,
+                mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 10000);
+                ResponseHandlerDecorator listener = new ResponseHandlerDecorator<>(getActivity(),
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -128,14 +130,19 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                     }
                                     addTeleconsultation(t);
                                 }
-                                mTcsArrayAdapter.notifyDataSetChanged();
+                                mAdapter.notifyDataSetChanged();
+                                if (mTeleconsultations.size() == 0) {
+                                    mListView.setEmptyView(mEmptyView);
+                                }
                             }
                             catch (JSONException e) {
                                 Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                             }
-//                                handler.postDelayed(mGetTeleconsultationsTask, 5000);
                         }
-                    },
+                    }
+                );
+                mRESTClient.getWaitingTeleconsultationsByTaskgroup(taskGroup, accessToken,
+                    listener,
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError response) {
@@ -160,39 +167,39 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
 
     private static class TeleconsultationAdapter extends ArrayAdapter<Teleconsultation> {
 
-        public TeleconsultationAdapter(TeleconsultationSelectionFragment fragment,
-                                       int textViewId, List<Teleconsultation> objects) {
+        TeleconsultationAdapter(TeleconsultationSelectionFragment fragment,
+                                int textViewId, List<Teleconsultation> objects) {
             super(fragment.getActivity(), textViewId, objects);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getViewOptimize(position, convertView, parent);
-        }
-
-        public View getViewOptimize(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.teleconsultation_selection_fragment_item, null);
                 viewHolder = new ViewHolder();
-                viewHolder.fullName = (TextView) convertView.findViewById(R.id.text_tc_name);
-                viewHolder.id = (TextView) convertView.findViewById(R.id.text_tc_id);
+                viewHolder.description = (TextView) convertView.findViewById(R.id.text_tc_description);
+                viewHolder.applicant = (TextView) convertView.findViewById(R.id.text_tc_applicant);
+                viewHolder.urgency = (TextView) convertView.findViewById(R.id.text_tc_urgency);
                 convertView.setTag(viewHolder);
             }
             else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             Teleconsultation tc = getItem(position);
-            viewHolder.fullName.setText(tc.getDescription());
-            viewHolder.id.setText(tc.getId());
+            viewHolder.description.setText(tc.getDescription());
+            viewHolder.applicant.setText(tc.getApplicant().getFirstName() + " " + tc.getApplicant().getLastName());
+            viewHolder.urgency.setText(tc.getSeverity());
             return convertView;
         }
 
         private class ViewHolder {
-            public TextView fullName;
-            public TextView id;
+            TextView description;
+            TextView applicant;
+            TextView urgency;
         }
     }
 }

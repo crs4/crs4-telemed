@@ -1,6 +1,9 @@
 package it.crs4.most.demo.setup_fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,10 +15,15 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.EventListener;
 
+import it.crs4.most.demo.LoginActivity;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.TeleconsultationSetupActivity;
 

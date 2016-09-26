@@ -40,12 +40,12 @@ public class SettingsFragment extends PreferenceFragment {
         mTaskGroupPreference = (ListPreference) findPreference("select_task_group_preference");
 
         retrieveTaskgroups(QuerySettings.getConfigServerAddress(getActivity()),
-                QuerySettings.getConfigServerPort(getActivity()));
+            QuerySettings.getConfigServerPort(getActivity()));
         configServerAddr.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 retrieveTaskgroups(newValue.toString(),
-                        QuerySettings.getConfigServerPort(getActivity()));
+                    QuerySettings.getConfigServerPort(getActivity()));
                 preference.setSummary(newValue.toString());
                 logout();
                 return true;
@@ -56,7 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 preference.setSummary(newValue.toString());
                 retrieveTaskgroups(QuerySettings.getConfigServerAddress(getActivity()),
-                        newValue.toString());
+                    newValue.toString());
                 logout();
                 return true;
             }
@@ -67,84 +67,82 @@ public class SettingsFragment extends PreferenceFragment {
         if (addressValue == null) {
             return;
         }
-        RESTClient configReader = new RESTClient(
-                getActivity(),
-                addressValue,
-                Integer.valueOf(portValue)
+        RESTClient restClient = new RESTClient(
+            getActivity(),
+            addressValue,
+            Integer.valueOf(portValue)
         );
 
         final ProgressDialog loadingConfigDialog = new ProgressDialog(getActivity());
-        loadingConfigDialog.setTitle("Connection to the remote server");
-        loadingConfigDialog.setMessage("Loading taskgroups associated to this device. Please wait....");
-        loadingConfigDialog.setCancelable(true);
-        loadingConfigDialog.setCanceledOnTouchOutside(true);
+        loadingConfigDialog.setTitle(getString(R.string.load_taskgroups_title));
+        loadingConfigDialog.setMessage(getString(R.string.load_taskgroups_message));
         loadingConfigDialog.setMax(10);
         loadingConfigDialog.show();
 
-        configReader.getTaskgroups(
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject taskgroupsData) {
-                        try {
-                            boolean success = (taskgroupsData != null && taskgroupsData.getBoolean("success"));
-                            if (!success) {
-                                Log.e(TAG, "No valid taskgroups found for this device");
-                                loadingConfigDialog.dismiss();
+        restClient.getTaskgroups(
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject taskgroupsData) {
+                    try {
+                        boolean success = (taskgroupsData != null && taskgroupsData.getBoolean("success"));
+                        if (!success) {
+                            Log.e(TAG, "No valid taskgroups found for this device");
+                            loadingConfigDialog.dismiss();
 
-                                if (taskgroupsData.getJSONObject("error").getInt("code") == 501) {
-                                    showAlertDialog(R.string.device_not_registered);
-                                }
-                                else {
-                                    showAlertDialog(R.string.generic_taskgroup_error);
-                                }
-                                updateTaskGroupPreference();
-                                return;
+                            if (taskgroupsData.getJSONObject("error").getInt("code") == 501) {
+                                showAlertDialog(R.string.device_not_registered);
                             }
-                            JSONArray jsonTaskgroups = taskgroupsData.getJSONObject("data").getJSONArray("task_groups");
-                            CharSequence[] taskGroups = new CharSequence[jsonTaskgroups.length()];
-                            CharSequence[] taskGroupsValues = new CharSequence[jsonTaskgroups.length()];
-                            for (int i = 0; i < jsonTaskgroups.length(); i++) {
-                                taskGroups[i] = jsonTaskgroups.getJSONObject(i).getString("name");
-                                taskGroupsValues[i] = jsonTaskgroups.getJSONObject(i).getString("uuid");
+                            else {
+                                showAlertDialog(R.string.generic_taskgroup_error);
                             }
-                            mTaskGroupPreference.setEnabled(true);
-                            mTaskGroupPreference.setTitle(getString(R.string.task_group));
-                            mTaskGroupPreference.setEntries(taskGroups);
-                            mTaskGroupPreference.setEntryValues(taskGroupsValues);
-                            getPreferenceScreen().addPreference(mTaskGroupPreference);
-
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
+                            updateTaskGroupPreference();
                             return;
                         }
-                        loadingConfigDialog.dismiss();
-                    }
-                },
-                new Response.ErrorListener() {
+                        JSONArray jsonTaskgroups = taskgroupsData.getJSONObject("data").getJSONArray("task_groups");
+                        CharSequence[] taskGroups = new CharSequence[jsonTaskgroups.length()];
+                        CharSequence[] taskGroupsValues = new CharSequence[jsonTaskgroups.length()];
+                        for (int i = 0; i < jsonTaskgroups.length(); i++) {
+                            taskGroups[i] = jsonTaskgroups.getJSONObject(i).getString("name");
+                            taskGroupsValues[i] = jsonTaskgroups.getJSONObject(i).getString("uuid");
+                        }
+                        mTaskGroupPreference.setEnabled(true);
+                        mTaskGroupPreference.setTitle(getString(R.string.task_group));
+                        mTaskGroupPreference.setEntries(taskGroups);
+                        mTaskGroupPreference.setEntryValues(taskGroupsValues);
+                        getPreferenceScreen().addPreference(mTaskGroupPreference);
 
-                    @Override
-                    public void onErrorResponse(VolleyError arg0) {
-                        Log.e(TAG, "Error contacting the configuration server");
-                        loadingConfigDialog.dismiss();
-                        showAlertDialog(R.string.server_connection_error);
-                        updateTaskGroupPreference();
                     }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    loadingConfigDialog.dismiss();
                 }
+            },
+            new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError arg0) {
+                    Log.e(TAG, "Error contacting the configuration server");
+                    loadingConfigDialog.dismiss();
+                    showAlertDialog(R.string.server_connection_error);
+                    updateTaskGroupPreference();
+                }
+            }
         );
     }
 
     private void showAlertDialog(int messageResId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).
-                setIconAttribute(android.R.attr.alertDialogIcon).
-                setTitle(R.string.error).
-                setMessage(messageResId).
-                setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+            setIconAttribute(android.R.attr.alertDialogIcon).
+            setTitle(R.string.error).
+            setMessage(messageResId).
+            setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
         builder.create().show();
     }
 

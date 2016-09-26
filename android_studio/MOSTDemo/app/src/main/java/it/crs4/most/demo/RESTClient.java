@@ -11,23 +11,26 @@
 package it.crs4.most.demo;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
+import android.content.Context;
 import android.provider.Settings.Secure;
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * curl -X POST -d "client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=password&username=YOUR_USERNAME&password=YOUR_PASSWORD" http://localhost:8000/oauth2/access_token/
@@ -76,6 +79,44 @@ public class RESTClient {
         mRequestQueue.cancelAll(REQ_TAG);
     }
 
+    public void checkLogin(String accessToken, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        /**
+         * Perform a request to the server to check if the acess token is still valid
+         */
+        String uri = String.format("%sauthentication/test/?access_token=%s", mUrlPrefix, accessToken);
+//        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, uri, null, future, future);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, uri, null, listener, errorListener);
+        addRequest(request);
+
+//        try {
+//            JSONObject response = null;
+//            while (response == null) {
+//                response = future.get(30, TimeUnit.SECONDS); // Block thread, waiting for response, timeout after 30 seconds
+//            }
+//            Log.d(TAG, "RESPONSE: ");
+//            if (!response.getBoolean("success")) {
+//                int code = response.getJSONObject("data").getInt("code");
+//                if (code == RESTClient.ErrorCodes.TOKEN_EXPIRED.getValue()) {
+//                    return false;
+//                }
+//            }
+//            return true;
+//        }
+//        catch (TimeoutException e) {
+//            return false;
+//        }
+//        catch (InterruptedException e) {
+//            return false;
+//        }
+//        catch (ExecutionException e) {
+//            return false;
+//        }
+//        catch (JSONException e) {
+//            return false;
+//        }
+    }
+
     /**
      * Get the task groups associated to this specific device (i.e by its internal device id).
      * Note that the used device must be registered on the remote server
@@ -90,9 +131,17 @@ public class RESTClient {
         addRequest(req);
     }
 
-    public void getTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
-                                                Response.Listener<JSONObject> listener,
-                                                Response.ErrorListener errorListener) {
+    public void getWaitingTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
+                                                       Response.Listener<JSONObject> listener,
+                                                       Response.ErrorListener errorListener) {
+        String uri = String.format("%steleconsultation/today/waiting/?access_token=%s", mUrlPrefix, accessToken);
+        JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
+        addRequest(postReq);
+    }
+
+    public void getOpenedTeleconsultationsByTaskgroup(String taskgroupId, String accessToken,
+                                                      Response.Listener<JSONObject> listener,
+                                                      Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/today/open/?access_token=%s", mUrlPrefix, accessToken);
         JsonObjectRequest postReq = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(postReq);
@@ -102,7 +151,7 @@ public class RESTClient {
                              String accessToken,
                              Response.Listener<JSONObject> listener,
                              Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/start?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/start/?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
@@ -112,7 +161,7 @@ public class RESTClient {
                            String accessToken,
                            Response.Listener<JSONObject> listener,
                            Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/run?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/run/?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
@@ -122,7 +171,7 @@ public class RESTClient {
                              String accessToken,
                              Response.Listener<JSONObject> listener,
                              Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/close?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/close/?access_token=%s",
             mUrlPrefix, sessionId, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
@@ -300,7 +349,7 @@ public class RESTClient {
     public void joinSession(String sessionId, String accessToken, String ipAddress,
                             Response.Listener<JSONObject> listener,
                             Response.ErrorListener errorListener) {
-        String uri = String.format("%steleconsultation/session/%s/%s/join?access_token=%s",
+        String uri = String.format("%steleconsultation/session/%s/%s/join/?access_token=%s",
             mUrlPrefix, sessionId, ipAddress, accessToken);
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
@@ -325,4 +374,20 @@ public class RESTClient {
 		addRequest(postReq);
 	}
   */
+
+    public enum ErrorCodes {
+        NO_TOKEN_PROVIDED(101),
+        ACCESS_DENIED(102),
+        TOKEN_EXPIRED(103);
+
+        private int mValue;
+
+        ErrorCodes(int value) {
+            mValue = value;
+        }
+
+        public int getValue() {
+            return mValue;
+        }
+    }
 }

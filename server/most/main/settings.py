@@ -1,5 +1,7 @@
 # Django settings for mostserver project.
 import sys
+from datetime import timedelta
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -79,13 +81,14 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+OAUTH_EXPIRE_DELTA_PUBLIC = timedelta(days=1)
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -95,7 +98,7 @@ SECRET_KEY = '%ba=(@saf(fa_xnj%*xpt!z0u24b%tm#zw=x92_s!ynwyvt%vg'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (

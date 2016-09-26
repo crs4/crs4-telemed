@@ -27,8 +27,9 @@ urlpatterns = patterns('',
 
     # teleconsultation
     url(r'(?P<teleconsultation_uuid>.*)/session/create/$', "most.web.teleconsultation.views.create_new_session"),
-    #url(r'(?P<teleconsultation_uuid>.*)/close/$', "most.web.teleconsultation.views.close_teleconsultation"),
+    # url(r'(?P<teleconsultation_uuid>.*)/close/$', "most.web.teleconsultation.views.close_teleconsultation"),
     url(r'create/$', "most.web.teleconsultation.views.create_teleconsultation"),
+    url(r'today/waiting/$', "most.web.teleconsultation.views.get_waiting_teleconsultations"),
     url(r'today/open/$', "most.web.teleconsultation.views.get_open_teleconsultations"),
     url(r'today/$', "most.web.teleconsultation.views.get_teleconsultations"),
     url(r'close/(?P<teleconsultation_uuid>.*)/$', 'most.web.teleconsultation.views.close_teleconsultation'),
@@ -38,6 +39,6 @@ urlpatterns = patterns('',
     url(r'session/(?P<session_uuid>.*)/close/$', "most.web.teleconsultation.views.close_session"),
     url(r'session/(?P<session_uuid>.*)/$', "most.web.teleconsultation.views.get_session_data"),
 
-    # url(r'sessions/waiting/$', "most.web.teleconsultation.views.get_open_teleconsultations"),
+    # url(r'sessions/waiting/$', "most.web.teleconsultation.views.get_waiting_teleconsultations"),
 
 )

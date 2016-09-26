@@ -24,6 +24,7 @@ from datetime import datetime, timedelta, time
 # Get an instance of a logger
 logger = logging.getLogger('most.web.teleconsultation')
 
+
 @csrf_exempt
 def get_task_groups_for_device(request, device_uuid):
     """
@@ -40,11 +41,17 @@ def get_task_groups_for_device(request, device_uuid):
         task_groups = []
         for task_group in device.task_groups.all():
             logger.info('Append Taskgroup: %s' % task_group)
-            task_groups.append({'uuid': task_group.uuid, 'name': task_group.name, 'description': task_group.description})
-        return HttpResponse(json.dumps({'success': True, 'data': {'task_groups': task_groups}}), content_type="application/json")
+            task_groups.append(
+                {'uuid': task_group.uuid, 'name': task_group.name, 'description': task_group.description})
+        return HttpResponse(json.dumps({'success': True, 'data': {'task_groups': task_groups}}),
+                            content_type="application/json")
 
     except Device.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid device uuid', "device_uuid": device_uuid}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid device uuid',
+                                                  'device_uuid': device_uuid}}),
+                            content_type="application/json")
+
 
 @csrf_exempt
 def get_applicants_for_taskgroups(request, taskgroup_uuid):
@@ -60,13 +67,20 @@ def get_applicants_for_taskgroups(request, taskgroup_uuid):
         taskgroup = TaskGroup.objects.get(uuid=taskgroup_uuid)
         applicants = []
         for applicant in taskgroup.users.exclude(user_type='ST').exclude(user_type="TE"):
-            applicants.append({"firstname": applicant.first_name, "lastname" : applicant.last_name, "username": applicant.username})
-        return HttpResponse(json.dumps({'success': True, 'data': {'applicants': applicants}}), content_type="application/json")
+            applicants.append({'firstname': applicant.first_name,
+                               'lastname': applicant.last_name,
+                               'username': applicant.username})
+        return HttpResponse(json.dumps({'success': True, 'data': {'applicants': applicants}}),
+                            content_type="application/json")
 
     except TaskGroup.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid taskgroup uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid taskgroup uuid'}}),
+                            content_type="application/json")
+
 
 """ AUTHENTICATED APIs """
+
+
 @oauth2_required
 def get_rooms_for_taskgroup(request):
     """
@@ -82,10 +96,13 @@ def get_rooms_for_taskgroup(request):
         for room in taskgroup.rooms.all():
             rooms.append(room.full_json_dict)
 
-        return HttpResponse(json.dumps({'success': True, 'data': {'rooms': rooms}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': True, 'data': {'rooms': rooms}}),
+                            content_type="application/json")
 
     except TaskGroup.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid taskgroup uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid taskgroup uuid'}}),
+                            content_type="application/json")
 
 
 @oauth2_required
@@ -98,10 +115,14 @@ def get_room_by_uuid(request, room_uuid):
     """
     try:
         room = Room.objects.get(uuid=room_uuid)
-        return HttpResponse(json.dumps({'success': True, 'data': {'room': room.full_json_dict}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': True, 'data': {'room': room.full_json_dict}}),
+                            content_type="application/json")
 
     except Room.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid room uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid room uuid'}}),
+                            content_type="application/json")
+
 
 @oauth2_required
 @csrf_exempt
@@ -115,15 +136,17 @@ def create_teleconsultation(request):
     """
     # check parameters
     if set(['room_uuid', 'description']) > set(request.REQUEST):
-       return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'missing parameters'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'missing parameters'}}),
+                            content_type="application/json")
 
     # check and retrieve room
-    room = None
     try:
         room = Room.objects.get(uuid=request.REQUEST['room_uuid'])
-
     except Room.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 502, 'message': 'invalid room uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 502, 'message': 'invalid room uuid'}}),
+                            content_type="application/json")
 
     # make teleconsultation
     teleconsultation = Teleconsultation()
@@ -136,22 +159,27 @@ def create_teleconsultation(request):
 
     teleconsultation.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'teleconsultation' : teleconsultation.json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'teleconsultation': teleconsultation.json_dict}}),
+                        content_type="application/json")
 
 
 @oauth2_required
 @csrf_exempt
 def close_teleconsultation(request, teleconsultation_uuid):
-
     try:
         teleconsultation = Teleconsultation.objects.get(uuid=teleconsultation_uuid)
     except Teleconsultation.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}),
+                            content_type="application/json")
 
     teleconsultation.state = 'CLOSE'
     teleconsultation.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'teleconsultation' : teleconsultation.json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'teleconsultation': teleconsultation.json_dict}}),
+                        content_type="application/json")
 
 
 @oauth2_required
@@ -159,28 +187,90 @@ def close_teleconsultation(request, teleconsultation_uuid):
 def get_teleconsultations(request):
     """
     :param request:
-    :return: a list of opened teleconsultation for device task-groups
+    :return: a list of teleconsultations for device task-groups
     """
 
     today = datetime.now().date()
     tomorrow = today + timedelta(1)
     today_start = datetime.combine(today, time())
     today_end = datetime.combine(tomorrow, time())
-    today_start = datetime.combine(today, time())
 
     logging.error("Taskgroup from token: %s" % request.accesstoken.taskgroup)
 
-    teleconsultations = Teleconsultation.objects.filter(task_group=request.taskgroup, updated__lte=today_end, updated__gte=today_start)
+    teleconsultations = Teleconsultation.objects.filter(task_group=request.taskgroup, updated__lte=today_end,
+                                                        updated__gte=today_start)
 
     teleconsultation_list = []
-
     for teleconsultation in teleconsultations:
-
         teleconsultation_list.append(teleconsultation.json_dict)
 
+    result = {
+        "teleconsultations": teleconsultation_list
+    }
+    return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
+
+
+@oauth2_required
+@csrf_exempt
+def get_waiting_teleconsultations(request):
+    """
+    :param request:
+    :return: a list of today waiting teleconsultation for applicant task-groups and related applicant task-group
+    """
+
+    today = datetime.now().date()
+    tomorrow = today + timedelta(1)
+    today_end = datetime.combine(tomorrow, time())
+    today_start = datetime.combine(today, time())
+
+    taskgroups = set()
+    for taskgroup in request.user.task_group_related.all():
+        for relatedTaskgroup in taskgroup.related_task_groups.all():
+            taskgroups.add(relatedTaskgroup)  # taskgroup
+        taskgroups.add(taskgroup)  # relatedTaskgroup
+
+    logging.error("Taskgroup from token: %s" % request.accesstoken.taskgroup)
+
+    teleconsultations = Teleconsultation.objects.filter(task_group__in=taskgroups, updated__lte=today_end,
+                                                        updated__gte=today_start, state="WAITING")
+
+    teleconsultation_list = []
+    for teleconsultation in teleconsultations:
+        teleconsultation_list.append(teleconsultation.json_dict)
 
     result = {
+        "teleconsultations": teleconsultation_list
+    }
+    return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
 
+
+@oauth2_required
+@csrf_exempt
+def get_open_teleconsultations(request):
+    """
+    :param request:
+    :return: a list of today opened teleconsultation (i.e., teleconsultaions whose last sessione is closed) for
+    applicant task-groups and related applicant task-group
+    """
+
+    today = datetime.now().date()
+    tomorrow = today + timedelta(1)
+    today_end = datetime.combine(tomorrow, time())
+    today_start = datetime.combine(today, time())
+
+    taskgroups = set()
+    for taskgroup in request.user.task_group_related.all():
+        for relatedTaskgroup in taskgroup.related_task_groups.all():
+            taskgroups.add(relatedTaskgroup)  # taskgroup
+        taskgroups.add(taskgroup)  # relatedTaskgroup
+
+    teleconsultations = Teleconsultation.objects.filter(task_group__in=taskgroups, updated__lte=today_end,
+                                                        updated__gte=today_start, state="SESSION_CLOSE")
+    teleconsultation_list = []
+    for teleconsultation in teleconsultations:
+        teleconsultation_list.append(teleconsultation.json_dict)
+
+    result = {
         "teleconsultations": teleconsultation_list
     }
     return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
@@ -189,30 +279,31 @@ def get_teleconsultations(request):
 @oauth2_required
 @csrf_exempt
 def create_new_session(request, teleconsultation_uuid):
-
     import logging
     logging.error("IN CREATE NEW SESSION: %s" % teleconsultation_uuid)
     # Check and Retrieve teleconsultation
-    teleconsultation = None
     try:
         teleconsultation = Teleconsultation.objects.get(uuid=teleconsultation_uuid)
-
     except Teleconsultation.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid teleconsultation uuid'}}),
+                            content_type="application/json")
 
     # Check and Retrieve room
-    room = None
     try:
         room = Room.objects.get(uuid=request.REQUEST['room_uuid'])
-
     except Room.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 502, 'message': 'invalid room uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 502, 'message': 'invalid room uuid'}}),
+                            content_type="application/json")
 
     # Check last session state
     if teleconsultation.sessions.count() > 0:
         last_session = teleconsultation.sessions.order_by('-created')[0]
         if last_session.state != 'CLOSE':
-            return HttpResponse(json.dumps({'success': False, 'error': {'code': 503, 'message': 'invalid last session state'}}), content_type="application/json")
+            return HttpResponse(json.dumps({'success': False,
+                                            'error': {'code': 503, 'message': 'invalid last session state'}}),
+                                content_type="application/json")
 
     # Create session
     session = TeleconsultationSession()
@@ -221,156 +312,144 @@ def create_new_session(request, teleconsultation_uuid):
 
     session.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'message': 'saved', 'session': session.json_dict}}),
+                        content_type="application/json")
 
 
 @csrf_exempt
 @oauth2_required
 def start_session(request, session_uuid):
-
     # Check and Retrieve session
-    session = None
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
-
     except TeleconsultationSession.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid session uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid session uuid'}}),
+                            content_type="application/json")
 
     if session.state != "NEW":
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 502, 'message': 'invalid session state'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 502, 'message': 'invalid session state'}}),
+                            content_type="application/json")
 
     session.state = 'WAITING'
-    session.teleconsultation.state = 'OPEN'
+    session.teleconsultation.state = 'WAITING'
     session.teleconsultation.save()
     session.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'message': 'saved', 'session': session.json_dict}}),
+                        content_type="application/json")
 
 
 @csrf_exempt
 @oauth2_required
 def join_session(request, session_uuid, spec_app_address):
     # Check and Retrieve session
-    session = None
     print session_uuid
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
-        
+
     except TeleconsultationSession.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid session uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid session uuid'}}),
+                            content_type="application/json")
 
     if session.state != "WAITING":
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 502, 'message': 'invalid session state'}}), content_type="application/json")
-    
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 502, 'message': 'invalid session state'}}),
+                            content_type="application/json")
+
     try:
-        session.teleconsultation.specialist = request.user # MostUser.objects.get(uuid=request.REQUEST['specialist_uuid'])
+        session.teleconsultation.specialist = request.user  # MostUser.objects.get(uuid=request.REQUEST['specialist_uuid'])
     except Exception:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 503, 'message': 'specialist not found'}}), content_type="application/json")
-        
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 503, 'message': 'specialist not found'}}),
+                            content_type="application/json")
+
     session.spec_app_address = spec_app_address
-    print spec_app_address
     session.state = 'READY'
     session.teleconsultation.save()
     session.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.full_json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'message': 'saved', 'session': session.full_json_dict}}),
+                        content_type="application/json")
 
 
 @csrf_exempt
 @oauth2_required
 def run_session(request, session_uuid):
-   # Check and Retrieve session
-    session = None
+    # Check and Retrieve session
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
 
     except TeleconsultationSession.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid session uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid session uuid'}}),
+                            content_type="application/json")
 
     if session.state != "READY":
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 502, 'message': 'invalid session state'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 502, 'message': 'invalid session state'}}),
+                            content_type="application/json")
 
     session.state = 'RUN'
     session.teleconsultation.state = 'ACTIVE'
     session.teleconsultation.save()
     session.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.full_json_dict}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'message': 'saved', 'session': session.full_json_dict}}),
+                        content_type="application/json")
 
 
 @csrf_exempt
 @oauth2_required
 def close_session(request, session_uuid):
     # Check and Retrieve session
-    session = None
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
-
     except TeleconsultationSession.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid session uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid session uuid'}}),
+                            content_type="application/json")
 
     if session.state == "CLOSE":
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 502, 'message': 'invalid session state'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 502, 'message': 'invalid session state'}}),
+                            content_type="application/json")
 
     session.state = 'CLOSE'
+    session.teleconsultation.state = 'SESSION_CLOSE'
+    session.teleconsultation.save()
     session.save()
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.json_dict}}), content_type="application/json")    
-    
-    
+    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'saved', 'session': session.json_dict}}),
+                        content_type="application/json")
+
+
 @csrf_exempt
 @oauth2_required
 def get_session_data(request, session_uuid):
-
     # Check and Retrieve session
-    session = None
     try:
         logger.info('SESSION UUID: %s' % session_uuid)
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
         logger.info('SESSION RECOVERED: %s' % session)
     except TeleconsultationSession.DoesNotExist:
-        return HttpResponse(json.dumps({'success': False, 'error': {'code': 501, 'message': 'invalid session uuid'}}), content_type="application/json")
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid session uuid'}}),
+                            content_type="application/json")
 
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'retrieved', 'session': session.json_dict}}), content_type="application/json")
-
-
-@oauth2_required
-def get_open_teleconsultations(request):
-
-    """
-    :param request:
-    :return: a list of today opened teleconsultation for applicant task-groups and related applicant task-group
-    """
-
-    today = datetime.now().date()
-    tomorrow = today + timedelta(1)
-    today_start = datetime.combine(today, time())
-    today_end = datetime.combine(tomorrow, time())
-    today_start = datetime.combine(today, time())
-
-    taskgroups = set()
-    for taskgroup in request.user.task_group_related.all():
-        for relatedTaskgroup in taskgroup.related_task_groups.all():
-            taskgroups.add(relatedTaskgroup) # taskgroup
-
-        taskgroups.add(taskgroup) # relatedTaskgroup
-
-    logging.error("Taskgroup from token: %s" % request.accesstoken.taskgroup)
-
-    teleconsultations = Teleconsultation.objects.filter(task_group__in=taskgroups, updated__lte=today_end, updated__gte=today_start, state="OPEN")
-    
-    teleconsultation_list = []
-    for teleconsultation in teleconsultations:
-        teleconsultation_list.append(teleconsultation.json_dict)
-
-
-    result = {
-        "teleconsultations": teleconsultation_list
-    }
-    return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'message': 'retrieved', 'session': session.json_dict}}),
+                        content_type="application/json")
 
 
 @oauth2_required
 def test(request):
-
-    return HttpResponse(json.dumps({'success': True, 'data': {'message': 'Hello Teleconsultation'}}), content_type="application/json")
+    return HttpResponse(json.dumps({'success': True,
+                                    'data': {'message': 'Hello Teleconsultation'}}),
+                        content_type="application/json")

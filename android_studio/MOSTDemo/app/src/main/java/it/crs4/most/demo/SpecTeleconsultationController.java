@@ -22,7 +22,7 @@ public class SpecTeleconsultationController extends TeleconsultationController {
     private static final String TAG = "SpecTeleconsultSetup";
 
     @Override
-    public SetupFragment[] getFragments(TeleconsultationSetup teleconsultationSetup) {
+    public SetupFragment[] getFragments(TeleconsultationSetup teleconsultationSetup, String action) {
         return new SetupFragment[]{
             TeleconsultationSelectionFragment.newInstance(teleconsultationSetup)
         };
