@@ -14,14 +14,11 @@ public class User implements Serializable {
     private String mUsername = null;
     private String mFirstName = null;
     private String mLastName = null;
-    private String mAccessToken = null;
-    private String mTaskGroup = null;
 
-    public User(String firstName, String lastName, String username, String taskGroup) {
+    public User(String firstName, String lastName, String username) {
         mFirstName = firstName;
         mLastName = lastName;
         mUsername = username;
-        mTaskGroup = taskGroup;
     }
 
     public String getFirstName() {
@@ -40,37 +37,33 @@ public class User implements Serializable {
         return mUsername;
     }
 
-    public void setTaskGroup(String taskGroup) {
-        mTaskGroup = taskGroup;
+    public static User fromJSON(JSONObject userData) throws TeleconsultationException {
+        try {
+            String firstname = userData.getString("firstname");
+            String lastname = userData.getString("lastname");
+            String username = userData.getString("username");
+            return new User(firstname, lastname, username);
+        }
+        catch (JSONException e) {
+            throw new TeleconsultationException();
+        }
     }
 
-    public String getTaskGroup() {
-        return mTaskGroup;
-    }
-
-    public String getAccessToken() {
-        return mAccessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        mAccessToken = accessToken;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || o.getClass() != this.getClass()) {
+            return false;
+        }
+        User other = (User) o;
+        return
+            getFirstName().equals(other.getFirstName()) &&
+            getLastName().equals(other.getLastName()) &&
+            getUsername().equals(other.getUsername());
     }
 
     @Override
     public String toString() {
         return  String.format("%s %s (%s)", getFirstName(), getLastName(), getUsername());
 
-    }
-
-    public static User fromJSON(JSONObject userData) throws TeleconsultationException {
-        try {
-            String firstname = userData.getString("firstname");
-            String lastname = userData.getString("lastname");
-            String username = userData.getString("username");
-            return new User(firstname, lastname, username, null);
-        }
-        catch (JSONException e) {
-            throw new TeleconsultationException();
-        }
     }
 }

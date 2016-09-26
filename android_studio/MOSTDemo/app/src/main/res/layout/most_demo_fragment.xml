@@ -20,14 +20,14 @@
 
     <LinearLayout
         android:id="@+id/new_teleconsultation_frame"
-        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:layout_width="wrap_content">
 
         <ImageButton
             android:id="@+id/new_teleconsultation_button"
@@ -49,7 +49,7 @@
 
     <LinearLayout
         android:id="@+id/continue_teleconsultation_frame"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/new_teleconsultation_frame"
         android:layout_toEndOf="@+id/new_teleconsultation_frame"
@@ -78,7 +78,7 @@
 
     <LinearLayout
         android:id="@+id/search_teleconsultation_frame"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"

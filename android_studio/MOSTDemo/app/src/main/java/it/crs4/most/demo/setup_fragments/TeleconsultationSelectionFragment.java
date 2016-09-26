@@ -29,6 +29,7 @@ import java.util.List;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
+import it.crs4.most.demo.ResponseHandlerDecorator;
 import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Teleconsultation;
@@ -106,9 +107,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
             @Override
             public void run() {
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 10000);
-                mRESTClient.getWaitingTeleconsultationsByTaskgroup(
-                    taskGroup,
-                    accessToken,
+                ResponseHandlerDecorator listener = new ResponseHandlerDecorator<>(getActivity(),
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -140,7 +139,10 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                 Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                             }
                         }
-                    },
+                    }
+                );
+                mRESTClient.getWaitingTeleconsultationsByTaskgroup(taskGroup, accessToken,
+                    listener,
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError response) {

@@ -210,8 +210,8 @@ def get_teleconsultations(request):
     return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
 
 
-
 @oauth2_required
+@csrf_exempt
 def get_waiting_teleconsultations(request):
     """
     :param request:
@@ -244,8 +244,8 @@ def get_waiting_teleconsultations(request):
     return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
 
 
-@csrf_exempt
 @oauth2_required
+@csrf_exempt
 def get_open_teleconsultations(request):
     """
     :param request:

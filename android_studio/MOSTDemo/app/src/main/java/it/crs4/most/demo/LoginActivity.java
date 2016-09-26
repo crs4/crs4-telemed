@@ -7,6 +7,6 @@ public class LoginActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new LoginFragment();
+        return LoginFragment.newInstance();
     }
 }

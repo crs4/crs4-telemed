@@ -78,7 +78,7 @@
     <string name="select_role">role</string>
     <string name="login_instructions">Login to start a teleconsultation</string>
     <string name="cannot_contact_server">Cannot contact the server. Check your connection</string>
-    <string name="loading_users">Loading users. Please wait....</string>
+    <string name="loading_users">Loading users. Please wait…</string>
     <string name="title_activity_login_activity_prova">Sign in</string>
     <string name="logout">Logout</string>
     <string name="new_teleconsultation">New\nTeleconsultation</string>
@@ -91,5 +91,11 @@
     <string name="next">Continue</string>
     <string name="urgency">Urgency</string>
     <string name="empty_teleconsultation_list">There\'s no teleconsultation requests</string>
+    <string name="token_expired_title">Session expired</string>
+    <string name="token_expired_message">Please reinsert your password or login with another user</string>
+    <string name="load_taskgroups_title">Connection to the remote server</string>
+    <string name="load_taskgroups_message">Loading taskgroups associated to this device. Please wait…</string>
+    <string name="check_login_title">Checking login</string>
+    <string name="check_login_message">Checking if your session is still valid</string>
 
 </resources>

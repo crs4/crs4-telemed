@@ -1,68 +1,7 @@
 # Django settings for mostserver project.
 import sys
+from datetime import timedelta
 
-a = '''{"data": {"teleconsultations": [{"specialist": {"username": "Ialista Spec [Clinician]",
-                                                    "voip_data": {"sip_password": "spec", "sip_transport": "udp",
-                                                                  "sip_server": {"port": "5060",
-                                                                                 "name": "Demo SIP Server",
-                                                                                 "address": "192.168.1.109"},
-                                                                  "extension": "spec", "sip_user": "spec"}},
-                                     "severity": "LOW", "created": 1474360629,
-                                     "last_session": {"spec_app_address": "156.148.33.202:5556", "updated": 1474300785,
-                                                      "uuid": "ngac6hw5ehejhhezy32zpk5poh75nyyh", "created": 1474300785,
-                                                      "teleconsultation": {
-                                                          "task_group": {"description": "Demo Task Group @ CRS4",
-                                                                         "uuid": "2cmcabo7e4enkpytsvrrxok6thykxgdh",
-                                                                         "name": "CRS4"},
-                                                          "specialist": {"username": "Ialista Spec [Clinician]",
-                                                                         "voip_data": {"sip_password": "spec",
-                                                                                       "sip_transport": "udp",
-                                                                                       "sip_server": {"port": "5060",
-                                                                                                      "name": "Demo SIP Server",
-                                                                                                      "address": "192.168.1.109"},
-                                                                                       "extension": "spec",
-                                                                                       "sip_user": "spec"}},
-                                                          "applicant": {"username": "Grafista Eco [Clinician]",
-                                                                        "voip_data": {"sip_password": "eco",
-                                                                                      "sip_transport": "udp",
-                                                                                      "sip_server": {"port": "5060",
-                                                                                                     "name": "Demo SIP Server",
-                                                                                                     "address": "192.168.1.109"},
-                                                                                      "extension": "eco",
-                                                                                      "sip_user": "eco"}},
-                                                          "uuid": "uzk6edx7b6bb23djpeak6bmn2ql43oeq",
-                                                          "description": "Teleconsultation 0001"}, "state": "CLOSE",
-                                                      "room": {"task_group": {"description": "Demo Task Group @ CRS4",
-                                                                              "uuid": "2cmcabo7e4enkpytsvrrxok6thykxgdh",
-                                                                              "name": "CRS4"},
-                                                               "description": "Camera B228 @ CRS4",
-                                                               "uuid": "t3fhnipi42jd5j3pfhipxy4eijxoxy62", "devices": {
-                                                              "camera": {"uuid": "nzn5acgz6m3lwxdkxjmlf3vvgpzslqr5",
-                                                                         "type": "Video Only", "user": "specialista",
-                                                                         "password": "speciali",
-                                                                         "ip_address": "156.148.133.11",
-                                                                         "model": "Axis PTZ", "capabilities": {
-                                                                      "streaming": "rtsp:\/\/specialista:speciali@156.148.133.11\/mpeg4\/media.amp",
-                                                                      "shot": "http:\/\/156.148.133.11\/axis-cgi\/jpg\/image.cgi?resolution=[width]x[height]",
-                                                                      "ptz": "http:\/\/156.148.133.11\/axis-cgi\/com\/ptz.cgi",
-                                                                      "web": "http:\/\/specialista:speciali@156.148.133.11\/axis-cgi\/mjpg\/video.cgi?resolution=[width]x[height]"},
-                                                                         "name": "Axis PTZ"},
-                                                              "encoder": {"uuid": "4xj775tvpl2nhbnrkuyksxdjt7ru7cmg",
-                                                                          "type": "Audio Video", "user": "specialista",
-                                                                          "password": "speciali",
-                                                                          "ip_address": "156.148.133.12",
-                                                                          "model": "AQ7401", "capabilities": {
-                                                                      "streaming": "rtsp:\/\/specialista:speciali@156.148.133.12\/axis-media\/media.amp",
-                                                                      "shot": null, "ptz": null, "web": null},
-                                                                          "name": "Axis Encoder"}}, "name": "B228"}},
-                                     "description": "Teleconsultation 0001",
-                                     "applicant": {"username": "Grafista Eco [Clinician]",
-                                                   "voip_data": {"sip_password": "eco", "sip_transport": "udp",
-                                                                 "sip_server": {"port": "5060",
-                                                                                "name": "Demo SIP Server",
-                                                                                "address": "192.168.1.109"},
-                                                                 "extension": "eco", "sip_user": "eco"}},
-                                     "uuid": "uzk6edx7b6bb23djpeak6bmn2ql43oeq"}]}, "success": true}'''
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -142,13 +81,14 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+OAUTH_EXPIRE_DELTA_PUBLIC = timedelta(days=1)
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -158,7 +98,7 @@ SECRET_KEY = '%ba=(@saf(fa_xnj%*xpt!z0u24b%tm#zw=x92_s!ynwyvt%vg'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (

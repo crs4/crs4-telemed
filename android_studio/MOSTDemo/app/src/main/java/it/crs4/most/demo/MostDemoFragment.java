@@ -1,6 +1,8 @@
 package it.crs4.most.demo;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 public class MostDemoFragment extends Fragment {
 
     private static final String TAG = "MostDemoFragment";
+    private static final String LOGIN_VALID = "it.crs4.most.demo.login_valid";
     private String mServerIP;
     private String mTaskGroup;
     private String mRole;
@@ -39,6 +42,9 @@ public class MostDemoFragment extends Fragment {
     private LinearLayout mContinueTeleFrame;
     private LinearLayout mSearchTeleframe;
     private MenuItem mLoginMenuItem;
+    private RESTClient mRestClient;
+    private String mAccessToken;
+    private ProgressDialog mProgress;
 
     public MostDemoFragment() {
         // Required empty public constructor
@@ -52,6 +58,12 @@ public class MostDemoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mServerIP = QuerySettings.getConfigServerAddress(getActivity());
+        int serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
+        mTaskGroup = QuerySettings.getTaskGroup(getActivity());
+        mAccessToken = QuerySettings.getAccessToken(getActivity());
+        mRole = QuerySettings.getRole(getActivity());
+        mRestClient = new RESTClient(getActivity(), mServerIP, serverPort);
     }
 
     @Override
@@ -86,33 +98,22 @@ public class MostDemoFragment extends Fragment {
             }
         });
 
-        mServerIP = QuerySettings.getConfigServerAddress(getActivity());
-        int serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
-        mTaskGroup = QuerySettings.getTaskGroup(getActivity());
-        String accessToken = QuerySettings.getAccessToken(getActivity());
-        mRole = QuerySettings.getRole(getActivity());
-        RESTClient restClient = new RESTClient(getActivity(), mServerIP, serverPort);
-        restClient.getOpenedTeleconsultationsByTaskgroup(mTaskGroup, accessToken, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, "OPENED: " + response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (mProgress != null) {
+            mProgress.dismiss();
+        }
         if (checkSettings()) {
-            String accessToken = QuerySettings.getAccessToken(getActivity());
-            Log.d(TAG, "Access token is: " + accessToken);
-            updateLoginState();
+            if (isLoggedIn() && !QuerySettings.isLoginChecked(getActivity())) {
+                checkLogin();
+            }
+            else {
+                updateLoginState();
+            }
         }
         else {
             String msgParts = "";
@@ -154,8 +155,7 @@ public class MostDemoFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.login_menu_item:
                 if (!isLoggedIn()) {
-                    Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
-                    startActivity(loginIntent);
+                    launchLoginActivity();
                 }
                 else {
                     logout();
@@ -163,6 +163,31 @@ public class MostDemoFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkLogin() {
+        mProgress = new ProgressDialog(getActivity());
+        mProgress.setTitle(getString(R.string.check_login_title));
+        mProgress.setMessage(getString(R.string.check_login_message));
+//        progress.setMax(10);
+        mProgress.show();
+
+        ResponseHandlerDecorator<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
+            new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                    mProgress.dismiss();
+                    QuerySettings.setLoginChecked(getActivity(), true);
+                    updateLoginState();
+                }
+            });
+
+        mRestClient.checkLogin(mAccessToken, listener, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mProgress.dismiss();
+            }
+        });
     }
 
     private void updateLoginState() {
@@ -177,7 +202,7 @@ public class MostDemoFragment extends Fragment {
             setTextMessage(null);
         }
         else {
-            mSearchTeleframe.setVisibility(View.VISIBLE);
+            mSearchTeleframe.setVisibility(View.GONE);
             mNewTeleFrame.setVisibility(View.GONE);
             mContinueTeleFrame.setVisibility(View.GONE);
             setTextMessage(getString(R.string.login_instructions));
@@ -185,9 +210,13 @@ public class MostDemoFragment extends Fragment {
         setLoginButton();
     }
 
-    private void logout() {
+    private void deleteAuthenticationData() {
         QuerySettings.setAccessToken(getActivity(), null);
         QuerySettings.setUser(getActivity(), null);
+    }
+
+    private void logout() {
+        deleteAuthenticationData();
         updateLoginState();
     }
 
@@ -222,7 +251,6 @@ public class MostDemoFragment extends Fragment {
             else {
                 mLoginMenuItem.setEnabled(false);
             }
-
         }
     }
 
@@ -238,4 +266,9 @@ public class MostDemoFragment extends Fragment {
         startActivity(i);
     }
 
+    private void launchLoginActivity() {
+        Intent i = new Intent(getActivity(), LoginActivity.class);
+//        startActivityForResult(i, LoginFragment.LOGGED_IN_RESULT);
+        startActivity(i);
+    }
 }

@@ -3,6 +3,7 @@ package it.crs4.most.demo;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,25 +33,27 @@ import it.crs4.most.demo.models.User;
 
 public class LoginFragment extends Fragment {
 
+    public static final int LOGGED_IN_RESULT = 0;
+    public static final String USER_ARG = "it.crs4.most.demo.user";
     private static final String TAG = "LoginFragment";
     private static final String USERS = "users";
     private static final int PASSCODE_LEN = 5;
 
-    private TextView mPasswordText;
-    private Spinner mUsernameSpinner;
-    private ArrayList<User> mUsers;
-    private RESTClient mRESTClient;
     private String mTaskGroup;
+    private Spinner mUsernameSpinner;
+    private RESTClient mRESTClient;
+    private User mUser;
+    private TextView mPasswordText;
+    private ArrayList<User> mUsers;
     private ArrayAdapter<User> mUsersAdapter;
 
-    public LoginFragment newInstance() {
+    public static LoginFragment newInstance() {
         return new LoginFragment();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Nullable
@@ -59,6 +62,7 @@ public class LoginFragment extends Fragment {
         String serverIP = QuerySettings.getConfigServerAddress(getActivity());
         Integer serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mTaskGroup = QuerySettings.getTaskGroup(getActivity());
+        mUser = QuerySettings.getUser(getActivity());
         String accessToken = QuerySettings.getAccessToken(getActivity());
         mRESTClient = new RESTClient(getActivity(), serverIP, serverPort);
 
@@ -135,6 +139,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onResponse(JSONObject usersData) {
                 final JSONArray users;
+                int currentUserPos = -1;
                 try {
                     boolean success = usersData != null && usersData.getBoolean("success");
                     if (!success) {
@@ -153,16 +158,22 @@ public class LoginFragment extends Fragment {
                     User u;
                     try {
                         u = User.fromJSON(users.getJSONObject(i));
-                        u.setTaskGroup(mTaskGroup);
                         mUsers.add(u);
+
+                        if (mUser != null && u.equals(mUser)) {
+                            currentUserPos = i;
+                        }
                     }
                     catch (TeleconsultationException | JSONException e) {
                         Log.e(TAG, "Error loading user information");
                     }
                 }
-                mUsersAdapter.notifyDataSetChanged();
                 loadUserDialog.dismiss();
+                mUsersAdapter.notifyDataSetChanged();
                 mPasswordText.setEnabled(true);
+                if (currentUserPos != -1) {
+                    mUsernameSpinner.setSelection(currentUserPos);
+                }
             }
         };
 
@@ -178,7 +189,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void retrieveAccessToken(String password) {
-        User selectedUser = (User) mUsernameSpinner.getSelectedItem();
+        final User selectedUser = (User) mUsernameSpinner.getSelectedItem();
         String username = selectedUser.getUsername();
         String grantType = QuerySettings.isEcographist(getActivity()) ?
             RESTClient.GRANT_TYPE_PINCODE :
@@ -187,14 +198,14 @@ public class LoginFragment extends Fragment {
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "Query Response:" + response);
                 try {
                     JSONObject jsonresponse = new JSONObject(response);
-                    Log.d(TAG, "ACCESS TOKEN: " + jsonresponse.getString("access_token"));
                     String accessToken = jsonresponse.getString("access_token");
 
                     if (accessToken != null) {
                         QuerySettings.setAccessToken(getActivity(), accessToken);
+                        QuerySettings.setUser(getActivity(), selectedUser);
+                        QuerySettings.setLoginChecked(getActivity(), true);
                         getActivity().finish();
                     }
                     else {
@@ -217,12 +228,6 @@ public class LoginFragment extends Fragment {
         };
 
         mRESTClient.getAccessToken(username, mTaskGroup, grantType, password, listener, errorListener);
-    }
-
-    private boolean isEco() {
-        String role = QuerySettings.getRole(getActivity());
-        String[] roles = getResources().getStringArray(R.array.roles_entries_values);
-        return role.equals(roles[0]);
     }
 
     private void showError(int errorMsgId, final boolean finishActivity) {
