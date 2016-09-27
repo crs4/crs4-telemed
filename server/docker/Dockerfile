@@ -2,7 +2,7 @@ FROM ubuntu:14.04.4
 
 RUN apt-get update && apt-get install -y asterisk wget vim mysql-server libmysqlclient-dev git odbcinst python-pip build-essential sqlite3 \
 	unixodbc unixodbc-dev
-RUN pip install Django==1.7.9 shortuuid pytz
+RUN pip install Django==1.7.9 shortuuid pytz hl7apy
 
 WORKDIR /tmp
 
@@ -11,22 +11,19 @@ RUN wget http://www.creytiv.com/pub/restund-0.4.12.tar.gz && tar zxf restund-0.4
 
 RUN cd re-0.4.15 && make && make install && ln -s /usr/local/lib/libre.so /usr/lib/libre.so
 RUN cd restund-0.4.12 && make && make install
-COPY extconfig.conf /etc/asterisk/
-COPY extensions.conf /etc/asterisk/
-COPY func_odbc.conf /etc/asterisk/
-COPY modules.conf /etc/asterisk/
-COPY res_odbc.conf /etc/asterisk/
-COPY sip.conf /etc/asterisk/
-COPY odbcinst.ini /etc/odbcinst.ini
-COPY odbc.ini /etc/odbc.ini
-COPY restund.conf /etc/restund.conf
+RUN rm -f /etc/asterisk/extconfig.conf && ln -s /tmp/most-demo/server/docker/extconfig.conf /etc/asterisk/extconfig.conf
+RUN rm -f /etc/asterisk/extensions.conf && ln -s /tmp/most-demo/server/docker/extensions.conf /etc/asterisk/extensions.conf
+RUN rm -f /etc/asterisk/func_odbc.conf && ln -s /tmp/most-demo/server/docker/func_odbc.conf /etc/asterisk/func_odbc.conf
+RUN rm -f /etc/asterisk/modules.conf && ln -s /tmp/most-demo/server/docker/modules.conf /etc/asterisk/modules.conf
+RUN rm -f /etc/asterisk/res_odbc.conf && ln -s /tmp/most-demo/server/docker/res_odbc.conf /etc/asterisk/res_odbc.conf
+RUN rm -f /etc/asterisk/sip.conf && ln -s /tmp/most-demo/server/docker/sip.conf /etc/asterisk/sip.conf
+RUN rm -f /etc/odbcinst.ini && ln -s /tmp/most-demo/server/docker/odbcinst.ini /etc/odbcinst.ini
+RUN rm -f /etc/odbc.ini && ln -s /tmp/most-demo/server/docker/odbc.ini /etc/odbc.ini
+RUN rm -f /etc/restund.conf && ln -s /tmp/most-demo/server/docker/restund.conf /etc/restund.conf
 COPY asterisk_db.sql /tmp/
 COPY restund_db.sql /tmp/
-COPY run.sh /usr/local/bin/
-COPY init_django.sh /usr/local/bin/
-COPY django_initial.json /tmp/
-RUN chmod +x /usr/local/bin/run.sh
-RUN chmod +x /usr/local/bin/init_django.sh
+RUN ln -s /tmp/most-demo/server/docker/run.sh /usr/local/bin/run.sh
+RUN ln -s /tmp/most-demo/server/docker/init_django.sh /usr/local/bin/init_django.sh
 
 RUN service mysql start && \
 	mysql -u root -e "CREATE USER 'most'@'localhost' IDENTIFIED BY 'most'" && \

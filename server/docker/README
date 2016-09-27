@@ -4,7 +4,7 @@ To build the docker image launch the command
 
 To launch the container use the command
 
-- docker run -it  -p 2000:2000 -p 3306:3306 -p 3478:3478 -p 5060:5060 -p 8000:8000 --name most_container most_demo
+- docker run -it --net=host -v <path/to/most-demo/git/repository>:/tmp/most-demo  --name <name_of_the_container> most_demo
 
 The first time you launch the container run in the container the command
 

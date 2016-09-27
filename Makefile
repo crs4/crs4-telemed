@@ -5,6 +5,7 @@ devel:
 	@if ! [ -d libs/most-streaming ]; then git clone https://github.com/crs4/most-streaming libs/most-streaming -b develop; fi
 	@if ! [ -d libs/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b develop; fi
 	@if ! [ -d libs/most-visualization ]; then git clone https://github.com/crs4/most-visualization libs/most-visualization -b develop; fi
+	@if ! [ -d libs/most-demographics ]; then git clone https://github.com/crs4/most-demographics libs/most-demographics -b develop; fi
 
 	echo "link libs"
 
@@ -12,6 +13,7 @@ devel:
 	ln -s ../../../libs/most/src/most/web/authentication authentication; \
 	ln -s ../../../libs/most-streaming/service/src/most/web/streaming streaming; \
 	ln -s ../../../libs/most-voip/service/src/most/web/voip voip; \
+	ln -s ../../../libs/most-demographics/src/most/web/demographics demographics; \
 
 	cd server; ln -fs ../libs/most/src/provider provider;
 
@@ -53,6 +55,13 @@ clean:
 		echo "NO CHANGES - remove most visualization repository"; \
 		rm -fr libs/most-visualization; \
 	fi
+	
+	@if [ `git -C libs/most-demographics status --porcelain` ]; then \
+		echo "CHANGES - most demographics repository not removed"; \
+	else \
+		echo "NO CHANGES - remove most demographics repository"; \
+		rm -fr libs/most-demographics; \
+	fi
 
 run:
 	cd server/most; PYTHONPATH=.. python manage.py runserver 0.0.0.0:8000
@@ -65,7 +74,8 @@ sync:
 	cd server/most; PYTHONPATH=.. python manage.py migrate
 
 dump:
-	cd server/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions --exclude admin --natural-foreign
+	cd server/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions \
+	--exclude admin --exclude provider --natural-foreign
 
 test:
 	cd src/most/web/medicalrecords/; nosetests --logging-level=DEBUG -s

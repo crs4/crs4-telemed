@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     'most.web.streaming',
     'most.web.teleconsultation',
     'most.web.voip',
+    'most.web.demographics'
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

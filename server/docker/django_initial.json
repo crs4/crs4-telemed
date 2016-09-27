@@ -1,14 +1,6 @@
 [
   {
     "fields": {
-      "domain": "example.com",
-      "name": "example.com"
-    },
-    "model": "sites.site",
-    "pk": 1
-  },
-  {
-    "fields": {
       "last_name": "Admin",
       "user_type": "AD",
       "is_staff": true,
@@ -18,7 +10,7 @@
       "uuid": "pok6c275l6zm7gzgdprn3tlcvtt4sb64",
       "last_modified_timestamp": "2016-07-12T13:11:09.180Z",
       "is_superuser": true,
-      "last_login": "2016-07-13T07:03:59.667Z",
+      "last_login": "2016-09-27T08:57:49.925Z",
       "creation_timestamp": "2016-07-12T13:11:09.156Z",
       "email": "admin@admin.it",
       "numeric_password": null,
@@ -47,7 +39,7 @@
       "uuid": "sb4htkhsvoyyoxy2wqfcvw76sacgekig",
       "last_modified_timestamp": "2016-07-12T15:06:21.824Z",
       "is_superuser": false,
-      "last_login": "2016-07-12T16:15:53.682Z",
+      "last_login": "2016-09-26T12:19:13.240Z",
       "creation_timestamp": "2016-07-12T13:24:22.941Z",
       "email": "ecografista@eco.it",
       "numeric_password": "12345",
@@ -76,7 +68,7 @@
       "uuid": "afxacgutazd657uriworwvf7bkfekybg",
       "last_modified_timestamp": "2016-07-12T13:25:13.113Z",
       "is_superuser": false,
-      "last_login": "2016-07-12T16:15:48.567Z",
+      "last_login": "2016-09-23T15:33:52.036Z",
       "creation_timestamp": "2016-07-12T13:25:10.174Z",
       "email": "specialista@eco.it",
       "numeric_password": "",
@@ -133,7 +125,7 @@
       "user": "specialista",
       "model": 2,
       "password": "speciali",
-      "type": "AV",
+      "type": "VIDEO",
       "name": "Axis PTZ"
     },
     "model": "streaming.streamingdevice",
@@ -154,12 +146,39 @@
   },
   {
     "fields": {
+      "uuid": "a5xx6xzs6madydhw7iv2opzfxspef25w",
+      "ip_address": "172.16.4.3",
+      "user": "root",
+      "model": 2,
+      "password": "AOB124!$",
+      "type": "VIDEO",
+      "name": "Axis PTZ @ Brotzu"
+    },
+    "model": "streaming.streamingdevice",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "uuid": "2y4grgxjxyg2g2lcgqctrgudidsq4bhr",
+      "ip_address": "172.16.4.4",
+      "user": "root",
+      "model": 1,
+      "password": "AOB124!$",
+      "type": "AV",
+      "name": "Axis Encoder @ Brotzu"
+    },
+    "model": "streaming.streamingdevice",
+    "pk": 4
+  },
+  {
+    "fields": {
       "application_type": "AA",
+      "device_platform": "ANDROID",
       "task_groups": [
         1
       ],
       "uuid": "18539040da2d088c",
-      "device_platform": "ANDROID"
+      "description": "Nexus 9"
     },
     "model": "teleconsultation.device",
     "pk": 1
@@ -167,11 +186,12 @@
   {
     "fields": {
       "application_type": "SA",
+      "device_platform": "ANDROID",
       "task_groups": [
         1
       ],
       "uuid": "bfb8c90589f768a2",
-      "device_platform": "ANDROID"
+      "description": "Nexus 6"
     },
     "model": "teleconsultation.device",
     "pk": 2
@@ -179,11 +199,12 @@
   {
     "fields": {
       "application_type": "AA",
+      "device_platform": "ANDROID",
       "task_groups": [
         1
       ],
-      "uuid": "2e4a1a0bcc79dbeb",
-      "device_platform": "ANDROID"
+      "uuid": "d062fdef929f393a",
+      "description": "Vitto's Phone"
     },
     "model": "teleconsultation.device",
     "pk": 3
@@ -191,11 +212,12 @@
   {
     "fields": {
       "application_type": "SA",
+      "device_platform": "ANDROID",
       "task_groups": [
         1
       ],
       "uuid": "fa990f46d892464a",
-      "device_platform": "ANDROID"
+      "description": "Samsung Galaxy Note 10"
     },
     "model": "teleconsultation.device",
     "pk": 4
@@ -203,38 +225,54 @@
   {
     "fields": {
       "application_type": "AA",
-      "task_groups": [
-        1
-      ],
-      "uuid": "d062fdef929fe93a",
-      "device_platform": "ANDROID"
-    },
-    "model": "teleconsultation.device",
-    "pk": 5
-  },
-  {
-    "fields": {
-      "application_type": "AA",
+      "device_platform": "ANDROID",
       "task_groups": [
         1
       ],
       "uuid": "5c29ebbf989ef6a8",
-      "device_platform": "ANDROID"
+      "description": "Mauretto's Phone"
     },
     "model": "teleconsultation.device",
     "pk": 6
   },
-    {
+  {
     "fields": {
       "application_type": "AA",
+      "device_platform": "ANDROID",
       "task_groups": [
         1
       ],
       "uuid": "63ca58dce917b7eb",
-      "device_platform": "ANDROID"
+      "description": "Epson Moveiro"
     },
     "model": "teleconsultation.device",
     "pk": 7
+  },
+  {
+    "fields": {
+      "application_type": "AA",
+      "device_platform": "ANDROID",
+      "task_groups": [
+        1
+      ],
+      "uuid": "327ea8a780d9fd20",
+      "description": "Acer Iconia"
+    },
+    "model": "teleconsultation.device",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "application_type": "AA",
+      "device_platform": "ANDROID",
+      "task_groups": [
+        1
+      ],
+      "uuid": "4ec86fdd8ef78b04",
+      "description": "Nexus 5"
+    },
+    "model": "teleconsultation.device",
+    "pk": 10
   },
   {
     "fields": {
@@ -252,102 +290,23 @@
   },
   {
     "fields": {
-      "specialist": [
-        "spec"
-      ],
-      "updated": "2016-07-12T15:38:34.186Z",
-      "uuid": "lbkq52v5m7xigefts2gjlbujjener2o2",
-      "created": "2016-07-12T15:38:03.086Z",
-      "severity": "LOW",
-      "applicant": [
-        "eco"
-      ],
+      "has_camera": true,
+      "description": "Stanza Eco @ Brotzu",
+      "uuid": "m6s3zh2vbrfuomj5pllrqz36t6t7zciu",
+      "name": "Stanza Eco @ Brotzu",
       "task_group": 1,
-      "state": "ACTIVE",
-      "description": "Teleconsultation 0001"
+      "camera_device": 3,
+      "has_encoder": true,
+      "encoder_device": 4
     },
-    "model": "teleconsultation.teleconsultation",
-    "pk": 1
-  },
-  {
-    "fields": {
-      "specialist": [
-        "spec"
-      ],
-      "updated": "2016-07-12T15:56:21.866Z",
-      "uuid": "f3jmfx5zlo4zx7zuxpkxobthzibiqrjn",
-      "created": "2016-07-12T15:56:00.889Z",
-      "severity": "LOW",
-      "applicant": [
-        "eco"
-      ],
-      "task_group": 1,
-      "state": "ACTIVE",
-      "description": "Teleconsultation 0001"
-    },
-    "model": "teleconsultation.teleconsultation",
+    "model": "teleconsultation.room",
     "pk": 2
-  },
-  {
-    "fields": {
-      "specialist": [
-        "spec"
-      ],
-      "updated": "2016-07-12T16:15:53.709Z",
-      "uuid": "sx5y7aokpcpycwfwc2i45x6fpefxanqm",
-      "created": "2016-07-12T16:15:32.614Z",
-      "severity": "LOW",
-      "applicant": [
-        "eco"
-      ],
-      "task_group": 1,
-      "state": "ACTIVE",
-      "description": "Teleconsultation 0001"
-    },
-    "model": "teleconsultation.teleconsultation",
-    "pk": 3
-  },
-  {
-    "fields": {
-      "updated": "2016-07-12T15:38:34.210Z",
-      "room": 1,
-      "created": "2016-07-12T15:38:03.498Z",
-      "state": "RUN",
-      "teleconsultation": 1,
-      "uuid": "3vju5hoyujeydaq7f6otz5iv2wfcmf3i"
-    },
-    "model": "teleconsultation.teleconsultationsession",
-    "pk": 1
-  },
-  {
-    "fields": {
-      "updated": "2016-07-12T15:56:21.893Z",
-      "room": 1,
-      "created": "2016-07-12T15:56:01.096Z",
-      "state": "RUN",
-      "teleconsultation": 2,
-      "uuid": "b2kk7623oqy6qa2w65bprzac3usicz2r"
-    },
-    "model": "teleconsultation.teleconsultationsession",
-    "pk": 2
-  },
-  {
-    "fields": {
-      "updated": "2016-07-12T16:15:53.733Z",
-      "room": 1,
-      "created": "2016-07-12T16:15:32.924Z",
-      "state": "RUN",
-      "teleconsultation": 3,
-      "uuid": "5ltdknx3or37n5t6zv2dww5bmoivgfvr"
-    },
-    "model": "teleconsultation.teleconsultationsession",
-    "pk": 3
   },
   {
     "fields": {
       "port": 5060,
       "name": "Demo SIP Server",
-      "address": "156.148.33.193"
+      "address": "156.148.71.244"
     },
     "model": "voip.sipserver",
     "pk": 1
@@ -356,7 +315,7 @@
     "fields": {
       "port": 3478,
       "name": "Demo Turn Server",
-      "address": "156.148.33.193"
+      "address": "156.148.71.244"
     },
     "model": "voip.turnserver",
     "pk": 1
@@ -367,7 +326,7 @@
       "name": "Ecografista",
       "extension": "eco",
       "sip_username": "eco",
-      "sip_transport": "tcp",
+      "sip_transport": "udp",
       "sip_server": 1,
       "user": [
         "eco"
@@ -385,7 +344,7 @@
       "name": "Specialista",
       "extension": "spec",
       "sip_username": "spec",
-      "sip_transport": "tcp",
+      "sip_transport": "udp",
       "sip_server": 1,
       "user": [
         "spec"
@@ -396,6 +355,88 @@
     },
     "model": "voip.account",
     "pk": 2
+  },
+  {
+    "fields": {
+      "province": "CA",
+      "state": "Italy",
+      "code": "09100",
+      "name": "Cagliari"
+    },
+    "model": "demographics.city",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "other_ids": [],
+      "city": null,
+      "first_name": "CARLO",
+      "last_name": "VERDI",
+      "uid": "afbab3d293b643833d35cb972f26642cf77f1db4",
+      "certified_email": "",
+      "mobile": "",
+      "gender": "M",
+      "last_modified_timestamp": "2016-09-26T15:27:53.188Z",
+      "active": true,
+      "phone": "",
+      "birth_place": 1,
+      "account_number": "VRDCRL74L26B354P",
+      "address": "",
+      "birth_date": "1974-07-26",
+      "deactivation_timestamp": null,
+      "creation_timestamp": "2016-09-26T15:17:03.450Z",
+      "email": ""
+    },
+    "model": "demographics.patient",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "other_ids": [],
+      "city": null,
+      "first_name": "MARIO",
+      "last_name": "ROSSI",
+      "uid": "7e6b4e12f5df3900786c75381e44d2754c139418",
+      "certified_email": "",
+      "mobile": "",
+      "gender": "M",
+      "last_modified_timestamp": "2016-09-26T15:26:35.609Z",
+      "active": true,
+      "phone": "",
+      "birth_place": 1,
+      "account_number": "RSSMRA93D23B354Q",
+      "address": "",
+      "birth_date": "1993-04-23",
+      "deactivation_timestamp": null,
+      "creation_timestamp": "2016-09-26T15:26:35.609Z",
+      "email": ""
+    },
+    "model": "demographics.patient",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "other_ids": [],
+      "city": null,
+      "first_name": "SARA",
+      "last_name": "PUDDU",
+      "uid": "7e5d9fcb3aa67418a077adf1ef6deddf646ab211",
+      "certified_email": "",
+      "mobile": "",
+      "gender": "F",
+      "last_modified_timestamp": "2016-09-26T15:35:24.162Z",
+      "active": true,
+      "phone": "",
+      "birth_place": 1,
+      "account_number": "SRAPDD84E54B354T",
+      "address": "",
+      "birth_date": "1984-05-14",
+      "deactivation_timestamp": null,
+      "creation_timestamp": "2016-09-26T15:35:24.162Z",
+      "email": ""
+    },
+    "model": "demographics.patient",
+    "pk": 3
   },
   {
     "fields": {
@@ -418,134 +459,6 @@
     },
     "model": "users.taskgroup",
     "pk": 1
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T15:32:20.842Z",
-      "expires": "2016-08-11T15:32:20.842Z",
-      "modified": "2016-07-12T15:32:20.842Z",
-      "taskgroup": 1,
-      "token": "5d09e0198a4350bc2d11fc86221084d0bddba49e",
-      "client": 1,
-      "user": [
-        "eco"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 1
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T15:37:44.804Z",
-      "expires": "2016-08-11T15:37:44.804Z",
-      "modified": "2016-07-12T15:37:44.804Z",
-      "taskgroup": 1,
-      "token": "c29043cafc2ecabbd3938bb4fafa914e1205e469",
-      "client": 1,
-      "user": [
-        "spec"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 2
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T15:38:21.871Z",
-      "expires": "2016-08-11T15:38:21.871Z",
-      "modified": "2016-07-12T15:38:21.871Z",
-      "taskgroup": 1,
-      "token": "4173d4c8c6094f2a9f5614711c6c80c3d8a6bcf9",
-      "client": 1,
-      "user": [
-        "spec"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 3
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T15:55:54.766Z",
-      "expires": "2016-08-11T15:55:54.766Z",
-      "modified": "2016-07-12T15:55:54.766Z",
-      "taskgroup": 1,
-      "token": "90e3ad4795163cb955d3d740bf0215062f8b4c21",
-      "client": 1,
-      "user": [
-        "eco"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 4
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T15:56:15.048Z",
-      "expires": "2016-08-11T15:56:15.049Z",
-      "modified": "2016-07-12T15:56:15.049Z",
-      "taskgroup": 1,
-      "token": "9f5542a8a31e152b6fda05f1ab7ffb9b71e8b439",
-      "client": 1,
-      "user": [
-        "spec"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 5
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T16:13:52.189Z",
-      "expires": "2016-08-11T16:13:52.190Z",
-      "modified": "2016-07-12T16:13:52.189Z",
-      "taskgroup": 1,
-      "token": "2d64048d2b383a720169632cfe2b463f69b001ea",
-      "client": 1,
-      "user": [
-        "eco"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 6
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T16:15:28.026Z",
-      "expires": "2016-08-11T16:15:28.026Z",
-      "modified": "2016-07-12T16:15:28.026Z",
-      "taskgroup": 1,
-      "token": "bd05f0416e1630f9a853bc98268940297cbe30dc",
-      "client": 1,
-      "user": [
-        "eco"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 7
-  },
-  {
-    "fields": {
-      "created": "2016-07-12T16:15:43.238Z",
-      "expires": "2016-08-11T16:15:43.239Z",
-      "modified": "2016-07-12T16:15:43.238Z",
-      "taskgroup": 1,
-      "token": "b33a84dc3240d98cd9aee48de015daa1bc6b7462",
-      "client": 1,
-      "user": [
-        "spec"
-      ],
-      "scope": 2
-    },
-    "model": "provider.accesstoken",
-    "pk": 8
   },
   {
     "fields": {
