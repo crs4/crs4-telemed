@@ -16,6 +16,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,6 +46,8 @@ import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Teleconsultation;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory.Marker;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
@@ -175,8 +178,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
 
         if((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))){
-            getWindow().addFlags(0x80000000);
-            Log.d(TAG, "loading optical files");
+//            getWindow().addFlags(0x80000000);
+//            Log.d(TAG, "loading optical files");
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
         }
 
@@ -203,15 +206,31 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 1, 0, 0, 1f
         };
 
+//        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
+        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;40");
+//        float [] trans = new float[16];
+//        Matrix.setIdentityM(trans, 0);
+
+        float [] trans = new float []{
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, -100, 0, 1
+        };
+        hiro.setModelMatrix(trans);
+        Marker multi = MarkerFactory.getMarker("multi;Data/multi/markers.dat");
+
         Arrow arrow = new Arrow("arrow");
-        arrow.setMarker("single;Data/hiro.patt;80");
+        arrow.setMarker(hiro);
         meshManager.addMesh(arrow);
 //        Arrow arrow2 = new Arrow("arrow2");
 //        arrow2.setMarker("single;Data/kanji.patt;80");
 //        meshManager.addMesh(arrow2);
 
-        Pyramid ecoArrow = new Pyramid(5f, 5f, 5f, "ecoArrow");
-        ecoArrow.setMarker("multi;Data/multi/markers.dat");
+        Pyramid ecoArrow = new Pyramid(15f, 15f, 15f, "ecoArrow");
+        ecoArrow.setMarker(multi);
+//        ecoArrow.setMarker("single;Data/hiro.patt;80");
+//        ecoArrow.setMarker("single;Data/multi/a.patt;40");
         ecoArrow.setColors(redColor);
         meshManager.addMesh(ecoArrow);
 
@@ -414,7 +433,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             arInitialized = true;
         }
 
-        final float accLimit = 0.03f;
+        final float accLimit = 0.0f;
         if(renderer.isEnabled() && (accX > accLimit || accY > accLimit|| accZ > accLimit)){
             if (ARToolKit.getInstance().convertAndDetect(frame)) {
                 if (this.glView != null) {

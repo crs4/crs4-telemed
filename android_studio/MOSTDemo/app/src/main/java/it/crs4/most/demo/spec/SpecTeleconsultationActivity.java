@@ -64,6 +64,8 @@ import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory.Marker;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
@@ -171,8 +173,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 1, 0, 0, 1f
         };
 
+        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
+
         Arrow cameraArrow = new Arrow("arrow");
-        cameraArrow.setMarker("single;Data/hiro.patt;80");
+        cameraArrow.setMarker(hiro);
         Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
         ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
         ecoArrow.setxLimits(-1f, 1f);
