@@ -84,37 +84,8 @@ public class RESTClient {
          * Perform a request to the server to check if the acess token is still valid
          */
         String uri = String.format("%sauthentication/test/?access_token=%s", mUrlPrefix, accessToken);
-//        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, uri, null, future, future);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, uri, null, listener, errorListener);
         addRequest(request);
-
-//        try {
-//            JSONObject response = null;
-//            while (response == null) {
-//                response = future.get(30, TimeUnit.SECONDS); // Block thread, waiting for response, timeout after 30 seconds
-//            }
-//            Log.d(TAG, "RESPONSE: ");
-//            if (!response.getBoolean("success")) {
-//                int code = response.getJSONObject("data").getInt("code");
-//                if (code == RESTClient.ErrorCodes.TOKEN_EXPIRED.getValue()) {
-//                    return false;
-//                }
-//            }
-//            return true;
-//        }
-//        catch (TimeoutException e) {
-//            return false;
-//        }
-//        catch (InterruptedException e) {
-//            return false;
-//        }
-//        catch (ExecutionException e) {
-//            return false;
-//        }
-//        catch (JSONException e) {
-//            return false;
-//        }
     }
 
     /**
@@ -351,6 +322,24 @@ public class RESTClient {
                             Response.ErrorListener errorListener) {
         String uri = String.format("%steleconsultation/session/%s/%s/join/?access_token=%s",
             mUrlPrefix, sessionId, ipAddress, accessToken);
+        JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
+        addRequest(req);
+    }
+
+    public void searchPatient(String accessToken, String patientID, String patientName, String patientSurname,
+                              Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String uri = String.format("%sdemographics/patient/filter/?query_string=%s%%20%s%%20%s", mUrlPrefix,
+            patientID, patientName, patientSurname);
+        Log.d(TAG, uri);
+//        if (patientID != null) {
+//            uri += patientID;
+//        }
+//        if (patientName != null) {
+//            uri += patientName;
+//        }
+//        if (patientSurname != null) {
+//            uri += patientSurname;
+//        }
         JsonObjectRequest req = new JsonObjectRequest(uri, null, listener, errorListener);
         addRequest(req);
     }

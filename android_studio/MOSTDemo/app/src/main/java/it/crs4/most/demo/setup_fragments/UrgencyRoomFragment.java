@@ -63,8 +63,8 @@ public class UrgencyRoomFragment extends SetupFragment {
             public void onClick(View v) {
                 String urgency = mUrgencySpinner.getSelectedItem().toString();
                 Room room = (Room) mRoomSpinner.getSelectedItem();
-                getTeleconsultationSetup().setUrgency(urgency);
-                getTeleconsultationSetup().setRoom(room);
+                mTeleconsultationSetup.setUrgency(urgency);
+                mTeleconsultationSetup.setRoom(room);
                 stepDone();
             }
         });

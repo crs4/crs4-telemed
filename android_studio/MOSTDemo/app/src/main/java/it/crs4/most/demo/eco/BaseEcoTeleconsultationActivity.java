@@ -241,7 +241,6 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             }
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
-                act.setResult(RESULT_OK);
                 act.stopStream();
                 act.finish();
             }

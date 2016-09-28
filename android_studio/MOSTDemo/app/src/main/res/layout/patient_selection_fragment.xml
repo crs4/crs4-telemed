@@ -11,7 +11,6 @@
         android:descendantFocusability="beforeDescendants"
         android:focusable="true"/>
 
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/button_patients_add"
         android:layout_width="wrap_content"

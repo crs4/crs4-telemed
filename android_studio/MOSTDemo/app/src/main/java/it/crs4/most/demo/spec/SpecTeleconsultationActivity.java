@@ -289,16 +289,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-
-            }
+            public void surfaceDestroyed(SurfaceHolder holder) {}
         });
-
 
         mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
             private int prevHeight = -1;
@@ -307,13 +302,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
                 mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
                 mStreamEcoFragment.setPlayerButtonsVisible(false);
-
             }
 
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-
-            }
+            public void surfaceCreated(SurfaceHolder holder) {}
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -325,9 +317,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-
-            }
+            public void surfaceDestroyed(SurfaceHolder holder) {}
         });
 
         // add the first fragment to the first container
@@ -411,9 +401,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 mHangupMenuItem.setEnabled(true);
                 pauseStreams();
             }
-            else if (mTcState == TeleconsultationState.SESSION_CLOSED) {
-//                startReportActivity();
-            }
         }
         catch (NullPointerException ne) {
 
@@ -438,7 +425,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                                 if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
                                     Log.d(TAG, "Closing session");
                                     t.cancel();
-                                    setTeleconsultationState(TeleconsultationState.SESSION_CLOSED);
                                 }
                             }
                             catch (JSONException e) {
@@ -559,7 +545,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
     private void endTeleconsultation() {
         if (mVoipLib.getCall().getState().equals(CallState.ACTIVE)) {
-            mVoipLib.hangupCall();
+            hangupCall();
         }
         else {
             mVoipLib.destroyLib();
@@ -724,7 +710,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                     else if (act.mTcState == TeleconsultationState.IDLE) {
                         act.setTeleconsultationState(TeleconsultationState.READY);
                     }
-
                 }
                 else if (event == VoipEvent.BUDDY_HOLDING) {
                     if (act.mVoipLib.getCall().getState() == CallState.ACTIVE ||
@@ -761,7 +746,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             }
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
-                act.setResult(RESULT_OK);
                 act.stopStreams();
                 act.finish();
             }

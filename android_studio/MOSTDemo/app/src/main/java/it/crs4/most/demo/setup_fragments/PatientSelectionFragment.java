@@ -8,10 +8,10 @@ import it.crs4.most.demo.R;
 import it.crs4.most.demo.TeleconsultationSetup;
 import it.crs4.most.demo.models.Patient;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class PatientSelectionFragment extends SetupFragment {
+    private static final String TAG = "PatientsSelectionFrag";
     private ArrayList<Patient> mPatients;
     private ArrayAdapter<Patient> mPatientArrayAdapter;
 
@@ -40,13 +41,7 @@ public class PatientSelectionFragment extends SetupFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        FloatingActionButton addPatient = (FloatingActionButton) v.findViewById(R.id.button_patients_add);
-        addPatient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTeleconsultationSetup.setPatient(null);
-            }
-        });
+//        FloatingActionButton addPatient = (FloatingActionButton) v.findViewById(R.id.button_patients_add);
 
         ListView listView = (ListView) v.findViewById(R.id.patients_list);
         mPatients = new ArrayList<>();
@@ -55,13 +50,22 @@ public class PatientSelectionFragment extends SetupFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Patient selected = mPatients.get(position);
-                getTeleconsultationSetup().setPatient(selected);
+                Patient selected = mPatientArrayAdapter.getItem(position);
+                mTeleconsultationSetup.setPatient(selected);
                 stepDone();
             }
         });
-        retrievePatients();
+//        retrievePatients();
         return v;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            mPatientArrayAdapter.clear();
+            mPatientArrayAdapter.addAll(mTeleconsultationSetup.getPatients());
+            mPatientArrayAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -72,13 +76,6 @@ public class PatientSelectionFragment extends SetupFragment {
     @Override
     protected int getLayoutContent() {
         return R.layout.patient_selection_fragment;
-    }
-
-    private void retrievePatients() {
-        mPatients.add(new Patient("Mario", "Rossi", "MRSI1234636R243R"));
-        mPatients.add(new Patient("Carlo", "Verdi", "VRLI1334636R243P"));
-        mPatients.add(new Patient("Gianni", "Bianchi", "BHGI3334636R243V"));
-        mPatientArrayAdapter.notifyDataSetChanged();
     }
 
     public class PatientAdapter extends ArrayAdapter<Patient> {

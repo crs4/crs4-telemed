@@ -97,5 +97,7 @@
     <string name="load_taskgroups_message">Loading taskgroups associated to this device. Please wait…</string>
     <string name="check_login_title">Checking login</string>
     <string name="check_login_message">Checking if your session is still valid</string>
+    <string name="search_patient">Search Patient</string>
+    <string name="search">Search</string>
 
 </resources>

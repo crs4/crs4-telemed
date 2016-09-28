@@ -96,7 +96,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 
     public void nextStep() {
         int newItem = mVpPager.getCurrentItem() + 1;
-        if (newItem >= mVpPager.getChildCount()) {
+        if (newItem == mSetupFragments.length) {
             startTeleconsultationActivity(mTeleconsultationSetup.getTeleconsultation());
         }
         else {

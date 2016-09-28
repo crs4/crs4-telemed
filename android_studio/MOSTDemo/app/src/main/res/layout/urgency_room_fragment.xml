@@ -11,29 +11,29 @@
 
         <Spinner
             android:id="@+id/urgency_spinner"
-            android:layout_width="300dp"
-            android:layout_height="70dp"
-            android:layout_margin="10dp"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_margin="@dimen/default_edge_margin"
             android:background="@drawable/textview_shape"
             android:dropDownVerticalOffset="70dp"
             android:gravity="start"/>
 
         <Spinner
             android:id="@+id/room_spinner"
-            android:layout_width="300dp"
-            android:layout_height="70dp"
-            android:layout_margin="10dp"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_margin="@dimen/default_edge_margin"
             android:background="@drawable/textview_shape"
             android:dropDownVerticalOffset="70dp"
             android:gravity="start"/>
 
         <Button
             android:id="@+id/confirm_button"
-            android:layout_width="300dp"
-            android:layout_height="70dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_marginBottom="@dimen/default_edge_margin"
+            android:layout_marginLeft="@dimen/default_edge_margin"
+            android:layout_marginRight="@dimen/default_edge_margin"
             android:layout_marginTop="20dp"
             android:background="@drawable/circle_button"
             android:text="@string/confirm"

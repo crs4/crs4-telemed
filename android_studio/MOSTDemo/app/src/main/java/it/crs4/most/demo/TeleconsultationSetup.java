@@ -1,6 +1,7 @@
 package it.crs4.most.demo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import it.crs4.most.demo.models.Patient;
 import it.crs4.most.demo.models.Room;
@@ -12,6 +13,7 @@ public class TeleconsultationSetup implements Serializable{
     private Teleconsultation mTeleconsultation;
     private String mUrgency;
     private Room mRoom;
+    private ArrayList<Patient> mPatients;
 
     public TeleconsultationSetup() {
     }
@@ -30,6 +32,14 @@ public class TeleconsultationSetup implements Serializable{
 
     public void setTeleconsultation(Teleconsultation teleconsultation) {
         mTeleconsultation = teleconsultation;
+    }
+
+    public void setPatients(ArrayList<Patient> patients) {
+        mPatients = patients;
+    }
+
+    public ArrayList<Patient> getPatients() {
+        return mPatients;
     }
 
     public String getUrgency() {

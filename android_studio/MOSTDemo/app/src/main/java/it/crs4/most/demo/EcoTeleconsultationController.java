@@ -8,6 +8,7 @@ import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
 import it.crs4.most.demo.eco.BaseEcoTeleconsultationActivity;
 import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
 import it.crs4.most.demo.models.Teleconsultation;
+import it.crs4.most.demo.setup_fragments.PatientSearchFragment;
 import it.crs4.most.demo.setup_fragments.PatientSelectionFragment;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
 import it.crs4.most.demo.setup_fragments.SummaryFragment;
@@ -20,6 +21,7 @@ public class EcoTeleconsultationController extends TeleconsultationController {
     public SetupFragment[] getFragments(TeleconsultationSetup teleconsultationSetup, String action) {
         if (action.equals(TeleconsultationSetupActivity.ACTION_NEW_TELE)) {
             return new SetupFragment[] {
+                PatientSearchFragment.newInstance(teleconsultationSetup),
                 PatientSelectionFragment.newInstance(teleconsultationSetup),
                 UrgencyRoomFragment.newInstance(teleconsultationSetup),
                 SummaryFragment.newInstance(teleconsultationSetup)
