@@ -178,7 +178,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
 
         if((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))){
-//            getWindow().addFlags(0x80000000);
+            getWindow().addFlags(0x80000000);
 //            Log.d(TAG, "loading optical files");
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
         }
@@ -211,13 +211,13 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        float [] trans = new float[16];
 //        Matrix.setIdentityM(trans, 0);
 
-        float [] trans = new float []{
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                0, -100, 0, 1
-        };
-        hiro.setModelMatrix(trans);
+//        float [] trans = new float []{
+//                1, 0, 0, 0,
+//                0, 1, 0, 0,
+//                0, 0, 1, 0,
+//                0, -100, 0, 1
+//        };
+//        hiro.setModelMatrix(trans);
         Marker multi = MarkerFactory.getMarker("multi;Data/multi/markers.dat");
 
         Arrow arrow = new Arrow("arrow");
@@ -382,13 +382,16 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
         Log.d(TAG, "cameraPreviewStarted");
-        if (arInitialized) {
-            ARToolKit.getInstance().cleanup();
-            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
-                this.finish();
-            }
-            arInitialized = false;
+        if(arInitialized){
+            return;
         }
+//        if (arInitialized) {
+//            ARToolKit.getInstance().cleanup();
+//            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
+//                this.finish();
+//            }
+//            arInitialized = false;
+//        }
         if (ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
             Log.d(TAG, String.format("Build.MANUFACTURER %s", Build.MANUFACTURER));
             Log.d(TAG, String.format("Build.MODEL %s", Build.MODEL));
@@ -407,7 +410,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
             Log.i("ARActivity", "getGLView(): Camera initialised");
 
-
+            arInitialized = true;
         }
         else {
             Log.e("ARActivity", "getGLView(): Error initialising camera. Cannot continue.");
@@ -419,7 +422,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     public void cameraPreviewFrame(byte[] frame) {
-        if (this.firstUpdate && !arInitialized) {
+        if (this.firstUpdate) {
 
             if (this.renderer.configureARScene()) {
                 Log.i("ARActivity", "cameraPreviewFrame(): Scene configured successfully");
