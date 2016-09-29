@@ -11,6 +11,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from most.web.demographics.models import Patient
 from most.web.users.models import MostUser, TaskGroup
 from most.web.streaming.models import StreamingDevice
 from most.web.utils import pkgen
@@ -118,6 +119,7 @@ class Teleconsultation(models.Model):
     severity = models.CharField(_('Severity State'), choices=URGENCY_STATE, max_length=20, default="NORMAL")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    patient = models.ForeignKey(Patient, blank=True, null=True)
 
     def __unicode__(self):
         return '[Teleconsultation: {uuid} - {description} - Taskgroup: {tgname}]'.format(uuid=self.uuid, description=self.description, tgname=self.task_group.name)
@@ -129,6 +131,10 @@ class Teleconsultation(models.Model):
             'description': self.description,
             'created': calendar.timegm(self.created.timetuple()),
             'severity': self.severity,
+            'patient': {'id': self.patient.uid, 'account_number': self.patient.account_number,
+                        'first_name': self.patient.first_name, 'last_name': self.patient.last_name,
+                        'gender': self.patient.gender, 'birth_date': calendar.timegm(self.patient.birth_date.timetuple())}
+            if self.patient is not None else None,
             'applicant' : { 'firstname': self.applicant.first_name, 'lastname': self.applicant.last_name,
                 'username' : self.applicant.username , 'voip_data' : None if len(self.applicant.account_set.all())<1  else  self.applicant.account_set.all()[0].json_dict},
             'specialist' : None if self.specialist == None else { 'username' : self.specialist.get_full_name() ,

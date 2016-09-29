@@ -33,7 +33,6 @@ public class PatientSearchFragment extends SetupFragment {
     private TextView mPatientIDText;
     private TextView mPatientNameText;
     private TextView mPatientSurnameText;
-    private Button mSearchPatientButton;
 
     public static PatientSearchFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         PatientSearchFragment fragment = new PatientSearchFragment();
@@ -59,8 +58,8 @@ public class PatientSearchFragment extends SetupFragment {
         mPatientIDText = (TextView) v.findViewById(R.id.patient_id_text);
         mPatientNameText = (TextView) v.findViewById(R.id.patient_name_text);
         mPatientSurnameText = (TextView) v.findViewById(R.id.patient_surname_text);
-        mSearchPatientButton = (Button) v.findViewById(R.id.search_patient_button);
-        mSearchPatientButton.setOnClickListener(new View.OnClickListener() {
+        Button searchPatientButton = (Button) v.findViewById(R.id.search_patient_button);
+        searchPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String patientID = mPatientIDText.getText() != null ? mPatientIDText.getText().toString() : null;
@@ -82,10 +81,11 @@ public class PatientSearchFragment extends SetupFragment {
                                         ArrayList<Patient> patients = new ArrayList<>();
                                         for (int i = 0; i < patientsData.length(); i++) {
                                             JSONObject patientData = (JSONObject) patientsData.get(i);
-                                            String patientId = patientData.getString("account_number");
-                                            String patientName = patientData.getString("first_name");
-                                            String patientSurname = patientData.getString("last_name");
-                                            patients.add(new Patient(patientName, patientSurname, patientId));
+                                            String uid = patientData.getString("uid");
+                                            String accountNumber = patientData.getString("account_number");
+                                            String firstName = patientData.getString("first_name");
+                                            String lastName = patientData.getString("last_name");
+                                            patients.add(new Patient(uid, firstName, lastName, accountNumber));
                                         }
                                         mTeleconsultationSetup.setPatients(patients);
                                         stepDone();
@@ -106,20 +106,18 @@ public class PatientSearchFragment extends SetupFragment {
 
                     restClient.searchPatient(null, patientID, patientName, patientSurname, listener, errorListener);
                 }
-                else {
-                    Log.d(TAG, "STRANGE");
-//                    Log.d(TAG, "pid: " +  patientID + " name: " + patientName + " surname: " + patientSurname);
-                }
             }
         });
-        return v;
-    }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mPatientIDText.clearFocus();
-        view.clearFocus();
+        Button anonymousButton = (Button) v.findViewById(R.id.anonymous_patient_button);
+        anonymousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stepDone();
+            }
+        });
+
+        return v;
     }
 
     @Override

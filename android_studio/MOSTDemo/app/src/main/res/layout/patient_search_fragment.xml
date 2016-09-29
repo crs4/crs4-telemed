@@ -1,43 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="center_horizontal"
-              android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/patient_id_text"
-        android:layout_width="@dimen/input_view_width"
-        android:layout_height="@dimen/input_view_height"
-        android:layout_margin="@dimen/default_edge_margin"
-        android:nextFocusDown="@+id/patient_name_text"
-        android:hint="Patient ID"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/patient_name_text"
-        android:layout_width="@dimen/input_view_width"
-        android:layout_height="@dimen/input_view_height"
-        android:layout_margin="@dimen/default_edge_margin"
-        android:nextFocusDown="@+id/patient_surname_text"
-        android:hint="Patient Name"/>
+        <EditText
+            android:id="@+id/patient_id_text"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="@dimen/default_edge_margin"
+            android:layout_marginStart="@dimen/default_edge_margin"
+            android:hint="Patient ID"
+            android:nextFocusDown="@+id/patient_name_text"/>
 
-    <EditText
-        android:id="@+id/patient_surname_text"
-        android:layout_width="@dimen/input_view_width"
-        android:layout_height="@dimen/input_view_height"
-        android:layout_margin="@dimen/default_edge_margin"
-        android:hint="Patient Surname"/>
+        <EditText
+            android:id="@+id/patient_name_text"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="@dimen/default_edge_margin"
+            android:layout_marginStart="@dimen/default_edge_margin"
+            android:hint="Patient Name"
+            android:nextFocusDown="@+id/patient_surname_text"/>
 
-    <Button
-        android:id="@+id/search_patient_button"
-        android:layout_width="@dimen/input_view_width"
-        android:layout_height="@dimen/input_view_height"
-        android:layout_marginBottom="@dimen/default_edge_margin"
-        android:layout_marginLeft="@dimen/default_edge_margin"
-        android:layout_marginRight="@dimen/default_edge_margin"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/circle_button"
-        android:text="@string/search_patient"
-        android:textColor="#FFFFFF"/>
+        <EditText
+            android:id="@+id/patient_surname_text"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="@dimen/default_edge_margin"
+            android:layout_marginStart="@dimen/default_edge_margin"
+            android:hint="Patient Surname"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/search_patient_button"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_marginBottom="@dimen/default_edge_margin"
+            android:layout_marginLeft="@dimen/default_edge_margin"
+            android:layout_marginRight="@dimen/default_edge_margin"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/circle_button"
+            android:text="@string/search_patient"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/anonymous_patient_button"
+            android:layout_width="@dimen/input_view_width"
+            android:layout_height="@dimen/input_view_height"
+            android:layout_marginBottom="@dimen/default_edge_margin"
+            android:layout_marginLeft="@dimen/default_edge_margin"
+            android:layout_marginRight="@dimen/default_edge_margin"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/circle_button"
+            android:text="@string/use_anonymous"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+</ScrollView>

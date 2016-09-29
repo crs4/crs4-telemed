@@ -18,13 +18,15 @@ public class Teleconsultation implements Serializable {
     private String mDescription;
     private String mSeverity;
     private User mApplicant;
+    private Patient mPatient;
     private TeleconsultationSession mSession;
 
-    public Teleconsultation(String id, String description, String severity, User applicant) {
+    public Teleconsultation(String id, String description, String severity, User applicant, Patient patient) {
         mId = id;
         mDescription = description;
         mSeverity = severity;
         mApplicant = applicant;
+        mPatient = patient;
     }
 
     public String getId() {
@@ -55,6 +57,10 @@ public class Teleconsultation implements Serializable {
         mApplicant = applicant;
     }
 
+    public Patient getPatient() {
+        return mPatient;
+    }
+
     public static Teleconsultation fromJSON(Context context, JSONObject teleconsultationData,
                                             String role) throws TeleconsultationException {
         String id;
@@ -72,7 +78,7 @@ public class Teleconsultation implements Serializable {
             throw new TeleconsultationException();
         }
 
-        Teleconsultation t = new Teleconsultation(id, description, severity, applicant);
+        Teleconsultation t = new Teleconsultation(id, description, severity, applicant, null);
         try {
             JSONObject lastSessionData = teleconsultationData.getJSONObject("last_session");
             TeleconsultationSession lastSession = TeleconsultationSession.fromJSON(context, lastSessionData, role);

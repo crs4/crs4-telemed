@@ -36,6 +36,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
     private TeleconsultationController mTcController;
     private ViewPager mVpPager;
     private TeleconsultationSetup mTeleconsultationSetup;
+    private int mNavDirection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,16 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
                 @Override
                 public void onStepDone() {
                     TeleconsultationSetupActivity.this.nextStep();
+                }
+
+                @Override
+                public void onSkipStep() {
+                    if (mNavDirection == 0) {
+                        TeleconsultationSetupActivity.this.nextStep();
+                    }
+                    else {
+                        TeleconsultationSetupActivity.this.previousStep();
+                    }
                 }
             });
         }
@@ -86,8 +97,10 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        mNavDirection = 1;
         if (mVpPager.getCurrentItem() != 0) {
             previousStep();
+            mSetupFragments[mVpPager.getCurrentItem()].onShow();
         }
         else {
             super.onBackPressed();
@@ -96,11 +109,13 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 
     public void nextStep() {
         int newItem = mVpPager.getCurrentItem() + 1;
+        mNavDirection = 0;
         if (newItem == mSetupFragments.length) {
             startTeleconsultationActivity(mTeleconsultationSetup.getTeleconsultation());
         }
         else {
             mVpPager.setCurrentItem(newItem);
+            mSetupFragments[mVpPager.getCurrentItem()].onShow();
         }
     }
 

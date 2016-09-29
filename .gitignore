@@ -4,6 +4,7 @@ server/most/web/authentication
 server/most/web/utils
 server/most/web/streaming
 server/most/web/voip
+server/most/web/demographics
 libs
 
 #default configurations and logs

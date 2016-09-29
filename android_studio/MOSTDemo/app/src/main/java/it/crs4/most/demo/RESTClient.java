@@ -19,18 +19,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * curl -X POST -d "client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=password&username=YOUR_USERNAME&password=YOUR_PASSWORD" http://localhost:8000/oauth2/access_token/
@@ -267,7 +262,7 @@ public class RESTClient {
      */
     public void createNewTeleconsultation(final String description,
                                           final String severity,
-                                          final String roomId,
+                                          final String patientUid,
                                           String accessToken,
                                           Response.Listener<String> listener,
                                           Response.ErrorListener errorListener) {
@@ -279,8 +274,9 @@ public class RESTClient {
                 Map<String, String> params = new HashMap<>();
                 params.put("description", description);
                 params.put("severity", severity);
-                params.put("room_uuid", roomId);
-
+                if (patientUid != null) {
+                    params.put("patient_uid", patientUid);
+                }
                 return params;
             }
         };

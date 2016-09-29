@@ -7,19 +7,18 @@
 # See license-GPLv2.txt or license-MIT.txt
 #
 
-
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-import datetime, json
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
-from most.web.authentication.decorators import oauth2_required
-from most.web.voip.models import Account, Buddy
-from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room
-from most.web.users.models import TaskGroup, MostUser
-from django.utils.translation import ugettext_lazy as _
+import datetime
+import json
 import logging
 from datetime import datetime, timedelta, time
+
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from most.web.demographics.models import Patient
+from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room
+
+from most.web.authentication.decorators import oauth2_required
+from most.web.users.models import TaskGroup
 
 # Get an instance of a logger
 logger = logging.getLogger('most.web.teleconsultation')
@@ -135,18 +134,19 @@ def create_teleconsultation(request):
     :return: the uuid of created teleconsultation
     """
     # check parameters
-    if set(['room_uuid', 'description']) > set(request.REQUEST):
+    if set(['description', 'patient_uuid']) > set(request.REQUEST):
         return HttpResponse(json.dumps({'success': False,
                                         'error': {'code': 501, 'message': 'missing parameters'}}),
                             content_type="application/json")
 
-    # check and retrieve room
     try:
-        room = Room.objects.get(uuid=request.REQUEST['room_uuid'])
-    except Room.DoesNotExist:
+        patient = Patient.objects.get(uid=request.REQUEST['patient_uid'])
+    except Patient.DoesNotExist:
         return HttpResponse(json.dumps({'success': False,
-                                        'error': {'code': 502, 'message': 'invalid room uuid'}}),
+                                        'error': {'code': 503, 'message': 'invalid patient'}}),
                             content_type="application/json")
+    except KeyError:
+        patient = None
 
     # make teleconsultation
     teleconsultation = Teleconsultation()
@@ -154,6 +154,7 @@ def create_teleconsultation(request):
     teleconsultation.description = request.REQUEST['description']
     teleconsultation.state = 'NEW'
     teleconsultation.task_group = request.taskgroup
+    teleconsultation.patient = patient
     if 'severity' in request.REQUEST:
         teleconsultation.severity = request.REQUEST['severity']
 

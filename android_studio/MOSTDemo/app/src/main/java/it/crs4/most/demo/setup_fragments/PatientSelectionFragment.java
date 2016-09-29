@@ -1,17 +1,9 @@
 package it.crs4.most.demo.setup_fragments;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import it.crs4.most.demo.R;
-import it.crs4.most.demo.TeleconsultationSetup;
-import it.crs4.most.demo.models.Patient;
-
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import it.crs4.most.demo.R;
+import it.crs4.most.demo.TeleconsultationSetup;
+import it.crs4.most.demo.models.Patient;
 
 public class PatientSelectionFragment extends SetupFragment {
     private static final String TAG = "PatientsSelectionFrag";
@@ -55,13 +54,16 @@ public class PatientSelectionFragment extends SetupFragment {
                 stepDone();
             }
         });
-//        retrievePatients();
         return v;
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
+    public void onShow() {
+//            Log.d(TAG, "patients = " + mTeleconsultationSetup.getPatients());
+        if (mTeleconsultationSetup.getPatients() == null) {
+            skipStep();
+        }
+        else {
             mPatientArrayAdapter.clear();
             mPatientArrayAdapter.addAll(mTeleconsultationSetup.getPatients());
             mPatientArrayAdapter.notifyDataSetChanged();
@@ -78,18 +80,19 @@ public class PatientSelectionFragment extends SetupFragment {
         return R.layout.patient_selection_fragment;
     }
 
-    public class PatientAdapter extends ArrayAdapter<Patient> {
+    private class PatientAdapter extends ArrayAdapter<Patient> {
 
-        public PatientAdapter(PatientSelectionFragment fragment, int textViewId, List<Patient> objects) {
+        PatientAdapter(PatientSelectionFragment fragment, int textViewId, List<Patient> objects) {
             super(fragment.getActivity(), textViewId, objects);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             return getViewOptimize(position, convertView, parent);
         }
 
-        public View getViewOptimize(int position, View convertView, ViewGroup parent) {
+        View getViewOptimize(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
@@ -105,12 +108,12 @@ public class PatientSelectionFragment extends SetupFragment {
             }
             Patient patient = getItem(position);
             viewHolder.fullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
-            viewHolder.id.setText(patient.getId());
+            viewHolder.id.setText(patient.getAccountNumber());
             return convertView;
         }
 
         private class ViewHolder {
-            public TextView fullName;
+            TextView fullName;
             public TextView id;
         }
     }

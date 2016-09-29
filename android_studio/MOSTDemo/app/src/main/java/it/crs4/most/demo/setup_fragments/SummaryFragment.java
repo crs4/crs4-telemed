@@ -87,8 +87,13 @@ public class SummaryFragment extends SetupFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             Patient patient = mTeleconsultationSetup.getPatient();
-            mTxtPatientFullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
-            mPatientId.setText(patient.getId());
+            if (patient == null) {
+                mTxtPatientFullName.setText(R.string.unknown);
+            }
+            else {
+                mTxtPatientFullName.setText(String.format("%s %s", patient.getName(), patient.getSurname()));
+                mPatientId.setText(patient.getAccountNumber());
+            }
             mUrgency.setText(mTeleconsultationSetup.getUrgency());
             mRoom.setText(mTeleconsultationSetup.getRoom().toString());
         }
@@ -107,8 +112,7 @@ public class SummaryFragment extends SetupFragment {
     private void createNewTeleconsultation() {
         final String description = "Teleconsultation 0001";  //TODO: this should be editable in the summary
         final String severity = mTeleconsultationSetup.getUrgency();
-        final Room room = mTeleconsultationSetup.getRoom();
-
+        final Patient patient = mTeleconsultationSetup.getPatient();
         Response.Listener<String> listener = new ResponseHandlerDecorator<>(getActivity(),
             new Response.Listener<String>() {
                 @Override
@@ -118,7 +122,7 @@ public class SummaryFragment extends SetupFragment {
                         String uuid = tcData.getJSONObject("data").
                             getJSONObject("teleconsultation").
                             getString("uuid");
-                        Teleconsultation t = new Teleconsultation(uuid, description, severity, null);
+                        Teleconsultation t = new Teleconsultation(uuid, description, severity, null, patient);
 
                         createTeleconsultationSession(t);
                     }
@@ -129,10 +133,10 @@ public class SummaryFragment extends SetupFragment {
                 }
             });
 
-        mRESTClient.createNewTeleconsultation(description, severity, room.getId(), getAccessToken(),
+        String patientUid = patient != null ? patient.getUid() : null;
+        mRESTClient.createNewTeleconsultation(description, severity, patientUid, getAccessToken(),
             listener,
             new Response.ErrorListener() {
-
                 @Override
                 public void onErrorResponse(VolleyError err) {
                     Log.e(TAG, "Error creating the new teleconsultation: " + err);
@@ -217,7 +221,7 @@ public class SummaryFragment extends SetupFragment {
                         String state = res.getJSONObject("data").getJSONObject("session").getString("state");
                         String specAppAddress = res.getJSONObject("data").getJSONObject("session").getString("spec_app_address");
                         if (state.equals(TeleconsultationSessionState.WAITING.name())) {
-                            mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 10000);
+                            mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 5000);
                         }
                         else if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
                             dialog.dismiss();
@@ -235,13 +239,12 @@ public class SummaryFragment extends SetupFragment {
                 }
             }
         );
+
         mWaitForSpecialistHandler = new Handler();
         mWaitForSpecialistTask = new Runnable() {
             @Override
             public void run() {
-                mRESTClient.getSessionState(
-                    tc.getLastSession().getId(),
-                    getAccessToken(),
+                mRESTClient.getSessionState(tc.getLastSession().getId(), getAccessToken(),
                     listener,
                     new Response.ErrorListener() {
                         @Override
@@ -249,7 +252,8 @@ public class SummaryFragment extends SetupFragment {
                             Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
                             dialog.dismiss();
                         }
-                    });
+                    }
+                );
             }
         };
         mWaitForSpecialistHandler.post(mWaitForSpecialistTask);

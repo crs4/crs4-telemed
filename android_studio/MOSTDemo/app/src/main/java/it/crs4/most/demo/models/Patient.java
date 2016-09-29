@@ -5,18 +5,24 @@ import java.io.Serializable;
 public class Patient implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String mId;
+    private String mUid;
+    private String mAccountNumber;
     private String mName;
     private String mSurname;
 
-    public Patient(String name, String surname, String id) {
-        mId = id;
+    public Patient(String uid, String name, String surname, String accountNumber) {
+        mUid = uid;
+        mAccountNumber = accountNumber;
         mName = name;
         mSurname = surname;
     }
 
-    public String getId() {
-        return mId;
+    public String getUid() {
+        return mUid;
+    }
+
+    public String getAccountNumber() {
+        return mAccountNumber;
     }
 
     public String getName() {

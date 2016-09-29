@@ -63,6 +63,8 @@ public abstract class SetupFragment extends Fragment {
         return super.getContext();
     }
 
+    public void onShow() {}
+
     public TeleconsultationSetup getTeleconsultationSetup() {
         return mTeleconsultationSetup;
     }
@@ -74,6 +76,12 @@ public abstract class SetupFragment extends Fragment {
     protected void stepDone() {
         for (StepEventListener listener: mEventListeners) {
             listener.onStepDone();
+        }
+    }
+
+    protected void skipStep() {
+        for (StepEventListener listener: mEventListeners) {
+            listener.onSkipStep();
         }
     }
 
@@ -89,5 +97,7 @@ public abstract class SetupFragment extends Fragment {
 
     public interface StepEventListener extends EventListener {
         void onStepDone();
+
+        void onSkipStep();
     }
 }

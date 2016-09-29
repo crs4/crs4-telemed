@@ -31,7 +31,8 @@
         </activity>
         <activity
             android:name=".TeleconsultationSetupActivity"
-            android:label="@string/teleconsultation_setup">
+            android:label="@string/teleconsultation_setup"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MostDemoActivity"/>
