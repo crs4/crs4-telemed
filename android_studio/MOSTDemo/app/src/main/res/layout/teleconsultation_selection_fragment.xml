@@ -10,6 +10,21 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/text_tc_patient"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/default_edge_margin"
+            android:paddingLeft="@dimen/default_edge_margin"
+            android:paddingRight="@dimen/default_edge_margin"
+            android:paddingStart="@dimen/default_edge_margin"
+            android:text="@string/patient"
+            android:textSize="@dimen/textview_text_size"
+            android:textStyle="bold"/>
+
+        <TextView
             android:id="@+id/text_tc_description"
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="0dp"
@@ -20,7 +35,7 @@
             android:paddingLeft="@dimen/default_edge_margin"
             android:paddingRight="@dimen/default_edge_margin"
             android:paddingStart="@dimen/default_edge_margin"
-            android:text="Description"
+            android:text="@string/description"
             android:textSize="@dimen/textview_text_size"
             android:textStyle="bold"/>
 
@@ -35,7 +50,7 @@
             android:paddingLeft="@dimen/default_edge_margin"
             android:paddingRight="@dimen/default_edge_margin"
             android:paddingStart="@dimen/default_edge_margin"
-            android:text="Applicant"
+            android:text="@string/applicant"
             android:textSize="@dimen/textview_text_size"
             android:textStyle="bold"/>
 
@@ -50,7 +65,7 @@
             android:paddingLeft="@dimen/default_edge_margin"
             android:paddingRight="@dimen/default_edge_margin"
             android:paddingStart="@dimen/default_edge_margin"
-            android:text="Urgency"
+            android:text="@string/urgency"
             android:textSize="@dimen/textview_text_size"
             android:textStyle="bold"/>
 

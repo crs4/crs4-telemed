@@ -59,7 +59,6 @@ public class PatientSelectionFragment extends SetupFragment {
 
     @Override
     public void onShow() {
-//            Log.d(TAG, "patients = " + mTeleconsultationSetup.getPatients());
         if (mTeleconsultationSetup.getPatients() == null) {
             skipStep();
         }

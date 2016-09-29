@@ -116,7 +116,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                 final JSONArray teleconsultations = response
                                     .getJSONObject("data")
                                     .getJSONArray("teleconsultations");
-
+                                mTeleconsultations = new ArrayList<>();
                                 for (int i = 0; i < teleconsultations.length(); i++) {
                                     JSONObject item = teleconsultations.getJSONObject(i);
 
@@ -128,8 +128,10 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                                     catch (TeleconsultationException e) {
                                         Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                                     }
-                                    addTeleconsultation(t);
+                                    mTeleconsultations.add(t);
                                 }
+                                mAdapter.clear();
+                                mAdapter.addAll(mTeleconsultations);
                                 mAdapter.notifyDataSetChanged();
                                 if (mTeleconsultations.size() == 0) {
                                     mListView.setEmptyView(mEmptyView);
@@ -156,15 +158,6 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         mGetTeleconsultationsHandler.post(mGetTeleconsultationsTask);
     }
 
-    private void addTeleconsultation(Teleconsultation teleconsultation) {
-        for (Teleconsultation t : mTeleconsultations) {
-            if (t.getId().equals(teleconsultation.getId())) {
-                return;
-            }
-        }
-        mTeleconsultations.add(teleconsultation);
-    }
-
     private static class TeleconsultationAdapter extends ArrayAdapter<Teleconsultation> {
 
         TeleconsultationAdapter(TeleconsultationSelectionFragment fragment,
@@ -181,6 +174,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.teleconsultation_selection_fragment_item, null);
                 viewHolder = new ViewHolder();
+                viewHolder.patient = (TextView) convertView.findViewById(R.id.text_tc_patient);
                 viewHolder.description = (TextView) convertView.findViewById(R.id.text_tc_description);
                 viewHolder.applicant = (TextView) convertView.findViewById(R.id.text_tc_applicant);
                 viewHolder.urgency = (TextView) convertView.findViewById(R.id.text_tc_urgency);
@@ -190,6 +184,12 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             Teleconsultation tc = getItem(position);
+            if (tc.getPatient() == null) {
+                viewHolder.patient.setText(R.string.anonymous);
+            }
+            else {
+                viewHolder.patient.setText(tc.getPatient().toString());
+            }
             viewHolder.description.setText(tc.getDescription());
             viewHolder.applicant.setText(tc.getApplicant().getFirstName() + " " + tc.getApplicant().getLastName());
             viewHolder.urgency.setText(tc.getSeverity());
@@ -197,6 +197,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         }
 
         private class ViewHolder {
+            TextView patient;
             TextView description;
             TextView applicant;
             TextView urgency;

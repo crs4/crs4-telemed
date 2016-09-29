@@ -138,8 +138,8 @@ class Teleconsultation(models.Model):
             'description': self.description,
             'created': calendar.timegm(self.created.timetuple()),
             'severity': self.severity,
-            'patient': {'id': self.patient.uid, 'account_number': self.patient.account_number,
-                        'first_name': self.patient.first_name, 'last_name': self.patient.last_name,
+            'patient': {'uid': self.patient.uid, 'account_number': self.patient.account_number,
+                        'firstname': self.patient.first_name, 'lastname': self.patient.last_name,
                         'gender': self.patient.gender, 'birth_date': calendar.timegm(self.patient.birth_date.timetuple())}
             if self.patient is not None else None,
             'applicant' : { 'firstname': self.applicant.first_name, 'lastname': self.applicant.last_name,

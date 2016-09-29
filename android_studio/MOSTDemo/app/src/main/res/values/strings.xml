@@ -102,5 +102,12 @@
     <string name="search">Search</string>
     <string name="use_anonymous">Use anonymous</string>
     <string name="unknown">Unknown</string>
+    <string name="patient">Patient</string>
+    <string name="description">Description</string>
+    <string name="applicant">Applicant</string>
+    <string name="patient_id">Patient ID</string>
+    <string name="patient_name">Patient Name</string>
+    <string name="patient_surname">Patient Surname</string>
+    <string name="anonymous">Anonymous</string>
 
 </resources>

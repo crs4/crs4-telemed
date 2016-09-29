@@ -113,6 +113,8 @@ public class PatientSearchFragment extends SetupFragment {
         anonymousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTeleconsultationSetup.setPatient(null);
+                mTeleconsultationSetup.setPatients(null);
                 stepDone();
             }
         });

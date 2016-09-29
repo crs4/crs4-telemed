@@ -17,7 +17,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="@dimen/default_edge_margin"
             android:layout_marginStart="@dimen/default_edge_margin"
-            android:hint="Patient ID"
+            android:hint="@string/patient_id"
             android:nextFocusDown="@+id/patient_name_text"/>
 
         <EditText
@@ -28,7 +28,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="@dimen/default_edge_margin"
             android:layout_marginStart="@dimen/default_edge_margin"
-            android:hint="Patient Name"
+            android:hint="@string/patient_name"
             android:nextFocusDown="@+id/patient_surname_text"/>
 
         <EditText
@@ -39,7 +39,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="@dimen/default_edge_margin"
             android:layout_marginStart="@dimen/default_edge_margin"
-            android:hint="Patient Surname"/>
+            android:hint="@string/patient_surname"/>
 
         <Button
             android:id="@+id/search_patient_button"

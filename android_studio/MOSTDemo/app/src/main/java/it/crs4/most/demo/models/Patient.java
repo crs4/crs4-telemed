@@ -1,6 +1,11 @@
 package it.crs4.most.demo.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+
+import it.crs4.most.demo.TeleconsultationException;
 
 public class Patient implements Serializable {
 
@@ -32,5 +37,25 @@ public class Patient implements Serializable {
     public String getSurname() {
         return mSurname;
     }
+
+    public static Patient fromJSON(JSONObject patientData) throws TeleconsultationException {
+        try {
+            String uid = patientData.getString("uid");
+            String accountNumber = patientData.getString("account_number");
+            String firstname = patientData.getString("firstname");
+            String lastname =  patientData.getString("lastname");
+            return new Patient(uid, firstname, lastname, accountNumber);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            throw new TeleconsultationException();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return getName() + " " + getSurname();
+    }
+
 
 }
