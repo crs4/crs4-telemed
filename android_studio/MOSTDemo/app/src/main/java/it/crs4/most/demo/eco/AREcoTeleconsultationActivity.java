@@ -10,8 +10,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ConfigurationInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -41,10 +46,14 @@ import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.Teleconsultation;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory.Marker;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
+import it.crs4.most.visualization.augmentedreality.mesh.Cube;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
+import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
@@ -53,7 +62,7 @@ import jp.epson.moverio.bt200.DisplayControl;
 
 
 public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity implements
-    CameraEventListener {
+    CameraEventListener, SensorEventListener {
     protected static final String TAG = "LocalARActivity";
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
@@ -63,6 +72,11 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private OpticalARToolkit mOpticalARToolkit;
     private MeshManager meshManager = new MeshManager();
     private boolean arInitialized = false;
+    private boolean arEnabled = false;
+    private ZMQSubscriber subscriber;
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    protected float accX, accY, accZ;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
@@ -79,6 +93,19 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         }
     };
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        accX = event.values[0];
+        accY = event.values[1];
+        accZ = event.values[2];
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
 
     public static class RemoteControlReceiver extends BroadcastReceiver {
         String TAG = "RemoteControlReceiver";
@@ -152,7 +179,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         if((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))){
             getWindow().addFlags(0x80000000);
-            Log.d(TAG, "loading optical files");
+//            Log.d(TAG, "loading optical files");
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
         }
 
@@ -167,29 +194,56 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
         Log.d(TAG, "SpecApp Address: " + specAppAddress);
-        ZMQSubscriber subscriber = new ZMQSubscriber(specAppAddress);
+        subscriber = new ZMQSubscriber(specAppAddress);
         Thread subThread = new Thread(subscriber);
         subThread.start();
 
-        Arrow arrow = new Arrow("arrow");
-        arrow.setMarker("single;Data/hiro.patt;80");
-        meshManager.addMesh(arrow);
+        float [] redColor = new float []{
+                0, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f
+        };
+
+//        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
+        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
+//        float [] trans = new float[16];
+//        Matrix.setIdentityM(trans, 0);
+
+//        float [] trans = new float []{
+//                1, 0, 0, 0,
+//                0, 1, 0, 0,
+//                0, 0, 1, 0,
+//                0, -100, 0, 1
+//        };
+//        hiro.setModelMatrix(trans);
+//        Marker multi = MarkerFactory.getMarker("multi;Data/multi/markers.dat");
+
+//        Arrow arrow = new Arrow("arrow");
+//        arrow.setMarker(hiro);
+//        meshManager.addMesh(arrow);
 //        Arrow arrow2 = new Arrow("arrow2");
 //        arrow2.setMarker("single;Data/kanji.patt;80");
 //        meshManager.addMesh(arrow2);
 
-        Arrow ecoArrow = new Arrow("ecoArrow");
-        ecoArrow.setMarker("multi;Data/multi/markers.dat");
+        Pyramid ecoArrow = new Pyramid(15f, 15f, 15f, "ecoArrow");
+        ecoArrow.setMarker(hiro);
+        ecoArrow.setColors(redColor);
         meshManager.addMesh(ecoArrow);
 
 
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
-            renderer = new OpticalRenderer(this, subscriber, mOpticalARToolkit, meshManager);
+            renderer = new OpticalRenderer(this, mOpticalARToolkit, meshManager);
         }
         else {
-            renderer = new PubSubARRenderer(this, subscriber, meshManager);
+            renderer = new PubSubARRenderer(this,  meshManager);
         }
+        renderer.setEnabled(arEnabled);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
     }
 
     @Override
@@ -270,6 +324,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
+        glView.setSubscriber(subscriber);
+        glView.setMeshManager(meshManager);
 
         glView.setRenderMode(0);
         glView.setZOrderMediaOverlay(true);
@@ -280,6 +336,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         if (this.glView != null) {
             this.glView.onResume();
         }
+
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -292,6 +350,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         this.mainLayout.removeView(this.glView);
         this.mainLayout.removeView(this.preview);
         unregisterReceiver(broadcastReceiver);
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -321,13 +380,16 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
         Log.d(TAG, "cameraPreviewStarted");
-        if (arInitialized) {
-            ARToolKit.getInstance().cleanup();
-            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
-                this.finish();
-            }
-            arInitialized = false;
+        if(arInitialized){
+            return;
         }
+//        if (arInitialized) {
+//            ARToolKit.getInstance().cleanup();
+//            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
+//                this.finish();
+//            }
+//            arInitialized = false;
+//        }
         if (ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
             Log.d(TAG, String.format("Build.MANUFACTURER %s", Build.MANUFACTURER));
             Log.d(TAG, String.format("Build.MODEL %s", Build.MODEL));
@@ -346,7 +408,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
             Log.i("ARActivity", "getGLView(): Camera initialised");
 
-
+            arInitialized = true;
         }
         else {
             Log.e("ARActivity", "getGLView(): Error initialising camera. Cannot continue.");
@@ -358,7 +420,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     public void cameraPreviewFrame(byte[] frame) {
-        if (this.firstUpdate && !arInitialized) {
+        if (this.firstUpdate) {
 
             if (this.renderer.configureARScene()) {
                 Log.i("ARActivity", "cameraPreviewFrame(): Scene configured successfully");
@@ -372,12 +434,14 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             arInitialized = true;
         }
 
-        if (ARToolKit.getInstance().convertAndDetect(frame)) {
-
-            if (this.glView != null) {
-                this.glView.requestRender();
+        final float accLimit = 0.0f;
+        if(renderer.isEnabled() && (accX > accLimit || accY > accLimit|| accZ > accLimit)){
+            if (ARToolKit.getInstance().convertAndDetect(frame)) {
+                if (this.glView != null) {
+                    this.glView.requestRender();
+                }
+                this.onFrameProcessed();
             }
-            this.onFrameProcessed();
         }
     }
 

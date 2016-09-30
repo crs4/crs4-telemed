@@ -5,10 +5,13 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -61,11 +64,15 @@ import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory.Marker;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
+import it.crs4.most.visualization.augmentedreality.mesh.Cube;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
+import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
@@ -115,6 +122,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private MenuItem mCallMenuItem;
     private MenuItem mHangupMenuItem;
     private MenuItem mChangeEcoSizeMenuItem;
+    private MenuItem mARToggle;
     private HashMap<String, String> mVoipParams;
     private RESTClient mRESTClient;
     private boolean mLocalHold = false;
@@ -129,6 +137,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private Handler mCameraStreamHandler;
     private AudioManager mAudioManager;
     private int mOriginalAudioMode;
+    private boolean arOnBoot = false;
+    private ZMQPublisher publisher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,23 +161,34 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
-        ZMQPublisher publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
+        publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
         Thread pubThread = new Thread(publisher);
         pubThread.start();
 
+        float [] redColor = new float []{
+                0, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f
+        };
+
+        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
+
         Arrow cameraArrow = new Arrow("arrow");
-        cameraArrow.setMarker("single;Data/hiro.patt;80");
-        Arrow ecoArrow = new Arrow(ECO_ARROW_ID, 0.005f);
+        cameraArrow.setMarker(hiro);
+        Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
         ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
         ecoArrow.setxLimits(-1f, 1f);
         ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
+        ecoArrow.setColors(redColor);
         cameraMeshManager.addMesh(cameraArrow);
         ecoMeshManager.addMesh(ecoArrow);
 
         cameraArrow.publisher = publisher;
         ecoArrow.publisher = publisher;
-        mARCameraRenderer = new PubSubARRenderer(this, publisher, cameraMeshManager);
-        mAREcoRenderer= new PubSubARRenderer(this, publisher, ecoMeshManager);
+        mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
+        mAREcoRenderer= new PubSubARRenderer(this, ecoMeshManager);
         ecoMeshManager.configureScene();
 
         setupStreamLib();
@@ -189,6 +210,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mCallMenuItem = menu.findItem(R.id.button_call);
         mHangupMenuItem = menu.findItem(R.id.button_hangup);
         mChangeEcoSizeMenuItem = menu.findItem(R.id.change_eco_stream_size);
+        mARToggle = menu.findItem(R.id.button_ar);
+        mARToggle.setChecked(arOnBoot);
         return res;
     }
 
@@ -210,6 +233,22 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             case R.id.change_eco_stream_size:
                 changeEcoStreamSize();
                 break;
+            case R.id.button_ar:
+                boolean isChecked = !item.isChecked();
+                if(isChecked) {
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_on_background));
+
+//                    item.getIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.MULTIPLY);
+                }
+                else {
+//                    item.getIcon().clearColorFilter();
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
+                }
+
+                item.setChecked(isChecked);
+                if (mStreamCameraFragment != null) mStreamCameraFragment.setEnabled(isChecked);
+                if (mStreamEcoFragment!= null) mStreamEcoFragment.setEnabled(isChecked);
+                return true;
         }
         return false;
     }
@@ -264,6 +303,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 camera.getUser(),
                 camera.getPwd()
             );
+            mStreamCameraFragment.setEnabled(arOnBoot);
 
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
@@ -285,6 +325,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
+                mStreamCameraFragment.getGlView().setPublisher(publisher);
                 mStreamCameraFragment.setPlayerButtonsVisible(false);
             }
 
@@ -301,6 +342,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             @Override
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
                 mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
+                mStreamEcoFragment.getGlView().setPublisher(publisher);
                 mStreamEcoFragment.setPlayerButtonsVisible(false);
             }
 
@@ -309,11 +351,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                if (prevHeight > -1){
-                    ecoMeshManager.getMeshByID(ECO_ARROW_ID).scale( prevWidth/ (float) width, prevHeight/ (float )height, 1);
-                }
-                prevWidth = width;
-                prevHeight = height;
+//                if (prevHeight > -1){
+//                    ecoMeshManager.getMeshByID(ECO_ARROW_ID).scale( prevWidth/ (float) width, prevHeight/ (float )height, 1);
+//                }
+//                prevWidth = width;
+//                prevHeight = height;
             }
 
             @Override
@@ -386,7 +428,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 mLocalHold = false;
                 mFirstCallStarted = true;
                 playStreams();
-                mStreamEcoFragment.setEnabled(true);
+                mStreamEcoFragment.setEnabled(mARToggle.isChecked());
             }
             else if (mTcState == TeleconsultationState.HOLDING) {
                 mCallMenuItem.setTitle("Call");
