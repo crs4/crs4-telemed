@@ -207,7 +207,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         };
 
 //        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
-        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;40");
+        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
 //        float [] trans = new float[16];
 //        Matrix.setIdentityM(trans, 0);
 
@@ -218,19 +218,17 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //                0, -100, 0, 1
 //        };
 //        hiro.setModelMatrix(trans);
-        Marker multi = MarkerFactory.getMarker("multi;Data/multi/markers.dat");
+//        Marker multi = MarkerFactory.getMarker("multi;Data/multi/markers.dat");
 
-        Arrow arrow = new Arrow("arrow");
-        arrow.setMarker(hiro);
-        meshManager.addMesh(arrow);
+//        Arrow arrow = new Arrow("arrow");
+//        arrow.setMarker(hiro);
+//        meshManager.addMesh(arrow);
 //        Arrow arrow2 = new Arrow("arrow2");
 //        arrow2.setMarker("single;Data/kanji.patt;80");
 //        meshManager.addMesh(arrow2);
 
         Pyramid ecoArrow = new Pyramid(15f, 15f, 15f, "ecoArrow");
-        ecoArrow.setMarker(multi);
-//        ecoArrow.setMarker("single;Data/hiro.patt;80");
-//        ecoArrow.setMarker("single;Data/multi/a.patt;40");
+        ecoArrow.setMarker(hiro);
         ecoArrow.setColors(redColor);
         meshManager.addMesh(ecoArrow);
 
