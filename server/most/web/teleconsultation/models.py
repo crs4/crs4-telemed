@@ -50,6 +50,7 @@ class Device(models.Model):
         else:
             return '%s in %s' % (self.get_application_type_display(), self.description)
 
+
 class Room(models.Model):
 
     uuid = models.CharField(max_length=40, unique=True, default=pkgen)
@@ -60,6 +61,7 @@ class Room(models.Model):
     task_group = models.ForeignKey(TaskGroup, related_name="rooms")
     has_encoder = models.BooleanField(default=True)
     has_camera = models.BooleanField(default=True)
+    ar_conf = models.ForeignKey('ARConfiguration', null=True, blank=True, verbose_name='AR configuration')
 
     def __unicode__(self):
         return '[Room: {name} - {description} - Taskgroup: {tgname}]'.format(name=self.name, description=self.description, tgname=self.task_group.name)
@@ -82,13 +84,18 @@ class Room(models.Model):
         if self.has_encoder:
             devices['encoder'] = self.encoder_device.json_dict
 
-        return {
+        res = {
             'uuid': self.uuid,
             'name': self.name,
             'description': self.description,
             'task_group': self.task_group.json_dict,
             'devices': devices
         }
+
+        if self.ar_conf:
+            res['ar_conf'] = self.ar_conf.to_dict()
+
+        return res
 
     full_json_dict = property(_get_full_json_dict)
 
@@ -211,3 +218,46 @@ class TeleconsultationSession(models.Model):
 
     full_json_dict = property(_get_full_json_dict)
 
+
+class ARConfiguration(models.Model):
+    eco_marker = models.ForeignKey('ARMarker', null=True,blank=True, related_name='eco_configurations')
+    keyboard_marker = models.ForeignKey('ARMarker', null=True,blank=True, related_name='keyboard_configurations')
+    patient_marker = models.ForeignKey('ARMarker', null=True,blank=True, related_name='patient_configurations')
+    screen_height = models.FloatField(null=True, blank=True, help_text="expressed in mm")
+    screen_width = models.FloatField(null=True, blank=True, help_text="expressed in mm")
+    description = models.CharField(max_length=200, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'AR Configuration'
+        verbose_name_plural = 'AR Configurations'
+
+    def __str__(self):
+        return self.description
+
+    def to_dict(self):
+        return {
+            'eco_marker': self.eco_marker.to_dict() if self.eco_marker else None,
+            'keyboard_marker': self.key_marker.to_dict() if self.keyboard_marker else None,
+            'patient_marker': self.patient_marker.to_dict() if self.patient_marker else None,
+            'screen_height': self.screen_height,
+            'screen_width': self.screen_width
+        }
+
+
+class ARMarker(models.Model):
+    path = models.CharField(max_length=200)
+    type = models.CharField(max_length=10, choices=(("multi", "multi"), ("single", "single")), default="single")
+    size = models.IntegerField(default=80, help_text="expressed in mm")
+
+    trans_x = models.FloatField(default=0.0, help_text="expressed in mm")
+    trans_y = models.FloatField(default=0.0, help_text="expressed in mm")
+
+    class Meta:
+        verbose_name = 'AR Marker'
+        verbose_name_plural = 'AR Markers'
+
+    def __str__(self):
+        return "%s;%s;%s" % (self.type, self.path, self.size)
+
+    def to_dict(self):
+        return {'conf': str(self), 'trans_x': self.trans_x, 'trans_y': self.trans_y}

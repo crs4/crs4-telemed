@@ -18,6 +18,7 @@ public class Room implements Serializable {
     private String mDescription;
     private Device mEncoder;
     private Device mCamera;
+    private ARConfiguration arConfiguration;
 
     public Room(String id, String name, String description) {
         mId = id;
@@ -53,12 +54,21 @@ public class Room implements Serializable {
         mCamera = camera;
     }
 
+    public ARConfiguration getARConfiguration() {
+        return arConfiguration;
+    }
+
+    public void setARConfiguration(ARConfiguration arConfiguration) {
+        this.arConfiguration = arConfiguration;
+    }
+
     public static Room fromJSON(JSONObject roomData) throws TeleconsultationException {
         String id;
         String name;
         String description;
         JSONObject cameraData;
         JSONObject encoderData;
+
 
         try {
             id = roomData.getString("uuid");
@@ -87,6 +97,18 @@ public class Room implements Serializable {
         catch (JSONException e) {
             Log.d(TAG, "Encoder data not found for the room");
         }
+
+        try {
+            ARConfiguration arConfiguration = ARConfiguration.
+                    fromJSON(roomData.getJSONObject("ar_conf"));
+
+            r.setARConfiguration(arConfiguration);
+        }
+        catch (JSONException e) {
+            Log.d(TAG, "Encoder data not found for the room");
+        }
+
+
         return r;
     }
 

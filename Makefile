@@ -75,7 +75,7 @@ sync:
 
 dump:
 	cd server/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions \
-	--exclude admin --exclude provider --natural-foreign
+	--exclude admin --exclude provider --exclude teleconsultation.teleconsultationsession --exclude teleconsultation.teleconsultation --natural-foreign
 
 test:
 	cd src/most/web/medicalrecords/; nosetests --logging-level=DEBUG -s
