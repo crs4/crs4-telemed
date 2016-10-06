@@ -45,6 +45,8 @@ import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
+import it.crs4.most.demo.models.ARConfiguration;
+import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 import it.crs4.most.visualization.augmentedreality.MarkerFactory.Marker;
@@ -206,10 +208,16 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 1, 0, 0, 1f
         };
 
-//        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
-        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
-//        float [] trans = new float[16];
-//        Matrix.setIdentityM(trans, 0);
+
+        ARConfiguration arConf= teleconsultation.getLastSession().getRoom().getARConfiguration();
+        ARMarker ecoMarkerConf = arConf.getEcoMarker();
+
+        Marker ecoMarker = MarkerFactory.getMarker(ecoMarkerConf.getConf());
+        float [] trans = new float[16];
+        Matrix.setIdentityM(trans, 0);
+        trans[12] = ecoMarkerConf.getTransX();
+        trans[13] = ecoMarkerConf.getTransY();
+        ecoMarker.setModelMatrix(trans);
 
 //        float [] trans = new float []{
 //                1, 0, 0, 0,
@@ -228,7 +236,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //        meshManager.addMesh(arrow2);
 
         Pyramid ecoArrow = new Pyramid(15f, 15f, 15f, "ecoArrow");
-        ecoArrow.setMarker(hiro);
+        ecoArrow.setMarker(ecoMarker);
         ecoArrow.setColors(redColor);
         meshManager.addMesh(ecoArrow);
 
@@ -321,7 +329,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.glView.setEGLContextClientVersion(1);
         }
 
-//        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
         glView.setSubscriber(subscriber);

@@ -41,6 +41,8 @@ import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
+import it.crs4.most.demo.models.ARConfiguration;
+import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
@@ -157,6 +159,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
         setContentView(R.layout.spec_teleconsultation_activity);
         setupTeleconsultationInfo();
+
         setTeleconsultationState(TeleconsultationState.IDLE);
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
@@ -173,15 +176,22 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 1, 0, 0, 1f
         };
 
-        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
+//        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
 
         Arrow cameraArrow = new Arrow("arrow");
-        cameraArrow.setMarker(hiro);
+//        cameraArrow.setMarker(hiro);
+
+        ARConfiguration arConf = mTeleconsultation.getLastSession().getRoom().getARConfiguration();
+
         Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
-        ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
+//        ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
+        ecoArrow.setCoordsConverter(new CoordsConverter(
+                arConf.getScreenWidth()/2, arConf.getScreenHeight()/2, 1f));
+
         ecoArrow.setxLimits(-1f, 1f);
         ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
         ecoArrow.setColors(redColor);
+        cameraArrow.setMarker(MarkerFactory.getMarker(arConf.getEcoMarker().toString()));
         cameraMeshManager.addMesh(cameraArrow);
         ecoMeshManager.addMesh(ecoArrow);
 
