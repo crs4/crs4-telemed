@@ -389,8 +389,8 @@
       "patient_marker": null,
       "keyboard_marker": null,
       "eco_marker": 1,
-      "screen_height": 100.0,
-      "screen_width": 100.0
+      "screen_height": 80.0,
+      "screen_width": 140.0
     },
     "model": "teleconsultation.arconfiguration",
     "pk": 1
@@ -400,7 +400,7 @@
       "trans_x": 0.0,
       "path": "Data/hiro.patt",
       "type": "single",
-      "trans_y": 0.0,
+      "trans_y": -140.0,
       "size": 80
     },
     "model": "teleconsultation.armarker",
@@ -562,6 +562,37 @@
       "description": "Demo Task Group @ CRS4"
     },
     "model": "users.taskgroup",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "created": "2016-10-06T13:08:24.376Z",
+      "expires": "2016-10-07T13:08:24.376Z",
+      "modified": "2016-10-06T13:08:24.376Z",
+      "taskgroup": 1,
+      "token": "7ce94cce1abfcfc3e038336826db2477be972606",
+      "client": 1,
+      "user": [
+        "eco"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "android eco app",
+      "created": "2016-10-06T13:08:06.627Z",
+      "url": "http://156.148.132.243/",
+      "client_type": 1,
+      "modified": "2016-10-06T13:08:06.628Z",
+      "redirect_uri": "http://156.148.132.243/",
+      "user": null,
+      "client_id": "9db4f27b3d9c8e352b5c",
+      "client_secret": "00ea399c013349a716ea3e47d8f8002502e2e982"
+    },
+    "model": "provider.client",
     "pk": 1
   }
 ]
