@@ -141,6 +141,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     private int mOriginalAudioMode;
     private boolean arOnBoot = false;
     private ZMQPublisher publisher;
+    private ARConfiguration arConf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,42 +165,41 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
-        publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
-        Thread pubThread = new Thread(publisher);
-        pubThread.start();
 
-        float [] redColor = new float []{
-                0, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f
-        };
+        arConf = mTeleconsultation.getLastSession().getRoom().getARConfiguration();
+        if (arConf != null){
+            publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
+            Thread pubThread = new Thread(publisher);
+            pubThread.start();
 
-//        Marker hiro = MarkerFactory.getMarker("single;Data/hiro.patt;80");
 
-        Arrow cameraArrow = new Arrow("arrow");
-//        cameraArrow.setMarker(hiro);
+            float [] redColor = new float []{
+                    0, 0, 0, 1f,
+                    1, 0, 0, 1f,
+                    1, 0, 0, 1f,
+                    1, 0, 0, 1f,
+                    1, 0, 0, 1f
+            };
 
-        ARConfiguration arConf = mTeleconsultation.getLastSession().getRoom().getARConfiguration();
+            Arrow cameraArrow = new Arrow("arrow");
+            Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
+            ecoArrow.setCoordsConverter(new CoordsConverter(
+                    arConf.getScreenWidth()/2, arConf.getScreenHeight()/2, 1f));
 
-        Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
-//        ecoArrow.setCoordsConverter(new CoordsConverter(143.5f, 90.5f, 1f));
-        ecoArrow.setCoordsConverter(new CoordsConverter(
-                arConf.getScreenWidth()/2, arConf.getScreenHeight()/2, 1f));
+            ecoArrow.setxLimits(-1f, 1f);
+            ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
+            ecoArrow.setColors(redColor);
+            cameraArrow.setMarker(MarkerFactory.getMarker(arConf.getEcoMarker().toString()));
+            cameraMeshManager.addMesh(cameraArrow);
+            ecoMeshManager.addMesh(ecoArrow);
 
-        ecoArrow.setxLimits(-1f, 1f);
-        ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
-        ecoArrow.setColors(redColor);
-        cameraArrow.setMarker(MarkerFactory.getMarker(arConf.getEcoMarker().toString()));
-        cameraMeshManager.addMesh(cameraArrow);
-        ecoMeshManager.addMesh(ecoArrow);
+            cameraArrow.publisher = publisher;
+            ecoArrow.publisher = publisher;
+            ecoMeshManager.configureScene();
+        }
 
-        cameraArrow.publisher = publisher;
-        ecoArrow.publisher = publisher;
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
         mAREcoRenderer= new PubSubARRenderer(this, ecoMeshManager);
-        ecoMeshManager.configureScene();
 
         setupStreamLib();
         setupPtzPopupWindow();
@@ -220,8 +220,14 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mCallMenuItem = menu.findItem(R.id.button_call);
         mHangupMenuItem = menu.findItem(R.id.button_hangup);
         mChangeEcoSizeMenuItem = menu.findItem(R.id.change_eco_stream_size);
+
         mARToggle = menu.findItem(R.id.button_ar);
-        mARToggle.setChecked(arOnBoot);
+        if (arConf == null){
+            mARToggle.setVisible(false);
+        }
+        else{
+            mARToggle.setChecked(arOnBoot);
+        }
         return res;
     }
 
@@ -302,29 +308,33 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             streamCameraParams.put("uri", camera.getStreamUri());
             mStreamCamera = streamingLib.createStream(streamCameraParams, mCameraStreamHandler);
             mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
+
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
-            mStreamCameraFragment.setRenderer(mARCameraRenderer);
-            mStreamCameraFragment.setStreamAR(mStreamCamera);
-//            mStreamCameraFragment.setFixedSize(new int [] {704, 576}); //FIXME should be dynamically set
-            mStreamCameraFragment.setGlSurfaceViewCallback(this);
-            mPTZManager = new PTZ_Manager(this,
-                camera.getPtzUri(),
-                camera.getUser(),
-                camera.getPwd()
-            );
-            mStreamCameraFragment.setEnabled(arOnBoot);
 
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
             streamEcoParams.put("name", ECO_STREAM);
             streamEcoParams.put("uri", encoder.getStreamUri());
+
             mStreamEco = streamingLib.createStream(streamEcoParams, mEcoStreamHandler);
             mEcoFrame = (FrameLayout) findViewById(R.id.container_stream_eco);
             mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
-            mStreamEcoFragment.setRenderer(mAREcoRenderer);
+            mStreamCameraFragment.setEnabled(arOnBoot);
             mStreamEcoFragment.setEnabled(false);
+
+
+            mPTZManager = new PTZ_Manager(this,
+                    camera.getPtzUri(),
+                    camera.getUser(),
+                    camera.getPwd()
+            );
+
+            mStreamCameraFragment.setRenderer(mARCameraRenderer);
+            mStreamCameraFragment.setStreamAR(mStreamCamera);
+            mStreamCameraFragment.setGlSurfaceViewCallback(this);
+            mStreamEcoFragment.setRenderer(mAREcoRenderer);
 
         }
         catch (Exception e) {
@@ -334,8 +344,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
-                mStreamCameraFragment.getGlView().setPublisher(publisher);
+                if(arConf != null) {
+                    mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
+                    mStreamCameraFragment.getGlView().setPublisher(publisher);
+                }
                 mStreamCameraFragment.setPlayerButtonsVisible(false);
             }
 
@@ -347,12 +359,12 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         });
 
         mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
-            private int prevHeight = -1;
-            private int prevWidth = -1;
             @Override
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
-                mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
-                mStreamEcoFragment.getGlView().setPublisher(publisher);
+                if(arConf != null) {
+                    mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
+                    mStreamEcoFragment.getGlView().setPublisher(publisher);
+                }
                 mStreamEcoFragment.setPlayerButtonsVisible(false);
             }
 
@@ -361,11 +373,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-//                if (prevHeight > -1){
-//                    ecoMeshManager.getMeshByID(ECO_ARROW_ID).scale( prevWidth/ (float) width, prevHeight/ (float )height, 1);
-//                }
-//                prevWidth = width;
-//                prevHeight = height;
             }
 
             @Override
@@ -622,15 +629,19 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
 //                mStreamCameraFragment.setRenderer(mARCameraRenderer);
-                    mStreamCameraFragment.prepareRemoteAR();
-                    mStreamCameraPrepared = true;
+                    if(arConf != null){
+                        mStreamCameraFragment.prepareRemoteAR();
+                        mStreamCameraPrepared = true;
+                    }
                 }
             }
             else if (streamId.equals(ECO_STREAM)) {
                 mStreamEco.prepare(surfaceView);
-                TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
-                glView.setZOrderMediaOverlay(true);
-                glView.setMoveNormFactor(300f);
+                if(arConf != null){
+                    TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
+                    glView.setZOrderMediaOverlay(true);
+                    glView.setMoveNormFactor(300f);
+                }
             }
         }
     }

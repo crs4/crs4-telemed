@@ -7,6 +7,7 @@ import android.os.Build;
 import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
 import it.crs4.most.demo.eco.BaseEcoTeleconsultationActivity;
 import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
+import it.crs4.most.demo.models.ARConfiguration;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.setup_fragments.PatientSearchFragment;
 import it.crs4.most.demo.setup_fragments.PatientSelectionFragment;
@@ -37,7 +38,8 @@ public class EcoTeleconsultationController extends TeleconsultationController {
     @Override
     public void startTeleconsultationActivity(Activity activity, Teleconsultation teleconsultation) {
         Intent i;
-        if (Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2")) {
+        ARConfiguration arConf = teleconsultation.getLastSession().getRoom().getARConfiguration();
+        if (arConf != null) {
             i = new Intent(activity, AREcoTeleconsultationActivity.class);
         }
         else {

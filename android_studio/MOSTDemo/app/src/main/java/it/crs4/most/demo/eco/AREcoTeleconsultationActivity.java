@@ -219,22 +219,6 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         trans[13] = ecoMarkerConf.getTransY();
         ecoMarker.setModelMatrix(trans);
 
-//        float [] trans = new float []{
-//                1, 0, 0, 0,
-//                0, 1, 0, 0,
-//                0, 0, 1, 0,
-//                0, -100, 0, 1
-//        };
-//        hiro.setModelMatrix(trans);
-//        Marker multi = MarkerFactory.getMarker("multi;Data/multi/markers.dat");
-
-//        Arrow arrow = new Arrow("arrow");
-//        arrow.setMarker(hiro);
-//        meshManager.addMesh(arrow);
-//        Arrow arrow2 = new Arrow("arrow2");
-//        arrow2.setMarker("single;Data/kanji.patt;80");
-//        meshManager.addMesh(arrow2);
-
         Pyramid ecoArrow = new Pyramid(15f, 15f, 15f, "ecoArrow");
         ecoArrow.setMarker(ecoMarker);
         ecoArrow.setColors(redColor);
