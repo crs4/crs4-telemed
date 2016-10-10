@@ -9,9 +9,12 @@
 # See license-GPLv2.txt or license-MIT.txt
 
 from django.contrib import admin
-from most.web.teleconsultation.models import Teleconsultation, TeleconsultationSession, Device, Room
+from most.web.teleconsultation.models import Teleconsultation, TeleconsultationSession, Device, Room, ARConfiguration, \
+    ARMarker
 
 admin.site.register(Device)
 admin.site.register(Teleconsultation)
 admin.site.register(TeleconsultationSession)
 admin.site.register(Room)
+admin.site.register(ARConfiguration)
+admin.site.register(ARMarker)

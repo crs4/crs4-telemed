@@ -1,6 +1,14 @@
 [
   {
     "fields": {
+      "domain": "example.com",
+      "name": "example.com"
+    },
+    "model": "sites.site",
+    "pk": 1
+  },
+  {
+    "fields": {
       "last_name": "Admin",
       "user_type": "AD",
       "is_staff": true,
@@ -39,7 +47,7 @@
       "uuid": "sb4htkhsvoyyoxy2wqfcvw76sacgekig",
       "last_modified_timestamp": "2016-07-12T15:06:21.824Z",
       "is_superuser": false,
-      "last_login": "2016-09-26T12:19:13.240Z",
+      "last_login": "2016-09-30T13:29:12.831Z",
       "creation_timestamp": "2016-07-12T13:24:22.941Z",
       "email": "ecografista@eco.it",
       "numeric_password": "12345",
@@ -68,7 +76,7 @@
       "uuid": "afxacgutazd657uriworwvf7bkfekybg",
       "last_modified_timestamp": "2016-07-12T13:25:13.113Z",
       "is_superuser": false,
-      "last_login": "2016-09-23T15:33:52.036Z",
+      "last_login": "2016-09-30T13:29:07.705Z",
       "creation_timestamp": "2016-07-12T13:25:10.174Z",
       "email": "specialista@eco.it",
       "numeric_password": "",
@@ -117,6 +125,38 @@
     },
     "model": "streaming.devicemodel",
     "pk": 2
+  },
+  {
+    "fields": {
+      "shot_url_template": "",
+      "web_url_template": "",
+      "has_ptz": false,
+      "description": "",
+      "has_shot": false,
+      "ptz_url_template": "",
+      "has_streaming": true,
+      "has_web": false,
+      "streaming_url_template": "rtsp://{ip_address}/stream1",
+      "name": "cube encoder"
+    },
+    "model": "streaming.devicemodel",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "shot_url_template": "",
+      "web_url_template": "",
+      "has_ptz": false,
+      "description": "file source for test",
+      "has_shot": false,
+      "ptz_url_template": "",
+      "has_streaming": true,
+      "has_web": false,
+      "streaming_url_template": "file://{user}",
+      "name": "file"
+    },
+    "model": "streaming.devicemodel",
+    "pk": 4
   },
   {
     "fields": {
@@ -169,6 +209,32 @@
     },
     "model": "streaming.streamingdevice",
     "pk": 4
+  },
+  {
+    "fields": {
+      "uuid": "673z5edcmjh46kcsb5nlu2xgk3si3wyt",
+      "ip_address": "172.16.4.44",
+      "user": "root",
+      "model": 1,
+      "password": "AOB124!$",
+      "type": "VIDEO",
+      "name": "brotzu encoder"
+    },
+    "model": "streaming.streamingdevice",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "uuid": "bkpx4v6grhfuiqisomrzglxvwjtngzfs",
+      "ip_address": "localhost",
+      "user": "/sdcard/Movies/eco.mp4",
+      "model": 4,
+      "password": "eco",
+      "type": "VIDEO",
+      "name": "ecotest"
+    },
+    "model": "streaming.streamingdevice",
+    "pk": 6
   },
   {
     "fields": {
@@ -229,6 +295,19 @@
       "task_groups": [
         1
       ],
+      "uuid": "d062fdef929fe93a",
+      "description": ""
+    },
+    "model": "teleconsultation.device",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "application_type": "AA",
+      "device_platform": "ANDROID",
+      "task_groups": [
+        1
+      ],
       "uuid": "5c29ebbf989ef6a8",
       "description": "Mauretto's Phone"
     },
@@ -277,13 +356,14 @@
   {
     "fields": {
       "has_camera": true,
+      "ar_conf": 1,
       "description": "Camera B228 @ CRS4",
       "uuid": "t3fhnipi42jd5j3pfhipxy4eijxoxy62",
       "name": "B228",
       "task_group": 1,
       "camera_device": 1,
       "has_encoder": true,
-      "encoder_device": 2
+      "encoder_device": 6
     },
     "model": "teleconsultation.room",
     "pk": 1
@@ -291,6 +371,7 @@
   {
     "fields": {
       "has_camera": true,
+      "ar_conf": null,
       "description": "Stanza Eco @ Brotzu",
       "uuid": "m6s3zh2vbrfuomj5pllrqz36t6t7zciu",
       "name": "Stanza Eco @ Brotzu",
@@ -304,9 +385,32 @@
   },
   {
     "fields": {
+      "description": "test",
+      "patient_marker": null,
+      "keyboard_marker": null,
+      "eco_marker": 1,
+      "screen_height": 80.0,
+      "screen_width": 140.0
+    },
+    "model": "teleconsultation.arconfiguration",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "trans_x": 0.0,
+      "path": "Data/hiro.patt",
+      "type": "single",
+      "trans_y": -140.0,
+      "size": 80
+    },
+    "model": "teleconsultation.armarker",
+    "pk": 1
+  },
+  {
+    "fields": {
       "port": 5060,
       "name": "Demo SIP Server",
-      "address": "156.148.71.244"
+      "address": "156.148.132.243"
     },
     "model": "voip.sipserver",
     "pk": 1
@@ -315,7 +419,7 @@
     "fields": {
       "port": 3478,
       "name": "Demo Turn Server",
-      "address": "156.148.71.244"
+      "address": "156.148.132.243"
     },
     "model": "voip.turnserver",
     "pk": 1
@@ -462,12 +566,28 @@
   },
   {
     "fields": {
-      "name": "Android Eco App",
-      "created": "2016-07-12T15:31:23.580Z",
-      "url": "http://156.148.33.193/",
+      "created": "2016-10-06T13:08:24.376Z",
+      "expires": "2016-10-07T13:08:24.376Z",
+      "modified": "2016-10-06T13:08:24.376Z",
+      "taskgroup": 1,
+      "token": "7ce94cce1abfcfc3e038336826db2477be972606",
+      "client": 1,
+      "user": [
+        "eco"
+      ],
+      "scope": 2
+    },
+    "model": "provider.accesstoken",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "android eco app",
+      "created": "2016-10-06T13:08:06.627Z",
+      "url": "http://156.148.132.243/",
       "client_type": 1,
-      "modified": "2016-07-12T16:13:09.556Z",
-      "redirect_uri": "http://156.148.33.193",
+      "modified": "2016-10-06T13:08:06.628Z",
+      "redirect_uri": "http://156.148.132.243/",
       "user": null,
       "client_id": "9db4f27b3d9c8e352b5c",
       "client_secret": "00ea399c013349a716ea3e47d8f8002502e2e982"
