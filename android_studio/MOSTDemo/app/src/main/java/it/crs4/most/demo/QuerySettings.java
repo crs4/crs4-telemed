@@ -1,5 +1,6 @@
 package it.crs4.most.demo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
@@ -17,6 +18,7 @@ public class QuerySettings {
     private static final String USER_USERNAME = "user_username";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String LOGIN_CHECKED = "login_checked";
+    private static final String AR_ENABLED = "ar_enabled";
 
     private static String getStoredItem(Context context, String valueType, String defaultValue) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(valueType, defaultValue);
@@ -105,6 +107,9 @@ public class QuerySettings {
         storeItem(context, LOGIN_CHECKED, loginChecked);
     }
 
+    public static boolean isArEnabled(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(AR_ENABLED, false);
+    }
 }
 
 

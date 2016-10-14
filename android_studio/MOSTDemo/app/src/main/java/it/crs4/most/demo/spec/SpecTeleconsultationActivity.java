@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.crs4.most.demo.InnerArchetypeViewerActivity;
+import it.crs4.most.demo.ReportActivity;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
@@ -494,7 +494,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
     }
 
     private void startReportActivity() {
-        Intent i = new Intent(this, InnerArchetypeViewerActivity.class);
+        Intent i = new Intent(this, ReportActivity.class);
         startActivity(i);
         finish();
     }

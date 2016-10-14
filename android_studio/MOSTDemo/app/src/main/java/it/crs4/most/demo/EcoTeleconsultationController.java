@@ -38,8 +38,8 @@ public class EcoTeleconsultationController extends TeleconsultationController {
     @Override
     public void startTeleconsultationActivity(Activity activity, Teleconsultation teleconsultation) {
         Intent i;
-        ARConfiguration arConf = teleconsultation.getLastSession().getRoom().getARConfiguration();
-        if (arConf != null) {
+        boolean isArEnabled = QuerySettings.isArEnabled(activity);
+        if (isArEnabled) {
             i = new Intent(activity, AREcoTeleconsultationActivity.class);
         }
         else {

@@ -22,6 +22,12 @@
         android:summary="%s"
         android:entries="@array/roles_entries"
         android:entryValues="@array/roles_entries_values"/>
+    <CheckBoxPreference
+        android:key="ar_enabled"
+        android:title="Enable Augmented Reality"
+        android:defaultValue="false"
+        android:dependency="role_preference"
+        android:enabled="false"/>
     <EditTextPreference
         android:key="device_id"
         android:title="@string/device_id"
