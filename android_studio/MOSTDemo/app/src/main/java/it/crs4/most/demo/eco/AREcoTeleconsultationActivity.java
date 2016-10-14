@@ -215,11 +215,11 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         Marker ecoMarker = MarkerFactory.getMarker(ecoMarkerConf.getConf());
         float [] trans = new float[16];
         Matrix.setIdentityM(trans, 0);
-        trans[12] = ecoMarkerConf.getTransX();
-        trans[13] = ecoMarkerConf.getTransY();
+        trans[12] = 0;
+        trans[13] = 170;
         ecoMarker.setModelMatrix(trans);
 
-        Pyramid ecoArrow = new Pyramid(15f, 15f, 15f, "ecoArrow");
+        Pyramid ecoArrow = new Pyramid(10f, 10f, 10f, "ecoArrow");
         ecoArrow.setMarker(ecoMarker);
         ecoArrow.setColors(redColor);
         meshManager.addMesh(ecoArrow);
@@ -313,7 +313,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.glView.setEGLContextClientVersion(1);
         }
 
-        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+//        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
         glView.setSubscriber(subscriber);
@@ -426,7 +426,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             arInitialized = true;
         }
 
-        final float accLimit = 0.0f;
+        final float accLimit = 0.08f;
         if(renderer.isEnabled() && (accX > accLimit || accY > accLimit|| accZ > accLimit)){
             if (ARToolKit.getInstance().convertAndDetect(frame)) {
                 if (this.glView != null) {

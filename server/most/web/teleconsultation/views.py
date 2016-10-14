@@ -68,7 +68,9 @@ def get_applicants_for_taskgroups(request, taskgroup_uuid):
         for applicant in taskgroup.users.exclude(user_type='ST').exclude(user_type="TE"):
             applicants.append({'firstname': applicant.first_name,
                                'lastname': applicant.last_name,
-                               'username': applicant.username})
+                               'username': applicant.username,
+                               'is_admin': applicant.is_admin
+                               })
         return HttpResponse(json.dumps({'success': True, 'data': {'applicants': applicants}}),
                             content_type="application/json")
 
@@ -362,6 +364,7 @@ def join_session(request, session_uuid, spec_app_address):
                                         'error': {'code': 502, 'message': 'invalid session state'}}),
                             content_type="application/json")
 
+    print "request.user", request.user
     try:
         session.teleconsultation.specialist = request.user  # MostUser.objects.get(uuid=request.REQUEST['specialist_uuid'])
     except Exception:

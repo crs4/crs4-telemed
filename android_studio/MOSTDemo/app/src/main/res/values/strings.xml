@@ -113,4 +113,14 @@
     <string name="json">JSON</string>
     <string name="teleconsultation_report">Teleconsultation Report</string>
 
+
+    <string-array name="Markers">
+        <item>Eco Marker</item>
+        <item>Keyboard Marker</item>
+        <item>Patient Marker</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

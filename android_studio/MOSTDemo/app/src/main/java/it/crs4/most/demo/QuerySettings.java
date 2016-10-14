@@ -18,6 +18,7 @@ public class QuerySettings {
     private static final String USER_USERNAME = "user_username";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String LOGIN_CHECKED = "login_checked";
+    private static final String IS_ADMIN= "is_admin";
     private static final String AR_ENABLED = "ar_enabled";
 
     private static String getStoredItem(Context context, String valueType, String defaultValue) {
@@ -59,11 +60,14 @@ public class QuerySettings {
         String firstname = getStoredItem(context, USER_FIRSTNAME, null);
         String lastname = getStoredItem(context, USER_LASTNAME, null);
         String username = getStoredItem(context, USER_USERNAME, null);
+        boolean isAdmin = PreferenceManager.getDefaultSharedPreferences(context).
+                getBoolean(IS_ADMIN, false);
+
         if (firstname == null && lastname == null && username == null) {
             return null;
         }
 
-        return new User(firstname, lastname, username);
+        return new User(firstname, lastname, username, isAdmin);
     }
 
     public static void setUser(Context context, User user) {
@@ -71,11 +75,13 @@ public class QuerySettings {
             storeItem(context, USER_FIRSTNAME, user.getFirstName());
             storeItem(context, USER_LASTNAME, user.getLastName());
             storeItem(context, USER_USERNAME, user.getUsername());
+            storeItem(context, IS_ADMIN, user.isAdmin());
         }
         else {
             storeItem(context, USER_FIRSTNAME, null);
             storeItem(context, USER_LASTNAME, null);
             storeItem(context, USER_USERNAME, null);
+            storeItem(context, IS_ADMIN, false);
         }
     }
 
