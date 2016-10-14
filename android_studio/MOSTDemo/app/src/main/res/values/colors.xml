@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#165ead</color>
-    <color name="colorButtonPressed">#4B81BC</color>
-    <color name="colorPrimaryDark">#37485c</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#1F4E8C</color>
+    <color name="colorButtonPressed">#08428C</color>
+    <color name="colorPrimaryDark">#1c467e</color>
+    <color name="colorEhrArchetypeTitleBackground">@color/colorPrimaryDark</color>
+    <color name="colorEhrClusterTitleBackground">@color/colorPrimary</color>
+    <color name="colorEhrTooltipTitle">@color/colorPrimary</color>
+    <color name="colorEhrTitleText">@color/colorPrimary</color>
 </resources>

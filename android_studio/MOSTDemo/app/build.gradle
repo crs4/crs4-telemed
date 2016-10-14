@@ -26,6 +26,7 @@ dependencies {
     compile name: "MOSTStreaming", ext: "aar", group: 'it.crs4.most.streaming', version: '1.0'
     compile name: "MOSTVisualization", ext: "aar", group: 'it.crs4.most.visualization', version: '1.0'
     compile name: "MOSTVoip", ext: "aar", group: 'it.crs4.most.voip', version: '1.0'
+    compile name: "MOSTEhr", ext: "aar", group: 'it.crs4.most.report.ehr', version: '1.0'
     compile project(':aRBaseLib')
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.android.support:support-v4:23.4.0'

@@ -109,5 +109,8 @@
     <string name="patient_name">Patient Name</string>
     <string name="patient_surname">Patient Surname</string>
     <string name="anonymous">Anonymous</string>
+    <string name="reset">Reset</string>
+    <string name="json">JSON</string>
+    <string name="teleconsultation_report">Teleconsultation Report</string>
 
 </resources>

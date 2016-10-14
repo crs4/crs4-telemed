@@ -5,8 +5,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,12 +35,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import it.crs4.most.demo.InnerArchetypeViewerActivity;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.ARConfiguration;
-import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
@@ -67,11 +65,9 @@ import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.visualization.augmentedreality.MarkerFactory;
-import it.crs4.most.visualization.augmentedreality.MarkerFactory.Marker;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
-import it.crs4.most.visualization.augmentedreality.mesh.Cube;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
@@ -85,7 +81,7 @@ import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
 
 
-public class SpecTeleconsultationActivity extends AppCompatActivity implements IPtzCommandReceiver,
+public class SpecTeleconsultationActivity extends AppCompatActivity implements
     IStreamFragmentCommandListener, IStreamProvider,
     ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
@@ -167,24 +163,23 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
 
 
         arConf = mTeleconsultation.getLastSession().getRoom().getARConfiguration();
-        if (arConf != null){
+        if (arConf != null) {
             publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
             Thread pubThread = new Thread(publisher);
             pubThread.start();
 
-
-            float [] redColor = new float []{
-                    0, 0, 0, 1f,
-                    1, 0, 0, 1f,
-                    1, 0, 0, 1f,
-                    1, 0, 0, 1f,
-                    1, 0, 0, 1f
+            float[] redColor = new float[]{
+                0, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f
             };
 
             Arrow cameraArrow = new Arrow("arrow");
             Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
             ecoArrow.setCoordsConverter(new CoordsConverter(
-                    arConf.getScreenWidth()/2, arConf.getScreenHeight()/2, 1f));
+                arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
 
             ecoArrow.setxLimits(-1f, 1f);
             ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
@@ -199,10 +194,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
-        mAREcoRenderer= new PubSubARRenderer(this, ecoMeshManager);
+        mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
+        mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
+            new PTZHandler(this), true, true, true, 100, 100);
 
         setupStreamLib();
-        setupPtzPopupWindow();
         setupVoipLib();
     }
 
@@ -222,10 +218,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mChangeEcoSizeMenuItem = menu.findItem(R.id.change_eco_stream_size);
 
         mARToggle = menu.findItem(R.id.button_ar);
-        if (arConf == null){
+        if (arConf == null) {
             mARToggle.setVisible(false);
         }
-        else{
+        else {
             mARToggle.setChecked(arOnBoot);
         }
         return res;
@@ -251,19 +247,15 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 break;
             case R.id.button_ar:
                 boolean isChecked = !item.isChecked();
-                if(isChecked) {
+                if (isChecked) {
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_on_background));
-
-//                    item.getIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.MULTIPLY);
                 }
                 else {
-//                    item.getIcon().clearColorFilter();
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
                 }
-
                 item.setChecked(isChecked);
                 if (mStreamCameraFragment != null) mStreamCameraFragment.setEnabled(isChecked);
-                if (mStreamEcoFragment!= null) mStreamEcoFragment.setEnabled(isChecked);
+                if (mStreamEcoFragment != null) mStreamEcoFragment.setEnabled(isChecked);
                 return true;
         }
         return false;
@@ -324,11 +316,10 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             mStreamCameraFragment.setEnabled(arOnBoot);
             mStreamEcoFragment.setEnabled(false);
 
-
             mPTZManager = new PTZ_Manager(this,
-                    camera.getPtzUri(),
-                    camera.getUser(),
-                    camera.getPwd()
+                camera.getPtzUri(),
+                camera.getUser(),
+                camera.getPwd()
             );
 
             mStreamCameraFragment.setRenderer(mARCameraRenderer);
@@ -344,7 +335,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                if(arConf != null) {
+                if (arConf != null) {
                     mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
                     mStreamCameraFragment.getGlView().setPublisher(publisher);
                 }
@@ -352,16 +343,18 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {}
+            public void surfaceDestroyed(SurfaceHolder holder) {
+            }
         });
 
         mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
             @Override
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
-                if(arConf != null) {
+                if (arConf != null) {
                     mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
                     mStreamEcoFragment.getGlView().setPublisher(publisher);
                 }
@@ -369,14 +362,16 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             }
 
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {}
+            public void surfaceCreated(SurfaceHolder holder) {
+            }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {}
+            public void surfaceDestroyed(SurfaceHolder holder) {
+            }
         });
 
         // add the first fragment to the first container
@@ -395,11 +390,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         CallHandler voipHandler = new CallHandler(this);
         mVoipLib = new VoipLibBackend();
         mVoipLib.initLib(getApplicationContext(), mVoipParams, voipHandler);
-    }
-
-    private void setupPtzPopupWindow() {
-        mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this, this, true, true, true, 100, 100);
-//        PopupWindow ptzPopupWindow = mPTZPopupWindowController.getPopupWindow();
     }
 
     private void showPTZPopupWindow() {
@@ -504,66 +494,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     }
 
     private void startReportActivity() {
-//        Intent i = new Intent(this, InnerArchetypeViewerActivity.class);
-//        startActivity(i);
-    }
-
-    @Override
-    public void onPTZstartMove(PTZ_Direction dir) {
-        mPTZManager.startMove(dir);
-    }
-
-    @Override
-    public void onPTZstopMove(PTZ_Direction dir) {
-        mPTZManager.stopMove();
-    }
-
-    @Override
-    public void onPTZstartZoom(PTZ_Zoom dir) {
-        mPTZManager.startZoom(dir);
-    }
-
-    @Override
-    public void onPTZstopZoom(PTZ_Zoom dir) {
-        mPTZManager.stopZoom();
-    }
-
-    @Override
-    public void onGoHome() {
-        mPTZManager.goTo("home");
-    }
-
-    @Override
-    public void onSnapshot() {
-        IBitmapReceiver receiver = new IBitmapReceiver() {
-            @Override
-            public void onBitmapSaved(ImageDownloader imageDownloader, String filename) {
-                Toast.makeText(SpecTeleconsultationActivity.this, "Image saved:" + filename, Toast.LENGTH_LONG).show();
-                imageDownloader.logAppFileNames();
-            }
-
-            @Override
-            public void onBitmapDownloaded(ImageDownloader imageDownloader, Bitmap image) {
-                imageDownloader.saveImageToInternalStorage(image, "test_image__" + String.valueOf(System.currentTimeMillis()));
-            }
-
-            @Override
-            public void onBitmapDownloadingError(ImageDownloader imageDownloader, Exception ex) {
-                Toast.makeText(SpecTeleconsultationActivity.this, "Error downloading Image:" + ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onBitmapSavingError(ImageDownloader imageDownloader, Exception ex) {
-                Toast.makeText(SpecTeleconsultationActivity.this, "Error saving Image:" + ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        };
-
-        Device camera = mTeleconsultation.getLastSession().getCamera();
-        ImageDownloader imageDownloader = new ImageDownloader(receiver, this,
-            camera.getUser(), //   uriProps.getProperty("username_ptz"),
-            camera.getPwd()); // uriProps.getProperty("password_ptz"));
-
-        imageDownloader.downloadImage(camera.getShotUri()); //    uriProps.getProperty("uri_still_image"));
+        Intent i = new Intent(this, InnerArchetypeViewerActivity.class);
+        startActivity(i);
+        finish();
     }
 
     private void playStreams() {
@@ -618,8 +551,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     }
 
     @Override
-    public void onPause(String streamId) {
-    }
+    public void onPause(String streamId) {}
 
     @Override
     public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
@@ -629,7 +561,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
 //                mStreamCameraFragment.setRenderer(mARCameraRenderer);
-                    if(arConf != null){
+                    if (arConf != null) {
                         mStreamCameraFragment.prepareRemoteAR();
                         mStreamCameraPrepared = true;
                     }
@@ -637,7 +569,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             }
             else if (streamId.equals(ECO_STREAM)) {
                 mStreamEco.prepare(surfaceView);
-                if(arConf != null){
+                if (arConf != null) {
                     TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
                     glView.setZOrderMediaOverlay(true);
                     glView.setMoveNormFactor(300f);
@@ -704,30 +636,21 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
     }
 
     @Override
-    public void onFragmentCreate() {
-
-    }
+    public void onFragmentCreate() {}
 
     @Override
-    public void onFragmentResume() {
-
-    }
+    public void onFragmentResume() {}
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
-
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
-    }
+    public void surfaceDestroyed(SurfaceHolder holder) {}
 
     private static class CallHandler extends Handler {
 
@@ -810,6 +733,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
                 act.stopStreams();
+//                act.startReportActivity();
                 act.finish();
             }
             else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
@@ -850,16 +774,16 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             StreamState streamState = ((IStream) event.getData()).getState();
             Log.d(TAG, "event.getData().streamState " + streamState);
             if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+                event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
 
                 Log.d(TAG, "event.getData().streamState " + streamState);
                 Log.d(TAG, "ready to call cameraPreviewStarted");
 
                 Size videoSize = ((IStream) event.getData()).getVideoSize();
-                if(videoSize != null){
+                if (videoSize != null) {
                     width = videoSize.getWidth();
                     height = videoSize.getHeight();
-                    act.mAREcoRenderer.setViewportAspectRatio(Float.valueOf(width)/height);
+                    act.mAREcoRenderer.setViewportAspectRatio(Float.valueOf(width) / height);
                 }
 
             }
@@ -884,7 +808,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
             StreamState streamState = ((IStream) event.getData()).getState();
             Log.d(TAG, "event.getData().streamState " + streamState);
             if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                    event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+                event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
 //                    if (streamState == StreamState.PLAYING) {
 
                 Log.d(TAG, "event.getData().streamState " + streamState);
@@ -893,7 +817,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 Size videoSize = ((IStream) event.getData()).getVideoSize();
 
                 int width, height;
-                if(videoSize != null) {
+                if (videoSize != null) {
                     width = videoSize.getWidth();
                     height = videoSize.getHeight();
                 }
@@ -905,7 +829,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
                 }
                 Log.d(TAG, "width " + width);
                 Log.d(TAG, "height " + height);
-                act.mStreamCameraFragment.setFixedSize(new int [] {width, height});
+                act.mStreamCameraFragment.setFixedSize(new int[]{width, height});
                 act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
 
 
@@ -914,4 +838,69 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements I
         }
     }
 
+    private static class PTZHandler implements IPtzCommandReceiver {
+        WeakReference<SpecTeleconsultationActivity> mOuterRef;
+
+        PTZHandler(SpecTeleconsultationActivity activity) {
+            mOuterRef = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void onPTZstartMove(PTZ_Direction dir) {
+            mOuterRef.get().mPTZManager.startMove(dir);
+        }
+
+        @Override
+        public void onPTZstopMove(PTZ_Direction dir) {
+            mOuterRef.get().mPTZManager.stopMove();
+        }
+
+        @Override
+        public void onPTZstartZoom(PTZ_Zoom dir) {
+            mOuterRef.get().mPTZManager.startZoom(dir);
+        }
+
+        @Override
+        public void onPTZstopZoom(PTZ_Zoom dir) {
+            mOuterRef.get().mPTZManager.stopZoom();
+        }
+
+        @Override
+        public void onGoHome() {
+            mOuterRef.get().mPTZManager.goTo("home");
+        }
+
+        @Override
+        public void onSnapshot() {
+            IBitmapReceiver receiver = new IBitmapReceiver() {
+                @Override
+                public void onBitmapSaved(ImageDownloader imageDownloader, String filename) {
+                    Toast.makeText(mOuterRef.get(), "Image saved:" + filename, Toast.LENGTH_LONG).show();
+                    imageDownloader.logAppFileNames();
+                }
+
+                @Override
+                public void onBitmapDownloaded(ImageDownloader imageDownloader, Bitmap image) {
+                    imageDownloader.saveImageToInternalStorage(image, "test_image__" + String.valueOf(System.currentTimeMillis()));
+                }
+
+                @Override
+                public void onBitmapDownloadingError(ImageDownloader imageDownloader, Exception ex) {
+                    Toast.makeText(mOuterRef.get(), "Error downloading Image:" + ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onBitmapSavingError(ImageDownloader imageDownloader, Exception ex) {
+                    Toast.makeText(mOuterRef.get(), "Error saving Image:" + ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            };
+
+            Device camera = mOuterRef.get().mTeleconsultation.getLastSession().getCamera();
+            ImageDownloader imageDownloader = new ImageDownloader(receiver, mOuterRef.get(),
+                camera.getUser(), // uriProps.getProperty("username_ptz"),
+                camera.getPwd()); // uriProps.getProperty("password_ptz"));
+
+            imageDownloader.downloadImage(camera.getShotUri()); // uriProps.getProperty("uri_still_image"));
+        }
+    }
 }

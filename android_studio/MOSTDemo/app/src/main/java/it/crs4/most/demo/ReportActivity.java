@@ -30,7 +30,7 @@ import it.crs4.most.report.ehr.WidgetProvider;
 import it.crs4.most.report.ehr.exceptions.InvalidDatatypeException;
 
 
-public class InnerArchetypeViewerActivity extends AppCompatActivity {
+public class ReportActivity extends AppCompatActivity {
     private static final String TAG = "InnerArchetypeViewerAc";
     private final String LANGUAGE = "en";
 
