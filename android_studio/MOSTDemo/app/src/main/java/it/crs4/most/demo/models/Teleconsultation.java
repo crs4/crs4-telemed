@@ -74,7 +74,12 @@ public class Teleconsultation implements Serializable {
             severity = teleconsultationData.getString("severity");
             description = teleconsultationData.getString("description");
             applicant = User.fromJSON(teleconsultationData.getJSONObject("applicant"));
-            patient = Patient.fromJSON(teleconsultationData.getJSONObject("patient"));
+            if (!teleconsultationData.isNull("patient"))  {
+                patient = Patient.fromJSON(teleconsultationData.getJSONObject("patient"));
+            }
+            else {
+                patient = null;
+            }
         }
         catch (JSONException e) {
             e.printStackTrace();
