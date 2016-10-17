@@ -115,9 +115,9 @@
 
 
     <string-array name="Markers">
-        <item>Eco Marker</item>
-        <item>Keyboard Marker</item>
-        <item>Patient Marker</item>
+        <item>eco_marker</item>
+        <item>keyboard_marker</item>
+        <item>patient_marker</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

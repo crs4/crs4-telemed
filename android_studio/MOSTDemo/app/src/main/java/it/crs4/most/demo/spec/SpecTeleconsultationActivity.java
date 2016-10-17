@@ -203,7 +203,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         User user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()){
             ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-                    newInstance(publisher, arConf);
+                    newInstance(publisher, mTeleconsultation.getLastSession().getRoom());
 
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);

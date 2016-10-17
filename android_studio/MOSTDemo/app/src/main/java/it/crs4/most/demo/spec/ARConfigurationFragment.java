@@ -2,6 +2,7 @@ package it.crs4.most.demo.spec;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.models.ARConfiguration;
 import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Room;
@@ -31,31 +37,18 @@ public class ARConfigurationFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PUBLISHER = "publisher";
-    private static final String ARG_CONF = "room";
+    private static final String ARG_ROOM = "room";
     private ZMQPublisher publisher;
     private ARConfiguration arConf;
+    private Room room;
 
+    public ARConfigurationFragment() {}
 
-
-
-//    private OnFragmentInteractionListener mListener;
-
-    public ARConfigurationFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment ARConfigurationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ARConfigurationFragment newInstance(ZMQPublisher publisher, ARConfiguration arConf) {
+    public static ARConfigurationFragment newInstance(ZMQPublisher publisher, Room room) {
         ARConfigurationFragment fragment = new ARConfigurationFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PUBLISHER, publisher);
-        args.putSerializable(ARG_CONF, arConf);
+        args.putSerializable(ARG_ROOM, room);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,7 +58,8 @@ public class ARConfigurationFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             publisher = (ZMQPublisher) getArguments().getSerializable(ARG_PUBLISHER);
-            arConf = (ARConfiguration) getArguments().getSerializable(ARG_CONF);
+            room = (Room) getArguments().getSerializable(ARG_ROOM);
+            arConf = (ARConfiguration) room.getARConfiguration();
         }
     }
 
@@ -78,22 +72,28 @@ public class ARConfigurationFragment extends Fragment {
         final EditText transX = (EditText) view.findViewById(R.id.transX);
         final EditText transY = (EditText) view.findViewById(R.id.transY);
 
+        String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
+        final RESTClient restClient = new RESTClient(getActivity(), configServerIP, configServerPort);
+        final String accessToken = QuerySettings.getAccessToken(getActivity());
+
         Button saveButton = (Button) view.findViewById(R.id.save_ar_conf);
-
-
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ARMarker marker = null;
 
-                switch (spinner.getSelectedItem().toString().toLowerCase()){
-                    case "eco marker":
+                String markerStr = spinner.getSelectedItem().toString().toLowerCase();
+                int transXInt = Integer.valueOf(transX.getText().toString());
+                int transYInt = Integer.valueOf(transY.getText().toString());
+                switch (markerStr){
+                    case "eco_marker":
                         marker = arConf.getEcoMarker();
                         break;
-                    case "keyboard marker":
+                    case "keyboard_marker":
                         marker = arConf.getKeyboardMarker();
                         break;
-                    case "patient marker":
+                    case "patient_marker":
                         marker = arConf.getPatientMarker();
                         break;
                 }
@@ -102,15 +102,27 @@ public class ARConfigurationFragment extends Fragment {
                     try {
                         obj.put("msgType", "trans");
                         obj.put("marker", marker.getConf());
-                        obj.put("transX", Integer.valueOf(transX.getText().toString()));
-                        obj.put("transY", Integer.valueOf(transY.getText().toString()));
+                        obj.put("transX", transXInt);
+                        obj.put("transY", Integer.valueOf(transYInt));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     publisher.send(obj.toString());
-
+                    restClient.setARConf(accessToken, room.getId(), markerStr, transXInt, transYInt,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.d("ARCONF", "DONE");
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d("ARCONF", "FAIL");
+                                }
+                            }
+                    );
                 }
-
             }
         });
 
@@ -123,43 +135,4 @@ public class ARConfigurationFragment extends Fragment {
         spinner.setAdapter(adapter);
         return view;
     }
-
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
 }

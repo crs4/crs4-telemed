@@ -220,9 +220,9 @@ class TeleconsultationSession(models.Model):
 
 
 class ARConfiguration(models.Model):
-    eco_marker = models.ForeignKey('ARMarker', null=True,blank=True, related_name='eco_configurations')
-    keyboard_marker = models.ForeignKey('ARMarker', null=True,blank=True, related_name='keyboard_configurations')
-    patient_marker = models.ForeignKey('ARMarker', null=True,blank=True, related_name='patient_configurations')
+    eco_marker = models.ForeignKey('ARMarkerToConf', null=True,blank=True, related_name='eco_configurations')
+    keyboard_marker = models.ForeignKey('ARMarkerToConf', null=True,blank=True, related_name='keyboard_configurations')
+    patient_marker = models.ForeignKey('ARMarkerToConf', null=True,blank=True, related_name='patient_configurations')
     screen_height = models.FloatField(null=True, blank=True, help_text="expressed in mm")
     screen_width = models.FloatField(null=True, blank=True, help_text="expressed in mm")
     description = models.CharField(max_length=200, null=True, blank=True)
@@ -249,9 +249,6 @@ class ARMarker(models.Model):
     type = models.CharField(max_length=10, choices=(("multi", "multi"), ("single", "single")), default="single")
     size = models.IntegerField(default=80, help_text="expressed in mm")
 
-    trans_x = models.FloatField(default=0.0, help_text="expressed in mm")
-    trans_y = models.FloatField(default=0.0, help_text="expressed in mm")
-
     class Meta:
         verbose_name = 'AR Marker'
         verbose_name_plural = 'AR Markers'
@@ -259,5 +256,10 @@ class ARMarker(models.Model):
     def __str__(self):
         return "%s;%s;%s" % (self.type, self.path, self.size)
 
+class ARMarkerToConf(models.Model):
+    marker = models.ForeignKey(ARMarker)
+    trans_x = models.FloatField(default=0.0, help_text="expressed in mm")
+    trans_y = models.FloatField(default=0.0, help_text="expressed in mm")
+
     def to_dict(self):
-        return {'conf': str(self), 'trans_x': self.trans_x, 'trans_y': self.trans_y}
+        return {'conf': str(self.marker), 'trans_x': self.trans_x, 'trans_y': self.trans_y}
