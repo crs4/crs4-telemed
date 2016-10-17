@@ -79,6 +79,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private SensorManager sensorManager;
     private Sensor accelerometer;
     protected float accX, accY, accZ;
+    private boolean isOptical = false;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
@@ -183,6 +184,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             getWindow().addFlags(0x80000000);
 //            Log.d(TAG, "loading optical files");
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
+            isOptical = true;
         }
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
@@ -288,7 +290,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
         glView = new TouchGLSurfaceView(this);
-        if (mOpticalARToolkit != null) {
+        if (isOptical) {
             glView.setEnabled(false);
         }
 
@@ -313,7 +315,10 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.glView.setEGLContextClientVersion(1);
         }
 
-        glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        if (!isOptical){
+            glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        }
+
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
         glView.setSubscriber(subscriber);
