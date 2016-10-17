@@ -220,9 +220,9 @@ class TeleconsultationSession(models.Model):
 
 
 class ARConfiguration(models.Model):
-    eco_marker = models.ForeignKey('ARMarkerTranslation', null=True,blank=True, related_name='eco_configurations')
-    keyboard_marker = models.ForeignKey('ARMarkerTranslation', null=True,blank=True, related_name='keyboard_configurations')
-    patient_marker = models.ForeignKey('ARMarkerTranslation', null=True,blank=True, related_name='patient_configurations')
+    eco_marker = models.ForeignKey('ARMarkerTranslation', null=True, blank=True, related_name='eco_configurations')
+    keyboard_marker = models.ForeignKey('ARMarkerTranslation', null=True, blank=True, related_name='keyboard_configurations')
+    patient_marker = models.ForeignKey('ARMarkerTranslation', null=True, blank=True, related_name='patient_configurations')
     screen_height = models.FloatField(null=True, blank=True, help_text="expressed in mm")
     screen_width = models.FloatField(null=True, blank=True, help_text="expressed in mm")
     description = models.CharField(max_length=200, null=True, blank=True)
