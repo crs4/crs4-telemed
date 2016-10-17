@@ -12,11 +12,6 @@
         android:inputType="number"
         android:summary="%s"/>
     <ListPreference
-        android:key="select_task_group_preference"
-        android:enabled="false"
-        android:title="@string/task_group"
-        android:summary="%s"/>
-    <ListPreference
         android:key="role_preference"
         android:title="@string/role"
         android:summary="%s"

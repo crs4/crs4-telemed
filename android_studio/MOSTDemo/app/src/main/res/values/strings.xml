@@ -112,6 +112,10 @@
     <string name="reset">Reset</string>
     <string name="json">JSON</string>
     <string name="teleconsultation_report">Teleconsultation Report</string>
+    <string name="select_the_taskgroup">Select the TaskGroup</string>
+    <string name="spinner_item_hint_default">Select an item</string>
+    <string name="spinner_taskgrouop_hint">Select a taskgroup…</string>
+    <string name="spinner_users_hint">Select a user…</string>
 
 
     <string-array name="Markers">

@@ -28,4 +28,9 @@ public class TaskGroup implements Serializable {
     public void setDescription(String description) {
         mDescription = description;
     }
+
+    @Override
+    public String toString() {
+        return mDescription;
+    }
 }

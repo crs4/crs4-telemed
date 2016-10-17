@@ -2,9 +2,11 @@ package it.crs4.most.demo;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -27,7 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import it.crs4.most.demo.models.TaskGroup;
 import it.crs4.most.demo.models.User;
 
 
@@ -37,15 +42,19 @@ public class LoginFragment extends Fragment {
     public static final String USER_ARG = "it.crs4.most.demo.user";
     private static final String TAG = "LoginFragment";
     private static final String USERS = "users";
+    private static final String TASKGROUPS = "taskgroups";
     private static final int PASSCODE_LEN = 5;
 
     private String mTaskGroup;
     private Spinner mUsernameSpinner;
+    private Spinner mTaskGroupSpinner;
     private RESTClient mRESTClient;
     private User mUser;
     private TextView mPasswordText;
     private ArrayList<User> mUsers;
-    private ArrayAdapter<User> mUsersAdapter;
+    private ArrayList<TaskGroup> mTaskGroups;
+    private CustomSpinnerAdapter<User> mUsersAdapter;
+    private CustomSpinnerAdapter<TaskGroup> mTaskGroupAdapter;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -61,26 +70,57 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         String serverIP = QuerySettings.getConfigServerAddress(getActivity());
         Integer serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
-        mTaskGroup = QuerySettings.getTaskGroup(getActivity());
-        mUser = QuerySettings.getUser(getActivity());
-        String accessToken = QuerySettings.getAccessToken(getActivity());
         mRESTClient = new RESTClient(getActivity(), serverIP, serverPort);
 
         View v = inflater.inflate(R.layout.login_fragment, container, false);
-        mUsernameSpinner = (Spinner) v.findViewById(R.id.username_spinner);
-        mPasswordText = (TextView) v.findViewById(R.id.password_text);
-        Button sendPassword = (Button) v.findViewById(R.id.password_button);
 
+        //Set taskgroups
+        mTaskGroupSpinner = (Spinner) v.findViewById(R.id.taskgroup_spinner);
+        if (savedInstanceState != null && savedInstanceState.containsKey(TASKGROUPS)) {
+            mTaskGroups = (ArrayList<TaskGroup>) savedInstanceState.getSerializable(TASKGROUPS);
+        }
+        else {
+            mTaskGroups = new ArrayList<>();
+            loadTaskgroups();
+        }
+        mTaskGroupAdapter = new CustomSpinnerAdapter<>(getActivity(), R.layout.spinner_dropdown, mTaskGroups);
+        mTaskGroupAdapter.setHintMessage(R.string.spinner_taskgrouop_hint);
+        mTaskGroupAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
+        mTaskGroupSpinner.setAdapter(mTaskGroupAdapter);
+        mTaskGroupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TaskGroup taskGroup = mTaskGroupAdapter.getItem(position);
+                if (taskGroup != null) {
+                    QuerySettings.setAccessToken(getActivity(), taskGroup.getId());
+                    mUsernameSpinner.setClickable(true);
+                    QuerySettings.setAccessToken(getActivity(), taskGroup.getId());
+                    mTaskGroup = taskGroup.getId();
+                    loadUsers();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+        //Set users
+        mUsernameSpinner = (Spinner) v.findViewById(R.id.username_spinner);
         if (savedInstanceState != null && savedInstanceState.containsKey(USERS)) {
             mUsers = (ArrayList<User>) savedInstanceState.getSerializable(USERS);
         }
         else {
             mUsers = new ArrayList<>();
-            loadUsers();
         }
-        mUsersAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown, mUsers);
+        mUsersAdapter = new CustomSpinnerAdapter<>(getActivity(), R.layout.spinner_dropdown, mUsers);
+        mUsersAdapter.setHintMessage(R.string.spinner_users_hint);
         mUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
         mUsernameSpinner.setAdapter(mUsersAdapter);
+
+        mPasswordText = (TextView) v.findViewById(R.id.password_text);
+        Button sendPassword = (Button) v.findViewById(R.id.password_button);
 
         if (QuerySettings.isEcographist(getActivity())) {
             mPasswordText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
@@ -117,7 +157,6 @@ public class LoginFragment extends Fragment {
                 }
             });
         }
-
         return v;
     }
 
@@ -125,6 +164,62 @@ public class LoginFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(USERS, mUsers);
+        outState.putSerializable(TASKGROUPS, mTaskGroups);
+    }
+
+    private void loadTaskgroups() {
+        final ProgressDialog loadingConfigDialog = new ProgressDialog(getActivity());
+        loadingConfigDialog.setTitle(getString(R.string.load_taskgroups_title));
+        loadingConfigDialog.setMessage(getString(R.string.load_taskgroups_message));
+        loadingConfigDialog.setMax(10);
+        loadingConfigDialog.show();
+
+        mRESTClient.getTaskgroups(
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject taskgroupsData) {
+                        try {
+                            boolean success = (taskgroupsData != null && taskgroupsData.getBoolean("success"));
+                            if (!success) {
+                                Log.e(TAG, "No valid taskgroups found for this device");
+                                loadingConfigDialog.dismiss();
+
+                                if (taskgroupsData.getJSONObject("error").getInt("code") == 501) {
+                                    showError(R.string.device_not_registered, true);
+                                }
+                                else {
+                                    showError(R.string.generic_taskgroup_error, true);
+                                }
+                                return;
+                            }
+                            mTaskGroupAdapter.clear();
+                            JSONArray jsonTaskgroups = taskgroupsData.getJSONObject("data").getJSONArray("task_groups");
+                            CharSequence taskGroupId;
+                            CharSequence taskGroupName;
+                            for (int i = 0; i < jsonTaskgroups.length(); i++) {
+                                taskGroupId = jsonTaskgroups.getJSONObject(i).getString("uuid");
+                                taskGroupName = jsonTaskgroups.getJSONObject(i).getString("name");
+                                mTaskGroupAdapter.add(new TaskGroup(taskGroupId.toString(), taskGroupName.toString()));
+                            }
+                            mTaskGroupAdapter.notifyDataSetChanged();
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        loadingConfigDialog.dismiss();
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError arg0) {
+                        Log.e(TAG, "Error contacting the configuration server");
+                        loadingConfigDialog.dismiss();
+                        showError(R.string.server_connection_error, true);
+                    }
+                }
+        );
     }
 
     private void loadUsers() {
@@ -140,6 +235,7 @@ public class LoginFragment extends Fragment {
             public void onResponse(JSONObject usersData) {
                 final JSONArray users;
                 int currentUserPos = -1;
+                mUsersAdapter.clear();
                 try {
                     boolean success = usersData != null && usersData.getBoolean("success");
                     if (!success) {
@@ -158,7 +254,7 @@ public class LoginFragment extends Fragment {
                     User u;
                     try {
                         u = User.fromJSON(users.getJSONObject(i));
-                        mUsers.add(u);
+                        mUsersAdapter.add(u);
 
                         if (mUser != null && u.equals(mUser)) {
                             currentUserPos = i;
@@ -192,8 +288,8 @@ public class LoginFragment extends Fragment {
         final User selectedUser = (User) mUsernameSpinner.getSelectedItem();
         String username = selectedUser.getUsername();
         String grantType = QuerySettings.isEcographist(getActivity()) ?
-            RESTClient.GRANT_TYPE_PINCODE :
-            RESTClient.GRANT_TYPE_PASSWORD;
+                RESTClient.GRANT_TYPE_PINCODE :
+                RESTClient.GRANT_TYPE_PASSWORD;
 
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override
@@ -232,18 +328,19 @@ public class LoginFragment extends Fragment {
 
     private void showError(int errorMsgId, final boolean finishActivity) {
         new AlertDialog.Builder(getActivity())
-            .setTitle(R.string.error)
-            .setMessage(errorMsgId)
-            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    if (finishActivity) {
-                        getActivity().finish();
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setTitle(R.string.error)
+                .setMessage(errorMsgId)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (finishActivity) {
+                            getActivity().finish();
+                        }
                     }
-                }
-            })
-            .create()
-            .show();
+                })
+                .create()
+                .show();
     }
 }

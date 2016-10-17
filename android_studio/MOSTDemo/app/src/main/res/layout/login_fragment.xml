@@ -15,12 +15,23 @@
         tools:context="it.crs4.most.demo.LoginActivity">
 
         <Spinner
+            android:id="@+id/taskgroup_spinner"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/textview_shape"
+            android:dropDownVerticalOffset="70dp"
+            android:hint="@string/select_the_taskgroup"
+            android:gravity="start"/>
+
+        <Spinner
             android:id="@+id/username_spinner"
             android:layout_width="300dp"
             android:layout_height="70dp"
             android:layout_margin="10dp"
             android:background="@drawable/textview_shape"
             android:dropDownVerticalOffset="70dp"
+            android:clickable="false"
             android:gravity="start"/>
 
         <EditText

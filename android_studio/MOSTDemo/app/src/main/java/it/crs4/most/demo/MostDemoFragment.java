@@ -35,7 +35,6 @@ public class MostDemoFragment extends Fragment {
     private static final String TAG = "MostDemoFragment";
     private static final String LOGIN_VALID = "it.crs4.most.demo.login_valid";
     private String mServerIP;
-    private String mTaskGroup;
     private String mRole;
     private TextView mMsgText;
     private LinearLayout mNewTeleFrame;
@@ -60,7 +59,6 @@ public class MostDemoFragment extends Fragment {
         setHasOptionsMenu(true);
         mServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int serverPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
-        mTaskGroup = QuerySettings.getTaskGroup(getActivity());
         mAccessToken = QuerySettings.getAccessToken(getActivity());
         mRole = QuerySettings.getRole(getActivity());
         mRestClient = new RESTClient(getActivity(), mServerIP, serverPort);
@@ -122,10 +120,6 @@ public class MostDemoFragment extends Fragment {
                 msgParts += getString(R.string.set_server) + ", ";
                 nullCounter += 2; // Server and port
             }
-            if (mTaskGroup == null) {
-                msgParts += getString(R.string.select_taskgroup) + ", ";
-                nullCounter++;
-            }
             if (mRole == null) {
                 msgParts += getString(R.string.select_role) + ", ";
                 nullCounter++;
@@ -169,7 +163,6 @@ public class MostDemoFragment extends Fragment {
         mProgress = new ProgressDialog(getActivity());
         mProgress.setTitle(getString(R.string.check_login_title));
         mProgress.setMessage(getString(R.string.check_login_message));
-//        progress.setMax(10);
         mProgress.show();
 
         ResponseHandlerDecorator<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
@@ -186,6 +179,7 @@ public class MostDemoFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mProgress.dismiss();
+                setTextMessage(getString(R.string.server_connection_error));
             }
         });
     }
@@ -221,7 +215,7 @@ public class MostDemoFragment extends Fragment {
     }
 
     public boolean checkSettings() {
-        return !(mServerIP == null || mTaskGroup == null || mRole == null);
+        return !(mServerIP == null || mRole == null);
     }
 
     private void setTextMessage(@Nullable String message) {
@@ -268,7 +262,6 @@ public class MostDemoFragment extends Fragment {
 
     private void launchLoginActivity() {
         Intent i = new Intent(getActivity(), LoginActivity.class);
-//        startActivityForResult(i, LoginFragment.LOGGED_IN_RESULT);
         startActivity(i);
     }
 }
