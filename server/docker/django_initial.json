@@ -18,7 +18,7 @@
       "uuid": "pok6c275l6zm7gzgdprn3tlcvtt4sb64",
       "last_modified_timestamp": "2016-07-12T13:11:09.180Z",
       "is_superuser": true,
-      "last_login": "2016-10-14T15:11:51.646Z",
+      "last_login": "2016-10-17T15:54:47.776Z",
       "creation_timestamp": "2016-07-12T13:11:09.156Z",
       "email": "admin@admin.it",
       "numeric_password": null,
@@ -427,6 +427,15 @@
   },
   {
     "fields": {
+      "marker": 1,
+      "trans_x": 0.0,
+      "trans_y": 0.0
+    },
+    "model": "teleconsultation.armarkertranslation",
+    "pk": 2
+  },
+  {
+    "fields": {
       "port": 5060,
       "name": "Demo SIP Server",
       "address": "156.148.132.243"
@@ -603,10 +612,10 @@
     "fields": {
       "name": "android eco app",
       "created": "2016-10-06T13:08:06.627Z",
-      "url": "http://156.148.132.243/",
+      "url": "http://156.148.132.243",
       "client_type": 1,
       "modified": "2016-10-06T13:08:06.628Z",
-      "redirect_uri": "http://156.148.132.243/",
+      "redirect_uri": "http://156.148.132.243",
       "user": null,
       "client_id": "9db4f27b3d9c8e352b5c",
       "client_secret": "00ea399c013349a716ea3e47d8f8002502e2e982"
