@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +42,9 @@ public class ARConfigurationFragment extends Fragment {
     private ZMQPublisher publisher;
     private ARConfiguration arConf;
     private Room room;
+    private Spinner spinner;
+    private EditText transX;
+    private EditText transY;
 
     public ARConfigurationFragment() {}
 
@@ -63,47 +67,83 @@ public class ARConfigurationFragment extends Fragment {
         }
     }
 
+    private ARMarker getMarker(){
+        ARMarker marker = null;
+        String markerStr = spinner.getSelectedItem().toString().toLowerCase();
+        switch (markerStr){
+            case "eco_marker":
+                marker = arConf.getEcoMarker();
+                break;
+            case "keyboard_marker":
+                marker = arConf.getKeyboardMarker();
+                break;
+            case "patient_marker":
+                marker = arConf.getPatientMarker();
+                break;
+        }
+        return marker;
+    }
+
+    private void setARParams(){
+        setARParams(getMarker());
+    }
+    private void setARParams(ARMarker marker){
+        if (marker != null){
+        transX.setText(String.valueOf(marker.getTransX()));
+        transY.setText(String.valueOf(marker.getTransY()));
+        }
+        else{
+            transX.setText("");
+            transY.setText("");
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.ar_conf, container, false);
-        final Spinner spinner = (Spinner) view.findViewById(R.id.markers);
-        final EditText transX = (EditText) view.findViewById(R.id.transX);
-        final EditText transY = (EditText) view.findViewById(R.id.transY);
+        spinner = (Spinner) view.findViewById(R.id.markers);
+        transX = (EditText) view.findViewById(R.id.transX);
+        transY = (EditText) view.findViewById(R.id.transY);
+
+
+//        setARParams(marker);
 
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         final RESTClient restClient = new RESTClient(getActivity(), configServerIP, configServerPort);
         final String accessToken = QuerySettings.getAccessToken(getActivity());
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                setARParams();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
         Button saveButton = (Button) view.findViewById(R.id.save_ar_conf);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARMarker marker = null;
-
                 String markerStr = spinner.getSelectedItem().toString().toLowerCase();
-                int transXInt = Integer.valueOf(transX.getText().toString());
-                int transYInt = Integer.valueOf(transY.getText().toString());
-                switch (markerStr){
-                    case "eco_marker":
-                        marker = arConf.getEcoMarker();
-                        break;
-                    case "keyboard_marker":
-                        marker = arConf.getKeyboardMarker();
-                        break;
-                    case "patient_marker":
-                        marker = arConf.getPatientMarker();
-                        break;
-                }
+                ARMarker marker = getMarker();
+                float transXInt = Float.valueOf(transX.getText().toString());
+                float transYInt = Float.valueOf(transY.getText().toString());
+
                 if (marker != null){
                     JSONObject obj = new JSONObject();
                     try {
                         obj.put("msgType", "trans");
                         obj.put("marker", marker.getConf());
                         obj.put("transX", transXInt);
-                        obj.put("transY", Integer.valueOf(transYInt));
+                        obj.put("transY", transYInt);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

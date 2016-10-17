@@ -463,8 +463,8 @@ def set_ar_conf(request, room_uuid):
     try:
         room = Room.objects.get(uuid=room_uuid)
         marker_conf = getattr(room.ar_conf, request.POST.get("marker"))
-        marker_conf.trans_x = int(request.POST.get("trans_x"))
-        marker_conf.trans_y = int(request.POST.get("trans_y"))
+        marker_conf.trans_x = float(request.POST.get("trans_x"))
+        marker_conf.trans_y = float(request.POST.get("trans_y"))
         marker_conf.save()
 
     except Room.DoesNotExist as ex:

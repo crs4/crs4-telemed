@@ -380,8 +380,8 @@ public class RESTClient {
             final String accessToken,
             String roomId,
             final String marker,
-            final int transX,
-            final int transY,
+            final float transX,
+            final float transY,
             Response.Listener<String> listener,
             Response.ErrorListener errorListener) {
 
