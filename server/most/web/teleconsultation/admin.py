@@ -10,7 +10,7 @@
 
 from django.contrib import admin
 from most.web.teleconsultation.models import Teleconsultation, TeleconsultationSession, Device, Room, ARConfiguration, \
-    ARMarker, ARMarkerToConf
+    ARMarker, ARMarkerTranslation
 
 admin.site.register(Device)
 admin.site.register(Teleconsultation)
@@ -18,4 +18,4 @@ admin.site.register(TeleconsultationSession)
 admin.site.register(Room)
 admin.site.register(ARConfiguration)
 admin.site.register(ARMarker)
-admin.site.register(ARMarkerToConf)
+admin.site.register(ARMarkerTranslation)

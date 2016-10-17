@@ -15,7 +15,7 @@ from datetime import datetime, timedelta, time
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from most.web.demographics.models import Patient
-from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room, ARMarkerToConf
+from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room, ARMarkerTranslation
 
 from most.web.authentication.decorators import oauth2_required
 from most.web.users.models import TaskGroup

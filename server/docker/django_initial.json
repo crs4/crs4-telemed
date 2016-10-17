@@ -18,7 +18,7 @@
       "uuid": "pok6c275l6zm7gzgdprn3tlcvtt4sb64",
       "last_modified_timestamp": "2016-07-12T13:11:09.180Z",
       "is_superuser": true,
-      "last_login": "2016-09-27T08:57:49.925Z",
+      "last_login": "2016-10-14T15:11:51.646Z",
       "creation_timestamp": "2016-07-12T13:11:09.156Z",
       "email": "admin@admin.it",
       "numeric_password": null,
@@ -47,7 +47,7 @@
       "uuid": "sb4htkhsvoyyoxy2wqfcvw76sacgekig",
       "last_modified_timestamp": "2016-07-12T15:06:21.824Z",
       "is_superuser": false,
-      "last_login": "2016-09-30T13:29:12.831Z",
+      "last_login": "2016-10-17T10:18:29.542Z",
       "creation_timestamp": "2016-07-12T13:24:22.941Z",
       "email": "ecografista@eco.it",
       "numeric_password": "12345",
@@ -74,16 +74,16 @@
       "date_joined": "2016-07-12T13:25:10.174Z",
       "first_name": "Spec",
       "uuid": "afxacgutazd657uriworwvf7bkfekybg",
-      "last_modified_timestamp": "2016-07-12T13:25:13.113Z",
+      "last_modified_timestamp": "2016-10-17T10:04:36.978Z",
       "is_superuser": false,
-      "last_login": "2016-09-30T13:29:07.705Z",
+      "last_login": "2016-10-17T10:19:18.131Z",
       "creation_timestamp": "2016-07-12T13:25:10.174Z",
       "email": "specialista@eco.it",
       "numeric_password": "",
       "username": "spec",
       "is_active": true,
       "phone": "",
-      "is_admin": false,
+      "is_admin": true,
       "groups": [],
       "password": "pbkdf2_sha256$15000$qih7kB4wPlsV$b4QGE24UXIbA28TGy+MDvuN1Nt+FfyALg0K64S3J3uY=",
       "mobile": "",
@@ -371,7 +371,7 @@
   {
     "fields": {
       "has_camera": true,
-      "ar_conf": null,
+      "ar_conf": 2,
       "description": "Stanza Eco @ Brotzu",
       "uuid": "m6s3zh2vbrfuomj5pllrqz36t6t7zciu",
       "name": "Stanza Eco @ Brotzu",
@@ -397,13 +397,32 @@
   },
   {
     "fields": {
-      "trans_x": 0.0,
+      "description": "brotzu",
+      "patient_marker": null,
+      "keyboard_marker": null,
+      "eco_marker": 1,
+      "screen_height": 200.0,
+      "screen_width": 240.0
+    },
+    "model": "teleconsultation.arconfiguration",
+    "pk": 2
+  },
+  {
+    "fields": {
       "path": "Data/hiro.patt",
       "type": "single",
-      "trans_y": -140.0,
       "size": 80
     },
     "model": "teleconsultation.armarker",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "marker": 1,
+      "trans_x": 0.0,
+      "trans_y": 0.0
+    },
+    "model": "teleconsultation.armarkertranslation",
     "pk": 1
   },
   {
