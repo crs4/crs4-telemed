@@ -1,24 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/spec_eco"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    tools:context=".spec.SpecTeleconsultationActivity"
-    android:orientation="vertical"
-    android:background="#ede8e8">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/spec_eco"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="#ede8e8"
+              android:orientation="vertical"
+              tools:context=".spec.SpecTeleconsultationActivity">
+
     <FrameLayout
         android:id="@+id/ar_conf_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </FrameLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:id="@+id/stream_layout"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:background="#777"
-                  android:baselineAligned="false">
+    <LinearLayout
+        android:id="@+id/stream_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#777"
+        android:baselineAligned="false"
+        android:keepScreenOn="true"
+        tools:context=".spec.SpecTeleconsultationActivity">
 
         <FrameLayout
             android:id="@+id/container_stream_camera"
@@ -33,5 +36,3 @@
             android:layout_weight=".75"/>
     </LinearLayout>
 </LinearLayout>
-
-
