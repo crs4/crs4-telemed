@@ -15,7 +15,7 @@ from datetime import datetime, timedelta, time
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from most.web.demographics.models import Patient
-from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room
+from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room, ARMarkerTranslation
 
 from most.web.authentication.decorators import oauth2_required
 from most.web.users.models import TaskGroup
@@ -68,7 +68,9 @@ def get_applicants_for_taskgroups(request, taskgroup_uuid):
         for applicant in taskgroup.users.exclude(user_type='ST').exclude(user_type="TE"):
             applicants.append({'firstname': applicant.first_name,
                                'lastname': applicant.last_name,
-                               'username': applicant.username})
+                               'username': applicant.username,
+                               'is_admin': applicant.is_admin
+                               })
         return HttpResponse(json.dumps({'success': True, 'data': {'applicants': applicants}}),
                             content_type="application/json")
 
@@ -348,7 +350,6 @@ def start_session(request, session_uuid):
 @oauth2_required
 def join_session(request, session_uuid, spec_app_address):
     # Check and Retrieve session
-    print session_uuid
     try:
         session = TeleconsultationSession.objects.get(uuid=session_uuid)
 
@@ -454,3 +455,26 @@ def test(request):
     return HttpResponse(json.dumps({'success': True,
                                     'data': {'message': 'Hello Teleconsultation'}}),
                         content_type="application/json")
+
+
+@csrf_exempt
+@oauth2_required
+def set_ar_conf(request, room_uuid):
+    try:
+        room = Room.objects.get(uuid=room_uuid)
+        marker_conf = getattr(room.ar_conf, request.POST.get("marker"))
+        marker_conf.trans_x = float(request.POST.get("trans_x"))
+        marker_conf.trans_y = float(request.POST.get("trans_y"))
+        marker_conf.save()
+
+    except Room.DoesNotExist as ex:
+        logger.error(ex)
+        return HttpResponse(json.dumps({
+            'success': False,
+            'error': {'code': 501}}),
+            content_type="application/json"
+        )
+
+    return HttpResponse(json.dumps({'success': True}),
+                        content_type="application/json")
+

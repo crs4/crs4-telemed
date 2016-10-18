@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     # get rooms
     url(r'rooms/$', "most.web.teleconsultation.views.get_rooms_for_taskgroup"),
     url(r'room/(?P<room_uuid>.*)/$', 'most.web.teleconsultation.views.get_room_by_uuid'),
+    url(r'room/(?P<room_uuid>.*)/set_ar', "most.web.teleconsultation.views.set_ar_conf"),
 
     # teleconsultation
     url(r'(?P<teleconsultation_uuid>.*)/session/create/$', "most.web.teleconsultation.views.create_new_session"),
@@ -38,6 +39,7 @@ urlpatterns = patterns('',
     url(r'session/(?P<session_uuid>.*)/run/$', "most.web.teleconsultation.views.run_session"),
     url(r'session/(?P<session_uuid>.*)/close/$', "most.web.teleconsultation.views.close_session"),
     url(r'session/(?P<session_uuid>.*)/$', "most.web.teleconsultation.views.get_session_data"),
+
 
     # url(r'sessions/waiting/$', "most.web.teleconsultation.views.get_waiting_teleconsultations"),
 

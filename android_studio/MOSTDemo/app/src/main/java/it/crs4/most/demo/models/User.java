@@ -14,11 +14,13 @@ public class User implements Serializable {
     private String mUsername = null;
     private String mFirstName = null;
     private String mLastName = null;
+    private boolean mAdmin = false;
 
-    public User(String firstName, String lastName, String username) {
+    public User(String firstName, String lastName, String username, boolean isAdmin) {
         mFirstName = firstName;
         mLastName = lastName;
         mUsername = username;
+        mAdmin = isAdmin;
     }
 
     public String getFirstName() {
@@ -42,7 +44,8 @@ public class User implements Serializable {
             String firstname = userData.getString("firstname");
             String lastname = userData.getString("lastname");
             String username = userData.getString("username");
-            return new User(firstname, lastname, username);
+            boolean isAdmin = userData.has("is_admin")? userData.getBoolean("is_admin"): false;
+            return new User(firstname, lastname, username, isAdmin);
         }
         catch (JSONException e) {
             throw new TeleconsultationException();
@@ -64,5 +67,9 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return  String.format("%s %s (%s)", getFirstName(), getLastName(), getUsername());
+    }
+
+    public boolean isAdmin() {
+        return mAdmin;
     }
 }

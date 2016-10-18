@@ -1,23 +1,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/stream_layout"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#777"
-              android:baselineAligned="false"
-              tools:context=".spec.SpecTeleconsultationActivity">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/spec_eco"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".spec.SpecTeleconsultationActivity"
+    android:orientation="vertical"
+    android:background="#ede8e8">
     <FrameLayout
-        android:id="@+id/container_stream_camera"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight=".25"/>
+        android:id="@+id/ar_conf_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/container_stream_eco"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight=".75"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:id="@+id/stream_layout"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="#777"
+                  android:baselineAligned="false">
+
+        <FrameLayout
+            android:id="@+id/container_stream_camera"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight=".25"/>
+
+        <FrameLayout
+            android:id="@+id/container_stream_eco"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight=".75"/>
+    </LinearLayout>
 </LinearLayout>
 
 
