@@ -50,7 +50,7 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
         String action = getIntent().getExtras().getString(ACTION_ARG);
         mSetupFragments = mTcController.getFragments(mTeleconsultationSetup, action);
-        for(SetupFragment f: mSetupFragments) {
+        for (SetupFragment f : mSetupFragments) {
             f.addEventListener(new SetupFragment.StepEventListener() {
                 @Override
                 public void onStepDone() {
@@ -87,11 +87,8 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == EcoTeleconsultationActivity.TELECONSULT_ENDED_REQUEST ||
-            requestCode == SpecTeleconsultationActivity.TELECONSULT_ENDED_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                finish();
-            }
+        if (resultCode == RESULT_OK) {
+            finish();
         }
     }
 

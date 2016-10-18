@@ -1,7 +1,6 @@
 package it.crs4.most.demo.spec;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +44,6 @@ import it.crs4.most.demo.models.ARConfiguration;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
-import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.ui.TcStateTextView;
 import it.crs4.most.streaming.IStream;
 import it.crs4.most.streaming.StreamingEventBundle;
@@ -199,16 +197,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
             new PTZHandler(this), true, true, true, 100, 100);
-
-        User user = QuerySettings.getUser(this);
-        if (user != null && user.isAdmin()){
-            ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-                    newInstance(publisher, mTeleconsultation.getLastSession().getRoom());
-
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
-            fragmentTransaction.commit();
-        }
 
         setupStreamLib();
         setupVoipLib();
@@ -746,6 +734,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
                 act.stopStreams();
 //                act.startReportActivity();
+                act.setResult(RESULT_OK);
                 act.finish();
             }
             else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
