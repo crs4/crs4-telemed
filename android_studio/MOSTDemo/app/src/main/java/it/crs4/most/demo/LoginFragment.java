@@ -76,7 +76,7 @@ public class LoginFragment extends Fragment {
 
         //Set taskgroups
         mTaskGroupSpinner = (Spinner) v.findViewById(R.id.taskgroup_spinner);
-        if (savedInstanceState != null && savedInstanceState.containsKey(TASKGROUPS)) {
+        if (savedInstanceState != null) {
             mTaskGroups = (ArrayList<TaskGroup>) savedInstanceState.getSerializable(TASKGROUPS);
         }
         else {
@@ -92,9 +92,7 @@ public class LoginFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TaskGroup taskGroup = mTaskGroupAdapter.getItem(position);
                 if (taskGroup != null) {
-                    QuerySettings.setAccessToken(getActivity(), taskGroup.getId());
                     mUsernameSpinner.setClickable(true);
-                    QuerySettings.setAccessToken(getActivity(), taskGroup.getId());
                     mTaskGroup = taskGroup.getId();
                     loadUsers();
                 }

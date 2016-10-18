@@ -11,16 +11,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class CustomSpinnerAdapter<T> extends ArrayAdapter<T> {
+class CustomSpinnerAdapter<T> extends ArrayAdapter<T> {
     private int mHintMessage;
 
-    public CustomSpinnerAdapter(Context context, int resource, List<T> objects) {
+    CustomSpinnerAdapter(Context context, int resource, List<T> objects) {
         super(context, resource, objects);
         add(null);
         mHintMessage = R.string.spinner_item_hint_default;
     }
 
-    public void setHintMessage(int resId) {
+    void setHintMessage(int resId) {
         mHintMessage = resId;
     }
 
@@ -31,7 +31,16 @@ public class CustomSpinnerAdapter<T> extends ArrayAdapter<T> {
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        View view = super.getDropDownView(position, convertView, parent);
+        View view;
+        if (position == 0) {
+            LayoutInflater inflater = (LayoutInflater) getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.spinner_dropdown, parent, false);
+        }
+        else {
+            view = super.getDropDownView(position, convertView, parent);
+        }
+
         TextView tv = (TextView) view;
         if (position == 0) {
             // Set the hint text color gray
@@ -48,7 +57,8 @@ public class CustomSpinnerAdapter<T> extends ArrayAdapter<T> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.spinner_dropdown, null);
         }
 
