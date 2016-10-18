@@ -116,6 +116,8 @@
     <string name="spinner_item_hint_default">Select an item</string>
     <string name="spinner_taskgrouop_hint">Select a taskgroup…</string>
     <string name="spinner_users_hint">Select a user…</string>
+    <string name="wait">Wait</string>
+    <string name="launghing_teleconsultation">Launching teleconsultation</string>
 
 
     <string-array name="Markers">

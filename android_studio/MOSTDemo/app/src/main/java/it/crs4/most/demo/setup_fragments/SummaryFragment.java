@@ -33,14 +33,16 @@ import it.crs4.most.demo.models.TeleconsultationSessionState;
 public class SummaryFragment extends SetupFragment {
 
     private static String TAG = "SummaryFragment";
+    private static final String DIALOG_SHOWN = "it.crs4.most.demo.summary_fragment.dialog_shown";
 
     private TextView mTxtPatientFullName;
     private TextView mPatientId;
+    private TextView mUrgency;
+    private TextView mRoom;
+    private ProgressDialog mWaitForSpecialistDialog;
     private Runnable mWaitForSpecialistTask;
     private Handler mWaitForSpecialistHandler;
     private RESTClient mRESTClient;
-    private TextView mUrgency;
-    private TextView mRoom;
 
     public static SummaryFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         SummaryFragment fragment = new SummaryFragment();
@@ -71,6 +73,14 @@ public class SummaryFragment extends SetupFragment {
             }
         });
 
+        mWaitForSpecialistDialog = new ProgressDialog(getActivity());
+        mWaitForSpecialistDialog.setTitle(getString(R.string.waiting_for_specialist));
+        mWaitForSpecialistDialog.setMessage(getString(R.string.wait_for_specialist_message));
+        mWaitForSpecialistDialog.setCancelable(false);
+        mWaitForSpecialistDialog.setCanceledOnTouchOutside(false);
+        if (savedInstanceState != null && savedInstanceState.getBoolean(DIALOG_SHOWN)) {
+            mWaitForSpecialistDialog.show();
+        }
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(getActivity()));
         mRESTClient = new RESTClient(getActivity(), configServerIP, configServerPort);
@@ -81,6 +91,20 @@ public class SummaryFragment extends SetupFragment {
     public void onPause() {
         mRESTClient.cancelRequests();
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        if (mWaitForSpecialistDialog != null) {
+            mWaitForSpecialistDialog.dismiss();
+        }
+        super.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(DIALOG_SHOWN, mWaitForSpecialistDialog.isShowing());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -114,130 +138,124 @@ public class SummaryFragment extends SetupFragment {
         final String severity = mTeleconsultationSetup.getUrgency();
         final Patient patient = mTeleconsultationSetup.getPatient();
         Response.Listener<String> listener = new ResponseHandlerDecorator<>(getActivity(),
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String teleconsultationData) {
-                    try {
-                        JSONObject tcData = new JSONObject(teleconsultationData);
-                        String uuid = tcData.getJSONObject("data").
-                            getJSONObject("teleconsultation").
-                            getString("uuid");
-                        Teleconsultation t = new Teleconsultation(uuid, description, severity, null, patient);
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String teleconsultationData) {
+                        try {
+                            JSONObject tcData = new JSONObject(teleconsultationData);
+                            String uuid = tcData.getJSONObject("data").
+                                    getJSONObject("teleconsultation").
+                                    getString("uuid");
+                            Teleconsultation t = new Teleconsultation(uuid, description, severity, null, patient);
 
-                        createTeleconsultationSession(t);
+                            createTeleconsultationSession(t);
+                        }
+                        catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
-                    catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            });
+                });
 
         String patientUid = patient != null ? patient.getUid() : null;
         mRESTClient.createNewTeleconsultation(description, severity, patientUid, getAccessToken(),
-            listener,
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError err) {
-                    Log.e(TAG, "Error creating the new teleconsultation: " + err);
-                }
-            });
+                listener,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError err) {
+                        Log.e(TAG, "Error creating the new teleconsultation: " + err);
+                    }
+                });
     }
 
     private void createTeleconsultationSession(final Teleconsultation teleconsultation) {
         final Room room = mTeleconsultationSetup.getRoom();
 
         Response.Listener<String> listener = new ResponseHandlerDecorator<>(getActivity(),
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String sessionData) {
-                    Log.d(TAG, "Created teleconsultation session: " + sessionData);
-                    try {
-                        JSONObject jsonData = new JSONObject(sessionData).
-                            getJSONObject("data").
-                            getJSONObject("session");
-                        String sessionUUID = jsonData.getString("uuid");
-                        TeleconsultationSession s = new TeleconsultationSession(sessionUUID,
-                            null, TeleconsultationSessionState.NEW, room);
-                        teleconsultation.setLastSession(s);
-                        startSession(teleconsultation);
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String sessionData) {
+                        Log.d(TAG, "Created teleconsultation session: " + sessionData);
+                        try {
+                            JSONObject jsonData = new JSONObject(sessionData).
+                                    getJSONObject("data").
+                                    getJSONObject("session");
+                            String sessionUUID = jsonData.getString("uuid");
+                            TeleconsultationSession s = new TeleconsultationSession(sessionUUID,
+                                    null, TeleconsultationSessionState.NEW, room);
+                            teleconsultation.setLastSession(s);
+                            startSession(teleconsultation);
+                        }
+                        catch (JSONException e) {
+                            Log.e(TAG, "Error parsing the new teleconsultation session creation response: " + e);
+                            e.printStackTrace();
+                        }
                     }
-                    catch (JSONException e) {
-                        Log.e(TAG, "Error parsing the new teleconsultation session creation response: " + e);
-                        e.printStackTrace();
-                    }
-                }
-            });
+                });
 
         mRESTClient.createNewTeleconsultationSession(teleconsultation.getId(), room.getId(), getAccessToken(),
-            listener,
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError err) {
-                    Log.e(TAG, "Error creating the new teleconsultation session: " + err);
-                }
-            });
+                listener,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError err) {
+                        Log.e(TAG, "Error creating the new teleconsultation session: " + err);
+                    }
+                });
     }
 
     private void startSession(final Teleconsultation tc) {
         Response.Listener<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    waitForSpecialist(tc);
-                }
-            });
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        waitForSpecialist(tc);
+                    }
+                });
 
         mRESTClient.startSession(tc.getLastSession().getId(), getAccessToken(),
-            listener,
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError arg0) {
-                    Log.e(TAG, "Error startung session: " + arg0);
-                }
-            });
+                listener,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError arg0) {
+                        Log.e(TAG, "Error startung session: " + arg0);
+                    }
+                });
     }
 
     private void waitForSpecialist(final Teleconsultation tc) {
-        final ProgressDialog dialog = new ProgressDialog(getActivity());
-        dialog.setTitle(getString(R.string.waiting_for_specialist));
-        dialog.setMessage(getString(R.string.wait_for_specialist_message));
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setButton(ProgressDialog.BUTTON_NEGATIVE,
-            getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(final DialogInterface dialog, int which) {
-                    closeSessionAndTeleconsultation(tc);
-                }
-            });
-        dialog.show();
+        mWaitForSpecialistDialog.setButton(ProgressDialog.BUTTON_NEGATIVE,
+                getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        closeSessionAndTeleconsultation(tc);
+                    }
+                });
+        mWaitForSpecialistDialog.show();
 
         final Response.Listener<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject res) {
-                    try {
-                        String state = res.getJSONObject("data").getJSONObject("session").getString("state");
-                        String specAppAddress = res.getJSONObject("data").getJSONObject("session").getString("spec_app_address");
-                        if (state.equals(TeleconsultationSessionState.WAITING.name())) {
-                            mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 5000);
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject res) {
+                        try {
+                            String state = res.getJSONObject("data").getJSONObject("session").getString("state");
+                            String specAppAddress = res.getJSONObject("data").getJSONObject("session").getString("spec_app_address");
+                            if (state.equals(TeleconsultationSessionState.WAITING.name())) {
+                                mWaitForSpecialistHandler.postDelayed(mWaitForSpecialistTask, 5000);
+                            }
+                            else if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
+                                mWaitForSpecialistDialog.dismiss();
+                            }
+                            else {
+                                tc.getLastSession().setSpecAppAddress(specAppAddress);
+                                runSession(tc);
+                            }
                         }
-                        else if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
-                            dialog.dismiss();
+                        catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
                         }
-                        else {
-                            tc.getLastSession().setSpecAppAddress(specAppAddress);
-                            dialog.dismiss();
-                            runSession(tc);
-                        }
-                    }
-                    catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
                     }
                 }
-            }
         );
 
         mWaitForSpecialistHandler = new Handler();
@@ -245,14 +263,14 @@ public class SummaryFragment extends SetupFragment {
             @Override
             public void run() {
                 mRESTClient.getSessionState(tc.getLastSession().getId(), getAccessToken(),
-                    listener,
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError arg0) {
-                            Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
-                            dialog.dismiss();
+                        listener,
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError arg0) {
+                                Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
+                                mWaitForSpecialistDialog.dismiss();
+                            }
                         }
-                    }
                 );
             }
         };
@@ -263,69 +281,66 @@ public class SummaryFragment extends SetupFragment {
         final String accessToken = getAccessToken();
 
         final Response.Listener<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "Session closed");
-                    mRESTClient.closeTeleconsultation(
-                        tc.getId(),
-                        accessToken,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d(TAG, "Teleconsulation closed");
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e(TAG, "Error closing teleconsultation");
-                            }
-                        }
-                    );
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "Session closed");
+                        mRESTClient.closeTeleconsultation(
+                                tc.getId(),
+                                accessToken,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Log.d(TAG, "Teleconsulation closed");
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.e(TAG, "Error closing teleconsultation");
+                                    }
+                                }
+                        );
+                    }
                 }
-            }
 
         );
 
         mRESTClient.closeSession(tc.getLastSession().getId(), accessToken, listener,
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(TAG, "Error closing teleconsultation");
-                }
-            });
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Error closing teleconsultation");
+                    }
+                });
     }
 
     private void runSession(final Teleconsultation tc) {
         final Response.Listener<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject sessionData) {
-                    String role = QuerySettings.getRole(getActivity());
-                    try {
-                        sessionData = sessionData.getJSONObject("data").getJSONObject("session");
-                        Log.d(TAG, "Session running: " + sessionData);
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject sessionData) {
+                        String role = QuerySettings.getRole(getActivity());
+                        try {
+                            sessionData = sessionData.getJSONObject("data").getJSONObject("session");
+                            Log.d(TAG, "Session running: " + sessionData);
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        tc.getLastSession().setVoipParams(getActivity(), sessionData, role);
+                        mTeleconsultationSetup.setTeleconsultation(tc);
+                        stepDone();
                     }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    tc.getLastSession().setVoipParams(getActivity(), sessionData, role);
-                    mTeleconsultationSetup.setTeleconsultation(tc);
-                    stepDone();
-                }
-            });
+                });
 
-        mRESTClient.runSession(
-            tc.getLastSession().getId(),
-            getAccessToken(),
-            listener,
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(TAG, "Error running the session: " + error);
-                }
-            });
+        mRESTClient.runSession(tc.getLastSession().getId(), getAccessToken(), listener,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Error running the session: " + error);
+                    }
+                });
     }
 
     public String getAccessToken() {

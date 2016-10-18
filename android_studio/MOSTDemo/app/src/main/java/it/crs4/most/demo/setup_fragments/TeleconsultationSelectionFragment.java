@@ -1,6 +1,9 @@
 package it.crs4.most.demo.setup_fragments;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,7 +39,8 @@ import it.crs4.most.demo.models.Teleconsultation;
 
 public class TeleconsultationSelectionFragment extends SetupFragment {
 
-    private static String TAG = "TeleconsultSelFragment";
+    private static final String TAG = "TeleconsultSelFragment";
+    private static final String DIALOG_SHOWN = "it.crs4.most.demo.teleconsultation_selection_fragment.dialog_shown";
     private ArrayList<Teleconsultation> mTeleconsultations;
     private ArrayAdapter<Teleconsultation> mAdapter;
     private RESTClient mRESTClient;
@@ -44,6 +48,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     private Handler mGetTeleconsultationsHandler;
     private ListView mListView;
     private TextView mEmptyView;
+    private ProgressDialog mLaunchingTcDialog;
 
     public static TeleconsultationSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         TeleconsultationSelectionFragment fragment = new TeleconsultationSelectionFragment();
@@ -75,9 +80,20 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Teleconsultation selectedTc = mTeleconsultations.get(position);
                 mTeleconsultationSetup.setTeleconsultation(selectedTc);
+                mLaunchingTcDialog.show();
                 stepDone();
             }
         });
+
+        mLaunchingTcDialog = new ProgressDialog(getActivity());
+        mLaunchingTcDialog.setTitle(getString(R.string.wait));
+        mLaunchingTcDialog.setMessage(getString(R.string.launghing_teleconsultation));
+        mLaunchingTcDialog.setCancelable(false);
+        mLaunchingTcDialog.setCanceledOnTouchOutside(false);
+        if (savedInstanceState != null && savedInstanceState.getBoolean(DIALOG_SHOWN)) {
+            mLaunchingTcDialog.show();
+        }
+
         PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("select_task_group_preference", null);
         retrieveTeleconsultations();
         return view;
@@ -88,6 +104,18 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
         mGetTeleconsultationsHandler.removeCallbacks(mGetTeleconsultationsTask);
         mRESTClient.cancelRequests();
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        mLaunchingTcDialog.dismiss();
+        super.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(DIALOG_SHOWN, mLaunchingTcDialog.isShowing());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -108,49 +136,49 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
             public void run() {
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 10000);
                 ResponseHandlerDecorator listener = new ResponseHandlerDecorator<>(getActivity(),
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                Log.d(TAG, "Teleconsultation list response: " + response);
-                                final JSONArray teleconsultations = response
-                                    .getJSONObject("data")
-                                    .getJSONArray("teleconsultations");
-                                mTeleconsultations = new ArrayList<>();
-                                for (int i = 0; i < teleconsultations.length(); i++) {
-                                    JSONObject item = teleconsultations.getJSONObject(i);
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    Log.d(TAG, "Teleconsultation list response: " + response);
+                                    final JSONArray teleconsultations = response
+                                            .getJSONObject("data")
+                                            .getJSONArray("teleconsultations");
+                                    mTeleconsultations = new ArrayList<>();
+                                    for (int i = 0; i < teleconsultations.length(); i++) {
+                                        JSONObject item = teleconsultations.getJSONObject(i);
 
-                                    Teleconsultation t = null;
-                                    try {
-                                        String role = QuerySettings.getRole(getActivity());
-                                        t = Teleconsultation.fromJSON(getActivity(), item, role);
+                                        Teleconsultation t = null;
+                                        try {
+                                            String role = QuerySettings.getRole(getActivity());
+                                            t = Teleconsultation.fromJSON(getActivity(), item, role);
+                                        }
+                                        catch (TeleconsultationException e) {
+                                            Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
+                                        }
+                                        mTeleconsultations.add(t);
                                     }
-                                    catch (TeleconsultationException e) {
-                                        Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
+                                    mAdapter.clear();
+                                    mAdapter.addAll(mTeleconsultations);
+                                    mAdapter.notifyDataSetChanged();
+                                    if (mTeleconsultations.size() == 0) {
+                                        mListView.setEmptyView(mEmptyView);
                                     }
-                                    mTeleconsultations.add(t);
                                 }
-                                mAdapter.clear();
-                                mAdapter.addAll(mTeleconsultations);
-                                mAdapter.notifyDataSetChanged();
-                                if (mTeleconsultations.size() == 0) {
-                                    mListView.setEmptyView(mEmptyView);
+                                catch (JSONException e) {
+                                    Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                                 }
-                            }
-                            catch (JSONException e) {
-                                Log.e(TAG, "There's something wrong with the JSON structure returned by the server");
                             }
                         }
-                    }
                 );
                 mRESTClient.getWaitingTeleconsultationsByTaskgroup(taskGroup, accessToken,
-                    listener,
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError response) {
-                            response.printStackTrace();
+                        listener,
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError response) {
+                                response.printStackTrace();
+                            }
                         }
-                    }
                 );
             }
         };
@@ -171,7 +199,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
             ViewHolder viewHolder;
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.teleconsultation_selection_fragment_item, null);
                 viewHolder = new ViewHolder();
                 viewHolder.patient = (TextView) convertView.findViewById(R.id.text_tc_patient);
