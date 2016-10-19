@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +36,7 @@ public abstract class SetupFragment extends Fragment {
     protected static final String TELECONSULTATION_SETUP = "TELECONSULTATION_SETUP";
     protected TeleconsultationSetup mTeleconsultationSetup;
     private ArrayList<StepEventListener> mEventListeners;
+    protected Response.ErrorListener mErrorListener;
 
     public SetupFragment() {
         mEventListeners = new ArrayList<>();
@@ -41,6 +45,12 @@ public abstract class SetupFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mErrorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError err) {
+                showError();
+            }
+        };
         setTeleconsultationSetup((TeleconsultationSetup) getArguments().getSerializable(TELECONSULTATION_SETUP));
     }
 
@@ -63,7 +73,8 @@ public abstract class SetupFragment extends Fragment {
         return super.getContext();
     }
 
-    public void onShow() {}
+    public void onShow() {
+    }
 
     public TeleconsultationSetup getTeleconsultationSetup() {
         return mTeleconsultationSetup;
@@ -74,13 +85,13 @@ public abstract class SetupFragment extends Fragment {
     }
 
     protected void stepDone() {
-        for (StepEventListener listener: mEventListeners) {
+        for (StepEventListener listener : mEventListeners) {
             listener.onStepDone();
         }
     }
 
     protected void skipStep() {
-        for (StepEventListener listener: mEventListeners) {
+        for (StepEventListener listener : mEventListeners) {
             listener.onSkipStep();
         }
     }
@@ -99,5 +110,21 @@ public abstract class SetupFragment extends Fragment {
         void onStepDone();
 
         void onSkipStep();
+    }
+
+    protected void showError() {
+        new AlertDialog.Builder(getActivity())
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setTitle(R.string.error)
+                .setMessage(R.string.server_connection_error)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        getActivity().finish();
+                    }
+                })
+                .create()
+                .show();
     }
 }

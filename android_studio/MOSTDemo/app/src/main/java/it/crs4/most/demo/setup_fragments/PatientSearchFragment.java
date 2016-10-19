@@ -97,14 +97,7 @@ public class PatientSearchFragment extends SetupFragment {
 
                             }
                         });
-                    Response.ErrorListener errorListener = new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    };
-
-                    restClient.searchPatient(null, patientID, patientName, patientSurname, listener, errorListener);
+                    restClient.searchPatient(null, patientID, patientName, patientSurname, listener, mErrorListener);
                 }
             }
         });

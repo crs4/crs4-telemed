@@ -55,8 +55,6 @@ public class UrgencyRoomFragment extends SetupFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        setupUrgencySpinner(v);
-        setupRoomSpinner(v);
         Button confirmButton = (Button) v.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +73,13 @@ public class UrgencyRoomFragment extends SetupFragment {
     public void onPause() {
         mRESTClient.cancelRequests();
         super.onPause();
+    }
+
+    @Override
+    public void onShow() {
+        setupUrgencySpinner(getView());
+        setupRoomSpinner(getView());
+        super.onShow();
     }
 
     @Override
@@ -132,13 +137,6 @@ public class UrgencyRoomFragment extends SetupFragment {
             });
 
 
-        mRESTClient.getRooms(accessToken,
-            listener,
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError arg0) {
-                    Log.e(TAG, "Error retrieving rooms:" + arg0);
-                }
-            });
+        mRESTClient.getRooms(accessToken, listener, mErrorListener);
     }
 }

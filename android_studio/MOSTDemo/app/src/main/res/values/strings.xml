@@ -52,7 +52,7 @@
     <string name="role">Role</string>
     <string name="ecographist">Ecographist</string>
     <string name="specialist">Specialist</string>
-    <string name="wait_for_specialist_message">A consultation request has been sent\\nWait for the specialist to respond</string>
+    <string name="wait_for_specialist_message">A consultation request has been sent\nWait for the specialist to respond</string>
     <string name="paused">PAUSED</string>
     <string name="increase_eco_stream">Increase eco</string>
     <string name="decrease_eco_stream">Decrease eco</string>
@@ -68,7 +68,6 @@
     </string-array>
     <string-array name="urgency_values">
         <item>LOW</item>
-        , , ,
         <item>NORMAL</item>
         <item>URGENT</item>
     </string-array>
@@ -119,14 +118,10 @@
     <string name="wait">Wait</string>
     <string name="launghing_teleconsultation">Launching teleconsultation</string>
 
-
     <string-array name="Markers">
         <item>eco_marker</item>
         <item>keyboard_marker</item>
         <item>patient_marker</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

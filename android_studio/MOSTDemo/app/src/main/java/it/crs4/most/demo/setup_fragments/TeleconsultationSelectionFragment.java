@@ -135,12 +135,11 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
             @Override
             public void run() {
                 mGetTeleconsultationsHandler.postDelayed(mGetTeleconsultationsTask, 10000);
-                ResponseHandlerDecorator listener = new ResponseHandlerDecorator<>(getActivity(),
+                ResponseHandlerDecorator<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    Log.d(TAG, "Teleconsultation list response: " + response);
                                     final JSONArray teleconsultations = response
                                             .getJSONObject("data")
                                             .getJSONArray("teleconsultations");
@@ -171,15 +170,8 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
                             }
                         }
                 );
-                mRESTClient.getWaitingTeleconsultationsByTaskgroup(taskGroup, accessToken,
-                        listener,
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError response) {
-                                response.printStackTrace();
-                            }
-                        }
-                );
+                mRESTClient.getWaitingTeleconsultationsByTaskgroup(taskGroup, accessToken, listener,
+                        mErrorListener);
             }
         };
 

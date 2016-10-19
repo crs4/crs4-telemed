@@ -159,13 +159,7 @@ public class SummaryFragment extends SetupFragment {
 
         String patientUid = patient != null ? patient.getUid() : null;
         mRESTClient.createNewTeleconsultation(description, severity, patientUid, getAccessToken(),
-                listener,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError err) {
-                        Log.e(TAG, "Error creating the new teleconsultation: " + err);
-                    }
-                });
+                listener, mErrorListener);
     }
 
     private void createTeleconsultationSession(final Teleconsultation teleconsultation) {
@@ -194,13 +188,7 @@ public class SummaryFragment extends SetupFragment {
                 });
 
         mRESTClient.createNewTeleconsultationSession(teleconsultation.getId(), room.getId(), getAccessToken(),
-                listener,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError err) {
-                        Log.e(TAG, "Error creating the new teleconsultation session: " + err);
-                    }
-                });
+                listener, mErrorListener);
     }
 
     private void startSession(final Teleconsultation tc) {
@@ -213,13 +201,7 @@ public class SummaryFragment extends SetupFragment {
                 });
 
         mRESTClient.startSession(tc.getLastSession().getId(), getAccessToken(),
-                listener,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError arg0) {
-                        Log.e(TAG, "Error startung session: " + arg0);
-                    }
-                });
+                listener, mErrorListener);
     }
 
     private void waitForSpecialist(final Teleconsultation tc) {
@@ -268,6 +250,7 @@ public class SummaryFragment extends SetupFragment {
                             @Override
                             public void onErrorResponse(VolleyError arg0) {
                                 Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
+                                showError();
                                 mWaitForSpecialistDialog.dismiss();
                             }
                         }
@@ -334,13 +317,7 @@ public class SummaryFragment extends SetupFragment {
                     }
                 });
 
-        mRESTClient.runSession(tc.getLastSession().getId(), getAccessToken(), listener,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error running the session: " + error);
-                    }
-                });
+        mRESTClient.runSession(tc.getLastSession().getId(), getAccessToken(), listener, mErrorListener);
     }
 
     public String getAccessToken() {

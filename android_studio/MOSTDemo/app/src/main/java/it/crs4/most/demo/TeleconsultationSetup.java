@@ -15,8 +15,7 @@ public class TeleconsultationSetup implements Serializable{
     private Room mRoom;
     private ArrayList<Patient> mPatients;
 
-    public TeleconsultationSetup() {
-    }
+    public TeleconsultationSetup() {}
 
     public Patient getPatient() {
         return mPatient;
