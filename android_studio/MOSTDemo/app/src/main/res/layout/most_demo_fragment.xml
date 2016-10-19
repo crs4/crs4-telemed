@@ -18,16 +18,29 @@
         android:textSize="17sp"
         android:visibility="gone"/>
 
+    <Button
+        android:id="@+id/retry_button"
+        android:background="@android:color/transparent"
+        android:textColor="@color/textColor"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/msg_text"
+        android:layout_centerInParent="true"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/default_edge_margin"
+        android:text="@string/retry"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:id="@+id/new_teleconsultation_frame"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_width="wrap_content">
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/new_teleconsultation_button"

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1F4E8C</color>
-    <color name="colorButtonPressed">#08428C</color>
-    <color name="colorPrimaryDark">#1c467e</color>
+    <!--Taken from the Blue color palettte @ https://material.google.com/style/color.html#color-color-palette-->
+    <color name="colorPrimary">#1565C0</color>
+    <color name="colorButtonPressed">#1976D2</color>
+    <color name="colorPrimaryDark">#0D47A1</color>
     <color name="colorEhrArchetypeTitleBackground">@color/colorPrimaryDark</color>
     <color name="colorEhrClusterTitleBackground">@color/colorPrimary</color>
-    <color name="colorEhrTooltipTitle">@color/colorPrimary</color>
-    <color name="colorEhrTitleText">@color/colorPrimary</color>
+    <color name="colorEhrTooltipTitle">@color/textColor</color>
+    <color name="colorEhrTitleText">@color/textColor</color>
+    <color name="colorAccent">@color/textColor</color>
+    <color name="textColor">#1976D2</color>
 </resources>

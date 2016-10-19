@@ -117,6 +117,7 @@
     <string name="spinner_users_hint">Select a user…</string>
     <string name="wait">Wait</string>
     <string name="launghing_teleconsultation">Launching teleconsultation</string>
+    <string name="retry">Retry</string>
 
     <string-array name="Markers">
         <item>eco_marker</item>

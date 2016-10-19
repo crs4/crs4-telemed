@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class MostDemoFragment extends Fragment {
     private LinearLayout mNewTeleFrame;
     private LinearLayout mContinueTeleFrame;
     private LinearLayout mSearchTeleframe;
+    private Button mRetryButton;
     private MenuItem mLoginMenuItem;
     private RESTClient mRestClient;
     private String mAccessToken;
@@ -96,6 +98,13 @@ public class MostDemoFragment extends Fragment {
             }
         });
 
+        mRetryButton = (Button) v.findViewById(R.id.retry_button);
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkLogin();
+            }
+        });
         return v;
     }
 
@@ -180,6 +189,7 @@ public class MostDemoFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 mProgress.dismiss();
                 setTextMessage(getString(R.string.server_connection_error));
+                mRetryButton.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -201,6 +211,7 @@ public class MostDemoFragment extends Fragment {
             mContinueTeleFrame.setVisibility(View.GONE);
             setTextMessage(getString(R.string.login_instructions));
         }
+        mRetryButton.setVisibility(View.GONE);
         setLoginButton();
     }
 
