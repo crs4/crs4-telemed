@@ -128,7 +128,7 @@ public class UrgencyRoomFragment extends SetupFragment {
                                 rooms.add(r);
                             }
                             catch (TeleconsultationException e) {
-                                Log.e(TAG, "There's something wrong with the Room's JSON structure");
+                                Log.e(TAG, "There's something wrong with the Room's JSON structure:" + roomData.toString());
                             }
                         }
                     }

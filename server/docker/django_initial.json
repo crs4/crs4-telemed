@@ -18,7 +18,7 @@
       "uuid": "pok6c275l6zm7gzgdprn3tlcvtt4sb64",
       "last_modified_timestamp": "2016-07-12T13:11:09.180Z",
       "is_superuser": true,
-      "last_login": "2016-10-17T16:44:08.233Z",
+      "last_login": "2016-10-21T10:19:53.207Z",
       "creation_timestamp": "2016-07-12T13:11:09.156Z",
       "email": "admin@admin.it",
       "numeric_password": null,
@@ -47,7 +47,7 @@
       "uuid": "sb4htkhsvoyyoxy2wqfcvw76sacgekig",
       "last_modified_timestamp": "2016-07-12T15:06:21.824Z",
       "is_superuser": false,
-      "last_login": "2016-10-17T17:04:48.072Z",
+      "last_login": "2016-10-21T13:34:13.632Z",
       "creation_timestamp": "2016-07-12T13:24:22.941Z",
       "email": "ecografista@eco.it",
       "numeric_password": "12345",
@@ -74,9 +74,9 @@
       "date_joined": "2016-07-12T13:25:10.174Z",
       "first_name": "Spec",
       "uuid": "afxacgutazd657uriworwvf7bkfekybg",
-      "last_modified_timestamp": "2016-10-17T16:44:20.272Z",
+      "last_modified_timestamp": "2016-10-21T12:55:23.098Z",
       "is_superuser": false,
-      "last_login": "2016-10-17T17:04:45.225Z",
+      "last_login": "2016-10-21T13:34:11.345Z",
       "creation_timestamp": "2016-07-12T13:25:10.174Z",
       "email": "specialista@eco.it",
       "numeric_password": "",
@@ -371,7 +371,7 @@
   {
     "fields": {
       "has_camera": true,
-      "ar_conf": 2,
+      "ar_conf": null,
       "description": "Stanza Eco @ Brotzu",
       "uuid": "m6s3zh2vbrfuomj5pllrqz36t6t7zciu",
       "name": "Stanza Eco @ Brotzu",
@@ -386,26 +386,15 @@
   {
     "fields": {
       "description": "test",
-      "patient_marker": null,
-      "keyboard_marker": null,
-      "eco_marker": 2,
-      "screen_height": 80.0,
-      "screen_width": 140.0
+      "screen_width": 140.0,
+      "markers": [
+        1,
+        2
+      ],
+      "screen_height": 80.0
     },
     "model": "teleconsultation.arconfiguration",
     "pk": 1
-  },
-  {
-    "fields": {
-      "description": "brotzu",
-      "patient_marker": null,
-      "keyboard_marker": null,
-      "eco_marker": 1,
-      "screen_height": 200.0,
-      "screen_width": 240.0
-    },
-    "model": "teleconsultation.arconfiguration",
-    "pk": 2
   },
   {
     "fields": {
@@ -418,8 +407,30 @@
   },
   {
     "fields": {
+      "path": "Data/kanji.patt",
+      "type": "single",
+      "size": 80
+    },
+    "model": "teleconsultation.armarker",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "ecoArrow",
+      "sizeX": 10.0,
+      "sizeY": 10.0,
+      "sizeZ": 10.0,
+      "cls": "it.crs4.most.visualization.augmentedreality.mesh.Pyramid"
+    },
+    "model": "teleconsultation.mesh",
+    "pk": 1
+  },
+  {
+    "fields": {
       "marker": 1,
       "trans_x": 0.0,
+      "mesh": 1,
+      "group": "eco",
       "trans_y": 0.0
     },
     "model": "teleconsultation.armarkertranslation",
@@ -427,9 +438,11 @@
   },
   {
     "fields": {
-      "marker": 1,
+      "marker": 2,
       "trans_x": 0.0,
-      "trans_y": 0.0
+      "mesh": 1,
+      "group": "eco",
+      "trans_y": 152.0
     },
     "model": "teleconsultation.armarkertranslation",
     "pk": 2
@@ -438,7 +451,7 @@
     "fields": {
       "port": 5060,
       "name": "Demo SIP Server",
-      "address": "156.148.132.243"
+      "address": "156.148.132.228"
     },
     "model": "voip.sipserver",
     "pk": 1
@@ -447,7 +460,7 @@
     "fields": {
       "port": 3478,
       "name": "Demo Turn Server",
-      "address": "156.148.132.243"
+      "address": "156.148.132.228"
     },
     "model": "voip.turnserver",
     "pk": 1
@@ -612,10 +625,10 @@
     "fields": {
       "name": "android eco app",
       "created": "2016-10-06T13:08:06.627Z",
-      "url": "http://156.148.132.243",
+      "url": "http://156.148.132.228",
       "client_type": 1,
       "modified": "2016-10-06T13:08:06.628Z",
-      "redirect_uri": "http://156.148.132.243",
+      "redirect_uri": "http://156.148.132.228",
       "user": null,
       "client_id": "9db4f27b3d9c8e352b5c",
       "client_secret": "00ea399c013349a716ea3e47d8f8002502e2e982"

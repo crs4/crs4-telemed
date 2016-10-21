@@ -222,14 +222,10 @@ class TeleconsultationSession(models.Model):
 
 
 class ARConfiguration(models.Model):
-    eco_marker = models.ForeignKey('ARMarkerTranslation', null=True, blank=True, related_name='eco_configurations')
-    keyboard_marker = models.ForeignKey('ARMarkerTranslation', null=True, blank=True,
-                                        related_name='keyboard_configurations')
-    patient_marker = models.ForeignKey('ARMarkerTranslation', null=True, blank=True,
-                                       related_name='patient_configurations')
+    markers = models.ManyToManyField('ARMarkerTranslation')
     screen_height = models.FloatField(null=True, blank=True, help_text="expressed in mm")
     screen_width = models.FloatField(null=True, blank=True, help_text="expressed in mm")
-    description = models.CharField(max_length=200, null=True, blank=True)
+    description = models.CharField(max_length=256, null=True, blank=True)
 
     class Meta:
         verbose_name = 'AR Configuration'
@@ -240,9 +236,7 @@ class ARConfiguration(models.Model):
 
     def to_dict(self):
         return {
-            'eco_marker': self.eco_marker.to_dict() if self.eco_marker else None,
-            'keyboard_marker': self.key_marker.to_dict() if self.keyboard_marker else None,
-            'patient_marker': self.patient_marker.to_dict() if self.patient_marker else None,
+            'markers': [marker.to_dict() for marker in self.markers.all()],
             'screen_height': self.screen_height,
             'screen_width': self.screen_width
         }
@@ -261,13 +255,42 @@ class ARMarker(models.Model):
         return "%s;%s;%s" % (self.type, self.path, self.size)
 
 
+class Mesh(models.Model):
+    cls = models.CharField(max_length=128)
+    sizeX = models.FloatField()
+    sizeY = models.FloatField()
+    sizeZ = models.FloatField()
+    name = models.CharField(max_length=128, unique=True)
+
+    def to_dict(self):
+        return {
+            'cls': self.cls,
+            'sizeX': self.sizeX,
+            'sizeY': self.sizeY,
+            'sizeZ': self.sizeZ,
+            'name': self.name
+        }
+
+    def __unicode__(self):
+        return self.name
+
+
 class ARMarkerTranslation(models.Model):
     marker = models.ForeignKey(ARMarker)
     trans_x = models.FloatField(default=0.0, help_text="expressed in mm")
     trans_y = models.FloatField(default=0.0, help_text="expressed in mm")
+    group = models.CharField(max_length=64)
+    mesh = models.ForeignKey(Mesh)
 
     def to_dict(self):
-        return {'conf': str(self.marker), 'trans_x': self.trans_x, 'trans_y': self.trans_y}
+        return {
+            'pk': self.pk,
+            'conf': str(self.marker),
+            'trans_x': self.trans_x,
+            'trans_y': self.trans_y,
+            'group': self.group,
+            'mesh': self.mesh.to_dict()
+        }
 
     def __str__(self):
-        return '%s:%s:%s' % (self.marker, self.trans_x, self.trans_y)
+        return "%s-%s" % (self.group, self.mesh.cls)

@@ -184,13 +184,14 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             ecoArrow.setxLimits(-1f, 1f);
             ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
             ecoArrow.setColors(redColor);
-            cameraArrow.setMarker(MarkerFactory.getMarker(arConf.getEcoMarker().toString()));
+            cameraArrow.addMarker(MarkerFactory.getMarker("single;Data/hiro.patt;80"));
             cameraMeshManager.addMesh(cameraArrow);
             ecoMeshManager.addMesh(ecoArrow);
 
             cameraArrow.publisher = publisher;
             ecoArrow.publisher = publisher;
             ecoMeshManager.configureScene();
+            cameraMeshManager.configureScene();
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
