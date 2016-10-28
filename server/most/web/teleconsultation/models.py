@@ -293,4 +293,4 @@ class ARMarkerTranslation(models.Model):
         }
 
     def __str__(self):
-        return "%s-%s" % (self.group, self.mesh.cls)
+        return "%s-%s-%s" % (self.group, self.mesh.cls.split('.')[-1], self.marker)
