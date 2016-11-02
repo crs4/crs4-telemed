@@ -38,6 +38,10 @@ public class TeleconsultationSession implements Serializable {
         String sipServerIp;
         String sipServerPort;
         String sipServerTransport;
+        String turnServerIp = null;
+        String turnServerPort = null;
+        String turnServerUser = null;
+        String turnServerPwd = null;
         String sipUserName;
         String sipUserPwd;
         String remoteExtData;
@@ -62,6 +66,13 @@ public class TeleconsultationSession implements Serializable {
             sipServerTransport = localExtData.getString("sip_transport");
             sipUserName = localExtData.getString("sip_user");
             sipUserPwd = localExtData.getString("sip_password");
+            Log.d(TAG, localExtData.toString());
+            if (!localExtData.isNull("turn_server")) {
+                turnServerIp = localExtData.getJSONObject("turn_server").getString("address");
+                turnServerPort = localExtData.getJSONObject("turn_server").getString("port");
+                turnServerUser = localExtData.getString("turn_user");
+                turnServerPwd = localExtData.getString("turn_password");
+            }
             remoteExtData = sessionData.getJSONObject("teleconsultation").getJSONObject(remoteUser).getJSONObject("voip_data").getString("extension");
             onHoldSoundPath = Utils.getResourcePathByAssetCopy(context, "", "test_hold.wav");
             incomingCallPath = Utils.getResourcePathByAssetCopy(context, "", "ring_in_call.wav");
@@ -69,6 +80,7 @@ public class TeleconsultationSession implements Serializable {
         }
         catch (JSONException e) {
             Log.e(TAG, "Error loading voip data");
+            e.printStackTrace();
             return;
         }
 
@@ -86,9 +98,13 @@ public class TeleconsultationSession implements Serializable {
         voipParams.put("onHoldSound", onHoldSoundPath);
         voipParams.put("onIncomingCallSound", incomingCallPath);
         voipParams.put("onOutcomingCallSound", onOutcomingCallPath);
-        //params.put("turnServerIp",  sipServerIp);
-        //params.put("turnServerUser",sipUserName);
-        //params.put("turnServerPwd",sipUserPwd);
+        if (turnServerIp != null && turnServerPort != null &&
+            turnServerUser != null && turnServerPwd != null) {
+            voipParams.put("turnServerIp", turnServerIp);
+            voipParams.put("turnServerPort", turnServerPort);
+            voipParams.put("turnServerUser", turnServerUser);
+            voipParams.put("turnServerPwd", turnServerPwd);
+        }
 
     }
 
