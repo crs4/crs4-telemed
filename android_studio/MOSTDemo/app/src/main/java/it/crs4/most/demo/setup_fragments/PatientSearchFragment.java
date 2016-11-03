@@ -2,7 +2,6 @@ package it.crs4.most.demo.setup_fragments;
 
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,14 +35,16 @@ public class PatientSearchFragment extends SetupFragment {
     public static PatientSearchFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         PatientSearchFragment fragment = new PatientSearchFragment();
         Bundle args = new Bundle();
-        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        args.putSerializable(TELECONSULTATION_SETUP_ARG, teleconsultationSetup);
         fragment.setArguments(args);
+        Log.d(TAG, "creating search");
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "Creating search: " + System.identityHashCode(this));
     }
 
     @Override
