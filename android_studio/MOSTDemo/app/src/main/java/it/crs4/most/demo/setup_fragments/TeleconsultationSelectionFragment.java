@@ -1,8 +1,6 @@
 package it.crs4.most.demo.setup_fragments;
 
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +50,7 @@ public class TeleconsultationSelectionFragment extends SetupFragment {
     public static TeleconsultationSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         TeleconsultationSelectionFragment fragment = new TeleconsultationSelectionFragment();
         Bundle args = new Bundle();
-        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        args.putSerializable(TELECONSULTATION_SETUP_ARG, teleconsultationSetup);
         fragment.setArguments(args);
         return fragment;
     }

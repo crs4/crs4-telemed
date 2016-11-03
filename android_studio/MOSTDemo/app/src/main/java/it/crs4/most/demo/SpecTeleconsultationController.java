@@ -3,6 +3,9 @@ package it.crs4.most.demo;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -18,14 +21,13 @@ import it.crs4.most.demo.setup_fragments.SetupFragment;
 import it.crs4.most.demo.setup_fragments.TeleconsultationSelectionFragment;
 import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
-public class SpecTeleconsultationController extends TeleconsultationController {
+class SpecTeleconsultationController extends TeleconsultationController {
     private static final String TAG = "SpecTeleconsultSetup";
+    private final TeleconsultationSetup mTeleconsultationSetup;
 
-    @Override
-    public SetupFragment[] getFragments(TeleconsultationSetup teleconsultationSetup, String action) {
-        return new SetupFragment[]{
-            TeleconsultationSelectionFragment.newInstance(teleconsultationSetup)
-        };
+    SpecTeleconsultationController(FragmentManager fm, TeleconsultationSetup teleconsultationSetup) {
+        super(fm);
+        mTeleconsultationSetup = teleconsultationSetup;
     }
 
     @Override
@@ -69,5 +71,18 @@ public class SpecTeleconsultationController extends TeleconsultationController {
                 });
         }
 
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        if (position == 0) {
+            return TeleconsultationSelectionFragment.newInstance(mTeleconsultationSetup);
+        }
+        return null;
+    }
+
+    @Override
+    public int getCount() {
+        return 1;
     }
 }

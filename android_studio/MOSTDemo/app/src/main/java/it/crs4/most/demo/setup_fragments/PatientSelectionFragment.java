@@ -4,6 +4,7 @@ package it.crs4.most.demo.setup_fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,20 +28,21 @@ public class PatientSelectionFragment extends SetupFragment {
     public static PatientSelectionFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         PatientSelectionFragment fragment = new PatientSelectionFragment();
         Bundle args = new Bundle();
-        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        args.putSerializable(TELECONSULTATION_SETUP_ARG, teleconsultationSetup);
         fragment.setArguments(args);
+        Log.d(TAG, "creating selection");
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "Creating selection: " + System.identityHashCode(this));
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-//        FloatingActionButton addPatient = (FloatingActionButton) v.findViewById(R.id.button_patients_add);
 
         ListView listView = (ListView) v.findViewById(R.id.patients_list);
         mPatients = new ArrayList<>();
@@ -63,9 +65,15 @@ public class PatientSelectionFragment extends SetupFragment {
             skipStep();
         }
         else {
-            mPatientArrayAdapter.clear();
-            mPatientArrayAdapter.addAll(mTeleconsultationSetup.getPatients());
-            mPatientArrayAdapter.notifyDataSetChanged();
+            addPatients();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mTeleconsultationSetup.getPatients() != null) {
+            addPatients();
         }
     }
 
@@ -77,6 +85,12 @@ public class PatientSelectionFragment extends SetupFragment {
     @Override
     protected int getLayoutContent() {
         return R.layout.patient_selection_fragment;
+    }
+
+    private void addPatients() {
+        mPatientArrayAdapter.clear();
+        mPatientArrayAdapter.addAll(mTeleconsultationSetup.getPatients());
+        mPatientArrayAdapter.notifyDataSetChanged();
     }
 
     private class PatientAdapter extends ArrayAdapter<Patient> {

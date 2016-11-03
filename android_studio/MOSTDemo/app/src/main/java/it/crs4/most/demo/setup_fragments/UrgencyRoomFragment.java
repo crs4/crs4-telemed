@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,8 +37,10 @@ public class UrgencyRoomFragment extends SetupFragment {
     public static SetupFragment newInstance(TeleconsultationSetup teleconsultationSetup) {
         UrgencyRoomFragment fragment = new UrgencyRoomFragment();
         Bundle args = new Bundle();
-        args.putSerializable(TELECONSULTATION_SETUP, teleconsultationSetup);
+        args.putSerializable(TELECONSULTATION_SETUP_ARG, teleconsultationSetup);
         fragment.setArguments(args);
+        Log.d(TAG, "creating urgency");
+
         return fragment;
     }
 
@@ -73,6 +74,12 @@ public class UrgencyRoomFragment extends SetupFragment {
     public void onPause() {
         mRESTClient.cancelRequests();
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onShow();
     }
 
     @Override

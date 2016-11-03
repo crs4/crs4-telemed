@@ -2,29 +2,15 @@ package it.crs4.most.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import java.lang.ref.WeakReference;
-
-import it.crs4.most.demo.eco.EcoTeleconsultationActivity;
-import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.setup_fragments.SetupFragment;
-import it.crs4.most.demo.spec.SpecTeleconsultationActivity;
 
 
-public class TeleconsultationSetupActivity extends AppCompatActivity {
+public class TeleconsultationSetupActivity extends SetupActivity
+    implements SetupFragment.StepEventListener {
     public static final String ACTION_ARG = "it.crs4.most.demo.action";
     public static final String ACTION_NEW_TELE = "it.crs4.most.demo.action_new_tele";
     public static final String ACTION_CONTINUE_TELE = "it.crs4.most.demo.action_continue_tele";
@@ -32,57 +18,39 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
     private static final String TELECONSULTATION_SETUP = "it.crs4.most.demo.teleconsultation_setup";
     private static final String TAG = "TeleconsultSetupAct";
 
-    private SetupFragment[] mSetupFragments;
     private TeleconsultationController mTcController;
     private ViewPager mVpPager;
     private TeleconsultationSetup mTeleconsultationSetup;
-    private int mNavDirection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.teleconsultation_setup_activity);
-        try {
+        if (savedInstanceState != null) {
             mTeleconsultationSetup = (TeleconsultationSetup) savedInstanceState.getSerializable(TELECONSULTATION_SETUP);
         }
-        catch (NullPointerException ex) {
+        else {
             mTeleconsultationSetup = new TeleconsultationSetup();
         }
-        mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this);
+
         String action = getIntent().getExtras().getString(ACTION_ARG);
-        mSetupFragments = mTcController.getFragments(mTeleconsultationSetup, action);
-        for (SetupFragment f : mSetupFragments) {
-            f.addEventListener(new SetupFragment.StepEventListener() {
-                @Override
-                public void onStepDone() {
-                    TeleconsultationSetupActivity.this.nextStep();
-                }
 
-                @Override
-                public void onSkipStep() {
-                    if (mNavDirection == 0) {
-                        TeleconsultationSetupActivity.this.nextStep();
-                    }
-                    else {
-                        TeleconsultationSetupActivity.this.previousStep();
-                    }
-                }
-            });
-        }
+        mTcController = TeleconsultationControllerFactory.getTeleconsultationController(this,
+            getSupportFragmentManager(), action, mTeleconsultationSetup);
         mVpPager = (ViewPager) findViewById(R.id.vp_pager);
-        FragmentStatePagerAdapter pagerAdapter = new CustomPagerAdapter(this, getSupportFragmentManager());
-        mVpPager.setAdapter(pagerAdapter);
-
+        mVpPager.setAdapter(mTcController);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
 
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(TELECONSULTATION_SETUP, mTeleconsultationSetup);
         super.onSaveInstanceState(outState);
+        outState.putSerializable(TELECONSULTATION_SETUP, mTeleconsultationSetup);
     }
 
     @Override
@@ -97,25 +65,31 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         mNavDirection = 1;
         if (mVpPager.getCurrentItem() != 0) {
             previousStep();
-            mSetupFragments[mVpPager.getCurrentItem()].onShow();
+            SetupFragment current = ((SetupFragment) mTcController
+                .getFragment(mVpPager.getId(), mVpPager.getCurrentItem()));
+            current.onShow();
         }
         else {
             super.onBackPressed();
         }
     }
 
+    @Override
     public void nextStep() {
         int newItem = mVpPager.getCurrentItem() + 1;
         mNavDirection = 0;
-        if (newItem == mSetupFragments.length) {
+        if (newItem == mTcController.getCount()) {
             startTeleconsultationActivity(mTeleconsultationSetup.getTeleconsultation());
         }
         else {
             mVpPager.setCurrentItem(newItem);
-            mSetupFragments[mVpPager.getCurrentItem()].onShow();
+            SetupFragment current = ((SetupFragment) mTcController
+                .getFragment(mVpPager.getId(), mVpPager.getCurrentItem()));
+            current.onShow();
         }
     }
 
+    @Override
     public void previousStep() {
         int newItem = mVpPager.getCurrentItem() - 1;
         mVpPager.setCurrentItem(newItem);
@@ -125,27 +99,4 @@ public class TeleconsultationSetupActivity extends AppCompatActivity {
         mTcController.startTeleconsultationActivity(this, teleconsultation);
     }
 
-    private static class CustomPagerAdapter extends FragmentStatePagerAdapter {
-        private TeleconsultationSetupActivity act;
-
-        CustomPagerAdapter(TeleconsultationSetupActivity outerRef, FragmentManager fragmentManager) {
-            super(fragmentManager);
-            act = new WeakReference<>(outerRef).get();
-        }
-
-        @Override
-        public int getCount() {
-            return act.mSetupFragments.length;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (position >= 0 && position < getCount()) {
-                return act.mSetupFragments[position];
-            }
-            else {
-                return null;
-            }
-        }
-    }
 }
