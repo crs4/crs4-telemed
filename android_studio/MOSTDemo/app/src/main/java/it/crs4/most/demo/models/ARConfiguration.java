@@ -1,75 +1,50 @@
 package it.crs4.most.demo.models;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.crs4.most.demo.TeleconsultationException;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 
 public class ARConfiguration implements Serializable {
 
-    private ARMarker ecoMarker;
-    private ARMarker keyboardMarker;
-    private ARMarker patientMarker;
+    private List<ARMarker> markers = new ArrayList<>();
     private float screenHeight;
     private float screenWidth;
 
     public ARConfiguration(
-            ARMarker ecoMarker,
-            ARMarker keyboardMarker,
-            ARMarker patientMarker,
+            List<ARMarker> markers,
             float screenHeight,
             float screenWidth) {
 
-        this.ecoMarker = ecoMarker;
-        this.keyboardMarker = keyboardMarker;
-        this.patientMarker = patientMarker;
-
+        this.markers = markers;
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
     }
 
     public static ARConfiguration fromJSON(JSONObject obj) throws TeleconsultationException {
         try {
-            ARMarker ecoMarker = obj.isNull("eco_marker")?
-                    null: ARMarker.fromJSON(obj.getJSONObject("eco_marker"));
-            ARMarker keyboardMarker = obj.isNull("keyboard_marker")?
-                    null: ARMarker.fromJSON(obj.getJSONObject("keyboard_marker"));
-            ARMarker patienMarker = obj.isNull("patient_marker")?
-                    null: ARMarker.fromJSON(obj.getJSONObject("patient_marker"));
-
+            JSONArray jsonMarkers = obj.getJSONArray("markers");
+            List<ARMarker> markers = new ArrayList<>();
+            for(int i=0; i < jsonMarkers.length(); i++){
+                markers.add(ARMarker.fromJSON((JSONObject) jsonMarkers.get(i)));
+            }
             float screenHeight = (float) obj.getDouble("screen_height");
             float screenWidth = (float) obj.getDouble("screen_width");
 
-            return new ARConfiguration(ecoMarker, keyboardMarker, patienMarker, screenHeight, screenWidth);
+            return new ARConfiguration(markers, screenHeight, screenWidth);
         } catch (JSONException e) {
             throw new TeleconsultationException();
         }
     }
 
-    public ARMarker getEcoMarker() {
-        return ecoMarker;
-    }
-
-    public void setEcoMarker(ARMarker ecoMarker) {
-        this.ecoMarker = ecoMarker;
-    }
-
-    public ARMarker getKeyboardMarker() {
-        return keyboardMarker;
-    }
-
-    public void setKeyboardMarker(ARMarker keyboardMarker) {
-        this.keyboardMarker = keyboardMarker;
-    }
-
-    public ARMarker getPatientMarker() {
-        return patientMarker;
-    }
-
-    public void setPatientMarker(ARMarker patientMarker) {
-        this.patientMarker = patientMarker;
+    public List<ARMarker> getMarkers() {
+        return markers;
     }
 
     public float getScreenHeight() {

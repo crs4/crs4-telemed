@@ -12,11 +12,17 @@ public class ARMarker implements Serializable {
     private String conf;
     private float transX;
     private float transY;
+    private int pk;
+    private String group;
+    private Mesh mesh;
 
-    public ARMarker(String conf, float transX, float transY){
+    public ARMarker(int pk, String conf, float transX, float transY, String group, Mesh mesh){
         this.conf = conf;
         this.transX = transX;
         this.transY = transY;
+        this.pk = pk;
+        this.group = group;
+        this.mesh = mesh;
     }
 
     public static ARMarker fromJSON(JSONObject obj) throws TeleconsultationException {
@@ -24,7 +30,10 @@ public class ARMarker implements Serializable {
             String conf = obj.getString("conf");
             float transX = (float) obj.getDouble("trans_x");
             float transY = (float) obj.getDouble("trans_y");
-            return new ARMarker(conf, transX, transY);
+            int pk = obj.getInt("pk");
+            String group = obj.getString("group");
+            Mesh mesh = Mesh.fromJSON(obj.getJSONObject("mesh"));
+            return new ARMarker(pk, conf, transX, transY, group, mesh);
         }
         catch (JSONException e) {
             throw new TeleconsultationException();
@@ -54,4 +63,21 @@ public class ARMarker implements Serializable {
     public void setTransY(float transY) {
         this.transY = transY;
     }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public int getPk() {
+        return pk;
+    }
+
+    public Mesh getMesh() {
+        return mesh;
+    }
+
+    public String toString(){
+        return String.format("%s-%s", group, conf);
+    }
 }
+

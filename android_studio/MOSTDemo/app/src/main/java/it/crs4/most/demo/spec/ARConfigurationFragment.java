@@ -68,20 +68,8 @@ public class ARConfigurationFragment extends Fragment {
     }
 
     private ARMarker getMarker(){
-        ARMarker marker = null;
-        String markerStr = spinner.getSelectedItem().toString().toLowerCase();
-        switch (markerStr){
-            case "eco_marker":
-                marker = arConf.getEcoMarker();
-                break;
-            case "keyboard_marker":
-                marker = arConf.getKeyboardMarker();
-                break;
-            case "patient_marker":
-                marker = arConf.getPatientMarker();
-                break;
-        }
-        return marker;
+        return (ARMarker) spinner.getSelectedItem();
+
     }
 
     private void setARParams(){
@@ -132,7 +120,6 @@ public class ARConfigurationFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String markerStr = spinner.getSelectedItem().toString().toLowerCase();
                 ARMarker marker = getMarker();
                 float transXInt = Float.valueOf(transX.getText().toString());
                 float transYInt = Float.valueOf(transY.getText().toString());
@@ -148,7 +135,7 @@ public class ARConfigurationFragment extends Fragment {
                         e.printStackTrace();
                     }
                     publisher.send(obj.toString());
-                    restClient.setARConf(accessToken, room.getId(), markerStr, transXInt, transYInt,
+                    restClient.setARConf(accessToken, marker.getPk(), transXInt, transYInt,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -167,8 +154,9 @@ public class ARConfigurationFragment extends Fragment {
         });
 
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.Markers, android.R.layout.simple_spinner_item);
+
+        ArrayAdapter<ARMarker> adapter = new ArrayAdapter<ARMarker>(getActivity(),
+                android.R.layout.simple_spinner_item, arConf.getMarkers());
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

@@ -378,20 +378,18 @@ public class RESTClient {
 
     public void setARConf(
             final String accessToken,
-            String roomId,
-            final String marker,
+            int markerTransPK,
             final float transX,
             final float transY,
             Response.Listener<String> listener,
             Response.ErrorListener errorListener) {
 
-        String uri = String.format("%steleconsultation/room/%s/set_ar", mUrlPrefix, roomId);
+        String uri = String.format("%steleconsultation/room/%s/set_ar", mUrlPrefix, markerTransPK);
         StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("access_token", accessToken);
-                params.put("marker", marker);
                 params.put("trans_x", String.valueOf(transX));
                 params.put("trans_y", String.valueOf(transY));
                 return params;

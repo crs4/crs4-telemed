@@ -39,11 +39,17 @@ import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
+import it.crs4.most.demo.TeleconsultationException;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.ARConfiguration;
 import it.crs4.most.demo.models.ARMarker;
@@ -54,6 +60,7 @@ import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.Cube;
+import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
@@ -155,7 +162,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState){
 
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE) ;
         ComponentName componentName = new ComponentName(this, RemoteControlReceiver.class);
@@ -210,22 +217,47 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 1, 0, 0, 1f
         };
 
-
+        Map<String, Mesh> meshes = new HashMap<>();
         ARConfiguration arConf= teleconsultation.getLastSession().getRoom().getARConfiguration();
-        ARMarker ecoMarkerConf = arConf.getEcoMarker();
+        if (arConf != null){
+            for (ARMarker markerModel: arConf.getMarkers()){
+                Marker marker = MarkerFactory.getMarker(markerModel.getConf());
+                float [] trans = new float[16];
+                Matrix.setIdentityM(trans, 0);
+                trans[12] = markerModel.getTransX();
+                trans[13] = markerModel.getTransY();
+                marker.setModelMatrix(trans);
 
-        Marker ecoMarker = MarkerFactory.getMarker(ecoMarkerConf.getConf());
-        float [] trans = new float[16];
-        Matrix.setIdentityM(trans, 0);
-        trans[12] = ecoMarkerConf.getTransX();
-        trans[13] = ecoMarkerConf.getTransY();
-        ecoMarker.setModelMatrix(trans);
+                it.crs4.most.demo.models.Mesh meshModel = markerModel.getMesh();
+                Mesh mesh;
+                if (meshes.containsKey(meshModel.getName())) {
+                    mesh = meshes.get(meshModel.getName());
+                }
+                else {
+                    try {
 
-        Pyramid ecoArrow = new Pyramid(10f, 10f, 10f, "ecoArrow");
-        ecoArrow.setMarker(ecoMarker);
-        ecoArrow.setColors(redColor);
-        meshManager.addMesh(ecoArrow);
+                        Class clsMesh = Class.forName(meshModel.getCls());
+                        Class[] cArg = new Class[] {
+                                float.class, float.class, float.class, String.class
+                        };
+                        mesh = (Mesh) clsMesh.getDeclaredConstructor(cArg).newInstance(
+                                meshModel.getSizeX(),
+                                meshModel.getSizeY(),
+                                meshModel.getSizeZ(),
+                                meshModel.getName()
+                        );
+                        meshes.put(meshModel.getName(), mesh);
+                        mesh.setColors(redColor);
+                        meshManager.addMesh(mesh);
 
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
+                mesh.addMarker(marker);
+            }
+        }
 
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");

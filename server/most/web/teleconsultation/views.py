@@ -459,10 +459,9 @@ def test(request):
 
 @csrf_exempt
 @oauth2_required
-def set_ar_conf(request, room_uuid):
+def set_ar_conf(request, marker_trans_pk):
     try:
-        room = Room.objects.get(uuid=room_uuid)
-        marker_conf = getattr(room.ar_conf, request.POST.get("marker"))
+        marker_conf = ARMarkerTranslation.objects.get(pk=marker_trans_pk)
         marker_conf.trans_x = float(request.POST.get("trans_x"))
         marker_conf.trans_y = float(request.POST.get("trans_y"))
         marker_conf.save()
@@ -477,4 +476,3 @@ def set_ar_conf(request, room_uuid):
 
     return HttpResponse(json.dumps({'success': True}),
                         content_type="application/json")
-
