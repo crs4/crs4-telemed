@@ -8,7 +8,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 
-
 public class SettingsFragment extends PreferenceFragment {
 
     private static final String TAG = "SettingsFragment";
@@ -24,9 +23,27 @@ public class SettingsFragment extends PreferenceFragment {
 
         EditTextPreference configServerAddr = (EditTextPreference) findPreference("config_server_address");
         configServerAddr.setSummary(configServerAddr.getText());
+        configServerAddr.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (!QuerySettings.getConfigServerAddress(getActivity()).equals(newValue)) {
+                    resetLogin();
+                }
+                return true;
+            }
+        });
 
         EditTextPreference configServerPort = (EditTextPreference) findPreference("config_server_port");
         configServerPort.setSummary(configServerPort.getText());
+        configServerPort.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (!QuerySettings.getConfigServerPort(getActivity()).equals(newValue)) {
+                    resetLogin();
+                }
+                return true;
+            }
+        });
 
         mArEnabled = (CheckBoxPreference) findPreference("ar_enabled");
 
@@ -45,6 +62,11 @@ public class SettingsFragment extends PreferenceFragment {
         if (role.getValue() != null) {
             enabledArPreference(role.getValue());
         }
+    }
+
+    private void resetLogin() {
+        QuerySettings.setAccessToken(getActivity(), null);
+        QuerySettings.setUser(getActivity(), null);
     }
 
     private void enabledArPreference(String value) {
