@@ -266,9 +266,24 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
                 }
                 item.setChecked(isChecked);
-                if (mStreamCameraFragment != null) mStreamCameraFragment.setEnabled(isChecked);
-                if (mStreamEcoFragment != null) mStreamEcoFragment.setEnabled(isChecked);
+                if (mStreamCameraFragment != null) {
+                    mStreamCameraFragment.setEnabled(isChecked);
+                }
+                if (mStreamEcoFragment != null) {
+                    mStreamEcoFragment.setEnabled(isChecked);
+                }
                 return true;
+            case R.id.button_camera:
+                item.setChecked(!item.isChecked());
+                if (item.isChecked()) {
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_on_background));
+                    playCamera();
+                }
+                else {
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
+                    pauseCamera();
+                }
+
         }
         return false;
     }
@@ -511,11 +526,15 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void playStreams() {
+    private void playCamera() {
         if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
             mStreamCameraFragment.setStreamVisible();
             mStreamCamera.play();
         }
+    }
+
+    private void playStreams() {
+        playCamera();
 
         if (mStreamEco != null && mStreamEco.getState() != StreamState.PLAYING) {
             mStreamEcoFragment.setStreamVisible();
@@ -523,11 +542,15 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         }
     }
 
-    private void pauseStreams() {
+    private void pauseCamera() {
         if (mStreamCamera != null && mStreamCamera.getState() == StreamState.PLAYING) {
             mStreamCameraFragment.setStreamInvisible("PAUSED");
             mStreamCamera.pause();
         }
+    }
+
+    private void pauseStreams() {
+        pauseCamera();
 
         if (mStreamEco != null && mStreamEco.getState() == StreamState.PLAYING) {
             mStreamEcoFragment.setStreamInvisible("PAUSED");

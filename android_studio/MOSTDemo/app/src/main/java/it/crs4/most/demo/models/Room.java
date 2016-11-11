@@ -82,17 +82,21 @@ public class Room implements Serializable {
         Room r = new Room(id, name, description);
 
         try {
-            cameraData = roomData.getJSONObject("devices").getJSONObject("camera");
-            Device camera = Device.fromJSON(cameraData);
-            r.setCamera(camera);
+            if (!roomData.getJSONObject("devices").isNull("camera")) {
+                cameraData = roomData.getJSONObject("devices").getJSONObject("camera");
+                Device camera = Device.fromJSON(cameraData);
+                r.setCamera(camera);
+            }
         }
         catch (JSONException e) {
             Log.d(TAG, "Camera data not found for the room");
         }
         try {
-            encoderData = roomData.getJSONObject("devices").getJSONObject("encoder");
-            Device encoder = Device.fromJSON(encoderData);
-            r.setEncoder(encoder);
+            if (!roomData.getJSONObject("devices").isNull("encoder")) {
+                encoderData = roomData.getJSONObject("devices").getJSONObject("encoder");
+                Device encoder = Device.fromJSON(encoderData);
+                r.setEncoder(encoder);
+            }
         }
         catch (JSONException e) {
             Log.d(TAG, "Encoder data not found for the room");
@@ -100,7 +104,7 @@ public class Room implements Serializable {
 
         try {
             ARConfiguration arConfiguration = ARConfiguration.
-                    fromJSON(roomData.getJSONObject("ar_conf"));
+                fromJSON(roomData.getJSONObject("ar_conf"));
 
             r.setARConfiguration(arConfiguration);
         }

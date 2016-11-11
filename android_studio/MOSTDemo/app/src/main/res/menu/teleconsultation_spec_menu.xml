@@ -22,6 +22,14 @@
         app:showAsAction="always|withText"/>
 
     <item
+        android:id="@+id/button_camera"
+        android:title="@string/camera_toggle"
+        android:checkable="true"
+        android:checked="true"
+        android:icon="@android:drawable/checkbox_on_background"
+        app:showAsAction="always|withText"/>
+
+    <item
         android:id="@+id/button_ptz"
         android:title="@string/ptz"
         app:showAsAction="always"/>

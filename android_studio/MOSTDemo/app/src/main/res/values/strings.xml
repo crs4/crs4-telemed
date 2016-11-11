@@ -118,6 +118,7 @@
     <string name="wait">Wait</string>
     <string name="launghing_teleconsultation">Launching teleconsultation</string>
     <string name="retry">Retry</string>
+    <string name="camera_toggle">Enable camera</string>
 
     <string-array name="Markers">
         <item>eco_marker</item>

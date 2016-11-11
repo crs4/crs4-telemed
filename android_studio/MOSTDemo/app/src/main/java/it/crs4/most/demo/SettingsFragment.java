@@ -26,7 +26,8 @@ public class SettingsFragment extends PreferenceFragment {
         configServerAddr.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (!QuerySettings.getConfigServerAddress(getActivity()).equals(newValue)) {
+                if (QuerySettings.getConfigServerAddress(getActivity()) != null &&
+                    !QuerySettings.getConfigServerAddress(getActivity()).equals(newValue)) {
                     resetLogin();
                 }
                 return true;
