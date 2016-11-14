@@ -420,7 +420,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
     }
 
     private void showPTZPopupWindow() {
-        mPTZPopupWindowController.show();
+        if (!mPTZPopupWindowController.isShowing()) {
+            mPTZPopupWindowController.show();
+        }
+        else {
+            mPTZPopupWindowController.dismiss();
+
+        }
     }
 
     private void setTeleconsultationState(TeleconsultationState tcState) {
