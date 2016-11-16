@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MOST Demo</string>
+    <string name="app_name">CRS4 Telemed</string>
     <string name="login">Login</string>
     <string name="lbl_enter_passcode">Enter your passcode…</string>
     <string name="lbl_enter_password">Enter your password…</string>
