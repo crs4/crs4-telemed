@@ -362,9 +362,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                TouchGLSurfaceView glView = mStreamCameraFragment.getGlView();
                 if (arConf != null) {
-                    mStreamCameraFragment.getGlView().setMeshManager(cameraMeshManager);
-                    mStreamCameraFragment.getGlView().setPublisher(publisher);
+                    glView.setMeshManager(cameraMeshManager);
+                    glView.setPublisher(publisher);
+                }
+                else {
+                    glView.setEnabled(false);
                 }
                 mStreamCameraFragment.setPlayerButtonsVisible(false);
             }
@@ -381,9 +385,13 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
             @Override
             public void surfaceRedrawNeeded(SurfaceHolder holder) {
+                TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
                 if (arConf != null) {
-                    mStreamEcoFragment.getGlView().setMeshManager(ecoMeshManager);
-                    mStreamEcoFragment.getGlView().setPublisher(publisher);
+                    glView.setMeshManager(ecoMeshManager);
+                    glView.setPublisher(publisher);
+                }
+                else{
+                    glView.setEnabled(false);
                 }
                 mStreamEcoFragment.setPlayerButtonsVisible(false);
             }
