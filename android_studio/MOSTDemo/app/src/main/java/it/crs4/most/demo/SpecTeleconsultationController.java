@@ -112,8 +112,7 @@ class SpecTeleconsultationController extends TeleconsultationController {
                 Enumeration<InetAddress> ia = intf.getInetAddresses();
                 while (ia.hasMoreElements()) {
                     InetAddress inetAddress = ia.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress() &&
-                        inetAddress.isSiteLocalAddress()) {
+                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()) {
                         if (intf.getName().equals("wlan0")) {
                             wifiAddr = inetAddress.getHostAddress();
                             Log.d(TAG, "WIFI: " + wifiAddr);
