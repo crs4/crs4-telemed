@@ -25,7 +25,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="numberSigned|numberDecimal"
                 android:ems="10"
                 android:hint="transX"
                 android:id="@+id/transX" />
@@ -33,7 +33,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="numberSigned|numberDecimal"
                 android:ems="10"
                 android:hint="transY"
                 android:id="@+id/transY" />
