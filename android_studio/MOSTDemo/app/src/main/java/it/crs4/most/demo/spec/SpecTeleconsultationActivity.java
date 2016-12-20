@@ -182,8 +182,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             ecoArrow.setCoordsConverter(new CoordsConverter(
                 arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
 
-            ecoArrow.setxLimits(-1f, 1f);
-            ecoArrow.setyLimits(-1f, 1f - ecoArrow.getHeight() / 2);
+            ecoArrow.setxLimits(-1f + ecoArrow.getHeight() / 2, 1f - ecoArrow.getHeight() / 2);
+            ecoArrow.setyLimits(-1f + ecoArrow.getHeight() / 2, 1f - ecoArrow.getHeight() / 2);
             ecoArrow.setColors(redColor);
             cameraArrow.addMarker(MarkerFactory.getMarker("single;Data/hiro.patt;80"));
             cameraMeshManager.addMesh(cameraArrow);
@@ -823,17 +823,18 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
 
             StreamState streamState = ((IStream) event.getData()).getState();
             Log.d(TAG, "event.getData().streamState " + streamState);
-            if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+            if (event.getEvent() == StreamingEvent.VIDEO_SIZE_CHANGED) {
 
                 Log.d(TAG, "event.getData().streamState " + streamState);
                 Log.d(TAG, "ready to call cameraPreviewStarted");
 
                 Size videoSize = ((IStream) event.getData()).getVideoSize();
-                if (videoSize != null) {
+                if (((IStream) event.getData()).getName() == "ECO_STREAM" && videoSize != null) {
                     width = videoSize.getWidth();
                     height = videoSize.getHeight();
-                    act.mAREcoRenderer.setViewportAspectRatio(Float.valueOf(width) / height);
+                    Log.d(TAG, String.format("VIDEOSIZE width %s, height %d", width, height));
+                    act.mAREcoRenderer.setViewportSize(width, height);
+
                 }
 
             }
