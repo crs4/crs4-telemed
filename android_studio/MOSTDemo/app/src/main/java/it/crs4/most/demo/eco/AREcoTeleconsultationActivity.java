@@ -380,6 +380,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         this.mainLayout.removeView(this.preview);
         unregisterReceiver(broadcastReceiver);
         sensorManager.unregisterListener(this);
+        subscriber.close();
     }
 
     @Override

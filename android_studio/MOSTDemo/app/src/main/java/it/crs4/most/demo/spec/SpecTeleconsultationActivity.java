@@ -955,4 +955,11 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             imageDownloader.downloadImage(camera.getShotUri()); // uriProps.getProperty("uri_still_image"));
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        publisher.close();
+
+    }
 }
