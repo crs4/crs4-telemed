@@ -67,6 +67,8 @@ import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
 import jp.epson.moverio.bt200.DisplayControl;
+import it.crs4.most.streaming.GstreamerRTSPServer;
+import it.crs4.most.streaming.StreamServer;
 // For Epson Moverio BT-200. BT200Ctrl.jar must be in libs/ folder.
 
 
@@ -87,6 +89,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private Sensor accelerometer;
     protected float accX, accY, accZ;
     private boolean isOptical = false;
+    private StreamServer streamServer;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         private boolean toggle = true;
@@ -276,6 +279,10 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
+        streamServer = new GstreamerRTSPServer(this);
+        streamServer.start();
+
     }
 
     @Override
@@ -470,6 +477,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             arInitialized = true;
         }
 
+
         final float accLimit = 0.08f;
         if(renderer.isEnabled() && (accX > accLimit || accY > accLimit|| accZ > accLimit)){
             if (ARToolKit.getInstance().convertAndDetect(frame)) {
@@ -479,6 +487,12 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
                 this.onFrameProcessed();
             }
         }
+
+        if (frame != null){
+            Log.d(TAG, "feeding frame, frame.length " + frame.length);
+            streamServer.feedData(frame);
+        }
+
     }
 
     public void onFrameProcessed() {

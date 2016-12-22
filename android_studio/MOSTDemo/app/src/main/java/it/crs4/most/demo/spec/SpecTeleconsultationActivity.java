@@ -874,8 +874,8 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
                     height = videoSize.getHeight();
                 }
                 else { //FIXME
-                    width = 704;
-                    height = 576;
+                    width = 320;
+                    height = 240;
 
 
                 }
