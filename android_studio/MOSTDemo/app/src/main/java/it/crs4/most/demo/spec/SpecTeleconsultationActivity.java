@@ -860,7 +860,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             StreamState streamState = ((IStream) event.getData()).getState();
             Log.d(TAG, "event.getData().streamState " + streamState);
             if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
+                event.getEvent() == StreamingEvent.VIDEO_SIZE_CHANGED) {
 //                    if (streamState == StreamState.PLAYING) {
 
                 Log.d(TAG, "event.getData().streamState " + streamState);
