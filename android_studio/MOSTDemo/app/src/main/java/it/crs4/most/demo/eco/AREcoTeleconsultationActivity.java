@@ -489,7 +489,6 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         }
 
         if (frame != null){
-            Log.d(TAG, "feeding frame, frame.length " + frame.length);
             streamServer.feedData(frame);
         }
 
