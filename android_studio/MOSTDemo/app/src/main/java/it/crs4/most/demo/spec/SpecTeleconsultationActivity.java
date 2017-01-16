@@ -99,6 +99,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
     private String CAMERA_STREAM = "CAMERA_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
+    private String CAMER_ARROW_ID = "cameraArrow";
 
     private Handler mEcoStreamHandler;
     private IStream mStreamCamera;
@@ -177,8 +178,19 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
                 1, 0, 0, 1f
             };
 
-            Arrow cameraArrow = new Arrow("arrow");
+            float[] blueColor = new float[]{
+                    0, 0, 0, 1f,
+                    0, 1, 0, 1f,
+                    0, 1, 0, 1f,
+                    0, 1, 0, 1f,
+                    0, 1, 0, 1f
+            };
+
+            Pyramid cameraArrow = new Pyramid(30f, 30f, 30f, CAMER_ARROW_ID);
+            cameraArrow.setColors(blueColor);
+
             Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
+
             ecoArrow.setCoordsConverter(new CoordsConverter(
                 arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
 
@@ -331,6 +343,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
 
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
+            mStreamCameraFragment.setDeviceID("EPSON/embt2/embt2");
 
             Device encoder = mTeleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
