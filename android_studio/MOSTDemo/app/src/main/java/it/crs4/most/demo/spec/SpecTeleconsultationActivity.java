@@ -366,6 +366,22 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             mStreamCameraFragment.setRenderer(mARCameraRenderer);
             mStreamCameraFragment.setStreamAR(mStreamCamera);
             mStreamCameraFragment.setGlSurfaceViewCallback(this);
+            mStreamCameraFragment.setSurfaceViewCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder holder) {
+
+                }
+
+                @Override
+                public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                    mARCameraRenderer.setViewportSize(width, height);
+                }
+
+                @Override
+                public void surfaceDestroyed(SurfaceHolder holder) {
+
+                }
+            });
             mStreamEcoFragment.setRenderer(mAREcoRenderer);
 
         }
