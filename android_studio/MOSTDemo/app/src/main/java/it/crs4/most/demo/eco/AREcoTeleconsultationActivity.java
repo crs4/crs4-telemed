@@ -116,9 +116,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
-
 
     public static class RemoteControlReceiver extends BroadcastReceiver {
         String TAG = "RemoteControlReceiver";
@@ -166,29 +164,13 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     @Override
     public void onCreate(Bundle savedInstanceState){
-
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE) ;
-        ComponentName componentName = new ComponentName(this, RemoteControlReceiver.class);
-        am.registerMediaButtonEventReceiver(componentName);
-
         super.onCreate(savedInstanceState);
+
+        ComponentName componentName = new ComponentName(this, RemoteControlReceiver.class);
+        mAudioManager.registerMediaButtonEventReceiver(componentName);
         setContentView(R.layout.ar_eco);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-
-        File cacheFolder = new File(getCacheDir().getAbsolutePath() + "/Data");
-        File[] files = cacheFolder.listFiles();
-        if (files != null){
-            for (File file : files) {
-                if (!file.delete()){
-//                    throw new RuntimeException("cannot delete cached files");
-                }
-            }
-        }
-        AssetHelper assetHelper = new AssetHelper(getAssets());
-        assetHelper.cacheAssetFolder(this, "Data");
-
 
         if((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))){
             getWindow().addFlags(0x80000000);
@@ -197,70 +179,13 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             isOptical = true;
         }
 
-        String configServerIP = QuerySettings.getConfigServerAddress(this);
-        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
-        mRESTClient = new RESTClient(this, configServerIP, configServerPort);
-//        init();
-        setTeleconsultationState(TeleconsultationState.IDLE);
-        Intent i = getIntent();
-        teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
-        setupVoipLib();
 
         String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
         Log.d(TAG, "SpecApp Address: " + specAppAddress);
         subscriber = new ZMQSubscriber(specAppAddress);
         Thread subThread = new Thread(subscriber);
         subThread.start();
-
-        float [] redColor = new float []{
-                0, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f
-        };
-
-        Map<String, Mesh> meshes = new HashMap<>();
-        ARConfiguration arConf= teleconsultation.getLastSession().getRoom().getARConfiguration();
-        if (arConf != null){
-            for (ARMarker markerModel: arConf.getMarkers()){
-                Marker marker = MarkerFactory.getMarker(markerModel.getConf());
-                float [] trans = new float[16];
-                Matrix.setIdentityM(trans, 0);
-                trans[12] = markerModel.getTransX();
-                trans[13] = markerModel.getTransY();
-                marker.setModelMatrix(trans);
-
-                it.crs4.most.demo.models.Mesh meshModel = markerModel.getMesh();
-                Mesh mesh;
-                if (meshes.containsKey(meshModel.getName())) {
-                    mesh = meshes.get(meshModel.getName());
-                }
-                else {
-                    try {
-
-                        Class clsMesh = Class.forName(meshModel.getCls());
-                        Class[] cArg = new Class[] {
-                                float.class, float.class, float.class, String.class
-                        };
-                        mesh = (Mesh) clsMesh.getDeclaredConstructor(cArg).newInstance(
-                                meshModel.getSizeX(),
-                                meshModel.getSizeY(),
-                                meshModel.getSizeZ(),
-                                meshModel.getName()
-                        );
-                        meshes.put(meshModel.getName(), mesh);
-                        mesh.setColors(redColor);
-                        meshManager.addMesh(mesh);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        continue;
-                    }
-                }
-                mesh.addMarker(marker);
-            }
-        }
+        createARMeshes(meshManager);
 
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
@@ -478,7 +403,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         }
 
 
-        final float accLimit = 0.08f;
+        final float accLimit = 0.00f;
         if(renderer.isEnabled() && (accX > accLimit || accY > accLimit|| accZ > accLimit)){
             if (ARToolKit.getInstance().convertAndDetect(frame)) {
                 if (this.glView != null) {

@@ -54,7 +54,7 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private boolean mIsOnHold;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eco_teleconsultation_activity);
         txtTcState = (TcStateTextView) findViewById(R.id.txt_tc_state);

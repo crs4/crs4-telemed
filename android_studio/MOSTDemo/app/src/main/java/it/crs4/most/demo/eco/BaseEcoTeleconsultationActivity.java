@@ -2,13 +2,11 @@ package it.crs4.most.demo.eco;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.media.AudioManager;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.android.volley.Response;
@@ -18,58 +16,42 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
+import it.crs4.most.demo.BaseTeleconsultationActivity;
 import it.crs4.most.demo.QuerySettings;
-import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
+import it.crs4.most.demo.models.ARConfiguration;
+import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.streaming.StreamingEventBundle;
+import it.crs4.most.visualization.augmentedreality.MarkerFactory;
+import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
+import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.voip.VoipEventBundle;
-import it.crs4.most.voip.VoipLib;
-import it.crs4.most.voip.VoipLibBackend;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
 
 
 @SuppressLint("InlinedApi")
-public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity {
+public abstract class BaseEcoTeleconsultationActivity extends BaseTeleconsultationActivity {
 
     private static final String TAG = "EcoTeleconsultActivity";
-    public static final String TELECONSULTATION_ARG = "teleconsultation";
-    protected TeleconsultationState mTcState = TeleconsultationState.IDLE;
-    private String mSipServerIp;
-    private String mSipServerPort;
-    private VoipLib mVoipLib;
-    private CallHandler voipHandler;
     protected StreamHandler mStreamHandler;
-    private AudioManager mAudioManager;
-    private int mOriginalAudioMode;
-    protected HashMap<String, String> voipParams;
-
     protected boolean localHold = false;
     protected boolean remoteHold = false;
     protected boolean accountRegistered = false;
 
-    protected Teleconsultation teleconsultation;
-    protected RESTClient mRESTClient;
-
-    protected abstract void notifyTeleconsultationStateChanged();
-
     protected void stopStream() {}
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        mOriginalAudioMode = mAudioManager.getMode();
-        Log.d(TAG, "Audio mode is: " + mOriginalAudioMode);
-        setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+    protected Handler getVoipHandler(){
+        return new CallHandler(this);
     }
 
-    protected void setTeleconsultationState(TeleconsultationState tcState) {
-        mTcState = tcState;
-        notifyTeleconsultationStateChanged();
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
     }
 
     protected void endTeleconsultation() {
@@ -141,18 +123,10 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
         mVoipLib.hangupCall();
     }
 
-    protected void setupVoipLib() {
-        // Voip Lib Initialization Params
-        voipParams = teleconsultation.getLastSession().getVoipParams();
-        mSipServerIp = voipParams.get("sipServerIp");
-        mSipServerPort = voipParams.get("sipServerPort");
-        mVoipLib = new VoipLibBackend();
-        voipHandler = new CallHandler(this);
-        mVoipLib.initLib(getApplicationContext(), voipParams, voipHandler);
-    }
+
 
     protected void subscribeBuddies() {
-        String buddyExtension = voipParams.get("specExtension");
+        String buddyExtension = mVoipParams.get("specExtension");
         Log.d(TAG, "Subscribing buddy " + buddyExtension);
         mVoipLib.getAccount().addBuddy(getBuddyUri(buddyExtension));
     }
@@ -272,5 +246,60 @@ public abstract class BaseEcoTeleconsultationActivity extends AppCompatActivity 
             Log.d(TAG, "Stream Message Arrived: Current Event:" + infoMsg);
 
         }
+    }
+
+    protected void createARMeshes(Teleconsultation teleconsultation, MeshManager meshManager){
+
+        float [] redColor = new float []{
+                0, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f,
+                1, 0, 0, 1f
+        };
+
+        Map<String, Mesh> meshes = new HashMap<>();
+        ARConfiguration arConf= teleconsultation.getLastSession().getRoom().getARConfiguration();
+        if (arConf != null){
+            for (ARMarker markerModel: arConf.getMarkers()){
+                MarkerFactory.Marker marker = MarkerFactory.getMarker(markerModel.getConf());
+                float [] trans = new float[16];
+                Matrix.setIdentityM(trans, 0);
+                trans[12] = markerModel.getTransX();
+                trans[13] = markerModel.getTransY();
+                marker.setModelMatrix(trans);
+
+                it.crs4.most.demo.models.Mesh meshModel = markerModel.getMesh();
+                Mesh mesh;
+                if (meshes.containsKey(meshModel.getName())) {
+                    mesh = meshes.get(meshModel.getName());
+                }
+                else {
+                    try {
+
+                        Class clsMesh = Class.forName(meshModel.getCls());
+                        Class[] cArg = new Class[] {
+                                float.class, float.class, float.class, String.class
+                        };
+                        mesh = (Mesh) clsMesh.getDeclaredConstructor(cArg).newInstance(
+                                meshModel.getSizeX(),
+                                meshModel.getSizeY(),
+                                meshModel.getSizeZ(),
+                                meshModel.getName()
+                        );
+                        meshes.put(meshModel.getName(), mesh);
+                        mesh.setColors(redColor);
+                        meshManager.addMesh(mesh);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
+                mesh.addMarker(marker);
+            }
+        }
+
+
     }
 }
