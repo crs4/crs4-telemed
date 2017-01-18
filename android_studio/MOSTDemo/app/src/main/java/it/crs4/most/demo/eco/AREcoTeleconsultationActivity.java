@@ -358,7 +358,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //            }
 //            arInitialized = false;
 //        }
-        if (ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
+        if (ARToolKit.getInstance().initialiseAR(width, height, null, cameraIndex, cameraIsFrontFacing)) {
             Log.d(TAG, String.format("Build.MANUFACTURER %s", Build.MANUFACTURER));
             Log.d(TAG, String.format("Build.MODEL %s", Build.MODEL));
 
