@@ -175,6 +175,7 @@ public class SummaryFragment extends SetupFragment {
 
     private void createTeleconsultationSession() {
         final Room room = mTeleconsultationSetup.getRoom();
+        final String ipAddress = getIPAddress();
 
         Response.Listener<String> listener = new ResponseHandlerDecorator<>(getActivity(),
             new Response.Listener<String>() {
@@ -187,7 +188,7 @@ public class SummaryFragment extends SetupFragment {
                             getJSONObject("session");
                         String sessionUUID = jsonData.getString("uuid");
                         TeleconsultationSession s = new TeleconsultationSession(sessionUUID,
-                            null, TeleconsultationSessionState.NEW, room);
+                            null, ipAddress, TeleconsultationSessionState.NEW, room);
                         mTeleconsultation.setLastSession(s);
                         startSession();
                     }
@@ -198,8 +199,8 @@ public class SummaryFragment extends SetupFragment {
                 }
             });
 
-        mRESTClient.createNewTeleconsultationSession(mTeleconsultation.getId(), room.getId(), getAccessToken(),
-            listener, mErrorListener);
+        mRESTClient.createNewTeleconsultationSession(mTeleconsultation.getId(), room.getId(),
+            ipAddress, getAccessToken(), listener, mErrorListener);
     }
 
     private void startSession() {
@@ -312,7 +313,7 @@ public class SummaryFragment extends SetupFragment {
             });
     }
 
-    private void runSession(){
+    private void runSession() {
         final Response.Listener<JSONObject> listener = new ResponseHandlerDecorator<>(getActivity(),
             new Response.Listener<JSONObject>() {
                 @Override

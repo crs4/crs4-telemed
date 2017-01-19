@@ -312,6 +312,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
     private void setupTeleconsultationInfo() {
         Intent i = getIntent();
         mTeleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
+        Log.d(TAG, "Eco app address" + mTeleconsultation.getLastSession().getEcoAppAddress());
 //        TextView txtTeleconsultation = (TextView) findViewById(R.id.txtTeleconsultation);
 //        txtTeleconsultation.setText(mTeleconsultation.getDescription());
     }

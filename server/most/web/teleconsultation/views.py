@@ -281,7 +281,7 @@ def get_open_teleconsultations(request):
 
 @oauth2_required
 @csrf_exempt
-def create_new_session(request, teleconsultation_uuid):
+def create_new_session(request, teleconsultation_uuid, eco_app_address):
     import logging
     logging.error("IN CREATE NEW SESSION: %s" % teleconsultation_uuid)
     # Check and Retrieve teleconsultation
@@ -312,7 +312,7 @@ def create_new_session(request, teleconsultation_uuid):
     session = TeleconsultationSession()
     session.teleconsultation = teleconsultation
     session.room = room
-
+    session.eco_app_address = eco_app_address
     session.save()
 
     return HttpResponse(json.dumps({'success': True,

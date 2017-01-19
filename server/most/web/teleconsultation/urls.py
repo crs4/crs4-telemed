@@ -27,7 +27,7 @@ urlpatterns = patterns('',
     url(r'room/(?P<marker_trans_pk>.*)/set_ar', "most.web.teleconsultation.views.set_ar_conf"),
 
     # teleconsultation
-    url(r'(?P<teleconsultation_uuid>.*)/session/create/$', "most.web.teleconsultation.views.create_new_session"),
+    url(r'(?P<teleconsultation_uuid>.*)/(?P<eco_app_address>.*)/session/create/$', "most.web.teleconsultation.views.create_new_session"),
     # url(r'(?P<teleconsultation_uuid>.*)/close/$', "most.web.teleconsultation.views.close_teleconsultation"),
     url(r'create/$', "most.web.teleconsultation.views.create_teleconsultation"),
     url(r'today/waiting/$', "most.web.teleconsultation.views.get_waiting_teleconsultations"),

@@ -18,14 +18,17 @@ public class TeleconsultationSession implements Serializable {
     private static final String TAG = "TeleconsultationSession";
     private String mId;
     private String mSpecAppAddress;
+    private String mEcoAppAddress;
     private TeleconsultationSessionState mSessionState;
     private HashMap<String, String> voipParams;
     private Room mRoom;
     private Context mContext;
 
-    public TeleconsultationSession(String id, String specAppAddress, TeleconsultationSessionState state, Room room) {
+    public TeleconsultationSession(String id, String specAppAddress, String ecoAppAddress,
+                                   TeleconsultationSessionState state, Room room) {
         mId = id;
         mSpecAppAddress = specAppAddress;
+        mEcoAppAddress = ecoAppAddress;
         mSessionState = state;
         mRoom = room;
     }
@@ -140,6 +143,14 @@ public class TeleconsultationSession implements Serializable {
         mSpecAppAddress = specAppAddress;
     }
 
+    public String getEcoAppAddress() {
+        return mEcoAppAddress;
+    }
+
+    public void setEcoAppAddress(String ecoAppAddress) {
+        mEcoAppAddress = ecoAppAddress;
+    }
+
     public void setState(TeleconsultationSessionState state) {
         mSessionState = state;
     }
@@ -152,6 +163,7 @@ public class TeleconsultationSession implements Serializable {
         String id;
         String state;
         String specAppAddress;
+        String ecoAppAddress;
         JSONObject roomData;
 
         try {
@@ -170,9 +182,16 @@ public class TeleconsultationSession implements Serializable {
             specAppAddress = null;
         }
 
+        try {
+            ecoAppAddress = sessionData.getString("eco_app_address");
+        }
+        catch (JSONException e) {
+            ecoAppAddress = null;
+        }
+
         Room room = Room.fromJSON(roomData);
         TeleconsultationSession tcSession = new TeleconsultationSession(id, specAppAddress,
-            TeleconsultationSessionState.getState(state), room);
+            ecoAppAddress, TeleconsultationSessionState.getState(state), room);
 
         tcSession.setVoipParams(context, sessionData, role);
         return tcSession;

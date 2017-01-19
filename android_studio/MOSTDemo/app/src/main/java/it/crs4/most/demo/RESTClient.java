@@ -294,12 +294,12 @@ public class RESTClient {
      * @param errorListener        the listener to handle the response in case of errors
      */
     public void createNewTeleconsultationSession(final String teleconsultationUUID,
-                                                 final String roomId, String accessToken,
+                                                 final String roomId, String ipAddress, String accessToken,
                                                  Response.Listener<String> listener,
                                                  Response.ErrorListener errorListener) {
 
-        String uri = String.format("%steleconsultation/%s/session/create/?access_token=%s",
-            mUrlPrefix, teleconsultationUUID, accessToken);
+        String uri = String.format("%steleconsultation/%s/%s/session/create/?access_token=%s",
+            mUrlPrefix, teleconsultationUUID, ipAddress, accessToken);
         StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
             @Override
             protected Map<String, String> getParams() {

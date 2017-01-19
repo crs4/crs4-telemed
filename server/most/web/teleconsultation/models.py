@@ -195,6 +195,7 @@ class TeleconsultationSession(models.Model):
     updated = models.DateTimeField(auto_now=True)
     room = models.ForeignKey(Room, related_name="sessions")
     spec_app_address = models.CharField(max_length=15, default="")
+    eco_app_address = models.CharField(max_length=15, default="")
 
     def __unicode__(self):
         return '[Teleconsultation Session: {uuid}]'.format(uuid=self.uuid)
@@ -205,7 +206,8 @@ class TeleconsultationSession(models.Model):
             'created': calendar.timegm(self.created.timetuple()),
             'updated': calendar.timegm(self.created.timetuple()),
             'state': self.state,
-            'spec_app_address': self.spec_app_address
+            'spec_app_address': self.spec_app_address,
+            'eco_app_address': self.eco_app_address
         }
 
     json_dict = property(_get_json_dict)

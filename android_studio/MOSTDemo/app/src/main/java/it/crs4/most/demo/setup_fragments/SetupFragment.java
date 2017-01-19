@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,16 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.EventListener;
 
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.SetupActivity;
 import it.crs4.most.demo.TeleconsultationSetup;
-import it.crs4.most.demo.TeleconsultationSetupActivity;
 
 public abstract class SetupFragment extends Fragment {
 
@@ -68,7 +72,8 @@ public abstract class SetupFragment extends Fragment {
         return super.getContext();
     }
 
-    public void onShow() {}
+    public void onShow() {
+    }
 
     public void setTeleconsultationSetup(TeleconsultationSetup teleconsultationSetup) {
         mTeleconsultationSetup = teleconsultationSetup;
@@ -117,4 +122,40 @@ public abstract class SetupFragment extends Fragment {
 
         void onSkipStep();
     }
+
+    protected String getIPAddress() {
+        String wifiAddr = null;
+        String vpnAddr = null;
+        try {
+            Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+            while (en.hasMoreElements()) {
+                NetworkInterface intf = en.nextElement();
+                Enumeration<InetAddress> ia = intf.getInetAddresses();
+                while (ia.hasMoreElements()) {
+                    InetAddress inetAddress = ia.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()) {
+                        if (intf.getName().equals("wlan0")) {
+                            wifiAddr = inetAddress.getHostAddress();
+                            Log.d(TAG, "WIFI: " + wifiAddr);
+                        }
+                        else if (intf.getName().equals("ppp0")) {
+                            vpnAddr = inetAddress.getHostAddress();
+                            Log.d(TAG, "VPN: " + vpnAddr);
+                        }
+                    }
+                }
+
+            }
+        }
+        catch (SocketException ex) {
+            Log.e("LOG_TAG", ex.toString());
+        }
+        if (vpnAddr != null) {
+            return vpnAddr;
+        }
+        else {
+            return wifiAddr;
+        }
+    }
+
 }
