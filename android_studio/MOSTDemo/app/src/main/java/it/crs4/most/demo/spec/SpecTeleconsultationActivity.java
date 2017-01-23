@@ -2,7 +2,6 @@ package it.crs4.most.demo.spec;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +22,6 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
-import org.artoolkit.ar.base.assets.AssetHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,9 +63,7 @@ import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
-import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
-import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
@@ -76,8 +71,7 @@ import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
-import it.crs4.most.voip.VoipLib;
-import it.crs4.most.voip.VoipLibBackend;
+import it.crs4.most.voip.enums.AccountState;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
@@ -144,8 +138,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mRESTClient = new RESTClient(this, configServerIP, configServerPort);
 
-        mEcoStreamHandler = new EcoStreamHandler(this);
-        mCameraStreamHandler = new CameraStreamHandler(this);
+        mEcoStreamHandler = new EcoStreamHandler(this, ECO_STREAM);
+        mCameraStreamHandler = new CameraStreamHandler(this, CAMERA_STREAM);
 
         setContentView(R.layout.spec_teleconsultation_activity);
 
@@ -332,24 +326,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mStreamCameraFragment.setRenderer(mARCameraRenderer);
             mStreamCameraFragment.setStreamAR(mStreamCamera);
             mStreamCameraFragment.setGlSurfaceViewCallback(this);
-            mStreamCameraFragment.setSurfaceViewCallback(new SurfaceHolder.Callback() {
-                @Override
-                public void surfaceCreated(SurfaceHolder holder) {
-
-                }
-
-                @Override
-                public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                    mARCameraRenderer.setViewportSize(width, height);
-                }
-
-                @Override
-                public void surfaceDestroyed(SurfaceHolder holder) {
-
-                }
-            });
             mStreamEcoFragment.setRenderer(mAREcoRenderer);
-
         }
         catch (Exception e) {
             Log.e(TAG, "Error creating streams");
@@ -785,13 +762,21 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
     }
 
-    private static class EcoStreamHandler extends Handler {
-        private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
-        private int width;
-        private int height;
+    private static abstract class StreamHandler extends Handler {
+        private final WeakReference<SpecTeleconsultationActivity> activity;
+        private String streamName;
 
-        private EcoStreamHandler(SpecTeleconsultationActivity outerRef) {
-            mOuterRef = new WeakReference<>(outerRef);
+        public StreamHandler(SpecTeleconsultationActivity activity, String streamName) {
+            this.activity = new WeakReference<>(activity);
+            this.streamName = streamName;
+        }
+
+        public SpecTeleconsultationActivity getActivity() {
+            return activity.get();
+        }
+
+        public String getStreamName() {
+            return streamName;
         }
 
         @Override
@@ -799,7 +784,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
             String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
             Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-            SpecTeleconsultationActivity act = mOuterRef.get();
+
 
             StreamState streamState = ((IStream) event.getData()).getState();
             Log.d(TAG, "event.getData().streamState " + streamState);
@@ -809,63 +794,41 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 Log.d(TAG, "ready to call cameraPreviewStarted");
 
                 Size videoSize = ((IStream) event.getData()).getVideoSize();
-                if (((IStream) event.getData()).getName() == "ECO_STREAM" && videoSize != null) {
-                    width = videoSize.getWidth();
-                    height = videoSize.getHeight();
+                if (((IStream) event.getData()).getName().equals(streamName)&& videoSize != null) {
+                    int width = videoSize.getWidth();
+                    int height = videoSize.getHeight();
                     Log.d(TAG, String.format("VIDEOSIZE width %s, height %d", width, height));
-                    act.mAREcoRenderer.setViewportSize(width, height);
+                    onVideoSizeChanged(width, height);
+//                    act.mAREcoRenderer.setViewportSize(width, height);
 
                 }
 
             }
+        }
+
+        public abstract  void onVideoSizeChanged(int width, int height);
+    }
+
+    private static class EcoStreamHandler extends StreamHandler {
+        public EcoStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
+            super(activity, streamName);
+        }
+        @Override
+        public void onVideoSizeChanged(int width, int height) {
+            getActivity().mAREcoRenderer.setViewportSize(width, height);
         }
     }
 
-    private static class CameraStreamHandler extends Handler {
-        private static final String TAG = "CameraStreamHandler";
-        private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
-
-        private CameraStreamHandler(SpecTeleconsultationActivity outerRef) {
-            mOuterRef = new WeakReference<>(outerRef);
+    private static class CameraStreamHandler extends StreamHandler{
+        public CameraStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
+            super(activity, streamName);
         }
 
         @Override
-        public void handleMessage(Message streamingMessage) {
-            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
-            String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
-            Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-            SpecTeleconsultationActivity act = mOuterRef.get();
-
-            StreamState streamState = ((IStream) event.getData()).getState();
-            Log.d(TAG, "event.getData().streamState " + streamState);
-            if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                event.getEvent() == StreamingEvent.VIDEO_SIZE_CHANGED) {
-//                    if (streamState == StreamState.PLAYING) {
-
-                Log.d(TAG, "event.getData().streamState " + streamState);
-                Log.d(TAG, "ready to call cameraPreviewStarted");
-
-                Size videoSize = ((IStream) event.getData()).getVideoSize();
-
-                int width, height;
-                if (videoSize != null) {
-                    width = videoSize.getWidth();
-                    height = videoSize.getHeight();
-                }
-                else { //FIXME
-                    width = 320;
-                    height = 240;
-
-
-                }
-                Log.d(TAG, "width " + width);
-                Log.d(TAG, "height " + height);
-                act.mStreamCameraFragment.setFixedSize(new int[]{width, height});
-                act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
-
-
-//                    }
-            }
+        public void onVideoSizeChanged(int width, int height) {
+            Log.d(TAG, String.format("onVideoSizeChanged width %s, height %s", width, height));
+            getActivity().mARCameraRenderer.setViewportSize(width, height);
+            getActivity().mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
         }
     }
 
