@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -124,6 +126,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private boolean arOnBoot = false;
     private ZMQPublisher publisher;
     private ARConfiguration arConf;
+    private Button resetCameraMesh;
+    private Button resetEcoMesh;
 
     protected Handler getVoipHandler(){
         return new CallHandler(this);
@@ -191,6 +195,11 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             fragmentTransaction.commit();
         }
         setupStreamLib();
+
+        resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
+        resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
+        resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager));
+        resetEcoMesh.setOnClickListener(new ResetButtonListener(ecoMeshManager));
     }
 
     @Override
@@ -903,5 +912,20 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         super.onPause();
         publisher.close();
 
+    }
+
+    private static class ResetButtonListener implements View.OnClickListener {
+
+        private MeshManager meshManager;
+        public ResetButtonListener(MeshManager meshManager){
+            this.meshManager = meshManager;
+        }
+        @Override
+        public void onClick(View v) {
+            for (Mesh m: meshManager.getMeshes()) {
+                m.setX(0);
+                m.setY(0);
+            }
+        }
     }
 }
