@@ -17,12 +17,29 @@
         android:summary="%s"
         android:entries="@array/roles_entries"
         android:entryValues="@array/roles_entries_values"/>
-    <CheckBoxPreference
-        android:key="ar_enabled"
-        android:title="Enable Augmented Reality"
-        android:defaultValue="false"
-        android:dependency="role_preference"
-        android:enabled="false"/>
+
+    <PreferenceCategory
+        android:title="Augmented Reality"
+        android:key="augmented_reality">
+        <CheckBoxPreference
+            android:key="ar_enabled"
+            android:title="Enable Augmented Reality"
+            android:defaultValue="false"
+            android:dependency="role_preference"
+            android:enabled="false"/>
+
+        <ListPreference
+            android:key="ar_eyes"
+            android:title="Eyes"
+            android:enabled="false"
+            android:entries="@array/eyes_entries"
+            android:entryValues="@array/eyes_entries_values"
+            android:summary="%s"
+            android:defaultValue="BOTH" />
+
+
+    </PreferenceCategory>
+
     <EditTextPreference
         android:key="device_id"
         android:title="@string/device_id"

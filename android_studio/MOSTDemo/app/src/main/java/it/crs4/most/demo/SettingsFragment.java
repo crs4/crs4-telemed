@@ -13,6 +13,7 @@ public class SettingsFragment extends PreferenceFragment {
     private static final String TAG = "SettingsFragment";
     private String[] mRoles;
     private CheckBoxPreference mArEnabled;
+    private ListPreference mArEyes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class SettingsFragment extends PreferenceFragment {
         });
 
         mArEnabled = (CheckBoxPreference) findPreference("ar_enabled");
+        mArEyes= (ListPreference) findPreference("ar_eyes");
 
         ListPreference role = (ListPreference) findPreference("role_preference");
         role.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -73,9 +75,14 @@ public class SettingsFragment extends PreferenceFragment {
     private void enabledArPreference(String value) {
         if (value.equals(mRoles[0])) {
             mArEnabled.setEnabled(true);
+            if (Device.isEyeWear()){
+                mArEyes.setEnabled(true);
+            }
+
         }
         else {
             mArEnabled.setEnabled(false);
+            mArEyes.setEnabled(false);
         }
     }
 }

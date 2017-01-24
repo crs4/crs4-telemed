@@ -262,6 +262,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         if (mOpticalARToolkit != null) {
             Log.d(TAG, "setting OpticalRenderer");
             renderer = new OpticalRenderer(this, mOpticalARToolkit, meshManager);
+
+            ((OpticalRenderer)renderer).setEye(
+                    OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
         }
         else {
             renderer = new PubSubARRenderer(this,  meshManager);
