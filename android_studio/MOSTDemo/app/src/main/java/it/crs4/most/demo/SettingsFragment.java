@@ -88,12 +88,12 @@ public class SettingsFragment extends PreferenceFragment {
         mArEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if ((boolean) newValue && Device.isEyeWear()){
-                    mArEyes.setEnabled(true);
-                    mCalibrateAR.setEnabled(true);
-                    mClearCalibration.setEnabled(true);
-                }
                 mARLowFilter.setEnabled((boolean) newValue);
+                if (Device.isEyeWear()){
+                    mArEyes.setEnabled((boolean) newValue);
+                    mCalibrateAR.setEnabled((boolean) newValue);
+                    mClearCalibration.setEnabled((boolean) newValue);
+                }
                 return true;
             }
         });
@@ -133,12 +133,6 @@ public class SettingsFragment extends PreferenceFragment {
     private void enabledArPreference(String value) {
         boolean toEnable = value.equals(mRoles[0]);
         mArEnabled.setEnabled(toEnable);
-        mARLowFilter.setEnabled(toEnable);
-        if (Device.isEyeWear()){
-            mArEyes.setEnabled(toEnable);
-            mCalibrateAR.setEnabled(toEnable);
-            mClearCalibration.setEnabled(toEnable);
-        }
     }
 }
 
