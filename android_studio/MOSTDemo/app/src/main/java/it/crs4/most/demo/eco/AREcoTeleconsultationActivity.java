@@ -270,6 +270,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             renderer = new PubSubARRenderer(this,  meshManager);
         }
         renderer.setEnabled(arEnabled);
+        renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
