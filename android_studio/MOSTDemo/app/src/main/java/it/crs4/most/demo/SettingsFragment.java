@@ -111,6 +111,15 @@ public class SettingsFragment extends PreferenceFragment {
         EditTextPreference deviceID = (EditTextPreference) findPreference("device_id");
         deviceID.setSummary(Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
+        EditTextPreference calibratedX = (EditTextPreference) findPreference("ar_calibrated_x");
+        EditTextPreference calibratedY = (EditTextPreference) findPreference("ar_calibrated_y");
+
+        float [] calibration = QuerySettings.getARCalibration(getActivity());
+
+        calibratedX.setSummary(String.valueOf(calibration[0]));
+        calibratedY.setSummary(String.valueOf(calibration[1]));
+
+
         if (role.getValue() != null) {
             enabledArPreference(role.getValue());
         }

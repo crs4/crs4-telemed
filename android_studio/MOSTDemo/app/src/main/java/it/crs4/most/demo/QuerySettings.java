@@ -142,26 +142,16 @@ public class QuerySettings {
         return Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_LOW_LEVEL_FILTER, "0.9f"));
     }
 
-    public static float getARCalibratedX(Context context) {
-        //getFloat throws exceptions :(
-        return Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_CALIBRATED_X, "0f"));
-    }
-
-    public static float getARCalibratedY(Context context) {
-        //getFloat throws exceptions :(
-        return Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_CALIBRATED_Y, "0f"));
-    }
-
     public static float [] getARCalibration(Context context) {
-        float x = PreferenceManager.getDefaultSharedPreferences(context).getFloat(AR_CALIBRATED_X, 0);
-        float y = PreferenceManager.getDefaultSharedPreferences(context).getFloat(AR_CALIBRATED_Y, 0);
+        float x = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_CALIBRATED_X, "0"));
+        float y = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_CALIBRATED_Y, "0"));
         return new float [] {x, y};
     }
 
     public static void setARCalibration(Context context, float x, float y) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putFloat(AR_CALIBRATED_X, x);
-        editor.putFloat(AR_CALIBRATED_Y, y);
+        editor.putString(AR_CALIBRATED_X, String.valueOf(x));
+        editor.putString(AR_CALIBRATED_Y, String.valueOf(y));
         editor.apply();
     }
 
