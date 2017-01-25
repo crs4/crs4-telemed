@@ -27,6 +27,7 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -67,7 +68,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".ReportActivity"
-            android:label="@string/teleconsultation_report"/>
+            android:label="@string/teleconsultation_report" />
 
         <receiver android:name=".eco.AREcoTeleconsultationActivity$RemoteControlReceiver">
             <intent-filter android:priority="999">
@@ -75,6 +76,7 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".eco.CalibrateARActivity"></activity>
     </application>
 
 </manifest>
