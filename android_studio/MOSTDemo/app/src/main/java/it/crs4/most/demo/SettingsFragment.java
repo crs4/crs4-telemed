@@ -85,7 +85,8 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
-        mArEnabled.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+        Preference.OnPreferenceChangeListener arEnablingListener =  new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 mARLowFilter.setEnabled((boolean) newValue);
@@ -96,7 +97,11 @@ public class SettingsFragment extends PreferenceFragment {
                 }
                 return true;
             }
-        });
+        };
+        mArEnabled.setOnPreferenceChangeListener(arEnablingListener);
+
+        //for initialization
+        arEnablingListener.onPreferenceChange(mArEnabled, mArEnabled.isChecked());
 
 
         ListPreference role = (ListPreference) findPreference("role_preference");
