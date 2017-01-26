@@ -37,6 +37,34 @@
             android:summary="%s"
             android:defaultValue="BOTH" />
 
+        <EditTextPreference
+            android:key="ar_low_filter_level"
+            android:title="@string/ar_low_filter_level"
+            android:numeric="decimal"
+            android:defaultValue="0.9f"
+            android:enabled="false" />
+
+        <Preference
+            android:key="ar_calibrate"
+            android:title="Calibrate"
+            android:enabled="false"/>
+
+        <Preference
+            android:key="ar_clear_calibration"
+            android:title="Clear calibration"
+            android:enabled="false" />
+
+        <EditTextPreference
+            android:key="ar_calibrated_x"
+            android:title="calibrated x"
+            android:enabled="false"/>
+
+        <EditTextPreference
+            android:key="ar_calibrated_y"
+            android:title="calibrated y"
+            android:enabled="false"/>
+
+
 
     </PreferenceCategory>
 

@@ -1,6 +1,8 @@
 package it.crs4.most.demo;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 import it.crs4.most.demo.models.User;
@@ -20,6 +22,9 @@ public class QuerySettings {
     private static final String IS_ADMIN= "is_admin";
     private static final String AR_ENABLED = "ar_enabled";
     private static final String AR_EYE = "ar_eyes";
+    private static final String AR_LOW_LEVEL_FILTER= "ar_low_filter_level";
+    private static final String AR_CALIBRATED_X = "ar_calibrated_x";
+    private static final String AR_CALIBRATED_Y = "ar_calibrated_y";
 
     public enum AREye {
         LEFT , RIGHT , BOTH;
@@ -35,6 +40,12 @@ public class QuerySettings {
                 edit().
                 putBoolean(valueType, (boolean) value).
                 apply();
+        }
+        else if (value instanceof Float) {
+            PreferenceManager.getDefaultSharedPreferences(context).
+                    edit().
+                    putFloat(valueType, (float) value).
+                    apply();
         }
         else {
             PreferenceManager.getDefaultSharedPreferences(context).
@@ -124,6 +135,31 @@ public class QuerySettings {
     public static AREye getAREyes(Context context) {
         return AREye.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_EYE, AREye.BOTH.toString()));
 
+    }
+
+    public static float getARLowFilterLevel(Context context) {
+        //getFloat throws exceptions :(
+        return Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_LOW_LEVEL_FILTER, "0.9f"));
+    }
+
+    public static float [] getARCalibration(Context context) {
+        float x = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_CALIBRATED_X, "0"));
+        float y = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(AR_CALIBRATED_Y, "0"));
+        return new float [] {x, y};
+    }
+
+    public static void setARCalibration(Context context, float x, float y) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString(AR_CALIBRATED_X, String.valueOf(x));
+        editor.putString(AR_CALIBRATED_Y, String.valueOf(y));
+        editor.apply();
+    }
+
+    public static void clearCalibration(Context context) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.remove(AR_CALIBRATED_X);
+        editor.remove(AR_CALIBRATED_Y);
+        editor.apply();
     }
 }
 
