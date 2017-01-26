@@ -79,7 +79,7 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
 
 
 
-        arrow.addMarker(MarkerFactory.getMarker("single;Data/calib.patt;80"));
+        arrow.addMarker(MarkerFactory.getMarker("single;Data/kanji.patt;80"));
         meshManager.addMesh(arrow);
         meshManager.configureScene();
     }
