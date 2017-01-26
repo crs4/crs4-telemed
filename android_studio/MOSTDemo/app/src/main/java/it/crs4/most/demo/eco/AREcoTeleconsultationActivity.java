@@ -265,6 +265,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
             ((OpticalRenderer)renderer).setEye(
                     OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
+            float [] calibration = QuerySettings.getARCalibration(this);
+            ((OpticalRenderer) renderer).adjustCalibration(calibration[0], calibration[1], 0);
         }
         else {
             renderer = new PubSubARRenderer(this,  meshManager);
