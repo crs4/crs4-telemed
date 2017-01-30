@@ -3,7 +3,6 @@ package it.crs4.most.demo.eco;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.media.AudioManager;
-import android.opengl.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,19 +14,11 @@ import com.android.volley.VolleyError;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 
 import it.crs4.most.demo.BaseTeleconsultationActivity;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.TeleconsultationState;
-import it.crs4.most.demo.models.ARConfiguration;
-import it.crs4.most.demo.models.ARMarker;
-import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.streaming.StreamingEventBundle;
-import it.crs4.most.visualization.augmentedreality.MarkerFactory;
-import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
-import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
@@ -43,14 +34,15 @@ public abstract class BaseEcoTeleconsultationActivity extends BaseTeleconsultati
     protected boolean remoteHold = false;
     protected boolean accountRegistered = false;
 
-    protected void stopStream() {}
+    protected void stopStream() {
+    }
 
-    protected Handler getVoipHandler(){
+    protected Handler getVoipHandler() {
         return new CallHandler(this);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
@@ -122,7 +114,6 @@ public abstract class BaseEcoTeleconsultationActivity extends BaseTeleconsultati
     protected void hangupCall() {
         mVoipLib.hangupCall();
     }
-
 
 
     protected void subscribeBuddies() {
@@ -224,8 +215,9 @@ public abstract class BaseEcoTeleconsultationActivity extends BaseTeleconsultati
             else if (event == VoipEvent.LIB_INITIALIZATION_FAILED ||
                 event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
                 event == VoipEvent.LIB_CONNECTION_FAILED ||
-                event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED)
+                event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED) {
                 showErrorEventAlert(eventBundle);
+            }
         }
 
         private void showErrorEventAlert(VoipEventBundle myEventBundle) {
@@ -246,60 +238,5 @@ public abstract class BaseEcoTeleconsultationActivity extends BaseTeleconsultati
             Log.d(TAG, "Stream Message Arrived: Current Event:" + infoMsg);
 
         }
-    }
-
-    protected void createARMeshes(Teleconsultation teleconsultation, MeshManager meshManager){
-
-        float [] redColor = new float []{
-                0, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f
-        };
-
-        Map<String, Mesh> meshes = new HashMap<>();
-        ARConfiguration arConf= teleconsultation.getLastSession().getRoom().getARConfiguration();
-        if (arConf != null){
-            for (ARMarker markerModel: arConf.getMarkers()){
-                MarkerFactory.Marker marker = MarkerFactory.getMarker(markerModel.getConf());
-                float [] trans = new float[16];
-                Matrix.setIdentityM(trans, 0);
-                trans[12] = markerModel.getTransX();
-                trans[13] = markerModel.getTransY();
-                marker.setModelMatrix(trans);
-
-                it.crs4.most.demo.models.Mesh meshModel = markerModel.getMesh();
-                Mesh mesh;
-                if (meshes.containsKey(meshModel.getName())) {
-                    mesh = meshes.get(meshModel.getName());
-                }
-                else {
-                    try {
-
-                        Class clsMesh = Class.forName(meshModel.getCls());
-                        Class[] cArg = new Class[] {
-                                float.class, float.class, float.class, String.class
-                        };
-                        mesh = (Mesh) clsMesh.getDeclaredConstructor(cArg).newInstance(
-                                meshModel.getSizeX(),
-                                meshModel.getSizeY(),
-                                meshModel.getSizeZ(),
-                                meshModel.getName()
-                        );
-                        meshes.put(meshModel.getName(), mesh);
-                        mesh.setColors(redColor);
-                        meshManager.addMesh(mesh);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        continue;
-                    }
-                }
-                mesh.addMarker(marker);
-            }
-        }
-
-
     }
 }

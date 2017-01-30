@@ -14,9 +14,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,44 +29,25 @@ import android.widget.Toast;
 
 import org.artoolkit.ar.base.ARToolKit;
 import org.artoolkit.ar.base.NativeInterface;
-import org.artoolkit.ar.base.assets.AssetHelper;
 import org.artoolkit.ar.base.camera.CameraEventListener;
 import org.artoolkit.ar.base.camera.CameraPreferencesActivity;
 import org.artoolkit.ar.base.camera.CaptureCameraPreview;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
-import it.crs4.most.demo.RESTClient;
-import it.crs4.most.demo.TeleconsultationException;
-import it.crs4.most.demo.TeleconsultationState;
-import it.crs4.most.demo.models.ARConfiguration;
-import it.crs4.most.demo.models.ARMarker;
-import it.crs4.most.demo.models.Teleconsultation;
-import it.crs4.most.visualization.augmentedreality.MarkerFactory;
-import it.crs4.most.visualization.augmentedreality.MarkerFactory.Marker;
+import it.crs4.most.streaming.GstreamerRTSPServer;
+import it.crs4.most.streaming.StreamServer;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
-import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
-import it.crs4.most.visualization.augmentedreality.mesh.Cube;
-import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
-import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
 import jp.epson.moverio.bt200.DisplayControl;
-import it.crs4.most.streaming.GstreamerRTSPServer;
-import it.crs4.most.streaming.StreamServer;
 // For Epson Moverio BT-200. BT200Ctrl.jar must be in libs/ folder.
 
 
@@ -163,7 +142,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ComponentName componentName = new ComponentName(this, RemoteControlReceiver.class);
@@ -172,7 +151,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        if((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))){
+        if ((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))) {
             getWindow().addFlags(0x80000000);
 //            Log.d(TAG, "loading optical files");
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
@@ -191,13 +170,13 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             Log.d(TAG, "setting OpticalRenderer");
             renderer = new OpticalRenderer(this, mOpticalARToolkit, meshManager);
 
-            ((OpticalRenderer)renderer).setEye(
-                    OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
-            float [] calibration = QuerySettings.getARCalibration(this);
+            ((OpticalRenderer) renderer).setEye(
+                OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
+            float[] calibration = QuerySettings.getARCalibration(this);
             ((OpticalRenderer) renderer).adjustCalibration(calibration[0], calibration[1], 0);
         }
         else {
-            renderer = new PubSubARRenderer(this,  meshManager);
+            renderer = new PubSubARRenderer(this, meshManager);
         }
         renderer.setEnabled(arEnabled);
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
@@ -285,7 +264,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             this.glView.setEGLContextClientVersion(1);
         }
 
-        if (!isOptical){
+        if (!isOptical) {
             glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         }
 
@@ -348,7 +327,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
         Log.d(TAG, "cameraPreviewStarted");
-        if(arInitialized){
+        if (arInitialized) {
             return;
         }
 //        if (arInitialized) {
@@ -404,7 +383,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
 
         final float accLimit = 0.00f;
-        if(renderer.isEnabled() && (accX > accLimit || accY > accLimit|| accZ > accLimit)){
+        if (renderer.isEnabled() && (accX > accLimit || accY > accLimit || accZ > accLimit)) {
             if (ARToolKit.getInstance().convertAndDetect(frame)) {
                 if (this.glView != null) {
                     this.glView.requestRender();
@@ -413,7 +392,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         }
 
-        if (frame != null){
+        if (frame != null) {
             streamServer.feedData(frame);
         }
 

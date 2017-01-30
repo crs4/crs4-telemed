@@ -304,7 +304,15 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             StreamingLib streamingLib = new StreamingLibBackend();
             streamingLib.initLib(getApplicationContext());
 
-            Device camera = teleconsultation.getLastSession().getCamera();
+            Device camera;
+            String ecoAppAddress = teleconsultation.getLastSession().getEcoAppAddress();
+            if (ecoAppAddress != null && ecoAppAddress.equals("")) {
+                camera = teleconsultation.getLastSession().getCamera();
+            }
+            else {
+                String streamUri = "rtsp://" + ecoAppAddress + ":8554/test";
+                camera = new Device("Eco Camera", streamUri, "", "", "", "", "");
+            }
             HashMap<String, String> streamCameraParams = new HashMap<>();
             streamCameraParams.put("name", CAMERA_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
