@@ -76,11 +76,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".eco.CalibrateARActivity"></activity>
-        <activity
-            android:name=".BaseTeleconsultationActivity"
-            android:label="@string/title_activity_base_teleconsultation"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".eco.CalibrateARActivity"/>
     </application>
 
 </manifest>
