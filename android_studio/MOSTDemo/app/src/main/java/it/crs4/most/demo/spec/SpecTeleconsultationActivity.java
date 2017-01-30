@@ -181,6 +181,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
+        mARCameraRenderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
             new PTZHandler(this), true, true, true, 100, 100);
