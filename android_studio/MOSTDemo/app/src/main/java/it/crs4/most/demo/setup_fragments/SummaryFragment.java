@@ -1,5 +1,6 @@
 package it.crs4.most.demo.setup_fragments;
 
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -175,7 +176,7 @@ public class SummaryFragment extends SetupFragment {
 
     private void createTeleconsultationSession() {
         final Room room = mTeleconsultationSetup.getRoom();
-        final String ipAddress = getIPAddress();
+        final String ipAddress = QuerySettings.isArEnabled(getActivity()) ? getIPAddress() : "";
 
         Response.Listener<String> listener = new ResponseHandlerDecorator<>(getActivity(),
             new Response.Listener<String>() {

@@ -2,7 +2,6 @@ package it.crs4.most.demo.spec;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -10,12 +9,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -24,7 +24,6 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
-import org.artoolkit.ar.base.assets.AssetHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import it.crs4.most.demo.BaseTeleconsultationActivity;
 import it.crs4.most.demo.ReportActivity;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
@@ -65,9 +65,7 @@ import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
-import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
-import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
@@ -75,22 +73,18 @@ import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
-import it.crs4.most.voip.VoipLib;
-import it.crs4.most.voip.VoipLibBackend;
+import it.crs4.most.voip.enums.AccountState;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
 
 
-public class SpecTeleconsultationActivity extends AppCompatActivity implements
+public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
     IStreamFragmentCommandListener, IStreamProvider,
     ARFragment.OnCompleteListener, SurfaceHolder.Callback {
 
     private final static String TAG = "SpecTeleconsultActivity";
-
-    public static final String TELECONSULTATION_ARG = "teleconsultation";
     public static final int TELECONSULT_ENDED_REQUEST = 1;
-
     private static final float DEFAULT_FRAME_SIZE = 0.5f;
     private static final float CAMERA_SMALL = 0.25f;
     private static final float ECO_LARGE = 0.75f;
@@ -99,6 +93,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
     private String CAMERA_STREAM = "CAMERA_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
+    private String CAMER_ARROW_ID = "cameraArrow";
 
     private Handler mEcoStreamHandler;
     private IStream mStreamCamera;
@@ -107,23 +102,16 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
     private ARFragment mStreamEcoFragment;
     private FrameLayout mCameraFrame;
     private FrameLayout mEcoFrame;
-    private TeleconsultationState mTcState = TeleconsultationState.IDLE;
     private TcStateTextView mTextTcState;
     private PTZ_Manager mPTZManager;
 
-    // VOIP
-    private String mSipServerIp;
-    private String mSipServerPort;
-    private VoipLib mVoipLib;
-    private Teleconsultation mTeleconsultation;
     private PTZ_ControllerPopupWindowFactory mPTZPopupWindowController;
     private String mEcoExtension;
     private MenuItem mCallMenuItem;
     private MenuItem mHangupMenuItem;
     private MenuItem mChangeEcoSizeMenuItem;
     private MenuItem mARToggle;
-    private HashMap<String, String> mVoipParams;
-    private RESTClient mRESTClient;
+
     private boolean mLocalHold = false;
     private boolean mAccountRegistered = false;
     private boolean mFirstCallStarted = false;
@@ -134,36 +122,32 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
     private PubSubARRenderer mARCameraRenderer;
     private PubSubARRenderer mAREcoRenderer;
     private Handler mCameraStreamHandler;
-    private AudioManager mAudioManager;
-    private int mOriginalAudioMode;
+
     private boolean arOnBoot = false;
     private ZMQPublisher publisher;
     private ARConfiguration arConf;
+    private Button resetCameraMesh;
+    private Button resetEcoMesh;
+
+    protected Handler getVoipHandler(){
+        return new CallHandler(this);
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        mOriginalAudioMode = mAudioManager.getMode();
-        Log.d(TAG, "Audio mode is: " + mOriginalAudioMode);
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mRESTClient = new RESTClient(this, configServerIP, configServerPort);
 
-        mEcoStreamHandler = new EcoStreamHandler(this);
-        mCameraStreamHandler = new CameraStreamHandler(this);
+        mEcoStreamHandler = new EcoStreamHandler(this, ECO_STREAM);
+        mCameraStreamHandler = new CameraStreamHandler(this, CAMERA_STREAM);
 
         setContentView(R.layout.spec_teleconsultation_activity);
-        setupTeleconsultationInfo();
 
-        setTeleconsultationState(TeleconsultationState.IDLE);
-        AssetHelper assetHelper = new AssetHelper(getAssets());
-        assetHelper.cacheAssetFolder(this, "Data");
-
-
-        arConf = mTeleconsultation.getLastSession().getRoom().getARConfiguration();
+        arConf = teleconsultation.getLastSession().getRoom().getARConfiguration();
         if (arConf != null) {
             publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
             Thread pubThread = new Thread(publisher);
@@ -176,8 +160,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
                 1, 0, 0, 1f,
                 1, 0, 0, 1f
             };
-
-            Arrow cameraArrow = new Arrow("arrow");
             Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
             ecoArrow.setCoordsConverter(new CoordsConverter(
                 arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
@@ -185,17 +167,21 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             ecoArrow.setxLimits(-1f + ecoArrow.getHeight() / 2, 1f - ecoArrow.getHeight() / 2);
             ecoArrow.setyLimits(-1f + ecoArrow.getHeight() / 2, 1f - ecoArrow.getHeight() / 2);
             ecoArrow.setColors(redColor);
-            cameraArrow.addMarker(MarkerFactory.getMarker("single;Data/hiro.patt;80"));
-            cameraMeshManager.addMesh(cameraArrow);
             ecoMeshManager.addMesh(ecoArrow);
-
-            cameraArrow.publisher = publisher;
             ecoArrow.publisher = publisher;
+
+            Intent i = getIntent();
+            teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
+            createARMeshes(cameraMeshManager);
+            for(Mesh mesh: cameraMeshManager.getMeshes()) {
+                mesh.publisher = publisher;
+            }
             ecoMeshManager.configureScene();
             cameraMeshManager.configureScene();
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
+        mARCameraRenderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
             new PTZHandler(this), true, true, true, 100, 100);
@@ -203,15 +189,18 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         User user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()){
             ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-                    newInstance(publisher, mTeleconsultation.getLastSession().getRoom());
+                    newInstance(publisher, teleconsultation.getLastSession().getRoom());
 
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
             fragmentTransaction.commit();
         }
-
         setupStreamLib();
-        setupVoipLib();
+
+        resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
+        resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
+        resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager));
+        resetEcoMesh.setOnClickListener(new ResetButtonListener(ecoMeshManager));
     }
 
     @Override
@@ -309,20 +298,21 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         mChangeEcoSizeMenuItem.setTitle(title);
     }
 
-    private void setupTeleconsultationInfo() {
-        Intent i = getIntent();
-        mTeleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
-        Log.d(TAG, "Eco app address" + mTeleconsultation.getLastSession().getEcoAppAddress());
-//        TextView txtTeleconsultation = (TextView) findViewById(R.id.txtTeleconsultation);
-//        txtTeleconsultation.setText(mTeleconsultation.getDescription());
-    }
 
     private void setupStreamLib() {
         try {
             StreamingLib streamingLib = new StreamingLibBackend();
             streamingLib.initLib(getApplicationContext());
 
-            Device camera = mTeleconsultation.getLastSession().getCamera();
+            Device camera;
+            String ecoAppAddress = teleconsultation.getLastSession().getEcoAppAddress();
+            if (ecoAppAddress != null && ecoAppAddress.equals("")) {
+                camera = teleconsultation.getLastSession().getCamera();
+            }
+            else {
+                String streamUri = "rtsp://" + ecoAppAddress + ":8554/test";
+                camera = new Device("Eco Camera", streamUri, "", "", "", "", "");
+            }
             HashMap<String, String> streamCameraParams = new HashMap<>();
             streamCameraParams.put("name", CAMERA_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
@@ -331,8 +321,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
 
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
+            mStreamCameraFragment.setDeviceID("EPSON/embt2/embt2");
 
-            Device encoder = mTeleconsultation.getLastSession().getEncoder();
+            Device encoder = teleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
             streamEcoParams.put("name", ECO_STREAM);
             streamEcoParams.put("uri", encoder.getStreamUri());
@@ -354,7 +345,6 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             mStreamCameraFragment.setStreamAR(mStreamCamera);
             mStreamCameraFragment.setGlSurfaceViewCallback(this);
             mStreamEcoFragment.setRenderer(mAREcoRenderer);
-
         }
         catch (Exception e) {
             Log.e(TAG, "Error creating streams");
@@ -417,15 +407,9 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         fragmentTransaction.commit();
     }
 
-    private void setupVoipLib() {
-        mVoipParams = mTeleconsultation.getLastSession().getVoipParams();
-        mSipServerIp = mVoipParams.get("sipServerIp");
-        mSipServerPort = mVoipParams.get("sipServerPort");
+    protected void setupVoipLib() {
+        super.setupVoipLib();
         mEcoExtension = mVoipParams.get("ecoExtension");
-
-        CallHandler voipHandler = new CallHandler(this);
-        mVoipLib = new VoipLibBackend();
-        mVoipLib.initLib(getApplicationContext(), mVoipParams, voipHandler);
     }
 
     private void showPTZPopupWindow() {
@@ -438,17 +422,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         }
     }
 
-    private void setTeleconsultationState(TeleconsultationState tcState) {
-        mTcState = tcState;
-        notifyTeleconsultationStateChanged();
-    }
-
-    private void notifyTeleconsultationStateChanged() {
-//        if (mTextTcState == null) {
-//            mTextTcState = (TcStateTextView) findViewById(R.id.txtTcState);
-//        }
-//        mTextTcState.setTeleconsultationState(mTcState);
-
+    protected void notifyTeleconsultationStateChanged() {
         try {
             if (mTcState == TeleconsultationState.IDLE) {
                 mCallMenuItem.setTitle("Call");
@@ -504,7 +478,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                mRESTClient.getSessionState(mTeleconsultation.getLastSession().getId(),
+                mRESTClient.getSessionState(teleconsultation.getLastSession().getId(),
                     accessToken,
                     new Listener<JSONObject>() {
                         @Override
@@ -806,13 +780,21 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         }
     }
 
-    private static class EcoStreamHandler extends Handler {
-        private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
-        private int width;
-        private int height;
+    private static abstract class StreamHandler extends Handler {
+        private final WeakReference<SpecTeleconsultationActivity> activity;
+        private String streamName;
 
-        private EcoStreamHandler(SpecTeleconsultationActivity outerRef) {
-            mOuterRef = new WeakReference<>(outerRef);
+        public StreamHandler(SpecTeleconsultationActivity activity, String streamName) {
+            this.activity = new WeakReference<>(activity);
+            this.streamName = streamName;
+        }
+
+        public SpecTeleconsultationActivity getActivity() {
+            return activity.get();
+        }
+
+        public String getStreamName() {
+            return streamName;
         }
 
         @Override
@@ -820,7 +802,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
             StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
             String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
             Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-            SpecTeleconsultationActivity act = mOuterRef.get();
+
 
             StreamState streamState = ((IStream) event.getData()).getState();
             Log.d(TAG, "event.getData().streamState " + streamState);
@@ -830,63 +812,41 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
                 Log.d(TAG, "ready to call cameraPreviewStarted");
 
                 Size videoSize = ((IStream) event.getData()).getVideoSize();
-                if (((IStream) event.getData()).getName() == "ECO_STREAM" && videoSize != null) {
-                    width = videoSize.getWidth();
-                    height = videoSize.getHeight();
+                if (((IStream) event.getData()).getName().equals(streamName)&& videoSize != null) {
+                    int width = videoSize.getWidth();
+                    int height = videoSize.getHeight();
                     Log.d(TAG, String.format("VIDEOSIZE width %s, height %d", width, height));
-                    act.mAREcoRenderer.setViewportSize(width, height);
+                    onVideoSizeChanged(width, height);
+//                    act.mAREcoRenderer.setViewportSize(width, height);
 
                 }
 
             }
+        }
+
+        public abstract  void onVideoSizeChanged(int width, int height);
+    }
+
+    private static class EcoStreamHandler extends StreamHandler {
+        public EcoStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
+            super(activity, streamName);
+        }
+        @Override
+        public void onVideoSizeChanged(int width, int height) {
+            getActivity().mAREcoRenderer.setViewportSize(width, height);
         }
     }
 
-    private static class CameraStreamHandler extends Handler {
-        private static final String TAG = "CameraStreamHandler";
-        private final WeakReference<SpecTeleconsultationActivity> mOuterRef;
-
-        private CameraStreamHandler(SpecTeleconsultationActivity outerRef) {
-            mOuterRef = new WeakReference<>(outerRef);
+    private static class CameraStreamHandler extends StreamHandler{
+        public CameraStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
+            super(activity, streamName);
         }
 
         @Override
-        public void handleMessage(Message streamingMessage) {
-            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
-            String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
-            Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-            SpecTeleconsultationActivity act = mOuterRef.get();
-
-            StreamState streamState = ((IStream) event.getData()).getState();
-            Log.d(TAG, "event.getData().streamState " + streamState);
-            if (event.getEventType() == StreamingEventType.STREAM_EVENT &&
-                event.getEvent() == StreamingEvent.STREAM_STATE_CHANGED) {
-//                    if (streamState == StreamState.PLAYING) {
-
-                Log.d(TAG, "event.getData().streamState " + streamState);
-                Log.d(TAG, "ready to call cameraPreviewStarted");
-
-                Size videoSize = ((IStream) event.getData()).getVideoSize();
-
-                int width, height;
-                if (videoSize != null) {
-                    width = videoSize.getWidth();
-                    height = videoSize.getHeight();
-                }
-                else { //FIXME
-                    width = 704;
-                    height = 576;
-
-
-                }
-                Log.d(TAG, "width " + width);
-                Log.d(TAG, "height " + height);
-                act.mStreamCameraFragment.setFixedSize(new int[]{width, height});
-                act.mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
-
-
-//                    }
-            }
+        public void onVideoSizeChanged(int width, int height) {
+            Log.d(TAG, String.format("onVideoSizeChanged width %s, height %s", width, height));
+            getActivity().mARCameraRenderer.setViewportSize(width, height);
+            getActivity().mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
         }
     }
 
@@ -947,7 +907,7 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
                 }
             };
 
-            Device camera = mOuterRef.get().mTeleconsultation.getLastSession().getCamera();
+            Device camera = mOuterRef.get().teleconsultation.getLastSession().getCamera();
             ImageDownloader imageDownloader = new ImageDownloader(receiver, mOuterRef.get(),
                 camera.getUser(), // uriProps.getProperty("username_ptz"),
                 camera.getPwd()); // uriProps.getProperty("password_ptz"));
@@ -961,5 +921,20 @@ public class SpecTeleconsultationActivity extends AppCompatActivity implements
         super.onPause();
         publisher.close();
 
+    }
+
+    private static class ResetButtonListener implements View.OnClickListener {
+
+        private MeshManager meshManager;
+        public ResetButtonListener(MeshManager meshManager){
+            this.meshManager = meshManager;
+        }
+        @Override
+        public void onClick(View v) {
+            for (Mesh m: meshManager.getMeshes()) {
+                m.setX(0);
+                m.setY(0);
+            }
+        }
     }
 }

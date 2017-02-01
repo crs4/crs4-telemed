@@ -4,7 +4,6 @@ package it.crs4.most.demo.eco;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,7 +23,6 @@ import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.TeleconsultationState;
-import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.ui.TcStateTextView;
 import it.crs4.most.streaming.IStream;
 import it.crs4.most.streaming.StreamingLib;
@@ -54,21 +52,18 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     private boolean mIsOnHold;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        // teleconsultation object and setupVoipLib() are called in the super class
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eco_teleconsultation_activity);
         txtTcState = (TcStateTextView) findViewById(R.id.txt_tc_state);
-
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mRESTClient = new RESTClient(this, configServerIP, configServerPort);
-        Intent i = getIntent();
-        teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
         mIsOnHold = false;
         setupCallPopupWindow();
         setTeleconsultationState(TeleconsultationState.IDLE);
         setupStreamLib();
-        setupVoipLib();
     }
 
     @Override
@@ -93,6 +88,9 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
     }
 
     protected void notifyTeleconsultationStateChanged() {
+        if (txtTcState == null) {
+            return;
+        }
         txtTcState.setTeleconsultationState(mTcState);
         if (mTcState == TeleconsultationState.IDLE) {
             try {

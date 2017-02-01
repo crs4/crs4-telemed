@@ -76,7 +76,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".eco.CalibrateARActivity"></activity>
+        <activity android:name=".eco.CalibrateARActivity"/>
     </application>
 
 </manifest>

@@ -136,8 +136,23 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void enabledArPreference(String value) {
-        boolean toEnable = value.equals(mRoles[0]);
-        mArEnabled.setEnabled(toEnable);
+        boolean isEcographist = value.equals(mRoles[0]);
+        mArEnabled.setEnabled(isEcographist);
+
+        if (isEcographist && Device.isEyeWear()) {
+            mArEyes.setEnabled(true);
+            mCalibrateAR.setEnabled(true);
+            mClearCalibration.setEnabled(true);
+        }
+        else {
+            mArEnabled.setChecked(true);
+            mARLowFilter.setEnabled(true);
+
+            mArEyes.setEnabled(false);
+            mCalibrateAR.setEnabled(false);
+            mClearCalibration.setEnabled(false);
+
+        }
     }
 }
 
