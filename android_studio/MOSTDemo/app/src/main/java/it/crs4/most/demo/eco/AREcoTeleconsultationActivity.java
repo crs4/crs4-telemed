@@ -41,6 +41,7 @@ import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.streaming.GstreamerRTSPServer;
 import it.crs4.most.streaming.StreamServer;
+import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
@@ -57,7 +58,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
     private CaptureCameraPreview preview;
-    private TouchGLSurfaceView glView;
+    private CalibrateTouchGLSurfaceView glView;
     private boolean firstUpdate = false;
     private OpticalARToolkit mOpticalARToolkit;
     private MeshManager meshManager = new MeshManager();
@@ -172,13 +173,13 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
             ((OpticalRenderer) renderer).setEye(
                 OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
-            float[] calibration = QuerySettings.getARCalibration(this);
-            ((OpticalRenderer) renderer).adjustCalibration(calibration[0], calibration[1], 0);
         }
         else {
             renderer = new PubSubARRenderer(this, meshManager);
         }
         renderer.setEnabled(arEnabled);
+        float [] calibration = QuerySettings.getARCalibration(this);
+        renderer.setExtraCalibration(new float[]{calibration[0], calibration[1], 0});
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -238,10 +239,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
-        glView = new TouchGLSurfaceView(this);
-        if (isOptical) {
-            glView.setEnabled(false);
-        }
+        glView = new CalibrateTouchGLSurfaceView(this);
 
         ActivityManager activityManager = (ActivityManager) this.getSystemService("activity");
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -291,6 +289,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         super.onPause();
         if (this.glView != null) {
             this.glView.onPause();
+            float [] extraCalibration = renderer.getExtraCalibration();
+            QuerySettings.setARCalibration(this, extraCalibration[0], extraCalibration[1]);
         }
 
         this.mainLayout.removeView(this.glView);
