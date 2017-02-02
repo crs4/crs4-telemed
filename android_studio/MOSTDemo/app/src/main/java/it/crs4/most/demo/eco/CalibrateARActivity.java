@@ -26,6 +26,7 @@ import java.io.File;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
+import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
@@ -42,7 +43,7 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
     private MeshManager meshManager = new MeshManager();
     private OpticalRenderer renderer;
     private CaptureCameraPreview preview;
-    private TouchGLSurfaceView glView;
+    private CalibrateTouchGLSurfaceView glView;
     private boolean firstUpdate = false;
     protected FrameLayout mainLayout;
     private final String TAG = "CalibrateARActivity";
@@ -63,7 +64,7 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
         float [] calibration = QuerySettings.getARCalibration(this);
         Log.d(TAG, String.format("calibration %f %f", calibration[0], calibration[1]));
-//        renderer.adjustCalibration(calibration[0], calibration[1], 0);
+        renderer.setExtraCalibration(new float [] {calibration[0], calibration[1], 0});
 
         File cacheFolder = new File(getCacheDir().getAbsolutePath() + "/Data");
         File[] files = cacheFolder.listFiles();
@@ -134,7 +135,7 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
-        glView = new TouchGLSurfaceView(this);
+        glView = new CalibrateTouchGLSurfaceView(this);
         glView.setEnabled(true);
 //        if (isOptical) {
 //            glView.setEnabled(false);
@@ -250,7 +251,8 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         }
         this.mainLayout.removeView(this.glView);
         this.mainLayout.removeView(this.preview);
-        QuerySettings.setARCalibration(this, arrow.getX(), arrow.getY());
+        float [] extraCalibration = renderer.getExtraCalibration();
+        QuerySettings.setARCalibration(this, extraCalibration[0], extraCalibration[1]);
     }
 
 }
