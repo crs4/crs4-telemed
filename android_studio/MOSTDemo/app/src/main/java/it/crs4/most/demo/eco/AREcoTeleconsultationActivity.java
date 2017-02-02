@@ -41,6 +41,7 @@ import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.streaming.GstreamerRTSPServer;
 import it.crs4.most.streaming.StreamServer;
+import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
@@ -57,7 +58,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
     private CaptureCameraPreview preview;
-    private TouchGLSurfaceView glView;
+    private CalibrateTouchGLSurfaceView glView;
     private boolean firstUpdate = false;
     private OpticalARToolkit mOpticalARToolkit;
     private MeshManager meshManager = new MeshManager();
@@ -238,7 +239,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
-        glView = new TouchGLSurfaceView(this);
+        glView = new CalibrateTouchGLSurfaceView(this);
         if (isOptical) {
             glView.setEnabled(false);
         }
