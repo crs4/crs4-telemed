@@ -3,6 +3,7 @@ package it.crs4.most.demo.spec;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -18,19 +19,25 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
+import org.artoolkit.ar.base.assets.AssetHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -77,6 +84,8 @@ import it.crs4.most.voip.enums.AccountState;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
+import it.crs4.most.demo.spec.VirtualKeyboard;
+import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesParser;
 
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
@@ -137,6 +146,19 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        File cacheFolder = new File(getCacheDir().getAbsolutePath() + "/Data");
+        File[] files = cacheFolder.listFiles();
+        if (files != null){
+            for (File file : files) {
+                if (!file.delete()){
+//                    throw new RuntimeException("cannot delete cached files");
+                }
+            }
+        }
+        AssetHelper assetHelper = new AssetHelper(getAssets());
+        assetHelper.cacheAssetFolder(this, "Data");
+
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
@@ -201,6 +223,28 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
         resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager));
         resetEcoMesh.setOnClickListener(new ResetButtonListener(ecoMeshManager));
+
+        AssetManager assetManager = getAssets();
+        String assetName = "Data/virtual_keyboard.txt";
+        try {
+
+            KeyboardCoordinatesParser  keyboardCoordinatesParser = new TXTKeyboardCoordinatesParser(assetManager.open(assetName));
+            Map<String, float []> keymap = keyboardCoordinatesParser.parse();
+            Set<String> keys = keymap.keySet();
+            VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
+                    new SpinnerKeyboardViewer(
+                            this,
+                            (Spinner) findViewById(R.id.virtual_keyboard_spinner),
+                            keymap.keySet().toArray(new String [keys.size()])
+                    ),
+                    keyboardCoordinatesParser.parse(),
+                    cameraMeshManager.getMeshes().get(0)
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, String.format("asset % not found", assetName));
+        }
+
     }
 
     @Override

@@ -31,6 +31,17 @@
                 android:text="RESET"
                 android:layout_gravity="center"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/ar_keyboard"
+                android:gravity="center" />
+            <Spinner
+                android:id="@+id/virtual_keyboard_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            </Spinner>
+
         </LinearLayout>
 
         <LinearLayout

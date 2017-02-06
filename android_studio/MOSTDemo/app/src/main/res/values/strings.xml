@@ -136,6 +136,7 @@
     <string name="retry">Retry</string>
     <string name="camera_toggle">Enable camera</string>
     <string name="ar_low_filter_level">Low filter level (0: disabled)</string>
+    <string name="ar_keyboard">Keyboard</string>
 
     <string-array name="Markers">
         <item>eco_marker</item>
