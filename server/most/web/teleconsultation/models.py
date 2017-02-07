@@ -237,11 +237,18 @@ class ARConfiguration(models.Model):
         return self.description
 
     def to_dict(self):
-        return {
+        dct = {
             'markers': [marker.to_dict() for marker in self.markers.all()],
             'screen_height': self.screen_height,
-            'screen_width': self.screen_width
+            'screen_width': self.screen_width,
+            'keymap': {}
         }
+
+        for keymap in ARKeyboardCoordinates.objects.filter(ar_conf=self):
+            dct['keymap'][keymap.key] = [keymap.x, keymap.y, keymap.z]
+
+        #print dct
+        return dct
 
 
 class ARMarker(models.Model):
@@ -296,3 +303,15 @@ class ARMarkerTranslation(models.Model):
 
     def __str__(self):
         return "%s-%s-%s" % (self.group, self.mesh.cls.split('.')[-1], self.marker)
+
+
+class ARKeyboardCoordinates(models.Model):
+    ar_conf = models.ForeignKey(ARConfiguration)
+    key = models.CharField(max_length=128)
+    x = models.FloatField()
+    y = models.FloatField()
+    z = models.FloatField()
+
+
+
+

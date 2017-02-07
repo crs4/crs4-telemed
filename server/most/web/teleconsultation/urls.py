@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'rooms/$', "most.web.teleconsultation.views.get_rooms_for_taskgroup"),
     url(r'room/(?P<room_uuid>.*)/$', 'most.web.teleconsultation.views.get_room_by_uuid'),
     url(r'room/(?P<marker_trans_pk>.*)/set_ar', "most.web.teleconsultation.views.set_ar_conf"),
+    url(r'room/(?P<room_id>.*)/set_ar_keyboard_coordinates', "most.web.teleconsultation.views.set_ar_keyboard_coordinates"),
 
     # teleconsultation
     url(r'(?P<teleconsultation_uuid>.*)/(?P<eco_app_address>.*)/session/create/$', "most.web.teleconsultation.views.create_new_session"),

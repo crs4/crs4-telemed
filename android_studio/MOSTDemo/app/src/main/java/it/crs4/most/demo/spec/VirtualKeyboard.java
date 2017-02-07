@@ -1,21 +1,22 @@
 package it.crs4.most.demo.spec;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import it.crs4.most.demo.models.Room;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 
 public class VirtualKeyboard implements KeyboardViewer.keySelectionListener {
     private static final String TAG = "VirtualKeyboard";
     private KeyboardViewer viewer;
     private Map<String, float []> keyMap;
-    private KeyboardCoordinatesParser parser;
+    private KeyboardCoordinatesStore parser;
     private Mesh keyboardMesh;
 
 
 
-    interface KeyboardCoordinatesParser {
-        Map<String, float []> parse();
+    interface KeyboardCoordinatesStore {
+        Map<String, float []> read();
+        void save(Room room, String key, float x, float y, float z);
     };
 
     public VirtualKeyboard(KeyboardViewer viewer, Map<String, float []> keyMap, Mesh keyboardMesh) {
@@ -51,11 +52,11 @@ public class VirtualKeyboard implements KeyboardViewer.keySelectionListener {
         this.keyMap = keyMap;
     }
 
-    public KeyboardCoordinatesParser getParser() {
+    public KeyboardCoordinatesStore getParser() {
         return parser;
     }
 
-    public void setParser(KeyboardCoordinatesParser parser) {
+    public void setParser(KeyboardCoordinatesStore parser) {
         this.parser = parser;
     }
 

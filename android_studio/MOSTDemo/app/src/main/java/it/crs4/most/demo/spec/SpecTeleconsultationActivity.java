@@ -62,7 +62,6 @@ import it.crs4.most.streaming.enums.PTZ_Zoom;
 import it.crs4.most.streaming.enums.StreamProperty;
 import it.crs4.most.streaming.enums.StreamState;
 import it.crs4.most.streaming.enums.StreamingEvent;
-import it.crs4.most.streaming.enums.StreamingEventType;
 import it.crs4.most.streaming.ptz.PTZ_Manager;
 import it.crs4.most.streaming.utils.ImageDownloader;
 import it.crs4.most.streaming.utils.ImageDownloader.IBitmapReceiver;
@@ -80,12 +79,10 @@ import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
-import it.crs4.most.voip.enums.AccountState;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
-import it.crs4.most.demo.spec.VirtualKeyboard;
-import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesParser;
+import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesStore;
 
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
@@ -226,25 +223,23 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         AssetManager assetManager = getAssets();
         String assetName = "Data/virtual_keyboard.txt";
-        try {
 
-            KeyboardCoordinatesParser  keyboardCoordinatesParser = new TXTKeyboardCoordinatesParser(assetManager.open(assetName));
-            Map<String, float []> keymap = keyboardCoordinatesParser.parse();
-            Set<String> keys = keymap.keySet();
-            VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
-                    new SpinnerKeyboardViewer(
-                            this,
-                            (Spinner) findViewById(R.id.virtual_keyboard_spinner),
-                            keymap.keySet().toArray(new String [keys.size()])
-                    ),
-                    keyboardCoordinatesParser.parse(),
-                    cameraMeshManager.getMeshes().get(0)
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(TAG, String.format("asset % not found", assetName));
-        }
 
+//            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
+        KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
+                teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
+        );
+        Map<String, float []> keymap = keyboardCoordinatesStore.read();
+        Set<String> keys = keymap.keySet();
+        VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
+                new SpinnerKeyboardViewer(
+                        this,
+                        (Spinner) findViewById(R.id.virtual_keyboard_spinner),
+                        keymap.keySet().toArray(new String [keys.size()])
+                ),
+                keymap,
+                cameraMeshManager.getMeshes().get(0)
+        );
     }
 
     @Override

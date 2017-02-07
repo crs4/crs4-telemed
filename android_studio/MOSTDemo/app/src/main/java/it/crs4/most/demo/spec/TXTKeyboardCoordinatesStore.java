@@ -4,10 +4,6 @@ package it.crs4.most.demo.spec;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -15,14 +11,16 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TXTKeyboardCoordinatesParser implements VirtualKeyboard.KeyboardCoordinatesParser {
+import it.crs4.most.demo.models.Room;
+
+public class TXTKeyboardCoordinatesStore implements VirtualKeyboard.KeyboardCoordinatesStore {
     private static final String TAG = "TXTKCParser";
     private InputStream istream;
     private Map<String, float[]> keymap;
     private static final Pattern pattern = Pattern.compile(
             "(\\w+)\\s+(\\d+(?:.*\\d+)?)\\s+(\\d+(?:.*\\d+)?)\\s+(\\d+(?:.*\\d+)?)"
     );
-    public TXTKeyboardCoordinatesParser(InputStream istream) {
+    public TXTKeyboardCoordinatesStore(InputStream istream) {
         this.istream = istream;
 
 
@@ -37,7 +35,7 @@ public class TXTKeyboardCoordinatesParser implements VirtualKeyboard.KeyboardCoo
     }
 
     @Override
-    public Map<String, float[]> parse() {
+    public Map<String, float[]> read() {
         if (keymap != null) {
             return keymap;
         }
@@ -67,5 +65,10 @@ public class TXTKeyboardCoordinatesParser implements VirtualKeyboard.KeyboardCoo
 
         }
     return keymap   ;
+    }
+
+    @Override
+    public void save(Room room, String key, float x, float y, float z) {
+
     }
 }
