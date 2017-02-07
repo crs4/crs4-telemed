@@ -41,6 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
             </Spinner>
+            <Button
+                android:id="@+id/save_ar_key_coordinate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SAVE"
+                android:visibility="invisible"
+                android:layout_gravity="center"/>
+
 
         </LinearLayout>
 

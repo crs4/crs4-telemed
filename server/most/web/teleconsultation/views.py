@@ -490,11 +490,11 @@ def set_ar_keyboard_coordinates(request, room_id):
                                         'error': {'code': 501, 'message': 'invalid room uuid'}}),
                             content_type="application/json")
 
-    key = float(request.POST.get("key"))
+    key = request.POST.get("key")
     x = float(request.POST.get("x"))
     y = float(request.POST.get("y"))
     z = float(request.POST.get("z"))
-    keymap_obj = ARKeyboardCoordinates.objects.get_or_create(ar_conf=room.ar_conf, key=key)
+    keymap_obj = ARKeyboardCoordinates.objects.get_or_create(ar_conf=room.ar_conf, key=key)[0]
     keymap_obj.x = x
     keymap_obj.y = y
     keymap_obj.z = z

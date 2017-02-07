@@ -11,15 +11,13 @@ import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.models.Room;
 
-/**
- * Created by mauro on 07/02/17.
- */
 
 public class RESTKeyboardCoordinatesStore implements VirtualKeyboard.KeyboardCoordinatesStore {
     private static final String TAG = "RESTCStore";
     private RESTClient restClient;
     private Room room;
     String accessToken;
+    Map<String, float []> keymap;
 
     public RESTKeyboardCoordinatesStore(Room room, RESTClient restClient, String accessToken) {
         this.restClient = restClient;
@@ -29,16 +27,20 @@ public class RESTKeyboardCoordinatesStore implements VirtualKeyboard.KeyboardCoo
 
     @Override
     public Map<String, float[]> read() {
-        return room.getARConfiguration().getKeymap();
+        if (keymap == null)
+            keymap = room.getARConfiguration().getKeymap();
+
+        return keymap;
     }
 
     @Override
-    public void save(Room room, String key, float x, float y, float z) {
+    public void save(final String key, final float x, final float y, final float z) {
         restClient.setARKeyboardCoordinates(accessToken, room.getId(), key, x, y, z,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d(TAG, "DONE");
+                        keymap.put(key, new float[] {x, y, z});
                     }
                 },
                 new Response.ErrorListener() {

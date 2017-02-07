@@ -134,6 +134,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private ARConfiguration arConf;
     private Button resetCameraMesh;
     private Button resetEcoMesh;
+    private Button saveKeyCoordinate;
 
     protected Handler getVoipHandler(){
         return new CallHandler(this);
@@ -218,6 +219,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
+        saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
+
         resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager));
         resetEcoMesh.setOnClickListener(new ResetButtonListener(ecoMeshManager));
 
@@ -237,9 +240,14 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                         (Spinner) findViewById(R.id.virtual_keyboard_spinner),
                         keymap.keySet().toArray(new String [keys.size()])
                 ),
-                keymap,
+                keyboardCoordinatesStore,
                 cameraMeshManager.getMeshes().get(0)
         );
+
+        if (user.isAdmin()) {
+            saveKeyCoordinate.setVisibility(View.VISIBLE);
+            virtualKeyboard.setSaveButton(saveKeyCoordinate);
+        }
     }
 
     @Override

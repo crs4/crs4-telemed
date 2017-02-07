@@ -1,5 +1,8 @@
 package it.crs4.most.demo.spec;
 
+import android.view.View;
+import android.widget.Button;
+
 import java.util.Map;
 
 import it.crs4.most.demo.models.Room;
@@ -9,22 +12,23 @@ public class VirtualKeyboard implements KeyboardViewer.keySelectionListener {
     private static final String TAG = "VirtualKeyboard";
     private KeyboardViewer viewer;
     private Map<String, float []> keyMap;
-    private KeyboardCoordinatesStore parser;
+    private KeyboardCoordinatesStore keymapStore;
     private Mesh keyboardMesh;
+    private Button saveButton;
 
 
 
     interface KeyboardCoordinatesStore {
         Map<String, float []> read();
-        void save(Room room, String key, float x, float y, float z);
+        void save(String key, float x, float y, float z);
     };
 
-    public VirtualKeyboard(KeyboardViewer viewer, Map<String, float []> keyMap, Mesh keyboardMesh) {
-        this.parser = parser;
+    public VirtualKeyboard(KeyboardViewer viewer, KeyboardCoordinatesStore keymapStore, Mesh keyboardMesh) {
         this.viewer = viewer;
         this.viewer.setKeySelectionListener(this);
         this.keyboardMesh = keyboardMesh;
-        this.keyMap = keyMap;
+        this.keymapStore = keymapStore;
+        this.keyMap = keymapStore.read();
     }
 
     @Override
@@ -52,19 +56,40 @@ public class VirtualKeyboard implements KeyboardViewer.keySelectionListener {
         this.keyMap = keyMap;
     }
 
-    public KeyboardCoordinatesStore getParser() {
-        return parser;
-    }
-
-    public void setParser(KeyboardCoordinatesStore parser) {
-        this.parser = parser;
-    }
-
     public Mesh getKeyboardMesh() {
         return keyboardMesh;
     }
 
     public void setKeyboardMesh(Mesh keyboardMesh) {
         this.keyboardMesh = keyboardMesh;
+    }
+
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    public KeyboardCoordinatesStore getKeymapStore() {
+        return keymapStore;
+    }
+
+    public void setKeymapStore(KeyboardCoordinatesStore keymapStore) {
+        this.keymapStore = keymapStore;
+    }
+
+    public void setSaveButton(Button saveButton) {
+        this.saveButton = saveButton;
+        this.saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String key = viewer.getSelectedKey();
+                if (key != null)
+                    keymapStore.save(
+                            key,
+                            keyboardMesh.getX(),
+                            keyboardMesh.getY(),
+                            keyboardMesh.getZ()
+                            );
+                }
+        });
     }
 }

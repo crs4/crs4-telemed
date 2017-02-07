@@ -35,7 +35,7 @@ public class SpinnerKeyboardViewer extends KeyboardViewer implements AdapterView
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         if (pos > 0)
-            this.getKeySelectionListener().onKeySelected((String) parent.getItemAtPosition(pos));
+            super.onKeySelected((String) parent.getItemAtPosition(pos));
     }
 
     @Override

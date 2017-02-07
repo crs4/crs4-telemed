@@ -8,10 +8,12 @@ public abstract class KeyboardViewer {
 
     private keySelectionListener keySelectionListener;
     private String [] keys;
+    private String selectedKey;
 
     protected void onKeySelected(String key){
         if (this.keySelectionListener != null)
             this.keySelectionListener.onKeySelected(key);
+            selectedKey = key;
     }
 
     public KeyboardViewer.keySelectionListener getKeySelectionListener() {
@@ -28,5 +30,9 @@ public abstract class KeyboardViewer {
 
     public void setKeys(String[] keys) {
         this.keys = keys;
+    }
+
+    public String getSelectedKey() {
+        return selectedKey;
     }
 }

@@ -68,7 +68,7 @@ public class TXTKeyboardCoordinatesStore implements VirtualKeyboard.KeyboardCoor
     }
 
     @Override
-    public void save(Room room, String key, float x, float y, float z) {
+    public void save(String key, float x, float y, float z) {
 
     }
 }
