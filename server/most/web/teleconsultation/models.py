@@ -312,6 +312,10 @@ class ARKeyboardCoordinates(models.Model):
     y = models.FloatField()
     z = models.FloatField()
 
+    class Meta:
+        verbose_name_plural = "AR keyboard coordinates"
 
+    def __unicode__(self):
+        return unicode(self.key)
 
 
