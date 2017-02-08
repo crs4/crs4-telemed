@@ -397,4 +397,31 @@ public class RESTClient {
         };
         addRequest(postReq);
     }
+
+
+    public void setARKeyboardCoordinates(
+            final String accessToken,
+            String roomId,
+            final String key,
+            final float x,
+            final float y,
+            final float z,
+            Response.Listener<String> listener,
+            Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/room/%s/set_ar_keyboard_coordinates", mUrlPrefix, roomId);
+        StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                params.put("key", key);
+                params.put("x", String.valueOf(x));
+                params.put("y", String.valueOf(y));
+                params.put("z", String.valueOf(z));
+                return params;
+            }
+        };
+        addRequest(postReq);
+    }
 }

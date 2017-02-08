@@ -15,7 +15,8 @@ from datetime import datetime, timedelta, time
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from most.web.demographics.models import Patient
-from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room, ARMarkerTranslation
+from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room, \
+    ARMarkerTranslation, ARKeyboardCoordinates
 
 from most.web.authentication.decorators import oauth2_required
 from most.web.users.models import TaskGroup
@@ -476,3 +477,26 @@ def set_ar_conf(request, marker_trans_pk):
 
     return HttpResponse(json.dumps({'success': True}),
                         content_type="application/json")
+
+
+@csrf_exempt
+@oauth2_required
+def set_ar_keyboard_coordinates(request, room_id):
+    try:
+        logger.info('room_id: %s' % room_id)
+        room = Room.objects.get(uuid=room_id)
+    except Room.DoesNotExist:
+        return HttpResponse(json.dumps({'success': False,
+                                        'error': {'code': 501, 'message': 'invalid room uuid'}}),
+                            content_type="application/json")
+
+    key = request.POST.get("key")
+    x = float(request.POST.get("x"))
+    y = float(request.POST.get("y"))
+    z = float(request.POST.get("z"))
+    keymap_obj = ARKeyboardCoordinates.objects.get_or_create(ar_conf=room.ar_conf, key=key)[0]
+    keymap_obj.x = x
+    keymap_obj.y = y
+    keymap_obj.z = z
+    keymap_obj.save()
+    return HttpResponse(json.dumps({'success': True}), content_type="application/json")
