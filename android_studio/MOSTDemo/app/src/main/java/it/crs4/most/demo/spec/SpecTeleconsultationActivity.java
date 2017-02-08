@@ -73,6 +73,7 @@ import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
+import it.crs4.most.visualization.augmentedreality.mesh.Line;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
@@ -214,6 +215,26 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
             fragmentTransaction.commit();
+
+            Line line;
+            float [] whiteColor = new float[]{1.0F, 1F, 1F, 1.0F};
+            float thick = 1f;
+
+            for (int i = -3; i <=3; i++) {
+                line = new Line(
+                        new float[] {i*0.25f, -1, 0},
+                        new float[] {i*0.25f, 1, 0},
+                        thick);
+                line.setColors(whiteColor);
+                ecoMeshManager.addMesh(line);
+
+                line = new Line(
+                        new float[] {-1, i*0.25f, 0},
+                        new float[] {1, i*0.25f, 0},
+                        thick);
+                line.setColors(whiteColor);
+                ecoMeshManager.addMesh(line);
+            }
         }
         setupStreamLib();
 
@@ -223,10 +244,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager));
         resetEcoMesh.setOnClickListener(new ResetButtonListener(ecoMeshManager));
-
-        AssetManager assetManager = getAssets();
-        String assetName = "Data/virtual_keyboard.txt";
-
 
 //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
         KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
