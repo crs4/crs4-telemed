@@ -44,23 +44,19 @@ public class ARConfiguration implements Serializable {
             float screenHeight = (float) obj.getDouble("screen_height");
             float screenWidth = (float) obj.getDouble("screen_width");
 
-            JSONObject keymapObj = obj.getJSONObject("keymap");
+            JSONArray  keymapList = obj.getJSONArray("keymap");
             Map<String, float []> keymap = new HashMap<>();
-            if (keymapObj != null) {
-                String key;
-                Iterator<String> keys = keymapObj.keys();
-
-                while(keys.hasNext()){
-                    key = keys.next();
-                    JSONArray coordsArray = keymapObj.getJSONArray(key);
-                    float [] coords = new float[] {
-                            Float.valueOf(coordsArray.getString(0)),
-                            Float.valueOf(coordsArray.getString(1)),
-                            Float.valueOf(coordsArray.getString(2)),
-                    };
-                    keymap.put(key, coords);
-                }
+            for (int i = 0; i < keymapList.length(); i++) {
+                JSONArray keymapEntry = keymapList.getJSONArray(i);
+                String key = keymapEntry.getString(0);
+                float [] coords = new float[] {
+                        Float.valueOf(keymapEntry.getString(1)),
+                        Float.valueOf(keymapEntry.getString(2)),
+                        Float.valueOf(keymapEntry.getString(3)),
+                };
+                keymap.put(key, coords);
             }
+
 
             return new ARConfiguration(markers, screenHeight, screenWidth, keymap);
         } catch (JSONException e) {

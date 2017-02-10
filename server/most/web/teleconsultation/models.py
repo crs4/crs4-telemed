@@ -241,11 +241,11 @@ class ARConfiguration(models.Model):
             'markers': [marker.to_dict() for marker in self.markers.all()],
             'screen_height': self.screen_height,
             'screen_width': self.screen_width,
-            'keymap': {}
+            'keymap': []
         }
 
-        for keymap in ARKeyboardCoordinates.objects.filter(ar_conf=self):
-            dct['keymap'][keymap.key] = [keymap.x, keymap.y, keymap.z]
+        for keymap in ARKeyboardCoordinates.objects.filter(ar_conf=self).order_by('key'):
+            dct['keymap'].append([keymap.key, keymap.x, keymap.y, keymap.z])
 
         #print dct
         return dct
