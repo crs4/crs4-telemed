@@ -998,6 +998,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             for (Mesh m: meshManager.getMeshes()) {
                 m.setX(0);
                 m.setY(0);
+                m.setZ(0);
             }
         }
     }
