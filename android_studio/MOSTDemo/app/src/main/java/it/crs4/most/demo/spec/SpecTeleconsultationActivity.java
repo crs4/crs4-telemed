@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -242,9 +243,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
         saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
 
-        resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager));
-        resetEcoMesh.setOnClickListener(new ResetButtonListener(ecoMeshManager));
-
 //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
         KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
                 teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
@@ -426,6 +424,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     glView.setEnabled(false);
                 }
                 mStreamCameraFragment.setPlayerButtonsVisible(false);
+                resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager, glView));
+
             }
 
             @Override
@@ -453,6 +453,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
+                resetEcoMesh.setOnClickListener(new ResetButtonListener(ecoMeshManager, glView));
             }
 
             @Override
@@ -990,8 +992,11 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private static class ResetButtonListener implements View.OnClickListener {
 
         private MeshManager meshManager;
-        public ResetButtonListener(MeshManager meshManager){
+        private GLSurfaceView view;
+
+        public ResetButtonListener(MeshManager meshManager, GLSurfaceView view){
             this.meshManager = meshManager;
+            this.view = view;
         }
         @Override
         public void onClick(View v) {
@@ -1000,6 +1005,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 m.setY(0);
                 m.setZ(0);
             }
+            view.requestRender();
         }
     }
 }
