@@ -89,7 +89,7 @@ import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesStore;
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
     IStreamFragmentCommandListener, IStreamProvider,
-    ARFragment.OnCompleteListener, SurfaceHolder.Callback {
+    ARFragment.OnCompleteListener, SurfaceHolder.Callback, ARFragment.ARListener {
 
     private final static String TAG = "SpecTeleconsultActivity";
     public static final int TELECONSULT_ENDED_REQUEST = 1;
@@ -137,6 +137,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private Button resetCameraMesh;
     private Button resetEcoMesh;
     private Button saveKeyCoordinate;
+    private User user;
 
     protected Handler getVoipHandler(){
         return new CallHandler(this);
@@ -199,7 +200,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 mesh.publisher = publisher;
             }
             ecoMeshManager.configureScene();
-            cameraMeshManager.configureScene();
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
@@ -208,7 +208,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
             new PTZHandler(this), true, true, true, 100, 100);
 
-        User user = QuerySettings.getUser(this);
+        user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()){
             ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
                     newInstance(publisher, teleconsultation.getLastSession().getRoom());
@@ -242,27 +242,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
         saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
-
-//            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
-        KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
-                teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
-        );
-        Map<String, float []> keymap = keyboardCoordinatesStore.read();
-        Set<String> keys = keymap.keySet();
-        VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
-                new SpinnerKeyboardViewer(
-                        this,
-                        (Spinner) findViewById(R.id.virtual_keyboard_spinner),
-                        keymap.keySet().toArray(new String [keys.size()])
-                ),
-                keyboardCoordinatesStore,
-                cameraMeshManager.getMeshes().get(0)
-        );
-
-        if (user.isAdmin()) {
-            saveKeyCoordinate.setVisibility(View.VISIBLE);
-            virtualKeyboard.setSaveButton(saveKeyCoordinate);
-        }
     }
 
     @Override
@@ -396,6 +375,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mStreamEcoFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setEnabled(arOnBoot);
             mStreamEcoFragment.setEnabled(false);
+
+            mStreamCameraFragment.setArListener(this);
 
             mPTZManager = new PTZ_Manager(this,
                 camera.getPtzUri(),
@@ -741,6 +722,44 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {}
+
+    @Override
+    public void ARInitialized() {
+        cameraMeshManager.configureScene();
+        //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
+        KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
+                teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
+        );
+        Map<String, float []> keymap = keyboardCoordinatesStore.read();
+        Set<String> keys = keymap.keySet();
+
+        List <Mesh> keyboardMeshes = cameraMeshManager.getMeshesByGroup("keyboard");
+        if (keyboardMeshes.size() > 0) {
+            VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
+                    new SpinnerKeyboardViewer(
+                            this,
+                            (Spinner) findViewById(R.id.virtual_keyboard_spinner),
+                            keymap.keySet().toArray(new String [keys.size()])
+                    ),
+                    keyboardCoordinatesStore,
+                    keyboardMeshes.get(0)
+            );
+
+            if (user.isAdmin()) {
+                saveKeyCoordinate.setVisibility(View.VISIBLE);
+                virtualKeyboard.setSaveButton(saveKeyCoordinate);
+            }
+
+        }
+
+
+
+    }
+
+    @Override
+    public void ARStopped() {
+
+    }
 
     private static class CallHandler extends Handler {
 
