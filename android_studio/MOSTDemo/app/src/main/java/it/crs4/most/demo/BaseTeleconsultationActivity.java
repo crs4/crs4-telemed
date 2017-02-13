@@ -102,6 +102,7 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
                 trans[12] = markerModel.getTransX();
                 trans[13] = markerModel.getTransY();
                 marker.setModelMatrix(trans);
+                marker.setGroup(markerModel.getGroup());
 
                 it.crs4.most.demo.models.Mesh meshModel = markerModel.getMesh();
                 Mesh mesh;
