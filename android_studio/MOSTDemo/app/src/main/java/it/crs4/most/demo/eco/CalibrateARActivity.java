@@ -27,6 +27,9 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import org.artoolkit.ar.base.ARToolKit;
 import org.artoolkit.ar.base.NativeInterface;
 import org.artoolkit.ar.base.assets.AssetHelper;
@@ -37,10 +40,14 @@ import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.streaming.GstreamerRTSPServer;
 import it.crs4.most.streaming.StreamServer;
 import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
@@ -61,13 +68,14 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
     private CaptureCameraPreview preview;
-    private CalibrateTouchGLSurfaceView glView;
+    private TouchGLSurfaceView glView;
     private boolean firstUpdate = false;
     private OpticalARToolkit mOpticalARToolkit;
     private MeshManager meshManager = new MeshManager();
     private boolean arInitialized = false;
     private boolean arEnabled = true;
     private boolean isOptical = false;
+    private Map<String, float []> calibrations = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,7 +119,15 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
     //        renderer.setExtraCalibration(new float[]{calibration[0], calibration[1], 0});
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
         Pyramid arrow = new Pyramid(10, 10, 10, "ARROW");
-        arrow.addMarker(MarkerFactory.getMarker("single;Data/multi/a.patt;40"));
+        MarkerFactory.Marker markerA = MarkerFactory.getMarker("single;Data/multi/a.patt;40");
+        arrow.addMarker(markerA);
+        markerA.setGroup("keyboard");
+
+        MarkerFactory.Marker markerHiro = MarkerFactory.getMarker("single;Data/hiro.patt;76");
+        arrow.addMarker(markerHiro);
+        markerHiro.setGroup("eco");
+        arrow.addMarker(markerHiro);
+
         meshManager.addMesh(arrow);
     }
 
@@ -161,7 +177,36 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
-        glView = new CalibrateTouchGLSurfaceView(this);
+        glView = new TouchGLSurfaceView(this) {
+
+            @Override
+            public void handleDown(){
+                super.handleDown();
+                List<MarkerFactory.Marker> visibleMarkers = meshManager.getVisibleMarkers();
+                MarkerFactory.Marker marker = visibleMarkers.get(0);
+                float [] extraCalibration = new float[3];
+                ((PubSubARRenderer)renderer).setExtraCalibration(marker.getGroup(), extraCalibration);
+                calibrations.put(marker.getGroup(), extraCalibration);
+                mesh.setX(0, false);
+                mesh.setY(0, false);
+                mesh.setZ(0, false);
+                requestRender();
+
+            }
+            @Override
+            public void handleUp(){
+                super.handleUp();
+                List<MarkerFactory.Marker> visibleMarkers = meshManager.getVisibleMarkers();
+                MarkerFactory.Marker marker = visibleMarkers.get(0);
+                float [] extraCalibration = new float[] {mesh.getX(), mesh.getY(), mesh.getZ()};
+                ((PubSubARRenderer)renderer).setExtraCalibration(marker.getGroup(), extraCalibration);
+                calibrations.put(marker.getGroup(), extraCalibration);
+                mesh.setX(0, false);
+                mesh.setY(0, false);
+                mesh.setZ(0, false);
+                requestRender();
+            }
+        };
 
         ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -204,8 +249,8 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
 
     }
 
-        @Override
-        protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         if (this.glView != null) {
             this.glView.onPause();
@@ -213,6 +258,41 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
 
         this.mainLayout.removeView(this.glView);
         this.mainLayout.removeView(this.preview);
+        String configServerIP = QuerySettings.getConfigServerAddress(this);
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
+        RESTClient restClient = new RESTClient(this, configServerIP, configServerPort);
+        String accessToken = QuerySettings.getAccessToken(this);
+        if (accessToken == null) {
+            Log.d(TAG, "accessToken null, is user logged?");
+            }
+        else {
+            for (final Map.Entry<String, float []> calibration : calibrations.entrySet()) {
+            final float [] calibValue = calibration.getValue();
+            Log.d(TAG, String.format("saving calibration %s %s %s", calibValue[0], calibValue[1], calibValue[2]));
+            final String group = calibration.getKey();
+            restClient.setARCalibration(
+                accessToken,
+                group,
+                calibValue[0],
+                calibValue[1],
+                calibValue[2],
+                new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                                Log.d(TAG, String.format("calibration saved for group %s", group));
+
+                                    }
+                    },
+                new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                                Log.e(TAG, String.format("Error saving calibration for group %s", group));
+                            }
+                    });
+
+                }
+        }
+
     }
 
         @Override

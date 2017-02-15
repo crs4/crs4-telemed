@@ -35,6 +35,7 @@ import org.artoolkit.ar.base.camera.CaptureCameraPreview;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
+import java.util.Map;
 import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
@@ -43,6 +44,7 @@ import it.crs4.most.streaming.GstreamerRTSPServer;
 import it.crs4.most.streaming.StreamServer;
 import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
+import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
@@ -57,7 +59,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     protected PubSubARRenderer renderer;
     protected FrameLayout mainLayout;
     private CaptureCameraPreview preview;
-    private CalibrateTouchGLSurfaceView glView;
+    private TouchGLSurfaceView glView;
     private boolean firstUpdate = false;
     private OpticalARToolkit mOpticalARToolkit;
     private MeshManager meshManager = new MeshManager();
@@ -178,8 +180,11 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             renderer = new PubSubARRenderer(this, meshManager);
         }
         renderer.setEnabled(arEnabled);
-        float[] calibration = QuerySettings.getARCalibration(this);
-        renderer.setExtraCalibration(new float[] {calibration[0], calibration[1], 0});
+        for (Map.Entry<String, float []> calibration: teleconsultation.getLastSession().getRoom().getARConfiguration().getCalibrations().entrySet()) {
+            renderer.setExtraCalibration(calibration.getKey(), calibration.getValue());
+        }
+//        float [] calibration = QuerySettings.getARCalibration(this);
+//        renderer.setExtraCalibration(new float[]{calibration[0], calibration[1], 0});
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -239,7 +244,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
-        glView = new CalibrateTouchGLSurfaceView(this);
+        glView = new TouchGLSurfaceView(this);
 
         ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -289,8 +294,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         super.onPause();
         if (this.glView != null) {
             this.glView.onPause();
-            float[] extraCalibration = renderer.getExtraCalibration();
-            QuerySettings.setARCalibration(this, extraCalibration[0], extraCalibration[1]);
+//            float [] extraCalibration = renderer.getExtraCalib ion[0], extraCalibration[1]);
         }
 
         this.mainLayout.removeView(this.glView);

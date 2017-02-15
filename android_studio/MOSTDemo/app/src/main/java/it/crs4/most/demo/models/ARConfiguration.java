@@ -20,18 +20,21 @@ public class ARConfiguration implements Serializable {
     private float screenHeight;
     private float screenWidth;
     private Map<String, float []> keymap;
+    private Map<String, float []> calibrations;
 
 
     public ARConfiguration(
             List<ARMarker> markers,
             float screenHeight,
             float screenWidth,
-            Map<String, float []> keymap) {
+            Map<String, float []> keymap,
+            Map<String, float []> calibrations) {
 
         this.markers = markers;
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
         this.keymap = keymap;
+        this.calibrations = calibrations;
     }
 
     public static ARConfiguration fromJSON(JSONObject obj) throws TeleconsultationException {
@@ -57,8 +60,21 @@ public class ARConfiguration implements Serializable {
                 keymap.put(key, coords);
             }
 
+            JSONArray calibrationsList = obj.getJSONArray("calibrations");
+            Map<String, float []> calibrations = new HashMap<>();
+            for (int i = 0; i < calibrationsList.length(); i++) {
+                JSONObject calibrationEntry = calibrationsList.getJSONObject(i);
+                String group = calibrationEntry .getString("group");
+                float [] coords = new float[] {
+                        Float.valueOf(calibrationEntry.getString("x")),
+                        Float.valueOf(calibrationEntry.getString("y")),
+                        Float.valueOf(calibrationEntry.getString("z")),
+                };
+                calibrations.put(group, coords);
+            }
 
-            return new ARConfiguration(markers, screenHeight, screenWidth, keymap);
+
+            return new ARConfiguration(markers, screenHeight, screenWidth, keymap, calibrations);
         } catch (JSONException e) {
             e.printStackTrace();
             throw new TeleconsultationException();
@@ -91,5 +107,9 @@ public class ARConfiguration implements Serializable {
 
     public void setKeymap(Map<String, float[]> keymap) {
         this.keymap = keymap;
+    }
+
+    public Map<String, float[]> getCalibrations() {
+        return calibrations;
     }
 }

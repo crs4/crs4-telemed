@@ -27,6 +27,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.crs4.most.demo.models.User;
+
 /**
  * curl -X POST -d "client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=password&username=YOUR_USERNAME&password=YOUR_PASSWORD" http://localhost:8000/oauth2/access_token/
  * <p/>
@@ -416,6 +418,48 @@ public class RESTClient {
                 Map<String, String> params = new HashMap<>();
                 params.put("access_token", accessToken);
                 params.put("key", key);
+                params.put("x", String.valueOf(x));
+                params.put("y", String.valueOf(y));
+                params.put("z", String.valueOf(z));
+                return params;
+            }
+        };
+        addRequest(postReq);
+    }
+
+    public void getARCalibrations(final String accessToken,
+                                  Response.Listener<String> listener,
+                                  Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/get_ar_calibration", mUrlPrefix);
+        StringRequest postReq = new StringRequest(Request.Method.GET, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                return params;
+            }
+
+        };
+        addRequest(postReq);
+    }
+
+    public void setARCalibration(
+            final String accessToken,
+            final String group,
+            final float x,
+            final float y,
+            final float z,
+            Response.Listener<String> listener,
+            Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/set_ar_calibration/", mUrlPrefix);
+        StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                params.put("group", group);
                 params.put("x", String.valueOf(x));
                 params.put("y", String.valueOf(y));
                 params.put("z", String.valueOf(z));
