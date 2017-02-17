@@ -162,7 +162,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
         Log.d(TAG, "SpecApp Address: " + specAppAddress);
-        subscriber = new ZMQSubscriber(specAppAddress);
+        subscriber = new ZMQSubscriber(specAppAddress, null);
         Thread subThread = new Thread(subscriber);
         subThread.start();
         createARMeshes(meshManager);

@@ -55,6 +55,7 @@ class Room(models.Model):
     description = models.CharField(max_length=200)
     encoder_device = models.ForeignKey(StreamingDevice, related_name="encoder_rooms", blank=True, null=True)
     camera_device = models.ForeignKey(StreamingDevice, related_name="camera_rooms", blank=True, null=True)
+    sensors_server = models.CharField(max_length=15, default="")
     task_group = models.ForeignKey(TaskGroup, related_name="rooms")
     has_encoder = models.BooleanField(default=True)
     has_camera = models.BooleanField(default=True)
@@ -87,7 +88,8 @@ class Room(models.Model):
             'name': self.name,
             'description': self.description,
             'task_group': self.task_group.json_dict,
-            'devices': devices
+            'devices': devices,
+            'sensors_server': self.sensors_server
         }
 
         if self.ar_conf:

@@ -3,7 +3,6 @@ package it.crs4.most.demo.spec;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
@@ -32,7 +31,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,16 +41,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import it.crs4.most.demo.BaseTeleconsultationActivity;
-import it.crs4.most.demo.ReportActivity;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
+import it.crs4.most.demo.ReportActivity;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.ARConfiguration;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
 import it.crs4.most.demo.models.User;
+import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesStore;
 import it.crs4.most.demo.ui.TcStateTextView;
 import it.crs4.most.streaming.IStream;
 import it.crs4.most.streaming.StreamingEventBundle;
@@ -79,12 +78,14 @@ import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
+import it.crs4.most.visualization.sensors.ECGSubscriber;
+import it.crs4.most.visualization.sensors.ECGView;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
+import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
-import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesStore;
 
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
@@ -138,11 +139,12 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private Button resetEcoMesh;
     private Button saveKeyCoordinate;
     private User user;
+    private ECGView mEcgView;
+    private ZMQSubscriber mEcgSubscriber;
 
-    protected Handler getVoipHandler(){
+    protected Handler getVoipHandler() {
         return new CallHandler(this);
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,9 +152,9 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         File cacheFolder = new File(getCacheDir().getAbsolutePath() + "/Data");
         File[] files = cacheFolder.listFiles();
-        if (files != null){
+        if (files != null) {
             for (File file : files) {
-                if (!file.delete()){
+                if (!file.delete()) {
 //                    throw new RuntimeException("cannot delete cached files");
                 }
             }
@@ -176,7 +178,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             Thread pubThread = new Thread(publisher);
             pubThread.start();
 
-            float[] redColor = new float[]{
+            float[] redColor = new float[] {
                 0, 0, 0, 1f,
                 1, 0, 0, 1f,
                 1, 0, 0, 1f,
@@ -196,7 +198,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             Intent i = getIntent();
             teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
             createARMeshes(cameraMeshManager);
-            for(Mesh mesh: cameraMeshManager.getMeshes()) {
+            for (Mesh mesh : cameraMeshManager.getMeshes()) {
                 mesh.publisher = publisher;
             }
             ecoMeshManager.configureScene();
@@ -209,30 +211,30 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             new PTZHandler(this), true, true, true, 100, 100);
 
         user = QuerySettings.getUser(this);
-        if (user != null && user.isAdmin()){
+        if (user != null && user.isAdmin()) {
             ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-                    newInstance(publisher, teleconsultation.getLastSession().getRoom());
+                newInstance(publisher, teleconsultation.getLastSession().getRoom());
 
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
             fragmentTransaction.commit();
 
             Line line;
-            float [] whiteColor = new float[]{1.0F, 1F, 1F, 1.0F};
+            float[] whiteColor = new float[] {1.0F, 1F, 1F, 1.0F};
             float thick = 1f;
 
-            for (int i = -3; i <=3; i++) {
+            for (int i = -3; i <= 3; i++) {
                 line = new Line(
-                        new float[] {i*0.25f, -1, 0},
-                        new float[] {i*0.25f, 1, 0},
-                        thick);
+                    new float[] {i * 0.25f, -1, 0},
+                    new float[] {i * 0.25f, 1, 0},
+                    thick);
                 line.setColors(whiteColor);
                 ecoMeshManager.addMesh(line);
 
                 line = new Line(
-                        new float[] {-1, i*0.25f, 0},
-                        new float[] {1, i*0.25f, 0},
-                        thick);
+                    new float[] {-1, i * 0.25f, 0},
+                    new float[] {1, i * 0.25f, 0},
+                    thick);
                 line.setColors(whiteColor);
                 ecoMeshManager.addMesh(line);
             }
@@ -242,6 +244,15 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
         saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
+
+        String sensorsServer = teleconsultation.getLastSession().getRoom().getSensorsServer();
+        if (!sensorsServer.equals("")) {
+            mEcgView = (ECGView) findViewById(R.id.ecg_graph);
+            mEcgSubscriber = new ECGSubscriber(sensorsServer + ":5556", "ECG");
+            Thread subThread = new Thread(mEcgSubscriber);
+            subThread.start();
+            mEcgView.setSubscriber(mEcgSubscriber);
+        }
     }
 
     @Override
@@ -426,7 +437,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     glView.setMeshManager(ecoMeshManager);
                     glView.setPublisher(publisher);
                 }
-                else{
+                else {
                     glView.setEnabled(false);
                 }
                 mStreamEcoFragment.setPlayerButtonsVisible(false);
@@ -622,7 +633,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     @Override
-    public void onPause(String streamId) {}
+    public void onPause(String streamId) {
+    }
 
     @Override
     public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
@@ -707,10 +719,12 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     @Override
-    public void onFragmentCreate() {}
+    public void onFragmentCreate() {
+    }
 
     @Override
-    public void onFragmentResume() {}
+    public void onFragmentResume() {
+    }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -718,42 +732,40 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {}
+    public void surfaceDestroyed(SurfaceHolder holder) {
+    }
 
     @Override
     public void ARInitialized() {
         cameraMeshManager.configureScene();
         //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
         KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
-                teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
+            teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
         );
-        Map<String, float []> keymap = keyboardCoordinatesStore.read();
+        Map<String, float[]> keymap = keyboardCoordinatesStore.read();
         Set<String> keys = keymap.keySet();
 
-        List <Mesh> keyboardMeshes = cameraMeshManager.getMeshesByGroup("keyboard");
+        List<Mesh> keyboardMeshes = cameraMeshManager.getMeshesByGroup("keyboard");
         if (keyboardMeshes.size() > 0) {
             VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
-                    new SpinnerKeyboardViewer(
-                            this,
-                            (Spinner) findViewById(R.id.virtual_keyboard_spinner),
-                            keymap.keySet().toArray(new String [keys.size()])
-                    ),
-                    keyboardCoordinatesStore,
-                    keyboardMeshes.get(0)
+                new SpinnerKeyboardViewer(
+                    this,
+                    (Spinner) findViewById(R.id.virtual_keyboard_spinner),
+                    keymap.keySet().toArray(new String[keys.size()])
+                ),
+                keyboardCoordinatesStore,
+                keyboardMeshes.get(0)
             );
 
             if (user.isAdmin()) {
                 saveKeyCoordinate.setVisibility(View.VISIBLE);
                 virtualKeyboard.setSaveButton(saveKeyCoordinate);
             }
-
         }
-
-
-
     }
 
     @Override
@@ -897,7 +909,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 Log.d(TAG, "ready to call cameraPreviewStarted");
 
                 Size videoSize = ((IStream) event.getData()).getVideoSize();
-                if (((IStream) event.getData()).getName().equals(streamName)&& videoSize != null) {
+                if (((IStream) event.getData()).getName().equals(streamName) && videoSize != null) {
                     int width = videoSize.getWidth();
                     int height = videoSize.getHeight();
                     Log.d(TAG, String.format("VIDEOSIZE width %s, height %d", width, height));
@@ -909,20 +921,21 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             }
         }
 
-        public abstract  void onVideoSizeChanged(int width, int height);
+        public abstract void onVideoSizeChanged(int width, int height);
     }
 
     private static class EcoStreamHandler extends StreamHandler {
         public EcoStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
             super(activity, streamName);
         }
+
         @Override
         public void onVideoSizeChanged(int width, int height) {
             getActivity().mAREcoRenderer.setViewportSize(width, height);
         }
     }
 
-    private static class CameraStreamHandler extends StreamHandler{
+    private static class CameraStreamHandler extends StreamHandler {
         public CameraStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
             super(activity, streamName);
         }
@@ -1013,13 +1026,14 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         private MeshManager meshManager;
         private GLSurfaceView view;
 
-        public ResetButtonListener(MeshManager meshManager, GLSurfaceView view){
+        public ResetButtonListener(MeshManager meshManager, GLSurfaceView view) {
             this.meshManager = meshManager;
             this.view = view;
         }
+
         @Override
         public void onClick(View v) {
-            for (Mesh m: meshManager.getMeshes()) {
+            for (Mesh m : meshManager.getMeshes()) {
                 m.setX(0);
                 m.setY(0);
                 m.setZ(0);
