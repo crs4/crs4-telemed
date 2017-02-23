@@ -16,7 +16,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from most.web.demographics.models import Patient
 from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room, \
-    ARMarkerTranslation, ARKeyboardCoordinates, ARCalibration
+    ARMarkerTranslation, ARKeyboardCoordinates, ARCalibration, ARPreferences
 
 from most.web.authentication.decorators import oauth2_required
 from most.web.users.models import TaskGroup
@@ -551,3 +551,19 @@ def get_ar_calibrations(request, calibration_id=None):
 
     print 'result', result
     return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
+
+
+@csrf_exempt
+@oauth2_required
+def get_ar_preferences(request):
+    pref = ARPreferences.objects.get_or_create(user=request.user)[0]
+    return HttpResponse(json.dumps({'success': True, 'data': pref.to_dict()}), content_type="application/json")
+
+
+@csrf_exempt
+@oauth2_required
+def set_ar_preferences(request):
+    pref = ARPreferences.objects.get_or_create(user=request.user)[0]
+    pref.eye = request.POST.get("eye")
+    pref.save()
+    return HttpResponse(json.dumps({'success': True}), content_type="application/json")

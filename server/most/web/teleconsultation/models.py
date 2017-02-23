@@ -341,3 +341,15 @@ class ARCalibration(models.Model):
             'group': self.group,
             'user': self.user.pk,
         }
+
+
+class ARPreferences(models.Model):
+    CHOICES= (('LEFT', 'LEFT'),('RIGHT', 'RIGHT'),('BOTH', 'BOTH'))
+    user = models.ForeignKey(MostUser)
+    eye = models.CharField(max_length=8, choices=CHOICES, default=CHOICES[1][0])
+
+    def to_dict(self):
+        return {
+            'user': self.user.pk,
+            'eye': self.eye
+        }

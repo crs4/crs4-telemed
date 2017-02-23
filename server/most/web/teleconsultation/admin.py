@@ -10,7 +10,7 @@
 
 from django.contrib import admin
 from most.web.teleconsultation.models import Teleconsultation, TeleconsultationSession, Device, Room, ARConfiguration, \
-    ARMarker, ARMarkerTranslation, Mesh, ARKeyboardCoordinates, ARCalibration
+    ARMarker, ARMarkerTranslation, Mesh, ARKeyboardCoordinates, ARCalibration, ARPreferences
 
 admin.site.register(Device)
 admin.site.register(Teleconsultation)
@@ -22,3 +22,4 @@ admin.site.register(ARMarkerTranslation)
 admin.site.register(Mesh)
 admin.site.register(ARKeyboardCoordinates)
 admin.site.register(ARCalibration)
+admin.site.register(ARPreferences)

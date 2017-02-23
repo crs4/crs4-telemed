@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -468,4 +469,43 @@ public class RESTClient {
         };
         addRequest(postReq);
     }
+
+
+    public void getARPreferences( final String accessToken,
+                                                 Response.Listener<String> listener,
+                                                 Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/get_ar_preferences/", mUrlPrefix);
+//            final JSONObject jsonBody = new JSONObject();
+//            jsonBody.put("access_token", accessToken);
+        StringRequest getReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                return params;
+            }
+        };
+        addRequest(getReq);
+    }
+
+    public void setARPreferences(
+            final String accessToken,
+            final String eye,
+            Response.Listener<String> listener,
+            Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/set_ar_preferences/", mUrlPrefix);
+        StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                params.put("eye", eye);
+                return params;
+            }
+        };
+        addRequest(postReq);
+    }
+
 }

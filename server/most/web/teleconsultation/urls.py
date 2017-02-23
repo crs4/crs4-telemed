@@ -44,6 +44,8 @@ urlpatterns = patterns('',
     url(r'set_ar_calibration/(?P<calibration_id>.*)/$',"most.web.teleconsultation.views.set_ar_calibration"),
     url(r'get_ar_calibration/$', "most.web.teleconsultation.views.get_ar_calibrations"),
     url(r'get_ar_calibration/(?P<calibration_id>.*)/$',"most.web.teleconsultation.views.get_ar_calibrations"),
+    url(r'get_ar_preferences/$',"most.web.teleconsultation.views.get_ar_preferences"),
+    url(r'set_ar_preferences/$',"most.web.teleconsultation.views.set_ar_preferences"),
 
                        # url(r'sessions/waiting/$', "most.web.teleconsultation.views.get_waiting_teleconsultations"),
 

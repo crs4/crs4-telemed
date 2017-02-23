@@ -9,6 +9,14 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
+import android.support.annotation.IntegerRes;
+import android.util.Log;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import it.crs4.most.demo.eco.AREcoTeleconsultationActivity;
 import it.crs4.most.demo.eco.BaseEcoTeleconsultationActivity;
@@ -24,11 +32,17 @@ public class SettingsFragment extends PreferenceFragment {
     private Preference mCalibrateAR;
     private EditTextPreference mARLowFilter;
     private Preference mClearCalibration;
+    private RESTClient restClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings_preferences);
+        mArEnabled = (CheckBoxPreference) findPreference("ar_enabled");
+        mArEyes= (ListPreference) findPreference("ar_eyes");
+        mCalibrateAR = findPreference("ar_calibrate");
+        mARLowFilter = (EditTextPreference) findPreference("ar_low_filter_level");
+        mClearCalibration = findPreference("ar_clear_calibration");
 
         mRoles = getActivity().getResources().getStringArray(R.array.roles_entries_values);
 
@@ -57,11 +71,65 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
-        mArEnabled = (CheckBoxPreference) findPreference("ar_enabled");
-        mArEyes= (ListPreference) findPreference("ar_eyes");
-        mCalibrateAR = findPreference("ar_calibrate");
-        mARLowFilter = (EditTextPreference) findPreference("ar_low_filter_level");
-        mClearCalibration = findPreference("ar_clear_calibration");
+        String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
+
+        final String accessToken = QuerySettings.getAccessToken(getActivity());
+        if (accessToken == null) {
+            Log.d(TAG, "accessToken null, is user logged?");
+            mArEyes.setEnabled(false);
+        }
+        else {
+            mArEyes.setEnabled(true);
+            restClient = new RESTClient(getActivity(), configServerIP, Integer.valueOf(configServerPort.getText()));
+            mArEyes.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    restClient.setARPreferences(
+                        accessToken,
+                        newValue.toString(),
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.d(TAG, "set AR eyes");
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e(TAG, "Error setting AR eyes");
+                            }
+                            }
+                    );
+                    return true;
+                }
+            });
+            restClient.getARPreferences(
+                    accessToken,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d(TAG, "get AR eyes");
+                            try {
+                                JSONObject responseJson = new JSONObject(response);
+                                JSONObject data = responseJson.getJSONObject("data");
+                                Log.d(TAG, response.toString());
+                                String eye = data.getString("eye");
+                                mArEyes.setValue(eye);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.e(TAG, "Error retrieving AR eyes");
+                            }
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, "Error retrieving AR eyes");
+                        }
+                    });
+        }
+
 
         mCalibrateAR.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
