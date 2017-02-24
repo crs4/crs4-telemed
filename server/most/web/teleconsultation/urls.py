@@ -40,8 +40,13 @@ urlpatterns = patterns('',
     url(r'session/(?P<session_uuid>.*)/run/$', "most.web.teleconsultation.views.run_session"),
     url(r'session/(?P<session_uuid>.*)/close/$', "most.web.teleconsultation.views.close_session"),
     url(r'session/(?P<session_uuid>.*)/$', "most.web.teleconsultation.views.get_session_data"),
+    url(r'set_ar_calibration/$', "most.web.teleconsultation.views.set_ar_calibration"),
+    url(r'set_ar_calibration/(?P<calibration_id>.*)/$',"most.web.teleconsultation.views.set_ar_calibration"),
+    url(r'get_ar_calibration/$', "most.web.teleconsultation.views.get_ar_calibrations"),
+    url(r'get_ar_calibration/(?P<calibration_id>.*)/$',"most.web.teleconsultation.views.get_ar_calibrations"),
+    url(r'get_ar_preferences/$',"most.web.teleconsultation.views.get_ar_preferences"),
+    url(r'set_ar_preferences/$',"most.web.teleconsultation.views.set_ar_preferences"),
 
-
-    # url(r'sessions/waiting/$', "most.web.teleconsultation.views.get_waiting_teleconsultations"),
+                       # url(r'sessions/waiting/$', "most.web.teleconsultation.views.get_waiting_teleconsultations"),
 
 )

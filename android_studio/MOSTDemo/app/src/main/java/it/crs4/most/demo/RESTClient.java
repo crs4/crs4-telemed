@@ -22,10 +22,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import it.crs4.most.demo.models.User;
 
 /**
  * curl -X POST -d "client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=password&username=YOUR_USERNAME&password=YOUR_PASSWORD" http://localhost:8000/oauth2/access_token/
@@ -424,4 +427,85 @@ public class RESTClient {
         };
         addRequest(postReq);
     }
+
+    public void getARCalibrations(final String accessToken,
+                                  Response.Listener<String> listener,
+                                  Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/get_ar_calibration", mUrlPrefix);
+        StringRequest postReq = new StringRequest(Request.Method.GET, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                return params;
+            }
+
+        };
+        addRequest(postReq);
+    }
+
+    public void setARCalibration(
+            final String accessToken,
+            final String group,
+            final float x,
+            final float y,
+            final float z,
+            Response.Listener<String> listener,
+            Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/set_ar_calibration/", mUrlPrefix);
+        StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                params.put("group", group);
+                params.put("x", String.valueOf(x));
+                params.put("y", String.valueOf(y));
+                params.put("z", String.valueOf(z));
+                return params;
+            }
+        };
+        addRequest(postReq);
+    }
+
+
+    public void getARPreferences( final String accessToken,
+                                                 Response.Listener<String> listener,
+                                                 Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/get_ar_preferences/", mUrlPrefix);
+//            final JSONObject jsonBody = new JSONObject();
+//            jsonBody.put("access_token", accessToken);
+        StringRequest getReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                return params;
+            }
+        };
+        addRequest(getReq);
+    }
+
+    public void setARPreferences(
+            final String accessToken,
+            final String eye,
+            Response.Listener<String> listener,
+            Response.ErrorListener errorListener) {
+
+        String uri = String.format("%steleconsultation/set_ar_preferences/", mUrlPrefix);
+        StringRequest postReq = new StringRequest(Request.Method.POST, uri, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("access_token", accessToken);
+                params.put("eye", eye);
+                return params;
+            }
+        };
+        addRequest(postReq);
+    }
+
 }

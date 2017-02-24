@@ -2,30 +2,54 @@ package it.crs4.most.demo.eco;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ConfigurationInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import org.artoolkit.ar.base.ARToolKit;
+import org.artoolkit.ar.base.NativeInterface;
 import org.artoolkit.ar.base.assets.AssetHelper;
 import org.artoolkit.ar.base.camera.CameraEventListener;
+import org.artoolkit.ar.base.camera.CameraPreferencesActivity;
 import org.artoolkit.ar.base.camera.CaptureCameraPreview;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.gles20.ARRendererGLES20;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.RESTClient;
+import it.crs4.most.streaming.GstreamerRTSPServer;
+import it.crs4.most.streaming.StreamServer;
 import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
@@ -36,35 +60,26 @@ import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
+import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
 import jp.epson.moverio.bt200.DisplayControl;
 
 public class CalibrateARActivity extends AppCompatActivity implements CameraEventListener {
+    protected static final String TAG = "CalibrateARActivity";
+    protected PubSubARRenderer renderer;
+    protected FrameLayout mainLayout;
+    private CaptureCameraPreview preview;
+    private TouchGLSurfaceView glView;
+    private boolean firstUpdate = false;
     private OpticalARToolkit mOpticalARToolkit;
     private MeshManager meshManager = new MeshManager();
-    private OpticalRenderer renderer;
-    private CaptureCameraPreview preview;
-    private CalibrateTouchGLSurfaceView glView;
-    private boolean firstUpdate = false;
-    protected FrameLayout mainLayout;
-    private final String TAG = "CalibrateARActivity";
     private boolean arInitialized = false;
-    private final static String ARROW_ID = "ARROW" ;
-    Pyramid arrow = new Pyramid(10f, 10f, 10f, ARROW_ID);
+    private boolean arEnabled = true;
+    private boolean isOptical = false;
+    private Map<String, float []> calibrations = new HashMap<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calibrate_ar);
-        getWindow().addFlags(0x80000000);
-//            Log.d(TAG, "loading optical files");
-        mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
-        renderer = new OpticalRenderer(this, mOpticalARToolkit, meshManager);
-        renderer.setEye(OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
-        renderer.setEnabled(true);
-        renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
-        float [] calibration = QuerySettings.getARCalibration(this);
-        Log.d(TAG, String.format("calibration %f %f", calibration[0], calibration[1]));
-        renderer.setExtraCalibration(new float [] {calibration[0], calibration[1], 0});
 
         File cacheFolder = new File(getCacheDir().getAbsolutePath() + "/Data");
         File[] files = cacheFolder.listFiles();
@@ -78,19 +93,46 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
 
+        setContentView(R.layout.ar_eco);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        arrow.addMarker(MarkerFactory.getMarker("single;Data/kanji.patt;80"));
+        if ((Build.MANUFACTURER.equals("EPSON") && Build.MODEL.equals("embt2"))) {
+            getWindow().addFlags(0x80000000);
+    //            Log.d(TAG, "loading optical files");
+            mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
+            isOptical = true;
+        }
+
+        if (mOpticalARToolkit != null) {
+            Log.d(TAG, "setting OpticalRenderer");
+            renderer = new OpticalRenderer(this, mOpticalARToolkit, meshManager);
+
+            ((OpticalRenderer) renderer).setEye(
+                    OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
+        }
+        else {
+            renderer = new PubSubARRenderer(this, meshManager);
+        }
+        renderer.setEnabled(arEnabled);
+        float [] calibration = QuerySettings.getARCalibration(this);
+    //        renderer.setExtraCalibration(new float[]{calibration[0], calibration[1], 0});
+        renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
+        Pyramid arrow = new Pyramid(10, 10, 10, "ARROW");
+        MarkerFactory.Marker markerA = MarkerFactory.getMarker("single;Data/multi/a.patt;40");
+        arrow.addMarker(markerA);
+        markerA.setGroup("keyboard");
+
+        MarkerFactory.Marker markerHiro = MarkerFactory.getMarker("single;Data/hiro.patt;76");
+        arrow.addMarker(markerHiro);
+        markerHiro.setGroup("eco");
+        arrow.addMarker(markerHiro);
+
         meshManager.addMesh(arrow);
-        meshManager.configureScene();
     }
 
-    protected FrameLayout supplyFrameLayout() {
-        return (FrameLayout) this.findViewById(R.id.ar_calibration_frame);
-    }
-
-    @Override
-    protected void onStart() {
+        @Override
+        protected void onStart() {
         super.onStart();
         Log.i("ARActivity", "onStart(): Activity starting.");
         if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
@@ -110,8 +152,8 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         }
     }
 
-    @Override
-    public void onResume() {
+        @Override
+        public void onResume() {
         super.onResume();
 
         preview = new CaptureCameraPreview(this, this);
@@ -135,11 +177,40 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             }
         });
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
-        glView = new CalibrateTouchGLSurfaceView(this);
-        glView.setEnabled(true);
-//        if (isOptical) {
-//            glView.setEnabled(false);
-//        }
+        glView = new TouchGLSurfaceView(this) {
+
+            @Override
+            public void handleDown(){
+                super.handleDown();
+                Log.d(TAG, "handleDown");
+                List<MarkerFactory.Marker> visibleMarkers = meshManager.getVisibleMarkers();
+                MarkerFactory.Marker marker = visibleMarkers.get(0);
+                float [] extraCalibration = new float[3];
+                ((PubSubARRenderer)renderer).setExtraCalibration(marker.getGroup(), extraCalibration);
+                calibrations.put(marker.getGroup(), extraCalibration);
+                mesh.setX(0, false);
+                mesh.setY(0, false);
+                mesh.setZ(0, false);
+                requestRender();
+
+            }
+            @Override
+            public void handleUp(){
+                super.handleUp();
+                Log.d(TAG, "handleUp");
+                List<MarkerFactory.Marker> visibleMarkers = meshManager.getVisibleMarkers();
+                MarkerFactory.Marker marker = visibleMarkers.get(0);
+                float [] extraCalibration = new float[] {mesh.getX(), mesh.getY(), mesh.getZ()};
+                ((PubSubARRenderer)renderer).setExtraCalibration(marker.getGroup(), extraCalibration);
+                calibrations.put(marker.getGroup(), extraCalibration);
+                Log.d(TAG, String.format("new calib %s %s %s", extraCalibration[0], extraCalibration[1], extraCalibration[2]));
+                mesh.setX(0, false);
+                mesh.setY(0, false);
+                mesh.setZ(0, false);
+                ((PubSubARRenderer)renderer).setExtraCalibration(marker.getGroup(), extraCalibration);
+                requestRender();
+            }
+        };
 
         ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -148,11 +219,13 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             Log.i("ARActivity", "onResume(): OpenGL ES 2.x is supported");
             if ((ARRenderer) renderer instanceof ARRendererGLES20) {
                 this.glView.setEGLContextClientVersion(2);
-            } else {
+            }
+            else {
                 Log.w("ARActivity", "onResume(): OpenGL ES 2.x is supported but only a OpenGL 1.x renderer is available. \n Use ARRendererGLES20 for ES 2.x support. \n Continuing with OpenGL 1.x.");
                 this.glView.setEGLContextClientVersion(1);
             }
-        } else {
+        }
+        else {
             Log.i("ARActivity", "onResume(): Only OpenGL ES 1.x is supported");
             if ((ARRenderer) renderer instanceof ARRendererGLES20) {
                 throw new RuntimeException("Only OpenGL 1.x available but a OpenGL 2.x renderer was provided.");
@@ -160,14 +233,12 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             this.glView.setEGLContextClientVersion(1);
         }
 
-//        if (!isOptical) {
-//            glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-//        }
-//
+        if (!isOptical) {
+            glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        }
 
-
-        glView.setRenderer((PubSubARRenderer) renderer);
         glView.getHolder().setFormat(-3);
+        glView.setRenderer((PubSubARRenderer) renderer);
         glView.setMeshManager(meshManager);
 
         glView.setRenderMode(0);
@@ -179,14 +250,93 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         if (this.glView != null) {
             this.glView.onResume();
         }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (this.glView != null) {
+            this.glView.onPause();
+        }
+
+        this.mainLayout.removeView(this.glView);
+        this.mainLayout.removeView(this.preview);
+        String configServerIP = QuerySettings.getConfigServerAddress(this);
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
+        RESTClient restClient = new RESTClient(this, configServerIP, configServerPort);
+        String accessToken = QuerySettings.getAccessToken(this);
+        if (accessToken == null) {
+            Log.d(TAG, "accessToken null, is user logged?");
+            }
+        else {
+            for (final Map.Entry<String, float []> calibration : calibrations.entrySet()) {
+            final float [] calibValue = calibration.getValue();
+            Log.d(TAG, String.format("saving calibration %s %s %s", calibValue[0], calibValue[1], calibValue[2]));
+            final String group = calibration.getKey();
+            restClient.setARCalibration(
+                accessToken,
+                group,
+                calibValue[0],
+                calibValue[1],
+                calibValue[2],
+                new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                                Log.d(TAG, String.format("calibration saved for group %s", group));
+
+                                    }
+                    },
+                new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                                Log.e(TAG, String.format("Error saving calibration for group %s", group));
+                            }
+                    });
+
+                }
+        }
+
+    }
+
+        @Override
+        public void onStop() {
+        Log.i("ARActivity", "onStop(): Activity stopping.");
+        super.onStop();
+    }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == org.artoolkit.ar.base.R.id.settings) {
+            this.startActivity(new Intent(this, CameraPreferencesActivity.class));
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public CaptureCameraPreview getCameraPreview() {
+        return this.preview;
+    }
+
+    public GLSurfaceView getGLView() {
+        return this.glView;
     }
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
         Log.d(TAG, "cameraPreviewStarted");
-        if(arInitialized){
+        if (arInitialized) {
             return;
         }
-        if (ARToolKit.getInstance().initialiseAR(width, height, "Data/camera_para.dat", cameraIndex, cameraIsFrontFacing)) {
+//        if (arInitialized) {
+//            ARToolKit.getInstance().cleanup();
+//            if (!ARToolKit.getInstance().initialiseNative(this.getCacheDir().getAbsolutePath())) {
+//                this.finish();
+//            }
+//            arInitialized = false;
+//        }
+        if (ARToolKit.getInstance().initialiseAR(width, height, null, cameraIndex, cameraIsFrontFacing)) {
             Log.d(TAG, String.format("Build.MANUFACTURER %s", Build.MANUFACTURER));
             Log.d(TAG, String.format("Build.MODEL %s", Build.MODEL));
 
@@ -198,18 +348,20 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
                     Log.d(TAG, "getEyeRproject len " + mOpticalARToolkit.getEyeRproject().length);
                 }
                 else {
-                    Log.e(TAG, "Error initialising optical device. Cannot continue.");
+                    Log.e("ARActivity", "Error initialising optical device. Cannot continue.");
                     this.finish();
                 }
             }
-            Log.i(TAG, "getGLView(): Camera initialised");
+            Log.i("ARActivity", "getGLView(): Camera initialised");
 
             arInitialized = true;
         }
         else {
-            Log.e(TAG, "getGLView(): Error initialising camera. Cannot continue.");
+            Log.e("ARActivity", "getGLView(): Error initialising camera. Cannot continue.");
             this.finish();
         }
+
+        Toast.makeText(this, "Camera settings: " + width + "x" + height + "@" + rate + "fps", Toast.LENGTH_SHORT).show();
         this.firstUpdate = true;
     }
 
@@ -217,10 +369,10 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         if (this.firstUpdate) {
 
             if (this.renderer.configureARScene()) {
-                Log.i(TAG, "cameraPreviewFrame(): Scene configured successfully");
+                Log.i("ARActivity", "cameraPreviewFrame(): Scene configured successfully");
             }
             else {
-                Log.e(TAG, "cameraPreviewFrame(): Error configuring scene. Cannot continue.");
+                Log.e("ARActivity", "cameraPreviewFrame(): Error configuring scene. Cannot continue.");
                 this.finish();
             }
 
@@ -228,11 +380,14 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             arInitialized = true;
         }
 
-        if (ARToolKit.getInstance().convertAndDetect(frame)) {
-            if (this.glView != null) {
-                this.glView.requestRender();
+
+        if (renderer.isEnabled()) {
+            if (ARToolKit.getInstance().convertAndDetect(frame)) {
+                if (this.glView != null) {
+                    this.glView.requestRender();
+                }
+                this.onFrameProcessed();
             }
-            this.onFrameProcessed();
         }
     }
 
@@ -243,16 +398,25 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         ARToolKit.getInstance().cleanup();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (this.glView != null) {
-            this.glView.onPause();
-        }
-        this.mainLayout.removeView(this.glView);
-        this.mainLayout.removeView(this.preview);
-        float [] extraCalibration = renderer.getExtraCalibration();
-        QuerySettings.setARCalibration(this, extraCalibration[0], extraCalibration[1]);
+    protected void showInfo() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setMessage("ARToolKit Version: " + NativeInterface.arwGetARToolKitVersion());
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = dialogBuilder.create();
+        alert.setTitle("ARToolKit");
+        alert.show();
     }
 
+    protected ARRenderer supplyRenderer() {
+        return renderer;
+    }
+
+    protected FrameLayout supplyFrameLayout() {
+        return (FrameLayout) this.findViewById(R.id.local_ar_frame);
+    }
 }

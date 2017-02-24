@@ -16,7 +16,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from most.web.demographics.models import Patient
 from most.web.teleconsultation.models import Device, Teleconsultation, TeleconsultationSession, Room, \
-    ARMarkerTranslation, ARKeyboardCoordinates
+    ARMarkerTranslation, ARKeyboardCoordinates, ARCalibration, ARPreferences
 
 from most.web.authentication.decorators import oauth2_required
 from most.web.users.models import TaskGroup
@@ -96,7 +96,7 @@ def get_rooms_for_taskgroup(request):
         taskgroup = request.taskgroup
 
         for room in taskgroup.rooms.all():
-            rooms.append(room.full_json_dict)
+            rooms.append(room.full_json_dict(request.user))
 
         return HttpResponse(json.dumps({'success': True, 'data': {'rooms': rooms}}),
                             content_type="application/json")
@@ -117,7 +117,7 @@ def get_room_by_uuid(request, room_uuid):
     """
     try:
         room = Room.objects.get(uuid=room_uuid)
-        return HttpResponse(json.dumps({'success': True, 'data': {'room': room.full_json_dict}}),
+        return HttpResponse(json.dumps({'success': True, 'data': {'room': room.full_json_dict(request.user)}}),
                             content_type="application/json")
 
     except Room.DoesNotExist:
@@ -377,7 +377,7 @@ def join_session(request, session_uuid, spec_app_address):
     session.save()
 
     return HttpResponse(json.dumps({'success': True,
-                                    'data': {'message': 'saved', 'session': session.full_json_dict}}),
+                                    'data': {'message': 'saved', 'session': session.full_json_dict(request.user)}}),
                         content_type="application/json")
 
 
@@ -404,7 +404,7 @@ def run_session(request, session_uuid):
     session.save()
 
     return HttpResponse(json.dumps({'success': True,
-                                    'data': {'message': 'saved', 'session': session.full_json_dict}}),
+                                    'data': {'message': 'saved', 'session': session.full_json_dict(request.user)}}),
                         content_type="application/json")
 
 
@@ -499,4 +499,71 @@ def set_ar_keyboard_coordinates(request, room_id):
     keymap_obj.y = y
     keymap_obj.z = z
     keymap_obj.save()
+    return HttpResponse(json.dumps({'success': True}), content_type="application/json")
+
+@csrf_exempt
+@oauth2_required
+def set_ar_calibration(request, calibration_id=None):
+    if calibration_id:
+        try:
+            calibration = ARCalibration.objects.get(pk=calibration_id)
+        except ARCalibration.DoesNotExist as ex:
+            logger.error(ex)
+            return HttpResponse(json.dumps({
+                'success': False,
+                'error': {'code': 501}}),
+                content_type="application/json"
+            )
+    else:
+        group = request.POST.get("group")
+        calibration = ARCalibration.objects.get_or_create(user=request.user, group=group)[0]
+
+    x = float(request.POST.get("x"))
+    y = float(request.POST.get("y"))
+    z = float(request.POST.get("z"))
+
+    calibration.x = x
+    calibration.y = y
+    calibration.z = z
+    calibration.save()
+    return HttpResponse(json.dumps({'success': True}), content_type="application/json")
+
+
+@csrf_exempt
+@oauth2_required
+def get_ar_calibrations(request, calibration_id=None):
+    result = []
+    if calibration_id:
+        try:
+            ar_calibration = ARCalibration.objects.get(pk=calibration_id)
+            result.append(ar_calibration)
+        except ARCalibration.DoesNotExist as ex:
+            logger.error(ex)
+        return HttpResponse(json.dumps({
+            'success': False,
+            'error': {'code': 501}}),
+            content_type="application/json"
+        )
+
+    # for ar_calibration in ARCalibration.objects.filter(user=request.user):
+    for ar_calibration in ARCalibration.objects.filter(user__pk=1):
+        result.append(ar_calibration.to_dict)
+
+    print 'result', result
+    return HttpResponse(json.dumps({'success': True, 'data': result}), content_type="application/json")
+
+
+@csrf_exempt
+@oauth2_required
+def get_ar_preferences(request):
+    pref = ARPreferences.objects.get_or_create(user=request.user)[0]
+    return HttpResponse(json.dumps({'success': True, 'data': pref.to_dict()}), content_type="application/json")
+
+
+@csrf_exempt
+@oauth2_required
+def set_ar_preferences(request):
+    pref = ARPreferences.objects.get_or_create(user=request.user)[0]
+    pref.eye = request.POST.get("eye")
+    pref.save()
     return HttpResponse(json.dumps({'success': True}), content_type="application/json")

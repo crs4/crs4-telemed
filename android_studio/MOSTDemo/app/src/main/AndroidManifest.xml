@@ -76,7 +76,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".eco.CalibrateARActivity"/>
+        <activity
+            android:name=".eco.CalibrateARActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
     </application>
 
 </manifest>

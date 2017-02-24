@@ -75,7 +75,7 @@ class Room(models.Model):
 
     json_dict = property(_get_json_dict)
 
-    def _get_full_json_dict(self):
+    def full_json_dict(self, user=None):
 
         devices = {}
         if self.has_camera:
@@ -91,13 +91,10 @@ class Room(models.Model):
             'devices': devices,
             'sensors_server': self.sensors_server
         }
-
         if self.ar_conf:
-            res['ar_conf'] = self.ar_conf.to_dict()
+            res['ar_conf'] = self.ar_conf.to_dict(user)
 
         return res
-
-    full_json_dict = property(_get_full_json_dict)
 
 
 class Teleconsultation(models.Model):
@@ -156,13 +153,13 @@ class Teleconsultation(models.Model):
         # Check sessions
         if self.sessions.count() > 0:
             last_session = self.sessions.order_by('-created')[0]
-            result['last_session'] = last_session.full_json_dict
+            result['last_session'] = last_session.full_json_dict()
 
         return result
 
     json_dict = property(_get_json_dict)
 
-    def _get_full_json_dict(self):
+    def full_json_dict(self, user=None):
         return {
             'uuid': self.uuid,
             'description': self.description,
@@ -176,8 +173,6 @@ class Teleconsultation(models.Model):
                                                                     self.specialist.account_set.all()) < 1  else
                                                                 self.specialist.account_set.all()[0].json_dict}
         }
-
-    full_json_dict = property(_get_full_json_dict)
 
 
 class TeleconsultationSession(models.Model):
@@ -214,16 +209,13 @@ class TeleconsultationSession(models.Model):
 
     json_dict = property(_get_json_dict)
 
-    def _get_full_json_dict(self):
+    def full_json_dict(self, user=None):
         result = self.json_dict
         result.update({
-            'teleconsultation': self.teleconsultation.full_json_dict,
-            'room': self.room.full_json_dict
+            'teleconsultation': self.teleconsultation.full_json_dict(user),
+            'room': self.room.full_json_dict(user)
         })
         return result
-
-    full_json_dict = property(_get_full_json_dict)
-
 
 class ARConfiguration(models.Model):
     markers = models.ManyToManyField('ARMarkerTranslation')
@@ -238,18 +230,21 @@ class ARConfiguration(models.Model):
     def __str__(self):
         return self.description
 
-    def to_dict(self):
+    def to_dict(self, user=None):
         dct = {
             'markers': [marker.to_dict() for marker in self.markers.all()],
             'screen_height': self.screen_height,
             'screen_width': self.screen_width,
-            'keymap': []
+            'keymap': [],
+            'calibrations': []
         }
 
         for keymap in ARKeyboardCoordinates.objects.filter(ar_conf=self).order_by('key'):
             dct['keymap'].append([keymap.key, keymap.x, keymap.y, keymap.z])
-
-        #print dct
+        if user:
+            for calib in ARCalibration.objects.filter(user=user):
+                dct['calibrations'].append(calib.to_dict())
+            dct['eye'] = ARPreferences.objects.get_or_create(user=user)[0].eye
         return dct
 
 
@@ -321,3 +316,41 @@ class ARKeyboardCoordinates(models.Model):
         return unicode(self.key)
 
 
+class ARCalibration(models.Model):
+    user = models.ForeignKey(MostUser)
+    # ar_conf = models.ForeignKey(ARConfiguration)
+    group = models.CharField(max_length=128)
+    x = models.FloatField(default=0)
+    y = models.FloatField(default=0)
+    z = models.FloatField(default=0)
+
+    class Meta:
+        # unique_together = (('user', 'ar_conf', 'group'),)
+        unique_together = (('user', 'group'),)
+
+    def __unicode__(self):
+        # return unicode("%s %s %s" % (self.user, self.group, self.ar_conf))
+        return unicode("%s %s" % (self.user, self.group))
+
+    def to_dict(self):
+        return {
+            'pk': self.pk,
+            # 'ar_conf': str(self.ar_conf),
+            'x': self.x,
+            'y': self.y,
+            'z': self.z,
+            'group': self.group,
+            'user': self.user.pk,
+        }
+
+
+class ARPreferences(models.Model):
+    CHOICES= (('LEFT', 'LEFT'),('RIGHT', 'RIGHT'),('BOTH', 'BOTH'))
+    user = models.ForeignKey(MostUser)
+    eye = models.CharField(max_length=8, choices=CHOICES, default=CHOICES[1][0])
+
+    def to_dict(self):
+        return {
+            'user': self.user.pk,
+            'eye': self.eye
+        }
