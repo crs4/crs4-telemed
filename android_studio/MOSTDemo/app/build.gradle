@@ -34,4 +34,5 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.nhaarman.supertooltips:library:3.0.+'
     compile 'org.zeromq:jeromq:0.3.2@jar'
+    compile 'com.jjoe64:graphview:4.2.1'
 }

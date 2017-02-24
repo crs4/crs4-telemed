@@ -6,12 +6,12 @@
         android:id="@+id/button_call"
         android:enabled="false"
         android:title="@string/action_call"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/button_hangup"
         android:title="@string/hangup_call"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/button_ar"
@@ -19,7 +19,7 @@
         android:checkable="true"
         android:checked="false"
         android:icon="@android:drawable/checkbox_off_background"
-        app:showAsAction="always|withText"/>
+        app:showAsAction="ifRoom|withText"/>
 
     <item
         android:id="@+id/button_camera"
@@ -27,7 +27,15 @@
         android:checkable="true"
         android:checked="true"
         android:icon="@android:drawable/checkbox_on_background"
-        app:showAsAction="always|withText"/>
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/button_ecg"
+        android:title="@string/ecg_toggle"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@android:drawable/checkbox_on_background"
+        app:showAsAction="ifRoom|withText"/>
 
     <item
         android:id="@+id/button_ptz"

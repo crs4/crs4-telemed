@@ -16,14 +16,16 @@ public class Room implements Serializable {
     private String mId;
     private String mName;
     private String mDescription;
+    private String mSensorsServer;
     private Device mEncoder;
     private Device mCamera;
     private ARConfiguration arConfiguration;
 
-    public Room(String id, String name, String description) {
+    public Room(String id, String name, String description, String sensorsServer) {
         mId = id;
         mName = name;
         mDescription = description;
+        mSensorsServer = sensorsServer;
     }
 
     public String getId() {
@@ -66,6 +68,7 @@ public class Room implements Serializable {
         String id;
         String name;
         String description;
+        String sensorsServer;
         JSONObject cameraData;
         JSONObject encoderData;
 
@@ -74,12 +77,13 @@ public class Room implements Serializable {
             id = roomData.getString("uuid");
             name = roomData.getString("name");
             description = roomData.getString("description");
+            sensorsServer = roomData.getString("sensors_server");
         }
         catch (JSONException e) {
             throw new TeleconsultationException();
         }
 
-        Room r = new Room(id, name, description);
+        Room r = new Room(id, name, description, sensorsServer);
 
         try {
             if (!roomData.getJSONObject("devices").isNull("camera")) {
@@ -119,5 +123,9 @@ public class Room implements Serializable {
     @Override
     public String toString() {
         return getName();
+    }
+
+    public String getSensorsServer() {
+        return mSensorsServer;
     }
 }

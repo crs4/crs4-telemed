@@ -17,51 +17,54 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <Button
                 android:id="@+id/reset_camera_mesh_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RESET"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:text="@string/reset"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/ar_keyboard"
-                android:gravity="center" />
+                android:gravity="center"
+                android:text="@string/ar_keyboard"/>
+
             <Spinner
                 android:id="@+id/virtual_keyboard_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
             </Spinner>
+
             <Button
                 android:id="@+id/save_ar_key_coordinate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SAVE"
-                android:visibility="invisible"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:text="@string/save"
 
-
+                android:visibility="invisible"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <Button
                 android:id="@+id/reset_eco_mesh_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RESET"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:text="@string/reset"/>
 
         </LinearLayout>
 
@@ -70,7 +73,8 @@
     <LinearLayout
         android:id="@+id/stream_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
         android:background="#777"
         android:baselineAligned="false"
         android:keepScreenOn="true"
@@ -88,4 +92,16 @@
             android:layout_height="match_parent"
             android:layout_weight=".75"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <it.crs4.most.visualization.sensors.ECGView
+            android:id="@+id/ecg_graph"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+    </LinearLayout>
+
 </LinearLayout>
