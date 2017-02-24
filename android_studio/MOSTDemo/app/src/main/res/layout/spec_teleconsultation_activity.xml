@@ -73,7 +73,8 @@
     <LinearLayout
         android:id="@+id/stream_layout"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="0px"
+        android:layout_weight="1"
         android:background="#777"
         android:baselineAligned="false"
         android:keepScreenOn="true"
@@ -92,9 +93,15 @@
             android:layout_weight=".75"/>
     </LinearLayout>
 
-    <it.crs4.most.visualization.sensors.ECGView
-        android:id="@+id/ecg_graph"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dip"/>
+        android:layout_height="200dp">
+
+        <it.crs4.most.visualization.sensors.ECGView
+            android:id="@+id/ecg_graph"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+    </LinearLayout>
 
 </LinearLayout>

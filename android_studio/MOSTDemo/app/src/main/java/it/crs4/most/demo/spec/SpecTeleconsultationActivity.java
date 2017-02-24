@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 
 import org.artoolkit.ar.base.assets.AssetHelper;
 import org.json.JSONException;
@@ -32,6 +34,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,10 +82,9 @@ import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
-import it.crs4.most.visualization.sensors.ECGSubscriber;
 import it.crs4.most.visualization.sensors.ECGView;
+import it.crs4.most.visualization.utils.zmq.ECGSubscriber;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
-import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
@@ -93,12 +96,14 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     ARFragment.OnCompleteListener, SurfaceHolder.Callback, ARFragment.ARListener {
 
     private final static String TAG = "SpecTeleconsultActivity";
+
     public static final int TELECONSULT_ENDED_REQUEST = 1;
+    public final static int ZMQ_LISTENING_PORT = 5556;
+
     private static final float DEFAULT_FRAME_SIZE = 0.5f;
     private static final float CAMERA_SMALL = 0.25f;
     private static final float ECO_LARGE = 0.75f;
 
-    public final static int ZMQ_LISTENING_PORT = 5556;
     private String CAMERA_STREAM = "CAMERA_STREAM";
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
@@ -113,7 +118,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private FrameLayout mEcoFrame;
     private TcStateTextView mTextTcState;
     private PTZ_Manager mPTZManager;
-
     private PTZ_ControllerPopupWindowFactory mPTZPopupWindowController;
     private String mEcoExtension;
     private MenuItem mCallMenuItem;
@@ -133,18 +137,18 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private Handler mCameraStreamHandler;
 
     private boolean arOnBoot = false;
-    private ZMQPublisher publisher;
+    private ZMQPublisher mARPublisher;
     private ARConfiguration arConf;
     private Button resetCameraMesh;
     private Button resetEcoMesh;
     private Button saveKeyCoordinate;
     private User user;
     private ECGView mEcgView;
-    private ZMQSubscriber mEcgSubscriber;
-
-    protected Handler getVoipHandler() {
-        return new CallHandler(this);
-    }
+    private ECGSubscriber mEcgSubscriber;
+    private LinearLayout mStreamLayout;
+    private String mSensorsServer;
+    private int maxECGData = 400;
+    private float period = 0.02f;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,14 +158,11 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         File[] files = cacheFolder.listFiles();
         if (files != null) {
             for (File file : files) {
-                if (!file.delete()) {
-//                    throw new RuntimeException("cannot delete cached files");
-                }
+                file.delete();
             }
         }
         AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(this, "Data");
-
 
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
@@ -174,8 +175,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         arConf = teleconsultation.getLastSession().getRoom().getARConfiguration();
         if (arConf != null) {
-            publisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
-            Thread pubThread = new Thread(publisher);
+            mARPublisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
+            Thread pubThread = new Thread(mARPublisher);
             pubThread.start();
 
             float[] redColor = new float[] {
@@ -193,13 +194,13 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             ecoArrow.setyLimits(-1f + ecoArrow.getHeight() / 2, 1f - ecoArrow.getHeight() / 2);
             ecoArrow.setColors(redColor);
             ecoMeshManager.addMesh(ecoArrow);
-            ecoArrow.publisher = publisher;
+            ecoArrow.publisher = mARPublisher;
 
             Intent i = getIntent();
             teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
             createARMeshes(cameraMeshManager);
             for (Mesh mesh : cameraMeshManager.getMeshes()) {
-                mesh.publisher = publisher;
+                mesh.publisher = mARPublisher;
             }
             ecoMeshManager.configureScene();
         }
@@ -209,11 +210,12 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
             new PTZHandler(this), true, true, true, 100, 100);
+        mStreamLayout = (LinearLayout) findViewById(R.id.stream_layout);
 
         user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()) {
             ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-                newInstance(publisher, teleconsultation.getLastSession().getRoom());
+                newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
 
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
@@ -245,14 +247,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
         saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
 
-        String sensorsServer = teleconsultation.getLastSession().getRoom().getSensorsServer();
-        if (!sensorsServer.equals("")) {
-            mEcgView = (ECGView) findViewById(R.id.ecg_graph);
-            mEcgSubscriber = new ECGSubscriber(sensorsServer + ":5556", "ECG");
-            Thread subThread = new Thread(mEcgSubscriber);
-            subThread.start();
-            mEcgView.setSubscriber(mEcgSubscriber);
-        }
+        setupECGFrame();
     }
 
     @Override
@@ -260,6 +255,12 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         super.onStart();
         mStreamCameraFragment.setPlayerButtonsVisible(false);
         mStreamEcoFragment.setPlayerButtonsVisible(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mARPublisher.close();
     }
 
     @Override
@@ -324,9 +325,34 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
                     pauseCamera();
                 }
-
+            case R.id.button_ecg:
+                item.setChecked(!item.isChecked());
+                if (item.isChecked()) {
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_on_background));
+                }
+                else {
+                    item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
+                }
+                showECG(item.isChecked());
         }
         return false;
+    }
+
+    private void showECG(boolean show) {
+        LinearLayout.LayoutParams streamLayoutParams = (LinearLayout.LayoutParams)
+            mStreamLayout.getLayoutParams();
+
+        if (show) {
+            mEcgView.resetData();
+            mEcgView.setVisibility(View.VISIBLE);
+            streamLayoutParams.weight = 0.9f;
+            mEcgSubscriber.startReceiving();
+        }
+        else {
+            mEcgView.setVisibility(View.GONE);
+            mEcgSubscriber.stopReceiving();
+            streamLayoutParams.weight = 1f;
+        }
     }
 
     private void changeEcoStreamSize() {
@@ -349,7 +375,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mEcoFrame.setLayoutParams(ecoParams);
         mChangeEcoSizeMenuItem.setTitle(title);
     }
-
 
     private void setupStreamLib() {
         try {
@@ -410,7 +435,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 TouchGLSurfaceView glView = mStreamCameraFragment.getGlView();
                 if (arConf != null) {
                     glView.setMeshManager(cameraMeshManager);
-                    glView.setPublisher(publisher);
+                    glView.setPublisher(mARPublisher);
                 }
                 else {
                     glView.setEnabled(false);
@@ -435,7 +460,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
                 if (arConf != null) {
                     glView.setMeshManager(ecoMeshManager);
-                    glView.setPublisher(publisher);
+                    glView.setPublisher(mARPublisher);
                 }
                 else {
                     glView.setEnabled(false);
@@ -468,6 +493,45 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     protected void setupVoipLib() {
         super.setupVoipLib();
         mEcoExtension = mVoipParams.get("ecoExtension");
+    }
+
+    protected Handler getVoipHandler() {
+        return new CallHandler(this);
+    }
+
+    protected void setupECGFrame() {
+        mSensorsServer = teleconsultation.getLastSession().getRoom().getSensorsServer();
+        if (!mSensorsServer.equals("")) {
+            mEcgSubscriber = new ECGSubscriber("tcp", mSensorsServer, "5556", "ECG");
+            mEcgSubscriber.start();
+            mEcgSubscriber.getLooper();
+            mEcgSubscriber.prepareResponseHandler();
+            mEcgView = (ECGView) findViewById(R.id.ecg_graph);
+            if (mEcgView != null) {
+                mEcgView.setSubscriber(mEcgSubscriber);
+                mEcgView.setMaxData(maxECGData);
+                GridLabelRenderer gridLabelRenderer = mEcgView.getGridLabelRenderer();
+                StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(mEcgView);
+
+                String[] yLabels = new String[] {"0", "1000", "2000", "3000", "4000", "5000"};
+                staticLabelsFormatter.setVerticalLabels(yLabels);
+
+                int numOfLabels = Math.round(maxECGData * period) + 1;
+                String[] xLabels = new String[numOfLabels];
+                xLabels[0] = "0";
+                for (int i = 1; i < numOfLabels; i++) {
+                    DecimalFormat df = new DecimalFormat("#.#");
+                    df.setRoundingMode(RoundingMode.CEILING);
+                    xLabels[i] = df.format(period * 10 * (i));
+                    Log.d(TAG, "Label: " + xLabels[i]);
+                }
+                staticLabelsFormatter.setHorizontalLabels(xLabels);
+
+                gridLabelRenderer.setLabelFormatter(staticLabelsFormatter);
+                gridLabelRenderer.setVerticalAxisTitle("mV");
+                gridLabelRenderer.setHorizontalAxisTitle("s");
+            }
+        }
     }
 
     private void showPTZPopupWindow() {
@@ -1012,13 +1076,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
             imageDownloader.downloadImage(camera.getShotUri()); // uriProps.getProperty("uri_still_image"));
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        publisher.close();
-
     }
 
     private static class ResetButtonListener implements View.OnClickListener {

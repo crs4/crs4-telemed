@@ -43,11 +43,10 @@ import it.crs4.most.streaming.GstreamerRTSPServer;
 import it.crs4.most.streaming.StreamServer;
 import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
-import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
-import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
+import it.crs4.most.visualization.utils.zmq.ARSubscriber;
 import jp.epson.moverio.bt200.DisplayControl;
 // For Epson Moverio BT-200. BT200Ctrl.jar must be in libs/ folder.
 
@@ -64,7 +63,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
     private MeshManager meshManager = new MeshManager();
     private boolean arInitialized = false;
     private boolean arEnabled = false;
-    private ZMQSubscriber subscriber;
+    private ARSubscriber mARSubscriber;
     private SensorManager sensorManager;
     private Sensor accelerometer;
     protected float accX, accY, accZ;
@@ -159,12 +158,13 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             isOptical = true;
         }
 
-
         String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
         Log.d(TAG, "SpecApp Address: " + specAppAddress);
-        subscriber = new ZMQSubscriber(specAppAddress, null);
-        Thread subThread = new Thread(subscriber);
-        subThread.start();
+        mARSubscriber = new ARSubscriber("tcp://" + specAppAddress, null);
+        mARSubscriber.start();
+        mARSubscriber.getLooper();
+        mARSubscriber.prepareResponseHandler();
+        mARSubscriber.startReceiving();
         createARMeshes(meshManager);
 
         if (mOpticalARToolkit != null) {
@@ -178,8 +178,8 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             renderer = new PubSubARRenderer(this, meshManager);
         }
         renderer.setEnabled(arEnabled);
-        float [] calibration = QuerySettings.getARCalibration(this);
-        renderer.setExtraCalibration(new float[]{calibration[0], calibration[1], 0});
+        float[] calibration = QuerySettings.getARCalibration(this);
+        renderer.setExtraCalibration(new float[] {calibration[0], calibration[1], 0});
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -241,7 +241,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         Log.i("ARActivity", "onResume(): CaptureCameraPreview created");
         glView = new CalibrateTouchGLSurfaceView(this);
 
-        ActivityManager activityManager = (ActivityManager) this.getSystemService("activity");
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 131072;
         if (supportsEs2) {
@@ -268,7 +268,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         glView.getHolder().setFormat(-3);
         glView.setRenderer((PubSubARRenderer) renderer);
-        glView.setSubscriber(subscriber);
+        glView.setSubscriber(mARSubscriber);
         glView.setMeshManager(meshManager);
 
         glView.setRenderMode(0);
@@ -289,7 +289,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         super.onPause();
         if (this.glView != null) {
             this.glView.onPause();
-            float [] extraCalibration = renderer.getExtraCalibration();
+            float[] extraCalibration = renderer.getExtraCalibration();
             QuerySettings.setARCalibration(this, extraCalibration[0], extraCalibration[1]);
         }
 
@@ -297,7 +297,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         this.mainLayout.removeView(this.preview);
         unregisterReceiver(broadcastReceiver);
         sensorManager.unregisterListener(this);
-        subscriber.close();
+        mARSubscriber.close();
     }
 
     @Override
