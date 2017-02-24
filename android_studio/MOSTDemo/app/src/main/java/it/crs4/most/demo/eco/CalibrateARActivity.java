@@ -182,6 +182,7 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             @Override
             public void handleDown(){
                 super.handleDown();
+                Log.d(TAG, "handleDown");
                 List<MarkerFactory.Marker> visibleMarkers = meshManager.getVisibleMarkers();
                 MarkerFactory.Marker marker = visibleMarkers.get(0);
                 float [] extraCalibration = new float[3];
@@ -196,14 +197,17 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
             @Override
             public void handleUp(){
                 super.handleUp();
+                Log.d(TAG, "handleUp");
                 List<MarkerFactory.Marker> visibleMarkers = meshManager.getVisibleMarkers();
                 MarkerFactory.Marker marker = visibleMarkers.get(0);
                 float [] extraCalibration = new float[] {mesh.getX(), mesh.getY(), mesh.getZ()};
                 ((PubSubARRenderer)renderer).setExtraCalibration(marker.getGroup(), extraCalibration);
                 calibrations.put(marker.getGroup(), extraCalibration);
+                Log.d(TAG, String.format("new calib %s %s %s", extraCalibration[0], extraCalibration[1], extraCalibration[2]));
                 mesh.setX(0, false);
                 mesh.setY(0, false);
                 mesh.setZ(0, false);
+                ((PubSubARRenderer)renderer).setExtraCalibration(marker.getGroup(), extraCalibration);
                 requestRender();
             }
         };

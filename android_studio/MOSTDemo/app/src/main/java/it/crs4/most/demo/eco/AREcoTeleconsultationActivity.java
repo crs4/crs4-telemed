@@ -174,7 +174,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             renderer = new OpticalRenderer(this, mOpticalARToolkit, meshManager);
 
             ((OpticalRenderer) renderer).setEye(
-                OpticalRenderer.EYE.valueOf(QuerySettings.getAREyes(this).toString()));
+                OpticalRenderer.EYE.valueOf(teleconsultation.getLastSession().getRoom().getARConfiguration().getEye()));
         }
         else {
             renderer = new PubSubARRenderer(this, meshManager);
@@ -278,6 +278,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         glView.setRenderMode(0);
         glView.setZOrderMediaOverlay(true);
+        glView.setEnabled(false);
 
         mainLayout.addView(this.preview, new ViewGroup.LayoutParams(-1, -1));
         mainLayout.addView(this.glView, new ViewGroup.LayoutParams(-1, -1));

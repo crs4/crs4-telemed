@@ -244,6 +244,7 @@ class ARConfiguration(models.Model):
         if user:
             for calib in ARCalibration.objects.filter(user=user):
                 dct['calibrations'].append(calib.to_dict())
+            dct['eye'] = ARPreferences.objects.get_or_create(user=user)[0].eye
         return dct
 
 
