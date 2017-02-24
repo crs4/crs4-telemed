@@ -48,19 +48,14 @@ import java.util.Timer;
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
 import it.crs4.most.demo.RESTClient;
-import it.crs4.most.streaming.GstreamerRTSPServer;
-import it.crs4.most.streaming.StreamServer;
-import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
-import it.crs4.most.visualization.augmentedreality.mesh.Arrow;
-import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
+
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
-import it.crs4.most.visualization.utils.zmq.ZMQSubscriber;
 import jp.epson.moverio.bt200.DisplayControl;
 
 public class CalibrateARActivity extends AppCompatActivity implements CameraEventListener {
