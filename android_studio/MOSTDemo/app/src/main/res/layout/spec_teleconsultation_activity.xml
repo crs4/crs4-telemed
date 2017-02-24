@@ -124,14 +124,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ecg_graph_container"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:visibility="gone">
 
         <it.crs4.most.visualization.sensors.ECGView
             android:id="@+id/ecg_graph"
             android:layout_width="500dp"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -90,9 +90,6 @@ import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
 
-import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesStore;
-import zmq.Pub;
-
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
     IStreamFragmentCommandListener, IStreamProvider,
@@ -154,6 +151,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private User user;
     private ECGView mEcgView;
     private ECGSubscriber mEcgSubscriber;
+    private LinearLayout mEcgContainer;
     private LinearLayout mStreamLayout;
     private String mSensorsServer;
     private int maxECGData = 400;
@@ -345,6 +343,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
                     pauseCamera();
                 }
+                break;
             case R.id.button_ecg:
                 item.setChecked(!item.isChecked());
                 if (item.isChecked()) {
@@ -428,8 +427,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
-
-
 
             Device encoder = teleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
@@ -545,6 +542,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mEcgSubscriber.getLooper();
             mEcgSubscriber.prepareResponseHandler();
             mEcgView = (ECGView) findViewById(R.id.ecg_graph);
+            mEcgContainer = (LinearLayout) findViewById(R.id.ecg_graph_container);
             if (mEcgView != null) {
                 mEcgView.setSubscriber(mEcgSubscriber);
                 mEcgView.setMaxData(maxECGData);
