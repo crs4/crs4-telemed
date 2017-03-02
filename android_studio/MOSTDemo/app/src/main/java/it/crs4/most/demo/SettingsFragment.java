@@ -203,6 +203,9 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private boolean isEcographist(){
+        if (role.getValue() == null)
+            return false;
+
         return role.getValue().equals(mRoles[0]);
     }
 
