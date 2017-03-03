@@ -206,6 +206,8 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
                 requestRender();
             }
         };
+            glView.setEnabled(true);
+            glView.setEnableRendering(true);
 
         ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
