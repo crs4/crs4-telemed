@@ -262,7 +262,14 @@ class ARMarker(models.Model):
 
 
 class Mesh(models.Model):
-    cls = models.CharField(max_length=128)
+
+    CHOICES = (
+        ('it.crs4.most.visualization.augmentedreality.mesh.Pyramid', 'Pyramid'),
+        ('it.crs4.most.visualization.augmentedreality.mesh.Arrow', 'Arrow'),
+        ('it.crs4.most.visualization.augmentedreality.mesh.Circle', 'Circle'),
+    )
+
+    cls = models.CharField(max_length=128, choices=CHOICES)
     sizeX = models.FloatField()
     sizeY = models.FloatField()
     sizeZ = models.FloatField()
