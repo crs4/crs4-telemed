@@ -1,20 +1,24 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "21.1.2"
 
-    defaultConfig {
-        applicationId "it.crs4.most.demo"
-        minSdkVersion 15
-        targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+model {
+
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "21.1.2"
+
+        defaultConfig.with {
+            applicationId "it.crs4.most.demo"
+            minSdkVersion.apiLevel  = 15
+            targetSdkVersion.apiLevel = 21
+            versionCode = 1
+            versionName = "1.0"
+        }
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles.add(file('proguard-rules.pro'))
+            }
         }
     }
 }
@@ -28,6 +32,7 @@ dependencies {
     compile name: "MOSTVoip", ext: "aar", group: 'it.crs4.most.voip', version: '1.0'
     compile name: "MOSTEhr", ext: "aar", group: 'it.crs4.most.report.ehr', version: '1.0'
     compile project(':aRBaseLib')
+//    compile project(':MOSTVisualization')
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:appcompat-v7:23.4.0'
