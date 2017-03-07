@@ -197,9 +197,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 mesh.setCoordsConverter(new CoordsConverter(
                         arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
                 mesh.publisher = mARPublisher;
-//                mesh.scale(10000, 10000, 10000);
-                mesh.setSx(0.0001f);
-                mesh.setSy(0.0001f);
                 mesh.removeAllMarkers();
             }
 
@@ -518,6 +515,17 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             }
         });
 
+        mStreamEcoFragment.getRenderer().setViewportListener(new PubSubARRenderer.ViewportListener() {
+            @Override
+            public void onViewportChanged(int x, int y, int width, int height) {
+                for (Mesh mesh: ecoMeshManager.getMeshes()) {
+                    float aspectRatio = ((float) width)/height;
+                    mesh.setSx(2*aspectRatio/arConf.getScreenWidth());
+                    mesh.setSy(2/arConf.getScreenHeight());
+                }
+
+            }
+        });
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.container_stream_camera, mStreamCameraFragment);
