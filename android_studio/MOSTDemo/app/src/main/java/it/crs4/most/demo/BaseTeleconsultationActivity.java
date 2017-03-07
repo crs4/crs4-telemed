@@ -17,6 +17,8 @@ import android.view.View;
 import org.artoolkit.ar.base.assets.AssetHelper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +85,12 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
         mVoipLib.initLib(getApplicationContext(), mVoipParams, getVoipHandler());
     }
 
-    protected void createARMeshes(MeshManager meshManager){
+
+    protected Collection<Mesh> createARMeshes(MeshManager meshManager){
+        return createARMeshes(meshManager, null);
+    }
+
+    protected Collection<Mesh> createARMeshes(MeshManager meshManager, String group){
         float [] redColor = new float []{
                 0, 0, 0, 1f,
                 1, 0, 0, 1f,
@@ -95,7 +102,8 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
         Map<String, Mesh> meshes = new HashMap<>();
         ARConfiguration arConf = teleconsultation.getLastSession().getRoom().getARConfiguration();
         if (arConf != null){
-            for (ARMarker markerModel: arConf.getMarkers()){
+            List<ARMarker> markers = group == null? arConf.getMarkers(): arConf.getMarkers(group);
+            for (ARMarker markerModel: markers){
                 MarkerFactory.Marker marker = MarkerFactory.getMarker(markerModel.getConf());
                 float [] trans = new float[16];
                 Matrix.setIdentityM(trans, 0);
@@ -134,9 +142,6 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
                 mesh.addMarker(marker);
             }
         }
-
+        return meshes.values();
     }
-
-
-
 }

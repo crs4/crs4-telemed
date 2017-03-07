@@ -121,4 +121,14 @@ public class ARConfiguration implements Serializable {
     public String getEye() {
         return eye;
     }
+
+    public List<ARMarker> getMarkers(String group) {
+        List<ARMarker> result = new ArrayList<>();
+        for (ARMarker marker: markers) {
+            if (marker.getGroup().equals(group)) {
+                result.add(marker);
+            }
+        }
+        return result;
+    }
 }
