@@ -52,6 +52,7 @@ import it.crs4.most.visualization.augmentedreality.MarkerFactory;
 import it.crs4.most.visualization.augmentedreality.OpticalARToolkit;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 
+import it.crs4.most.visualization.augmentedreality.mesh.Circle;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
 import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.OpticalRenderer;
@@ -113,7 +114,7 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         float [] calibration = QuerySettings.getARCalibration(this);
     //        renderer.setExtraCalibration(new float[]{calibration[0], calibration[1], 0});
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
-        Pyramid arrow = new Pyramid(10, 10, 10, "ARROW");
+        Circle arrow = new Circle(38, 10, 10, "ARROW");
         MarkerFactory.Marker markerA = MarkerFactory.getMarker("single;Data/multi/a.patt;40");
         arrow.addMarker(markerA);
         markerA.setGroup("keyboard");
