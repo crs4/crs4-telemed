@@ -37,6 +37,7 @@ import java.lang.ref.WeakReference;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.ReportActivity;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.ARConfiguration;
+import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
@@ -76,6 +78,7 @@ import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
 import it.crs4.most.visualization.StreamInspectorFragment.IStreamProvider;
 import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
+import it.crs4.most.visualization.augmentedreality.mesh.Circle;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
 import it.crs4.most.visualization.augmentedreality.mesh.Line;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
@@ -156,6 +159,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private String mSensorsServer;
     private int maxECGData = 400;
     private float period = 0.02f;
+    Circle ecoArrow;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,26 +191,19 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             Thread pubThread = new Thread(mARPublisher);
             pubThread.start();
 
-            float[] redColor = new float[] {
-                0, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f,
-                1, 0, 0, 1f
-            };
-            Pyramid ecoArrow = new Pyramid(0.07f, 0.07f, 0.07f, ECO_ARROW_ID);
-            ecoArrow.setCoordsConverter(new CoordsConverter(
-                arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
+//          Populating with eco meshes
+            createARMeshes(ecoMeshManager, "eco");
+            for (Mesh mesh: ecoMeshManager.getMeshes()) {
+                mesh.setCoordsConverter(new CoordsConverter(
+                        arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
+                mesh.publisher = mARPublisher;
+                mesh.removeAllMarkers();
+            }
 
-            ecoArrow.setxLimits(-1f + ecoArrow.getHeight() / 2, 1f - ecoArrow.getHeight() / 2);
-            ecoArrow.setyLimits(-1f + ecoArrow.getHeight() / 2, 1f - ecoArrow.getHeight() / 2);
-            ecoArrow.setColors(redColor);
-            ecoMeshManager.addMesh(ecoArrow);
-            ecoArrow.publisher = mARPublisher;
 
             Intent i = getIntent();
             teleconsultation = (Teleconsultation) i.getExtras().getSerializable(TELECONSULTATION_ARG);
-            createARMeshes(cameraMeshManager);
+            createARMeshes(cameraMeshManager, "keyboard");
             for (Mesh mesh : cameraMeshManager.getMeshes()) {
                 mesh.publisher = mARPublisher;
             }
@@ -222,32 +219,32 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()) {
-            ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-                newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
-
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
-            fragmentTransaction.commit();
-
-            Line line;
-            float[] whiteColor = new float[] {1.0F, 1F, 1F, 1.0F};
-            float thick = 1f;
-
-            for (int i = -3; i <= 3; i++) {
-                line = new Line(
-                    new float[] {i * 0.25f, -1, 0},
-                    new float[] {i * 0.25f, 1, 0},
-                    thick);
-                line.setColors(whiteColor);
-                ecoMeshManager.addMesh(line);
-
-                line = new Line(
-                    new float[] {-1, i * 0.25f, 0},
-                    new float[] {1, i * 0.25f, 0},
-                    thick);
-                line.setColors(whiteColor);
-                ecoMeshManager.addMesh(line);
-            }
+//            ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
+//                newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
+//
+//            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//            fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
+//            fragmentTransaction.commit();
+//
+//            Line line;
+//            float[] whiteColor = new float[] {1.0F, 1F, 1F, 1.0F};
+//            float thick = 1f;
+//
+//            for (int i = -3; i <= 3; i++) {
+//                line = new Line(
+//                    new float[] {i * 0.25f, -1, 0},
+//                    new float[] {i * 0.25f, 1, 0},
+//                    thick);
+//                line.setColors(whiteColor);
+//                ecoMeshManager.addMesh(line);
+//
+//                line = new Line(
+//                    new float[] {-1, i * 0.25f, 0},
+//                    new float[] {1, i * 0.25f, 0},
+//                    thick);
+//                line.setColors(whiteColor);
+//                ecoMeshManager.addMesh(line);
+//            }
         }
         setupStreamLib();
 
@@ -462,6 +459,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             Log.e(TAG, "Error creating streams");
             return;
         }
+
+
         mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -516,6 +515,17 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             }
         });
 
+        mStreamEcoFragment.getRenderer().setViewportListener(new PubSubARRenderer.ViewportListener() {
+            @Override
+            public void onViewportChanged(int x, int y, int width, int height) {
+                for (Mesh mesh: ecoMeshManager.getMeshes()) {
+                    float aspectRatio = ((float) width)/height;
+                    mesh.setSx(2*aspectRatio/arConf.getScreenWidth());
+                    mesh.setSy(2/arConf.getScreenHeight());
+                }
+
+            }
+        });
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.container_stream_camera, mStreamCameraFragment);
