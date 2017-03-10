@@ -160,6 +160,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private int maxECGData = 400;
     private float period = 0.02f;
     Circle ecoArrow;
+    private float viewportAspectRatio;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -194,8 +195,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 //          Populating with eco meshes
             createARMeshes(ecoMeshManager, "eco");
             for (Mesh mesh: ecoMeshManager.getMeshes()) {
-                mesh.setCoordsConverter(new CoordsConverter(
-                        arConf.getScreenWidth() / 2, arConf.getScreenHeight() / 2, 1f));
                 mesh.publisher = mARPublisher;
                 mesh.removeAllMarkers();
             }
@@ -213,38 +212,21 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
         mARCameraRenderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
+        mAREcoRenderer.setEnableGrid(true);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
             new PTZHandler(this), true, true, true, 100, 100);
         mStreamLayout = (LinearLayout) findViewById(R.id.stream_layout);
 
         user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()) {
-//            ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-//                newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
-//
-//            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-//            fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
-//            fragmentTransaction.commit();
-//
-//            Line line;
-//            float[] whiteColor = new float[] {1.0F, 1F, 1F, 1.0F};
-//            float thick = 1f;
-//
-//            for (int i = -3; i <= 3; i++) {
-//                line = new Line(
-//                    new float[] {i * 0.25f, -1, 0},
-//                    new float[] {i * 0.25f, 1, 0},
-//                    thick);
-//                line.setColors(whiteColor);
-//                ecoMeshManager.addMesh(line);
-//
-//                line = new Line(
-//                    new float[] {-1, i * 0.25f, 0},
-//                    new float[] {1, i * 0.25f, 0},
-//                    thick);
-//                line.setColors(whiteColor);
-//                ecoMeshManager.addMesh(line);
-//            }
+            ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
+                newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
+
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
+            fragmentTransaction.commit();
+
+
         }
         setupStreamLib();
 
@@ -518,10 +500,23 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mStreamEcoFragment.getRenderer().setViewportListener(new PubSubARRenderer.ViewportListener() {
             @Override
             public void onViewportChanged(int x, int y, int width, int height) {
+                viewportAspectRatio = ((float) width)/height;
+                Log.d(TAG, "viewportAspectRatio " + viewportAspectRatio);
                 for (Mesh mesh: ecoMeshManager.getMeshes()) {
-                    float aspectRatio = ((float) width)/height;
-                    mesh.setSx(2*aspectRatio/arConf.getScreenWidth());
-                    mesh.setSy(2/arConf.getScreenHeight());
+                    mesh.setSx(2f/arConf.getScreenHeight());
+                    mesh.setSy(2f/arConf.getScreenHeight());
+                    mesh.setCoordsConverter(
+                            new CoordsConverter(
+                                arConf.getScreenWidth() / (2f * viewportAspectRatio),
+                                arConf.getScreenHeight() / 2f,
+                                1f
+                            )
+                    );
+
+//                    mesh.setSx(2f/arConf.getScreenHeight());
+//                    mesh.setSy(2f/arConf.getScreenHeight());
+                    mesh.setxLimits(-viewportAspectRatio, viewportAspectRatio);
+                    mesh.setyLimits(-1, 1);
                 }
 
             }
