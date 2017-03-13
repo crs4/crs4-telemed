@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.crs4.most.demo.eco.BaseEcoTeleconsultationActivity;
 import it.crs4.most.demo.models.ARConfiguration;
 import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Teleconsultation;
@@ -44,7 +43,9 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
     protected VoipLib mVoipLib;
     protected AudioManager mAudioManager;
     protected int mOriginalAudioMode;
+
     protected abstract void notifyTeleconsultationStateChanged();
+
     protected abstract Handler getVoipHandler();
 
     @Override
@@ -56,9 +57,9 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
 
         File cacheFolder = new File(getCacheDir().getAbsolutePath() + "/Data");
         File[] files = cacheFolder.listFiles();
-        if (files != null){
+        if (files != null) {
             for (File file : files) {
-                if (!file.delete()){
+                if (!file.delete()) {
 //                    throw new RuntimeException("cannot delete cached files");
                 }
             }
@@ -71,7 +72,7 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
         setupVoipLib();
     }
 
-    protected  void setTeleconsultationState(TeleconsultationState tcState) {
+    protected void setTeleconsultationState(TeleconsultationState tcState) {
         mTcState = tcState;
         notifyTeleconsultationStateChanged();
     }
@@ -105,7 +106,7 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
             List<ARMarker> markers = group == null? arConf.getMarkers(): arConf.getMarkers(group);
             for (ARMarker markerModel: markers){
                 MarkerFactory.Marker marker = MarkerFactory.getMarker(markerModel.getConf());
-                float [] trans = new float[16];
+                float[] trans = new float[16];
                 Matrix.setIdentityM(trans, 0);
                 trans[12] = markerModel.getTransX();
                 trans[13] = markerModel.getTransY();
@@ -134,7 +135,8 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
                         mesh.setColors(redColor);
                         meshManager.addMesh(mesh);
 
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                         continue;
                     }
