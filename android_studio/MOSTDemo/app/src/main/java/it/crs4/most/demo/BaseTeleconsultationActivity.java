@@ -90,7 +90,7 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
         return createARMeshes(meshManager, null);
     }
 
-    protected Collection<Mesh> createARMeshes(MeshManager meshManager, String group){
+    protected Collection<Mesh> createARMeshes(MeshManager meshManager, String group, float [] scaling){
         float [] redColor = new float []{
                 0, 0, 0, 1f,
                 1, 0, 0, 1f,
@@ -125,9 +125,9 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
                                 float.class, float.class, float.class, String.class
                         };
                         mesh = (Mesh) clsMesh.getDeclaredConstructor(cArg).newInstance(
-                                meshModel.getSizeX(),
-                                meshModel.getSizeY(),
-                                meshModel.getSizeZ(),
+                                meshModel.getSizeX() * scaling[0],
+                                meshModel.getSizeY()* scaling[1],
+                                meshModel.getSizeZ() * scaling[2],
                                 meshModel.getName()
                         );
                         meshes.put(meshModel.getName(), mesh);
@@ -144,4 +144,11 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
         }
         return meshes.values();
     }
+
+
+
+    protected Collection<Mesh> createARMeshes(MeshManager meshManager, String group){
+        return  createARMeshes(meshManager, group, new float [] {1, 1, 1});
+    }
+
 }

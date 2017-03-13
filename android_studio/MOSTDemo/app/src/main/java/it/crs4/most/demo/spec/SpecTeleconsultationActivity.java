@@ -193,7 +193,15 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             pubThread.start();
 
 //          Populating with eco meshes
-            createARMeshes(ecoMeshManager, "eco");
+            createARMeshes(
+                    ecoMeshManager,
+                    "eco",
+                    new float[] {
+                            2f/arConf.getScreenHeight(),
+                            2f/arConf.getScreenHeight(),
+                            1
+                    }
+            );
             for (Mesh mesh: ecoMeshManager.getMeshes()) {
                 mesh.publisher = mARPublisher;
                 mesh.removeAllMarkers();
@@ -503,8 +511,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 viewportAspectRatio = ((float) width)/height;
                 Log.d(TAG, "viewportAspectRatio " + viewportAspectRatio);
                 for (Mesh mesh: ecoMeshManager.getMeshes()) {
-                    mesh.setSx(2f/arConf.getScreenHeight());
-                    mesh.setSy(2f/arConf.getScreenHeight());
+//                    mesh.setSx(2f/arConf.getScreenHeight());
+//                    mesh.setSy(2f/arConf.getScreenHeight());
                     mesh.setCoordsConverter(
                             new CoordsConverter(
                                 arConf.getScreenWidth() / (2f * viewportAspectRatio),
@@ -1142,6 +1150,14 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 m.setX(0);
                 m.setY(0);
                 m.setZ(0);
+
+                m.setRx(0);
+                m.setRy(0);
+                m.setRz(0);
+
+                m.setSx(1);
+                m.setSy(1);
+                m.setSz(1);
             }
             view.requestRender();
         }
