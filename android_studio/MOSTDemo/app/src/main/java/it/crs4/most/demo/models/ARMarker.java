@@ -27,7 +27,9 @@ public class ARMarker implements Serializable {
 
     public static ARMarker fromJSON(JSONObject obj) throws TeleconsultationException {
         try {
-            String conf = obj.getString("conf");
+            String conf = null;
+            if (!obj.isNull("conf"))
+                conf = obj.getString("conf");
             float transX = (float) obj.getDouble("trans_x");
             float transY = (float) obj.getDouble("trans_y");
             int pk = obj.getInt("pk");

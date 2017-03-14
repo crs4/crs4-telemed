@@ -289,7 +289,7 @@ class Mesh(models.Model):
 
 
 class ARMarkerTranslation(models.Model):
-    marker = models.ForeignKey(ARMarker)
+    marker = models.ForeignKey(ARMarker, null=True, blank=True)
     trans_x = models.FloatField(default=0.0, help_text="expressed in mm")
     trans_y = models.FloatField(default=0.0, help_text="expressed in mm")
     group = models.CharField(max_length=64)
@@ -298,7 +298,7 @@ class ARMarkerTranslation(models.Model):
     def to_dict(self):
         return {
             'pk': self.pk,
-            'conf': str(self.marker),
+            'conf': str(self.marker) if self.marker else None,
             'trans_x': self.trans_x,
             'trans_y': self.trans_y,
             'group': self.group,

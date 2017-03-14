@@ -104,13 +104,6 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
         if (arConf != null){
             List<ARMarker> markers = group == null? arConf.getMarkers(): arConf.getMarkers(group);
             for (ARMarker markerModel: markers){
-                MarkerFactory.Marker marker = MarkerFactory.getMarker(markerModel.getConf());
-                float [] trans = new float[16];
-                Matrix.setIdentityM(trans, 0);
-                trans[12] = markerModel.getTransX();
-                trans[13] = markerModel.getTransY();
-                marker.setModelMatrix(trans);
-                marker.setGroup(markerModel.getGroup());
 
                 it.crs4.most.demo.models.Mesh meshModel = markerModel.getMesh();
                 Mesh mesh;
@@ -139,7 +132,17 @@ public abstract class BaseTeleconsultationActivity extends AppCompatActivity {
                         continue;
                     }
                 }
-                mesh.addMarker(marker);
+                if (markerModel.getConf() != null) {
+                    MarkerFactory.Marker marker = MarkerFactory.getMarker(markerModel.getConf());
+                    float [] trans = new float[16];
+                    Matrix.setIdentityM(trans, 0);
+                    trans[12] = markerModel.getTransX();
+                    trans[13] = markerModel.getTransY();
+                    marker.setModelMatrix(trans);
+                    marker.setGroup(markerModel.getGroup());
+                    mesh.addMarker(marker);
+                }
+
             }
         }
         return meshes.values();
