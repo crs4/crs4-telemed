@@ -95,12 +95,12 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:id="@+id/container_stream_on_board_camera"
+                android:id="@+id/container_stream_camera"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
             <FrameLayout
-                android:id="@+id/container_stream_camera"
+                android:id="@+id/container_stream_on_board_camera"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 

@@ -87,6 +87,7 @@ import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.sensors.ECGView;
 import it.crs4.most.visualization.utils.zmq.ECGSubscriber;
+import it.crs4.most.visualization.utils.zmq.IPublisher;
 import it.crs4.most.visualization.utils.zmq.ZMQPublisher;
 import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.enums.CallState;
@@ -109,7 +110,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     private final String CAMERA_STREAM = "CAMERA_STREAM";
     private final String ON_BOARD_CAMERA_STREAM = "ON_BOARD_CAMERA_STREAM";
-    private String currentCameraStream = CAMERA_STREAM;
+    private String currentCameraStream = ON_BOARD_CAMERA_STREAM;
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
     private String CAMER_ARROW_ID = "cameraArrow";
@@ -236,12 +237,13 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
 
         }
-        setupStreamLib();
+
 
         resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
         saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
 
+        setupStreamLib();
         setupECGFrame();
 
         Button switchCameraButton = (Button) findViewById(R.id.switch_camera);
@@ -438,6 +440,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
                 mStreamOnBoardCameraFragment.setRenderer(renderer);
                 mStreamOnBoardCameraFragment.setStreamAR(mStreamOnBoardCamera);
+                mStreamOnBoardCameraFragment.setArListener(this);
             }
 
             Device camera;
@@ -450,9 +453,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mStreamCameraFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setRenderer(mARCameraRenderer);
             mStreamCameraFragment.setStreamAR(mStreamCamera);
-            mStreamCameraFragment.setGlSurfaceViewCallback(this);
+//            mStreamCameraFragment.setGlSurfaceViewCallback(this);
             mStreamCameraFragment.setEnabled(arOnBoot);
             mStreamCameraFragment.setArListener(this);
+
 
             Device encoder = teleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
@@ -478,30 +482,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             return;
         }
 
-        mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                TouchGLSurfaceView glView = mStreamCameraFragment.getGlView();
-                if (arConf != null) {
-                    glView.setMeshManager(cameraMeshManager);
-                    glView.setPublisher(mARPublisher);
-                }
-                else {
-                    glView.setEnabled(false);
-                }
-                mStreamCameraFragment.setPlayerButtonsVisible(false);
-                resetCameraMesh.setOnClickListener(new ResetButtonListener(cameraMeshManager, glView));
-
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-            }
-        });
+        mStreamCameraFragment.setGlSurfaceViewCallback(new GLSurfaceViewCallback(mStreamCameraFragment, cameraMeshManager, mARPublisher, resetEcoMesh));
+        mStreamOnBoardCameraFragment.setGlSurfaceViewCallback(new GLSurfaceViewCallback(mStreamOnBoardCameraFragment, cameraMeshManager, mARPublisher, resetEcoMesh));
 
         mStreamEcoFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback2() {
             @Override
@@ -800,7 +782,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
 //                mStreamCameraFragment.setRenderer(mARCameraRenderer);
-                    if (arConf != null) {
+                    if (arConf != null && currentCameraStream.equals(CAMERA_STREAM)) {
                         mStreamCameraFragment.prepareRemoteAR();
                         mStreamCameraPrepared = true;
                     }
@@ -818,6 +800,9 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 if (!mStreamOnBoardCameraPrepared) {
                     mStreamOnBoardCamera.prepare(surfaceView, true);
                     mStreamOnBoardCameraPrepared = true;
+                    if (arConf != null && currentCameraStream.equals(ON_BOARD_CAMERA_STREAM)) {
+                        mStreamOnBoardCameraFragment.prepareRemoteAR();
+                    }
                 }
             }
         }
@@ -1088,6 +1073,14 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         public abstract void onVideoSizeChanged(int width, int height);
     }
 
+    private ARFragment getCurrentARCameraFragment() {
+        return currentCameraStream.equals(CAMERA_STREAM)? mStreamCameraFragment: mStreamOnBoardCameraFragment;
+    }
+
+    private PubSubARRenderer getCurrentARCameraRenderer() {
+        return getCurrentARCameraFragment().getRenderer();
+    }
+
     private static class EcoStreamHandler extends StreamHandler {
         public EcoStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
             super(activity, streamName);
@@ -1107,8 +1100,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         @Override
         public void onVideoSizeChanged(int width, int height) {
             Log.d(TAG, String.format("onVideoSizeChanged width %s, height %s", width, height));
-            getActivity().mARCameraRenderer.setViewportSize(width, height);
-            getActivity().mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
+            getActivity().getCurrentARCameraRenderer().setViewportSize(width, height);
+            getActivity().getCurrentARCameraFragment().cameraPreviewStarted(width, height, 25, 0, false);
         }
     }
 
@@ -1206,4 +1199,44 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             view.requestRender();
         }
     }
+
+    private class GLSurfaceViewCallback implements SurfaceHolder.Callback {
+        ARFragment arFragment;
+        MeshManager meshManager;
+        IPublisher publisher;
+        Button resetButton;
+
+        public GLSurfaceViewCallback(
+                ARFragment arFragment,
+                MeshManager meshManager,
+                IPublisher publisher,
+                Button resetButton) {
+            this.arFragment = arFragment;
+            this.meshManager = meshManager;
+            this.publisher = publisher;
+            this.resetButton = resetButton;
+        }
+        @Override
+        public void surfaceCreated(SurfaceHolder surfaceHolder) {
+            TouchGLSurfaceView glView = arFragment.getGlView();
+            if (arConf != null) {
+                glView.setMeshManager(meshManager);
+                glView.setPublisher(publisher);
+//                if (arFragment.getStreamAR().getName().equals(currentCameraStream)) {
+//                    arFragment.prepareRemoteAR();
+//                }
+            }
+            else {
+                glView.setEnabled(false);
+            }
+            arFragment.setPlayerButtonsVisible(false);
+            resetButton.setOnClickListener(new ResetButtonListener(meshManager, glView));
+
+        }
+        @Override
+        public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {}
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder surfaceHolder) {}}
+
 }
