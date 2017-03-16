@@ -138,6 +138,7 @@
     <string name="ar_low_filter_level">Low filter level (0: disabled)</string>
     <string name="ar_keyboard">Keyboard</string>
     <string name="ecg_toggle">ECG</string>
+    <string name="switch_streams">switch</string>
 
     <string-array name="Markers">
         <item>eco_marker</item>

@@ -95,8 +95,8 @@ import it.crs4.most.voip.enums.VoipEventType;
 
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
-    IStreamFragmentCommandListener, IStreamProvider,
-    ARFragment.OnCompleteListener, SurfaceHolder.Callback, ARFragment.ARListener {
+        IStreamFragmentCommandListener, IStreamProvider,
+        ARFragment.OnCompleteListener, SurfaceHolder.Callback, ARFragment.ARListener {
 
     private final static String TAG = "SpecTeleconsultActivity";
 
@@ -109,7 +109,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     private final String CAMERA_STREAM = "CAMERA_STREAM";
     private final String ON_BOARD_CAMERA_STREAM = "ON_BOARD_CAMERA_STREAM";
-    private String CURRENT_CAMERA_STREAM = CAMERA_STREAM;
+    private String currentCameraStream = CAMERA_STREAM;
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
     private String CAMER_ARROW_ID = "cameraArrow";
@@ -122,7 +122,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private ARFragment mStreamCameraFragment;
     private ARFragment mStreamOnBoardCameraFragment;
     private ARFragment mStreamEcoFragment;
-    private FrameLayout mCameraFrame;
+    private LinearLayout mCamerasFrame;
     private FrameLayout mEcoFrame;
     private TcStateTextView mTextTcState;
     private PTZ_Manager mPTZManager;
@@ -137,6 +137,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private boolean mAccountRegistered = false;
     private boolean mFirstCallStarted = false;
     private boolean mStreamCameraPrepared = false;
+    private boolean mStreamOnBoardCameraPrepared = false;
     private HashMap<String, Mesh> mMeshes = new HashMap<>();
     private MeshManager cameraMeshManager = new MeshManager();
     private MeshManager ecoMeshManager = new MeshManager();
@@ -150,7 +151,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private Button resetCameraMesh;
     private Button resetEcoMesh;
     private Button saveKeyCoordinate;
-    private Button switchCameraButton;
     private User user;
     private ECGView mEcgView;
     private ECGSubscriber mEcgSubscriber;
@@ -182,7 +182,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         mEcoStreamHandler = new EcoStreamHandler(this, ECO_STREAM);
         mCameraStreamHandler = new CameraStreamHandler(this, CAMERA_STREAM);
-        mOnBoardCameraStreamHandler= new CameraStreamHandler(this, ON_BOARD_CAMERA_STREAM);
+        mOnBoardCameraStreamHandler = new CameraStreamHandler(this, ON_BOARD_CAMERA_STREAM);
 
         setContentView(R.layout.spec_teleconsultation_activity);
 
@@ -222,13 +222,13 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
         mAREcoRenderer.setEnableGrid(true);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
-            new PTZHandler(this), true, true, true, 100, 100);
+                new PTZHandler(this), true, true, true, 100, 100);
         mStreamLayout = (LinearLayout) findViewById(R.id.stream_layout);
 
         user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()) {
             ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
-                newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
+                    newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
 
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
@@ -244,8 +244,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         setupECGFrame();
 
-        switchCameraButton = (Button) findViewById(R.id.switch_camera);
-
+        Button switchCameraButton = (Button) findViewById(R.id.switch_camera);
         switchCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -340,31 +339,66 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
                 }
                 showECG(item.isChecked());
+                break;
         }
         return false;
     }
 
+    private void switchCamera() {
+        if (currentCameraStream.equals(CAMERA_STREAM)) {
+            mStreamCameraFragment.setStreamInvisible("PAUSED");
+            mStreamCamera.pause();
+            mStreamOnBoardCameraFragment.setStreamVisible();
+            mStreamOnBoardCamera.play();
+
+            findViewById(R.id.container_stream_camera).setVisibility(View.GONE);
+            findViewById(R.id.container_stream_on_board_camera).setVisibility(View.VISIBLE);
+
+//            FragmentTransaction ft = getFragmentManager().beginTransaction();
+//            ft.hide(mStreamCameraFragment);
+//            ft.show(mStreamOnBoardCameraFragment);
+//            ft.commit();
+
+            currentCameraStream = ON_BOARD_CAMERA_STREAM;
+        }
+        else {
+            mStreamOnBoardCameraFragment.setStreamInvisible("PAUSED");
+            mStreamOnBoardCamera.pause();
+            mStreamCameraFragment.setStreamVisible();
+            mStreamCamera.play();
+
+            findViewById(R.id.container_stream_on_board_camera).setVisibility(View.GONE);
+            findViewById(R.id.container_stream_camera).setVisibility(View.VISIBLE);
+//            FragmentTransaction ft = getFragmentManager().beginTransaction();
+//            ft.show(mStreamCameraFragment);
+//            ft.hide(mStreamOnBoardCameraFragment);
+//            ft.commit();
+
+            currentCameraStream = CAMERA_STREAM;
+        }
+    }
+
     private void showECG(boolean show) {
         LinearLayout.LayoutParams streamLayoutParams = (LinearLayout.LayoutParams)
-            mStreamLayout.getLayoutParams();
+                mStreamLayout.getLayoutParams();
 
         if (show) {
             mEcgView.resetData();
-            mEcgView.setVisibility(View.VISIBLE);
+            mEcgContainer.setVisibility(View.VISIBLE);
             streamLayoutParams.weight = 0.9f;
             mEcgSubscriber.startReceiving();
         }
         else {
-            mEcgView.setVisibility(View.GONE);
+            mEcgContainer.setVisibility(View.GONE);
             mEcgSubscriber.stopReceiving();
             streamLayoutParams.weight = 1f;
         }
     }
 
     private void changeEcoStreamSize() {
-        FrameLayout camerasContainer = (FrameLayout) findViewById(R.id.container_cameras);
-        LinearLayout.LayoutParams cameraParams = (LinearLayout.LayoutParams) camerasContainer.getLayoutParams();
-//        LinearLayout.LayoutParams cameraParams = (LinearLayout.LayoutParams) mCameraFrame.getLayoutParams();
+        LinearLayout.LayoutParams cameraParams = (LinearLayout.LayoutParams) mCamerasFrame.getLayoutParams();
+//        LinearLayout.LayoutParams onBoardCameraParams = (LinearLayout.LayoutParams) mOnBoardCameraFrame.getLayoutParams();
+//        LinearLayout.LayoutParams cameraParams = (LinearLayout.LayoutParams) mCamerasFrame.getLayoutParams();
         LinearLayout.LayoutParams ecoParams = (LinearLayout.LayoutParams) mEcoFrame.getLayoutParams();
         String title;
         if (cameraParams.weight == CAMERA_SMALL) {
@@ -379,8 +413,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             title = getString(R.string.decrease_eco_stream);
         }
 
-        camerasContainer.setLayoutParams(cameraParams);
-//        mCameraFrame.setLayoutParams(cameraParams);
+        mCamerasFrame.setLayoutParams(cameraParams);
+//        mOnBoardCameraFrame.setLayoutParams(onBoardCameraParams);
         mEcoFrame.setLayoutParams(ecoParams);
         mChangeEcoSizeMenuItem.setTitle(title);
     }
@@ -390,19 +424,20 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             StreamingLib streamingLib = new StreamingLibBackend();
             streamingLib.initLib(getApplicationContext());
 
-
             String ecoAppAddress = teleconsultation.getLastSession().getEcoAppAddress();
             if (ecoAppAddress != null && !ecoAppAddress.equals("")) {
                 String streamUri = "rtsp://" + ecoAppAddress + ":8554/test";
-                Device onBoardCamera = new Device("Eco Camera", streamUri, "", "", "", "", "");
-
-                HashMap<String, String>  streamOnBoardCameraParams = new HashMap<>();
+                Device onBoardCamera = new Device("OnBoardCamera", streamUri, "", "", "", "", "");
+                HashMap<String, String> streamOnBoardCameraParams = new HashMap<>();
                 streamOnBoardCameraParams.put("name", ON_BOARD_CAMERA_STREAM);
                 streamOnBoardCameraParams.put("uri", onBoardCamera.getStreamUri());
                 mStreamOnBoardCamera = streamingLib.createStream(streamOnBoardCameraParams, mOnBoardCameraStreamHandler);
                 mStreamOnBoardCameraFragment = ARFragment.newInstance(mStreamOnBoardCamera.getName());
                 mStreamOnBoardCameraFragment.setPlayerButtonsVisible(false);
                 mStreamOnBoardCameraFragment.setDeviceID("EPSON/embt2/embt2");
+                PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
+                mStreamOnBoardCameraFragment.setRenderer(renderer);
+                mStreamOnBoardCameraFragment.setStreamAR(mStreamOnBoardCamera);
             }
 
             Device camera;
@@ -411,37 +446,30 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             streamCameraParams.put("name", CAMERA_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
             mStreamCamera = streamingLib.createStream(streamCameraParams, mCameraStreamHandler);
-            mCameraFrame = (FrameLayout) findViewById(R.id.container_stream_camera);
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
+            mStreamCameraFragment.setRenderer(mARCameraRenderer);
+            mStreamCameraFragment.setStreamAR(mStreamCamera);
+            mStreamCameraFragment.setGlSurfaceViewCallback(this);
+            mStreamCameraFragment.setEnabled(arOnBoot);
+            mStreamCameraFragment.setArListener(this);
 
             Device encoder = teleconsultation.getLastSession().getEncoder();
             HashMap<String, String> streamEcoParams = new HashMap<>();
             streamEcoParams.put("name", ECO_STREAM);
             streamEcoParams.put("uri", encoder.getStreamUri());
-
             mStreamEco = streamingLib.createStream(streamEcoParams, mEcoStreamHandler);
             mEcoFrame = (FrameLayout) findViewById(R.id.container_stream_eco);
             mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
-            mStreamCameraFragment.setEnabled(arOnBoot);
             mStreamEcoFragment.setEnabled(false);
 
-            mStreamCameraFragment.setArListener(this);
 
             mPTZManager = new PTZ_Manager(this,
-                camera.getPtzUri(),
-                camera.getUser(),
-                camera.getPwd()
+                    camera.getPtzUri(),
+                    camera.getUser(),
+                    camera.getPwd()
             );
-
-            mStreamCameraFragment.setRenderer(mARCameraRenderer);
-            mStreamCameraFragment.setStreamAR(mStreamCamera);
-            mStreamCameraFragment.setGlSurfaceViewCallback(this);
-
-            PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
-            mStreamOnBoardCameraFragment.setRenderer(renderer);
-            mStreamOnBoardCameraFragment.setStreamAR(mStreamOnBoardCamera);
 
             mStreamEcoFragment.setRenderer(mAREcoRenderer);
         }
@@ -449,7 +477,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             Log.e(TAG, "Error creating streams");
             return;
         }
-
 
         mStreamCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
             @Override
@@ -532,9 +559,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         // add the first fragment to the first container
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.container_stream_camera, mStreamCameraFragment);
+        if (mStreamOnBoardCameraFragment != null) {
+            fragmentTransaction.add(R.id.container_stream_on_board_camera, mStreamOnBoardCameraFragment);
+        }
         fragmentTransaction.add(R.id.container_stream_eco, mStreamEcoFragment);
-        fragmentTransaction.add(R.id.container_stream_on_board_camera, mStreamOnBoardCameraFragment);
-//        fragmentTransaction.hide(mStreamOnBoardCameraFragment);
         fragmentTransaction.commit();
     }
 
@@ -589,7 +617,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
         else {
             mPTZPopupWindowController.dismiss();
-
         }
     }
 
@@ -650,31 +677,31 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             @Override
             public void run() {
                 mRESTClient.getSessionState(teleconsultation.getLastSession().getId(),
-                    accessToken,
-                    new Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject res) {
-                            Log.d(TAG, "Teleconsultation state response:" + res);
-                            try {
-                                String state = res.getJSONObject("data").getJSONObject("session").getString("state");
-                                Log.d(TAG, "Teleconsultation state found:" + state);
-                                if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
-                                    Log.d(TAG, "Closing session");
-                                    t.cancel();
+                        accessToken,
+                        new Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject res) {
+                                Log.d(TAG, "Teleconsultation state response:" + res);
+                                try {
+                                    String state = res.getJSONObject("data").getJSONObject("session").getString("state");
+                                    Log.d(TAG, "Teleconsultation state found:" + state);
+                                    if (state.equals(TeleconsultationSessionState.CLOSE.name())) {
+                                        Log.d(TAG, "Closing session");
+                                        t.cancel();
+                                    }
+                                }
+                                catch (JSONException e) {
+                                    Log.e(TAG, "Error retrieving session state:" + e);
+                                    e.printStackTrace();
                                 }
                             }
-                            catch (JSONException e) {
-                                Log.e(TAG, "Error retrieving session state:" + e);
-                                e.printStackTrace();
+                        },
+                        new ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError arg0) {
+                                Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
                             }
-                        }
-                    },
-                    new ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError arg0) {
-                            Log.e(TAG, "Error reading Teleconsultation state response:" + arg0);
-                        }
-                    });
+                        });
                 // config.setTeleconsultation(selectedTc);
             }
         }, 0, 5000);
@@ -687,16 +714,22 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     private void playCamera() {
-        if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
-            mStreamCameraFragment.setStreamVisible();
-            mStreamCamera.play();
-            mStreamOnBoardCamera.play();
+        if (currentCameraStream.equals(CAMERA_STREAM)) {
+            if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
+                mStreamCameraFragment.setStreamVisible();
+                mStreamCamera.play();
+            }
+        }
+        else {
+            if (mStreamOnBoardCamera != null && mStreamOnBoardCamera.getState() != StreamState.PLAYING) {
+                mStreamOnBoardCameraFragment.setStreamVisible();
+                mStreamOnBoardCamera.play();
+            }
         }
     }
 
     private void playStreams() {
         playCamera();
-
         if (mStreamEco != null && mStreamEco.getState() != StreamState.PLAYING) {
             mStreamEcoFragment.setStreamVisible();
             mStreamEco.play();
@@ -704,10 +737,17 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     private void pauseCamera() {
-        if (mStreamCamera != null && mStreamCamera.getState() == StreamState.PLAYING) {
-            mStreamCameraFragment.setStreamInvisible("PAUSED");
-            mStreamCamera.pause();
-            mStreamOnBoardCamera.pause();
+        if (currentCameraStream.equals(CAMERA_STREAM)) {
+            if (mStreamCamera != null && mStreamCamera.getState() == StreamState.PLAYING) {
+                mStreamCameraFragment.setStreamInvisible("PAUSED");
+                mStreamCamera.pause();
+            }
+        }
+        else {
+            if (mStreamOnBoardCamera != null && mStreamOnBoardCamera.getState() == StreamState.PLAYING) {
+                mStreamOnBoardCameraFragment.setStreamInvisible("PAUSED");
+                mStreamOnBoardCamera.pause();
+            }
         }
     }
 
@@ -753,6 +793,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     @Override
     public void onSurfaceViewCreated(String streamId, SurfaceView surfaceView) {
+        Log.d(TAG, "Surface created for stream " + streamId);
         if (surfaceView != null) {
             if (streamId.equals(CAMERA_STREAM)) {
                 if (!mStreamCameraPrepared) {
@@ -773,15 +814,18 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     glView.setMoveNormFactor(300f);
                 }
             }
-
             else if (streamId.equals(ON_BOARD_CAMERA_STREAM)) {
-                mStreamOnBoardCamera.prepare(surfaceView, true);
+                if (!mStreamOnBoardCameraPrepared) {
+                    mStreamOnBoardCamera.prepare(surfaceView, true);
+                    mStreamOnBoardCameraPrepared = true;
+                }
             }
         }
     }
 
     @Override
     public void onSurfaceViewDestroyed(String streamId) {
+        Log.d(TAG, "Surface destroyed " + streamId);
         if (streamId.equals(CAMERA_STREAM)) {
             mStreamCamera.destroy();
         }
@@ -864,7 +908,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         cameraMeshManager.configureScene();
         //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
         KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
-            teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
+                teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
         );
         Map<String, float[]> keymap = keyboardCoordinatesStore.read();
         Set<String> keys = keymap.keySet();
@@ -872,13 +916,13 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         List<Mesh> keyboardMeshes = cameraMeshManager.getMeshesByGroup("keyboard");
         if (keyboardMeshes.size() > 0) {
             VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
-                new SpinnerKeyboardViewer(
-                    this,
-                    (Spinner) findViewById(R.id.virtual_keyboard_spinner),
-                    keymap.keySet().toArray(new String[keys.size()])
-                ),
-                keyboardCoordinatesStore,
-                keyboardMeshes.get(0)
+                    new SpinnerKeyboardViewer(
+                            this,
+                            (Spinner) findViewById(R.id.virtual_keyboard_spinner),
+                            keymap.keySet().toArray(new String[keys.size()])
+                    ),
+                    keyboardCoordinatesStore,
+                    keyboardMeshes.get(0)
             );
 
             if (user.isAdmin()) {
@@ -926,7 +970,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 if (event == VoipEvent.BUDDY_CONNECTED) {
                     // Probably the first condition treat cases of lost network
                     if (act.mTcState == TeleconsultationState.REMOTE_HOLDING ||
-                        act.mTcState == TeleconsultationState.HOLDING) {
+                            act.mTcState == TeleconsultationState.HOLDING) {
                         if (act.mLocalHold) {
                             act.setTeleconsultationState(TeleconsultationState.HOLDING);
                         }
@@ -940,7 +984,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 }
                 else if (event == VoipEvent.BUDDY_HOLDING) {
                     if (act.mVoipLib.getCall().getState() == CallState.ACTIVE ||
-                        act.mVoipLib.getCall().getState() == CallState.HOLDING) {
+                            act.mVoipLib.getCall().getState() == CallState.HOLDING) {
                         act.setTeleconsultationState(TeleconsultationState.REMOTE_HOLDING);
                     }
                 }
@@ -974,15 +1018,15 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             // Deinitialize the Voip Lib and release all allocated resources
             else if (event == VoipEvent.LIB_DEINITIALIZED) {
                 act.stopStreams();
-//                act.startReportActivity();
                 act.setResult(RESULT_OK);
                 act.finish();
+//                act.startReportActivity();
             }
             else if (event == VoipEvent.LIB_DEINITIALIZATION_FAILED) {
                 //TODO: check what to do
             }
             else if (event == VoipEvent.LIB_INITIALIZATION_FAILED || event == VoipEvent.ACCOUNT_REGISTRATION_FAILED ||
-                event == VoipEvent.LIB_CONNECTION_FAILED || event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED) {
+                    event == VoipEvent.LIB_CONNECTION_FAILED || event == VoipEvent.BUDDY_SUBSCRIPTION_FAILED) {
                 showErrorEventAlert(eventBundle);
             }
 
@@ -1127,8 +1171,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
             Device camera = mOuterRef.get().teleconsultation.getLastSession().getCamera();
             ImageDownloader imageDownloader = new ImageDownloader(receiver, mOuterRef.get(),
-                camera.getUser(), // uriProps.getProperty("username_ptz"),
-                camera.getPwd()); // uriProps.getProperty("password_ptz"));
+                    camera.getUser(), // uriProps.getProperty("username_ptz"),
+                    camera.getPwd()); // uriProps.getProperty("password_ptz"));
 
             imageDownloader.downloadImage(camera.getShotUri()); // uriProps.getProperty("uri_still_image"));
         }
@@ -1161,40 +1205,5 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             }
             view.requestRender();
         }
-    }
-
-    private void switchCamera() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (CURRENT_CAMERA_STREAM.equals(CAMERA_STREAM)) {
-
-            mStreamCameraFragment.setStreamInvisible("PAUSED");
-            mStreamCamera.pause();
-
-            mStreamOnBoardCameraFragment.setStreamVisible();
-            mStreamOnBoardCamera.play();
-            mStreamOnBoardCameraFragment.setPlayerButtonsVisible(true);
-
-            ft.hide(mStreamCameraFragment);
-            ft.show(mStreamOnBoardCameraFragment);
-            ft.commit();
-
-
-            CURRENT_CAMERA_STREAM = ON_BOARD_CAMERA_STREAM;
-        }
-        else {
-
-            mStreamOnBoardCameraFragment.setStreamInvisible("PAUSED");
-            mStreamOnBoardCamera.pause();
-
-            mStreamCameraFragment.setStreamVisible();
-            mStreamCamera.play();
-
-            ft.hide(mStreamOnBoardCameraFragment);
-            ft.show(mStreamCameraFragment);
-            ft.commit();
-
-            CURRENT_CAMERA_STREAM = CAMERA_STREAM;
-        }
-
     }
 }

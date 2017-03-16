@@ -56,8 +56,8 @@
                 android:id="@+id/switch_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="switch"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:text="@string/switch_streams"/>
 
         </LinearLayout>
 
@@ -85,35 +85,25 @@
         android:background="#777"
         android:baselineAligned="false"
         android:keepScreenOn="true"
-        tools:context=".spec.SpecTeleconsultationActivity">
-
-
-
-        <FrameLayout
-            android:id="@+id/container_stream_on_board_camera"
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight=".25">
-
-        </FrameLayout>
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/container_cameras"
             android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_weight=".25">
+            android:layout_weight=".25"
+            android:orientation="vertical">
 
-            <!--<FrameLayout-->
-                <!--android:id="@+id/container_stream_on_board_camera"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent">-->
-            <!--</FrameLayout>-->
+            <FrameLayout
+                android:id="@+id/container_stream_on_board_camera"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
             <FrameLayout
                 android:id="@+id/container_stream_camera"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </FrameLayout>
+                android:layout_height="match_parent"/>
+
         </FrameLayout>
 
         <FrameLayout
