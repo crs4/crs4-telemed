@@ -220,6 +220,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
         mARCameraRenderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
+//        mARCameraRenderer.setEnableGrid(true);
+//        mARCameraRenderer.setAdaptViewportToVideo(false);
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
         mAREcoRenderer.setEnableGrid(true);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
@@ -314,8 +316,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
                 }
                 item.setChecked(isChecked);
-                if (mStreamCameraFragment != null) {
-                    mStreamCameraFragment.setEnabled(isChecked);
+
+                ARFragment currentARFragment = getCurrentARCameraFragment();
+                if (currentARFragment != null) {
+                    currentARFragment.setEnabled(isChecked);
                 }
                 if (mStreamEcoFragment != null) {
                     mStreamEcoFragment.setEnabled(isChecked);
@@ -347,6 +351,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     private void switchCamera() {
+        mStreamOnBoardCameraFragment.stopAR();
         if (currentCameraStream.equals(CAMERA_STREAM)) {
             mStreamCameraFragment.setStreamInvisible("PAUSED");
             mStreamCamera.pause();
@@ -361,6 +366,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 //            ft.show(mStreamOnBoardCameraFragment);
 //            ft.commit();
 
+            mStreamOnBoardCameraFragment.prepareRemoteAR();
             currentCameraStream = ON_BOARD_CAMERA_STREAM;
         }
         else {
@@ -376,6 +382,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 //            ft.hide(mStreamOnBoardCameraFragment);
 //            ft.commit();
 
+            mStreamCameraFragment.prepareRemoteAR();
             currentCameraStream = CAMERA_STREAM;
         }
     }
@@ -785,6 +792,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     if (arConf != null && currentCameraStream.equals(CAMERA_STREAM)) {
                         mStreamCameraFragment.prepareRemoteAR();
                         mStreamCameraPrepared = true;
+                        mStreamOnBoardCameraFragment.setEnabled(false);
+                        mStreamCameraFragment.setEnabled(true);
                     }
                 }
             }
@@ -802,6 +811,9 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     mStreamOnBoardCameraPrepared = true;
                     if (arConf != null && currentCameraStream.equals(ON_BOARD_CAMERA_STREAM)) {
                         mStreamOnBoardCameraFragment.prepareRemoteAR();
+                        mStreamOnBoardCameraFragment.setEnabled(true);
+                        mStreamCameraFragment.setEnabled(false);
+
                     }
                 }
             }
@@ -890,7 +902,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     @Override
     public void ARInitialized() {
-        cameraMeshManager.configureScene();
+        cameraMeshManager.configureScene(true);
         //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
         KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
                 teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
