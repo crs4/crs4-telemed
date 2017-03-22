@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -109,7 +110,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     private final String CAMERA_STREAM = "CAMERA_STREAM";
     private final String ON_BOARD_CAMERA_STREAM = "ON_BOARD_CAMERA_STREAM";
-    private String currentCameraStream = CAMERA_STREAM;
+    private String currentCameraStream = ON_BOARD_CAMERA_STREAM;
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
     private String CAMER_ARROW_ID = "cameraArrow";
@@ -161,6 +162,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     private float period = 0.02f;
     Circle ecoArrow;
     private float viewportAspectRatio;
+    private boolean firstSwitch = true;
+    private int switchPhase = 0;
+    FrameLayout onBoardCameraFrameLayout;
+    FrameLayout cameraFrameLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -244,6 +249,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         setupECGFrame();
 
+        onBoardCameraFrameLayout = (FrameLayout) findViewById(R.id.container_stream_on_board_camera);
+        cameraFrameLayout = (FrameLayout) findViewById(R.id.container_stream_camera);
         Button switchCameraButton = (Button) findViewById(R.id.switch_camera);
         switchCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -345,37 +352,63 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     private void switchCamera() {
+        final LinearLayout.LayoutParams currentLayoutParams, newVisibleLayoutParams;
+        final FrameLayout currentStreamView, newVisibleStreamView;
+
+        final IStream currentStream;
+        final IStream newVisibleStream;
+
         if (currentCameraStream.equals(CAMERA_STREAM)) {
-            mStreamCameraFragment.setStreamInvisible("PAUSED");
-            mStreamCamera.pause();
-            mStreamOnBoardCameraFragment.setStreamVisible();
-            mStreamOnBoardCamera.play();
+            Log.d(TAG, "new currentCameraStream == ON_BOARD_CAMERA_STREAM");
+            currentStreamView = (FrameLayout) findViewById(R.id.container_stream_camera);
+            newVisibleStreamView = (FrameLayout) findViewById(R.id.container_stream_on_board_camera);
+            currentStream = mStreamCamera;
+            newVisibleStream = mStreamOnBoardCamera;
 
-            findViewById(R.id.container_stream_camera).setVisibility(View.GONE);
-            findViewById(R.id.container_stream_on_board_camera).setVisibility(View.VISIBLE);
+            currentLayoutParams = (LinearLayout.LayoutParams) currentStreamView.getLayoutParams();
+            newVisibleLayoutParams = (LinearLayout.LayoutParams) newVisibleStreamView.getLayoutParams();
+//            currentCameraStream = ON_BOARD_CAMERA_STREAM;
 
-//            FragmentTransaction ft = getFragmentManager().beginTransaction();
-//            ft.hide(mStreamCameraFragment);
-//            ft.show(mStreamOnBoardCameraFragment);
-//            ft.commit();
-
-            currentCameraStream = ON_BOARD_CAMERA_STREAM;
         }
+
         else {
-            mStreamOnBoardCameraFragment.setStreamInvisible("PAUSED");
-            mStreamOnBoardCamera.pause();
-            mStreamCameraFragment.setStreamVisible();
-            mStreamCamera.play();
+            Log.d(TAG, "new currentCameraStream == CAMERA_STREAM");
+            currentStreamView = (FrameLayout) findViewById(R.id.container_stream_on_board_camera);
+            newVisibleStreamView = (FrameLayout) findViewById(R.id.container_stream_camera);
 
-            findViewById(R.id.container_stream_on_board_camera).setVisibility(View.GONE);
-            findViewById(R.id.container_stream_camera).setVisibility(View.VISIBLE);
-//            FragmentTransaction ft = getFragmentManager().beginTransaction();
-//            ft.show(mStreamCameraFragment);
-//            ft.hide(mStreamOnBoardCameraFragment);
-//            ft.commit();
+            currentStream = mStreamOnBoardCamera;
+            newVisibleStream = mStreamCamera;
 
-            currentCameraStream = CAMERA_STREAM;
+            currentLayoutParams = (LinearLayout.LayoutParams) currentStreamView.getLayoutParams();
+            newVisibleLayoutParams = (LinearLayout.LayoutParams) newVisibleStreamView.getLayoutParams();
+//            currentCameraStream = CAMERA_STREAM;
+
         }
+
+
+        FrameLayout onBoardCameraFrameLayout = (FrameLayout) findViewById(R.id.container_stream_on_board_camera);
+        FrameLayout cameraFrameLayout = (FrameLayout) findViewById(R.id.container_stream_camera);
+
+        LinearLayout.LayoutParams onBoardCameraLayoutParams = (LinearLayout.LayoutParams) onBoardCameraFrameLayout.getLayoutParams();
+
+//        LinearLayout.LayoutParams cameraLayoutParams = (LinearLayout.LayoutParams) cameraFrameLayout .getLayoutParams();
+
+        if (firstSwitch) {
+            onBoardCameraFrameLayout.addOnLayoutChangeListener(new OnLayoutChangeListener());
+            cameraFrameLayout.addOnLayoutChangeListener(new OnLayoutChangeListener());
+            firstSwitch = false;
+        }
+//        currentStream.pause();
+//        newVisibleStream.play();
+        switchPhase = 0;
+
+        currentLayoutParams.weight = 0f;
+        currentStreamView.setLayoutParams(currentLayoutParams);
+        newVisibleLayoutParams.weight = 1;
+        newVisibleStreamView.setLayoutParams(newVisibleLayoutParams);
+//        onBoardCameraLayoutParams.weight = currentCameraStream.equals(CAMERA_STREAM)? 1f: 0f;
+//        onBoardCameraFrameLayout.setLayoutParams(onBoardCameraLayoutParams);
+
     }
 
     private void showECG(boolean show) {
@@ -427,6 +460,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             String ecoAppAddress = teleconsultation.getLastSession().getEcoAppAddress();
             if (ecoAppAddress != null && !ecoAppAddress.equals("")) {
                 String streamUri = "rtsp://" + ecoAppAddress + ":8554/test";
+//                String streamUri = "file:///sdcard/Movies/eco2.mp4";
                 Device onBoardCamera = new Device("OnBoardCamera", streamUri, "", "", "", "", "");
                 HashMap<String, String> streamOnBoardCameraParams = new HashMap<>();
                 streamOnBoardCameraParams.put("name", ON_BOARD_CAMERA_STREAM);
@@ -714,22 +748,23 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
     }
 
     private void playCamera() {
-        if (currentCameraStream.equals(CAMERA_STREAM)) {
+//        if (currentCameraStream.equals(CAMERA_STREAM)) {
             if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
                 mStreamCameraFragment.setStreamVisible();
                 mStreamCamera.play();
             }
-        }
-        else {
+//        }
+//        else {
             if (mStreamOnBoardCamera != null && mStreamOnBoardCamera.getState() != StreamState.PLAYING) {
                 mStreamOnBoardCameraFragment.setStreamVisible();
                 mStreamOnBoardCamera.play();
             }
-        }
+//        }
     }
 
     private void playStreams() {
         playCamera();
+//        switchCamera();
         if (mStreamEco != null && mStreamEco.getState() != StreamState.PLAYING) {
             mStreamEcoFragment.setStreamVisible();
             mStreamEco.play();
@@ -1205,5 +1240,83 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             }
             view.requestRender();
         }
+    }
+
+    private class CurrentStreamOnLayoutChangeListener implements View.OnLayoutChangeListener {
+        LinearLayout.LayoutParams newVisibleLayoutParams;
+        FrameLayout newVisibleStreamView;
+        public CurrentStreamOnLayoutChangeListener(LinearLayout.LayoutParams newVisibleLayoutParams,
+                FrameLayout newVisibleStreamView) {
+
+            this.newVisibleLayoutParams = newVisibleLayoutParams;
+            this.newVisibleStreamView = newVisibleStreamView;
+        }
+
+
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            newVisibleLayoutParams.width = 0;
+            newVisibleLayoutParams.weight = 1f;
+            newVisibleStreamView.setLayoutParams(newVisibleLayoutParams);
+            v.removeOnLayoutChangeListener(this);
+        }
+    }
+
+    private class NewStreamOnLayoutChangeListener implements View.OnLayoutChangeListener {
+        IStream newVisibleStream, currentStream;
+
+        public NewStreamOnLayoutChangeListener(IStream newVisibleStream, IStream currentStream) {
+            this.newVisibleStream = newVisibleStream;
+            this.currentStream = currentStream;
+        }
+
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            Log.d(TAG, "onLayoutChange " + newVisibleStream.getName() );
+            Log.d(TAG, String.format("view %s, left %s top %s, right %s bottom %s", v.toString(), left, top, right, bottom));
+            Log.d(TAG, "play " + newVisibleStream.getName() );
+            newVisibleStream.play();
+            Log.d(TAG, "pause " + currentStream.getName() );
+            currentStream.pause();
+            v.removeOnLayoutChangeListener(this);
+
+        }
+    }
+
+    private FrameLayout getCurrentStreamView() {
+        return currentCameraStream.equals(CAMERA_STREAM)?
+                (FrameLayout) findViewById(R.id.container_stream_camera):
+                (FrameLayout) findViewById(R.id.container_stream_on_board_camera);
+    }
+
+    private FrameLayout getHiddenStreamView() {
+        return (FrameLayout)
+                (currentCameraStream.equals(CAMERA_STREAM)?
+                 findViewById(R.id.container_stream_on_board_camera):
+                findViewById(R.id.container_stream_camera));
+    }
+
+    private IStream getCurrentStream() {
+        return currentCameraStream.equals(CAMERA_STREAM)? mStreamCamera: mStreamOnBoardCamera;
+    }
+
+    private IStream getHiddenStream() {
+        return currentCameraStream.equals(CAMERA_STREAM)? mStreamOnBoardCamera: mStreamCamera;
+    }
+
+    private class OnLayoutChangeListener implements View.OnLayoutChangeListener {
+
+
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            switchPhase++;
+            if (switchPhase >= 2){
+                Log.d(TAG, String.format("switch phase %s, time to pause/play", switchPhase));
+                getCurrentStream().pause();
+                getHiddenStream().play();
+                currentCameraStream = currentCameraStream.equals(CAMERA_STREAM)? ON_BOARD_CAMERA_STREAM: CAMERA_STREAM;
+                switchPhase = 0;
+                }
+            }
     }
 }
