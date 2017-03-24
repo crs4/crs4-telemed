@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
@@ -60,6 +61,7 @@ import it.crs4.most.demo.models.TeleconsultationSessionState;
 import it.crs4.most.demo.models.User;
 import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesStore;
 import it.crs4.most.demo.ui.TcStateTextView;
+import it.crs4.most.streaming.IEventListener;
 import it.crs4.most.streaming.IStream;
 import it.crs4.most.streaming.StreamingEventBundle;
 import it.crs4.most.streaming.StreamingLib;
@@ -184,11 +186,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         String configServerIP = QuerySettings.getConfigServerAddress(this);
         int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
         mRESTClient = new RESTClient(this, configServerIP, configServerPort);
-
-        mEcoStreamHandler = new EcoStreamHandler(this, ECO_STREAM);
-        mCameraStreamHandler = new CameraStreamHandler(this, CAMERA_STREAM);
-        mOnBoardCameraStreamHandler = new CameraStreamHandler(this, ON_BOARD_CAMERA_STREAM);
-
         setContentView(R.layout.spec_teleconsultation_activity);
 
         arConf = teleconsultation.getLastSession().getRoom().getARConfiguration();
@@ -219,7 +216,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             for (Mesh mesh : cameraMeshManager.getMeshes()) {
                 mesh.publisher = mARPublisher;
             }
-            ecoMeshManager.configureScene();
+//            ecoMeshManager.configureScene();
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
@@ -288,6 +285,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
         else {
             mARToggle.setChecked(arOnBoot);
+            getCurrentFragment().startAR();
         }
         return res;
     }
@@ -402,9 +400,9 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 //        newVisibleStream.play();
         switchPhase = 0;
 
-        currentLayoutParams.weight = 0f;
+        currentLayoutParams.weight = 0.5f;
         currentStreamView.setLayoutParams(currentLayoutParams);
-        newVisibleLayoutParams.weight = 1;
+        newVisibleLayoutParams.weight = 0.5f;
         newVisibleStreamView.setLayoutParams(newVisibleLayoutParams);
 //        onBoardCameraLayoutParams.weight = currentCameraStream.equals(CAMERA_STREAM)? 1f: 0f;
 //        onBoardCameraFrameLayout.setLayoutParams(onBoardCameraLayoutParams);
@@ -465,13 +463,36 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 HashMap<String, String> streamOnBoardCameraParams = new HashMap<>();
                 streamOnBoardCameraParams.put("name", ON_BOARD_CAMERA_STREAM);
                 streamOnBoardCameraParams.put("uri", onBoardCamera.getStreamUri());
-                mStreamOnBoardCamera = streamingLib.createStream(streamOnBoardCameraParams, mOnBoardCameraStreamHandler);
+                mStreamOnBoardCamera = streamingLib.createStream(streamOnBoardCameraParams);
+                mStreamOnBoardCamera.addEventListener(new IEventListener() {
+                    @Override
+                    public void frameReady(byte[] bytes) {
+
+                    }
+
+                    @Override
+                    public void onPlay() {
+
+                    }
+
+                    @Override
+                    public void onPause() {
+
+                    }
+
+                    @Override
+                    public void onVideoChanged(int i, int i1) {
+
+                    }
+                });
+
                 mStreamOnBoardCameraFragment = ARFragment.newInstance(mStreamOnBoardCamera.getName());
                 mStreamOnBoardCameraFragment.setPlayerButtonsVisible(false);
                 mStreamOnBoardCameraFragment.setDeviceID("EPSON/embt2/embt2");
                 PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
                 mStreamOnBoardCameraFragment.setRenderer(renderer);
                 mStreamOnBoardCameraFragment.setStreamAR(mStreamOnBoardCamera);
+
             }
 
             Device camera;
@@ -479,7 +500,28 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             HashMap<String, String> streamCameraParams = new HashMap<>();
             streamCameraParams.put("name", CAMERA_STREAM);
             streamCameraParams.put("uri", camera.getStreamUri());
-            mStreamCamera = streamingLib.createStream(streamCameraParams, mCameraStreamHandler);
+            mStreamCamera = streamingLib.createStream(streamCameraParams);
+            mStreamCamera.addEventListener(new IEventListener() {
+                @Override
+                public void frameReady(byte[] bytes) {
+
+                }
+
+                @Override
+                public void onPlay() {
+
+                }
+
+                @Override
+                public void onPause() {
+
+                }
+
+                @Override
+                public void onVideoChanged(int i, int i1) {
+
+                }
+            });
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setRenderer(mARCameraRenderer);
@@ -492,12 +534,13 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             HashMap<String, String> streamEcoParams = new HashMap<>();
             streamEcoParams.put("name", ECO_STREAM);
             streamEcoParams.put("uri", encoder.getStreamUri());
-            mStreamEco = streamingLib.createStream(streamEcoParams, mEcoStreamHandler);
+            mStreamEco = streamingLib.createStream(streamEcoParams);
+
             mEcoFrame = (FrameLayout) findViewById(R.id.container_stream_eco);
             mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
             mStreamEcoFragment.setEnabled(false);
-
+            mStreamEcoFragment.setStreamAR(mStreamEco);
 
             mPTZManager = new PTZ_Manager(this,
                     camera.getPtzUri(),
@@ -508,6 +551,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mStreamEcoFragment.setRenderer(mAREcoRenderer);
         }
         catch (Exception e) {
+            e.printStackTrace();
             Log.e(TAG, "Error creating streams");
             return;
         }
@@ -835,10 +879,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                     mStreamCamera.prepare(surfaceView, true);
 //                mStreamCameraFragment.setStreamAR(mStreamCamera);
 //                mStreamCameraFragment.setRenderer(mARCameraRenderer);
-                    if (arConf != null) {
-                        mStreamCameraFragment.prepareRemoteAR();
-                        mStreamCameraPrepared = true;
-                    }
+//                    if (arConf != null) {
+//                        mStreamCameraFragment.prepareRemoteAR();
+//                        mStreamCameraPrepared = true;
+//                    }
                 }
             }
             else if (streamId.equals(ECO_STREAM)) {
@@ -940,7 +984,9 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     @Override
     public void ARInitialized() {
-        cameraMeshManager.configureScene();
+        Log.d(TAG, "ARInitialized()");
+        getCurrentFragment().setEnabled(mARToggle.isChecked());
+//        cameraMeshManager.configureScene(true);
         //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
         KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
                 teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
@@ -1073,77 +1119,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             miaAlert.setMessage(eventBundle.getInfo());
             AlertDialog alert = miaAlert.create();
             alert.show();
-        }
-    }
-
-    private static abstract class StreamHandler extends Handler {
-        private final WeakReference<SpecTeleconsultationActivity> activity;
-        private String streamName;
-
-        public StreamHandler(SpecTeleconsultationActivity activity, String streamName) {
-            this.activity = new WeakReference<>(activity);
-            this.streamName = streamName;
-        }
-
-        public SpecTeleconsultationActivity getActivity() {
-            return activity.get();
-        }
-
-        public String getStreamName() {
-            return streamName;
-        }
-
-        @Override
-        public void handleMessage(Message streamingMessage) {
-            StreamingEventBundle event = (StreamingEventBundle) streamingMessage.obj;
-            String infoMsg = "Event Type:" + event.getEventType() + " ->" + event.getEvent() + ":" + event.getInfo();
-            Log.d(TAG, "handleMessage: Current Event:" + infoMsg);
-
-
-            StreamState streamState = ((IStream) event.getData()).getState();
-            Log.d(TAG, "event.getData().streamState " + streamState);
-            if (event.getEvent() == StreamingEvent.VIDEO_SIZE_CHANGED) {
-
-                Log.d(TAG, "event.getData().streamState " + streamState);
-                Log.d(TAG, "ready to call cameraPreviewStarted");
-
-                Size videoSize = ((IStream) event.getData()).getVideoSize();
-                if (((IStream) event.getData()).getName().equals(streamName) && videoSize != null) {
-                    int width = videoSize.getWidth();
-                    int height = videoSize.getHeight();
-                    Log.d(TAG, String.format("VIDEOSIZE width %s, height %d", width, height));
-                    onVideoSizeChanged(width, height);
-//                    act.mAREcoRenderer.setViewportSize(width, height);
-
-                }
-
-            }
-        }
-
-        public abstract void onVideoSizeChanged(int width, int height);
-    }
-
-    private static class EcoStreamHandler extends StreamHandler {
-        public EcoStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
-            super(activity, streamName);
-        }
-
-        @Override
-        public void onVideoSizeChanged(int width, int height) {
-            getActivity().mAREcoRenderer.setViewportSize(width, height);
-        }
-    }
-
-    private static class CameraStreamHandler extends StreamHandler {
-        public CameraStreamHandler(SpecTeleconsultationActivity activity, String streamName) {
-            super(activity, streamName);
-        }
-
-        @Override
-        public void onVideoSizeChanged(int width, int height) {
-            Log.d(TAG, String.format("onVideoSizeChanged width %s, height %s", width, height));
-            getActivity().mARCameraRenderer.setViewportSize(width, height);
-            getActivity().mStreamCameraFragment.cameraPreviewStarted(width, height, 25, 0, false);
         }
     }
 
@@ -1283,6 +1258,14 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
     }
 
+    private ARFragment getCurrentFragment() {
+        return currentCameraStream.equals(CAMERA_STREAM)? mStreamCameraFragment: mStreamOnBoardCameraFragment;
+    }
+
+    private ARFragment getHiddenFragment() {
+        return currentCameraStream.equals(CAMERA_STREAM)? mStreamOnBoardCameraFragment: mStreamCameraFragment;
+    }
+
     private FrameLayout getCurrentStreamView() {
         return currentCameraStream.equals(CAMERA_STREAM)?
                 (FrameLayout) findViewById(R.id.container_stream_camera):
@@ -1313,7 +1296,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             if (switchPhase >= 2){
                 Log.d(TAG, String.format("switch phase %s, time to pause/play", switchPhase));
                 getCurrentStream().pause();
+                getCurrentFragment().stopAR();
                 getHiddenStream().play();
+                getHiddenFragment().startAR();
+//                cameraMeshManager.configureScene(true);
                 currentCameraStream = currentCameraStream.equals(CAMERA_STREAM)? ON_BOARD_CAMERA_STREAM: CAMERA_STREAM;
                 switchPhase = 0;
                 }
