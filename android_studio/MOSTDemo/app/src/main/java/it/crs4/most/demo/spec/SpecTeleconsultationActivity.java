@@ -96,6 +96,8 @@ import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
 
+import static android.view.View.GONE;
+
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
         IStreamFragmentCommandListener, IStreamProvider,
@@ -240,6 +242,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
         setupStreamLib();
 
+        mCamerasFrame = (LinearLayout) findViewById(R.id.container_cameras);
         resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
         saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
@@ -285,7 +288,8 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
         else {
             mARToggle.setChecked(arOnBoot);
-            getCurrentFragment().startAR();
+            if (arOnBoot)
+                getCurrentFragment().startAR();
         }
         return res;
     }
@@ -312,18 +316,18 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 boolean isChecked = !item.isChecked();
                 if (isChecked) {
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_on_background));
+                    getCurrentFragment().startAR();
                 }
                 else {
                     item.setIcon(ContextCompat.getDrawable(this, android.R.drawable.checkbox_off_background));
                 }
                 item.setChecked(isChecked);
-                if (mStreamCameraFragment != null) {
-                    mStreamCameraFragment.setEnabled(isChecked);
-                }
                 if (mStreamEcoFragment != null) {
                     mStreamEcoFragment.setEnabled(isChecked);
                 }
+                getCurrentFragment().setEnabled(isChecked);
                 return true;
+
             case R.id.button_camera:
                 item.setChecked(!item.isChecked());
                 if (item.isChecked()) {
@@ -400,9 +404,9 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 //        newVisibleStream.play();
         switchPhase = 0;
 
-        currentLayoutParams.weight = 0.5f;
+        currentLayoutParams.weight = 0f;
         currentStreamView.setLayoutParams(currentLayoutParams);
-        newVisibleLayoutParams.weight = 0.5f;
+        newVisibleLayoutParams.weight = 1f;
         newVisibleStreamView.setLayoutParams(newVisibleLayoutParams);
 //        onBoardCameraLayoutParams.weight = currentCameraStream.equals(CAMERA_STREAM)? 1f: 0f;
 //        onBoardCameraFrameLayout.setLayoutParams(onBoardCameraLayoutParams);
@@ -492,7 +496,25 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
                 mStreamOnBoardCameraFragment.setRenderer(renderer);
                 mStreamOnBoardCameraFragment.setStreamAR(mStreamOnBoardCamera);
+                mStreamOnBoardCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
+                    @Override
+                    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                        TouchGLSurfaceView glView = mStreamOnBoardCameraFragment.getGlView();
+                        glView.setMeshManager(cameraMeshManager);
+                        glView.setPublisher(mARPublisher);
+                        glView.setEnabled(false);
+                    }
 
+                    @Override
+                    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+
+                    }
+                });
             }
 
             Device camera;
@@ -1292,16 +1314,17 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            Log.d(TAG, "onLayoutChange switchPhase" + switchPhase);
             switchPhase++;
-            if (switchPhase >= 2){
+            if (switchPhase == 2){
                 Log.d(TAG, String.format("switch phase %s, time to pause/play", switchPhase));
                 getCurrentStream().pause();
                 getCurrentFragment().stopAR();
                 getHiddenStream().play();
-                getHiddenFragment().startAR();
+                if (mARToggle.isChecked())
+                    getHiddenFragment().startAR();
 //                cameraMeshManager.configureScene(true);
                 currentCameraStream = currentCameraStream.equals(CAMERA_STREAM)? ON_BOARD_CAMERA_STREAM: CAMERA_STREAM;
-                switchPhase = 0;
                 }
             }
     }
