@@ -465,6 +465,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
                     @Override
                     public void onPlay() {
+                        mStreamCamera.pause();
                         if (mARToggle.isChecked())
                             mStreamOnBoardCameraFragment.startAR();
                     }
@@ -522,6 +523,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
                 @Override
                 public void onPlay() {
+                    mStreamOnBoardCamera.pause();
                     if (mARToggle.isChecked())
                         mStreamCameraFragment.startAR();
                 }
@@ -556,6 +558,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mStreamEcoFragment.setPlayerButtonsVisible(false);
             mStreamEcoFragment.setEnabled(false);
             mStreamEcoFragment.setStream(mStreamEco);
+            mStreamEcoFragment.setFrameCallback(false);
 
             mPTZManager = new PTZ_Manager(this,
                     camera.getPtzUri(),
