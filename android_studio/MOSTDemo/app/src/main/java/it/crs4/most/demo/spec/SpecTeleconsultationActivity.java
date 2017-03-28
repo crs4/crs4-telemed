@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
@@ -39,7 +37,6 @@ import java.lang.ref.WeakReference;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +51,6 @@ import it.crs4.most.demo.RESTClient;
 import it.crs4.most.demo.ReportActivity;
 import it.crs4.most.demo.TeleconsultationState;
 import it.crs4.most.demo.models.ARConfiguration;
-import it.crs4.most.demo.models.ARMarker;
 import it.crs4.most.demo.models.Device;
 import it.crs4.most.demo.models.Teleconsultation;
 import it.crs4.most.demo.models.TeleconsultationSessionState;
@@ -63,18 +59,15 @@ import it.crs4.most.demo.spec.VirtualKeyboard.KeyboardCoordinatesStore;
 import it.crs4.most.demo.ui.TcStateTextView;
 import it.crs4.most.streaming.IEventListener;
 import it.crs4.most.streaming.IStream;
-import it.crs4.most.streaming.StreamingEventBundle;
 import it.crs4.most.streaming.StreamingLib;
 import it.crs4.most.streaming.StreamingLibBackend;
 import it.crs4.most.streaming.enums.PTZ_Direction;
 import it.crs4.most.streaming.enums.PTZ_Zoom;
 import it.crs4.most.streaming.enums.StreamProperty;
 import it.crs4.most.streaming.enums.StreamState;
-import it.crs4.most.streaming.enums.StreamingEvent;
 import it.crs4.most.streaming.ptz.PTZ_Manager;
 import it.crs4.most.streaming.utils.ImageDownloader;
 import it.crs4.most.streaming.utils.ImageDownloader.IBitmapReceiver;
-import it.crs4.most.streaming.utils.Size;
 import it.crs4.most.visualization.IPtzCommandReceiver;
 import it.crs4.most.visualization.IStreamFragmentCommandListener;
 import it.crs4.most.visualization.PTZ_ControllerPopupWindowFactory;
@@ -83,10 +76,8 @@ import it.crs4.most.visualization.augmentedreality.ARFragment;
 import it.crs4.most.visualization.augmentedreality.TouchGLSurfaceView;
 import it.crs4.most.visualization.augmentedreality.mesh.Circle;
 import it.crs4.most.visualization.augmentedreality.mesh.CoordsConverter;
-import it.crs4.most.visualization.augmentedreality.mesh.Line;
 import it.crs4.most.visualization.augmentedreality.mesh.Mesh;
 import it.crs4.most.visualization.augmentedreality.mesh.MeshManager;
-import it.crs4.most.visualization.augmentedreality.mesh.Pyramid;
 import it.crs4.most.visualization.augmentedreality.renderer.PubSubARRenderer;
 import it.crs4.most.visualization.sensors.ECGView;
 import it.crs4.most.visualization.utils.zmq.ECGSubscriber;
@@ -95,8 +86,6 @@ import it.crs4.most.voip.VoipEventBundle;
 import it.crs4.most.voip.enums.CallState;
 import it.crs4.most.voip.enums.VoipEvent;
 import it.crs4.most.voip.enums.VoipEventType;
-
-import static android.view.View.GONE;
 
 
 public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity implements
@@ -476,11 +465,13 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
                     @Override
                     public void onPlay() {
-
+                        if (mARToggle.isChecked())
+                            mStreamOnBoardCameraFragment.startAR();
                     }
 
                     @Override
                     public void onPause() {
+                        mStreamCamera.play();
 
                     }
 
@@ -495,7 +486,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 mStreamOnBoardCameraFragment.setDeviceID("EPSON/embt2/embt2");
                 PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
                 mStreamOnBoardCameraFragment.setRenderer(renderer);
-                mStreamOnBoardCameraFragment.setStreamAR(mStreamOnBoardCamera);
+                mStreamOnBoardCameraFragment.setStream(mStreamOnBoardCamera);
                 mStreamOnBoardCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
                     @Override
                     public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -531,11 +522,13 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
                 @Override
                 public void onPlay() {
-
+                    if (mARToggle.isChecked())
+                        mStreamCameraFragment.startAR();
                 }
 
                 @Override
                 public void onPause() {
+                    mStreamOnBoardCamera.play();
 
                 }
 
@@ -547,7 +540,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mStreamCameraFragment = ARFragment.newInstance(mStreamCamera.getName());
             mStreamCameraFragment.setPlayerButtonsVisible(false);
             mStreamCameraFragment.setRenderer(mARCameraRenderer);
-            mStreamCameraFragment.setStreamAR(mStreamCamera);
+            mStreamCameraFragment.setStream(mStreamCamera);
             mStreamCameraFragment.setGlSurfaceViewCallback(this);
             mStreamCameraFragment.setEnabled(arOnBoot);
             mStreamCameraFragment.setArListener(this);
@@ -562,7 +555,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             mStreamEcoFragment = ARFragment.newInstance(mStreamEco.getName());
             mStreamEcoFragment.setPlayerButtonsVisible(false);
             mStreamEcoFragment.setEnabled(false);
-            mStreamEcoFragment.setStreamAR(mStreamEco);
+            mStreamEcoFragment.setStream(mStreamEco);
 
             mPTZManager = new PTZ_Manager(this,
                     camera.getPtzUri(),
@@ -815,17 +808,12 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     private void playCamera() {
 //        if (currentCameraStream.equals(CAMERA_STREAM)) {
-            if (mStreamCamera != null && mStreamCamera.getState() != StreamState.PLAYING) {
-                mStreamCameraFragment.setStreamVisible();
-                mStreamCamera.play();
+
+        IStream currentStream = getCurrentStream();
+        if (currentStream != null && currentStream.getState() != StreamState.PLAYING) {
+                getCurrentFragment().setStreamVisible();
+            currentStream.play();
             }
-//        }
-//        else {
-            if (mStreamOnBoardCamera != null && mStreamOnBoardCamera.getState() != StreamState.PLAYING) {
-                mStreamOnBoardCameraFragment.setStreamVisible();
-                mStreamOnBoardCamera.play();
-            }
-//        }
     }
 
     private void playStreams() {
@@ -897,18 +885,18 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         Log.d(TAG, "Surface created for stream " + streamId);
         if (surfaceView != null) {
             if (streamId.equals(CAMERA_STREAM)) {
-                if (!mStreamCameraPrepared) {
-                    mStreamCamera.prepare(surfaceView, true);
-//                mStreamCameraFragment.setStreamAR(mStreamCamera);
-//                mStreamCameraFragment.setRenderer(mARCameraRenderer);
-//                    if (arConf != null) {
-//                        mStreamCameraFragment.prepareRemoteAR();
-//                        mStreamCameraPrepared = true;
-//                    }
-                }
+//                if (!mStreamCameraPrepared) {
+//                    mStreamCamera.prepare(surfaceView, true);
+////                mStreamCameraFragment.setStream(mStreamCamera);
+////                mStreamCameraFragment.setRenderer(mARCameraRenderer);
+////                    if (arConf != null) {
+////                        mStreamCameraFragment.prepareRemoteAR();
+////                        mStreamCameraPrepared = true;
+////                    }
+//                }
             }
             else if (streamId.equals(ECO_STREAM)) {
-                mStreamEco.prepare(surfaceView);
+//                mStreamEco.prepare(surfaceView);
                 if (arConf != null) {
                     TouchGLSurfaceView glView = mStreamEcoFragment.getGlView();
                     glView.setZOrderMediaOverlay(true);
@@ -916,10 +904,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 }
             }
             else if (streamId.equals(ON_BOARD_CAMERA_STREAM)) {
-                if (!mStreamOnBoardCameraPrepared) {
-                    mStreamOnBoardCamera.prepare(surfaceView, true);
-                    mStreamOnBoardCameraPrepared = true;
-                }
+//                if (!mStreamOnBoardCameraPrepared) {
+//                    mStreamOnBoardCamera.prepare(surfaceView, true);
+//                    mStreamOnBoardCameraPrepared = true;
+//                }
             }
         }
     }
@@ -1259,27 +1247,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         }
     }
 
-    private class NewStreamOnLayoutChangeListener implements View.OnLayoutChangeListener {
-        IStream newVisibleStream, currentStream;
-
-        public NewStreamOnLayoutChangeListener(IStream newVisibleStream, IStream currentStream) {
-            this.newVisibleStream = newVisibleStream;
-            this.currentStream = currentStream;
-        }
-
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            Log.d(TAG, "onLayoutChange " + newVisibleStream.getName() );
-            Log.d(TAG, String.format("view %s, left %s top %s, right %s bottom %s", v.toString(), left, top, right, bottom));
-            Log.d(TAG, "play " + newVisibleStream.getName() );
-            newVisibleStream.play();
-            Log.d(TAG, "pause " + currentStream.getName() );
-            currentStream.pause();
-            v.removeOnLayoutChangeListener(this);
-
-        }
-    }
-
     private ARFragment getCurrentFragment() {
         return currentCameraStream.equals(CAMERA_STREAM)? mStreamCameraFragment: mStreamOnBoardCameraFragment;
     }
@@ -1318,11 +1285,14 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             switchPhase++;
             if (switchPhase == 2){
                 Log.d(TAG, String.format("switch phase %s, time to pause/play", switchPhase));
-                getCurrentStream().pause();
+//                getCurrentStream().pause();
                 getCurrentFragment().stopAR();
+
+                getHiddenFragment().setStreamVisible();
                 getHiddenStream().play();
-                if (mARToggle.isChecked())
-                    getHiddenFragment().startAR();
+//
+//                if (mARToggle.isChecked())
+//                    getHiddenFragment().startAR();
 //                cameraMeshManager.configureScene(true);
                 currentCameraStream = currentCameraStream.equals(CAMERA_STREAM)? ON_BOARD_CAMERA_STREAM: CAMERA_STREAM;
                 }
