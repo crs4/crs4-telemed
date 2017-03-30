@@ -179,6 +179,10 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mRESTClient = new RESTClient(this, configServerIP, configServerPort);
         setContentView(R.layout.spec_teleconsultation_activity);
 
+        user = QuerySettings.getUser(this);
+        saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
+
+
         arConf = teleconsultation.getLastSession().getRoom().getARConfiguration();
         if (arConf != null) {
             mARPublisher = new ZMQPublisher(ZMQ_LISTENING_PORT);
@@ -208,6 +212,30 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 mesh.publisher = mARPublisher;
             }
             ecoMeshManager.configureScene();
+
+            KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
+                    teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
+            );
+            Map<String, float[]> keymap = keyboardCoordinatesStore.read();
+            Set<String> keys = keymap.keySet();
+
+            List<Mesh> keyboardMeshes = cameraMeshManager.getMeshesByGroup("keyboard");
+            if (keyboardMeshes.size() > 0) {
+                VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
+                        new SpinnerKeyboardViewer(
+                                this,
+                                (Spinner) findViewById(R.id.virtual_keyboard_spinner),
+                                keymap.keySet().toArray(new String[keys.size()])
+                        ),
+                        keyboardCoordinatesStore,
+                        keyboardMeshes.get(0)
+                );
+
+                if (user.isAdmin()) {
+                    saveKeyCoordinate.setVisibility(View.VISIBLE);
+                    virtualKeyboard.setSaveButton(saveKeyCoordinate);
+                }
+            }
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
@@ -218,7 +246,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 new PTZHandler(this), true, true, true, 100, 100);
         mStreamLayout = (LinearLayout) findViewById(R.id.stream_layout);
 
-        user = QuerySettings.getUser(this);
         if (user != null && user.isAdmin()) {
             ARConfigurationFragment arConfigurationFragment = ARConfigurationFragment.
                     newInstance(mARPublisher, teleconsultation.getLastSession().getRoom());
@@ -234,7 +261,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mCamerasFrame = (LinearLayout) findViewById(R.id.container_cameras);
         resetCameraMesh = (Button) findViewById(R.id.reset_camera_mesh_position);
         resetEcoMesh = (Button) findViewById(R.id.reset_eco_mesh_position);
-        saveKeyCoordinate = (Button) findViewById(R.id.save_ar_key_coordinate);
 
         setupECGFrame();
 
@@ -1002,29 +1028,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         getCurrentFragment().setEnabled(mARToggle.isChecked());
 //        cameraMeshManager.configureScene(true);
         //            KeyboardCoordinatesStore keyboardCoordinatesStore = new TXTKeyboardCoordinatesStore(assetManager.open(assetName));
-        KeyboardCoordinatesStore keyboardCoordinatesStore = new RESTKeyboardCoordinatesStore(
-                teleconsultation.getLastSession().getRoom(), mRESTClient, QuerySettings.getAccessToken(this)
-        );
-        Map<String, float[]> keymap = keyboardCoordinatesStore.read();
-        Set<String> keys = keymap.keySet();
-
-        List<Mesh> keyboardMeshes = cameraMeshManager.getMeshesByGroup("keyboard");
-        if (keyboardMeshes.size() > 0) {
-            VirtualKeyboard virtualKeyboard = new VirtualKeyboard(
-                    new SpinnerKeyboardViewer(
-                            this,
-                            (Spinner) findViewById(R.id.virtual_keyboard_spinner),
-                            keymap.keySet().toArray(new String[keys.size()])
-                    ),
-                    keyboardCoordinatesStore,
-                    keyboardMeshes.get(0)
-            );
-
-            if (user.isAdmin()) {
-                saveKeyCoordinate.setVisibility(View.VISIBLE);
-                virtualKeyboard.setSaveButton(saveKeyCoordinate);
-            }
-        }
     }
 
     @Override
