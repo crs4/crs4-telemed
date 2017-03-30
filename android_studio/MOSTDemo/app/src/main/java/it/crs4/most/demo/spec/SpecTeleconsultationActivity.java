@@ -207,7 +207,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             for (Mesh mesh : cameraMeshManager.getMeshes()) {
                 mesh.publisher = mARPublisher;
             }
-//            ecoMeshManager.configureScene();
+            ecoMeshManager.configureScene();
         }
 
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
@@ -494,7 +494,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                         TouchGLSurfaceView glView = mStreamOnBoardCameraFragment.getGlView();
                         glView.setMeshManager(cameraMeshManager);
                         glView.setPublisher(mARPublisher);
-                        glView.setEnabled(false);
+                        glView.setEnabled(mStreamOnBoardCameraFragment.isEnabled());
                     }
 
                     @Override
@@ -581,6 +581,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
                 if (arConf != null) {
                     glView.setMeshManager(cameraMeshManager);
                     glView.setPublisher(mARPublisher);
+                    glView.setEnabled(mStreamCameraFragment.isEnabled());
                 }
                 else {
                     glView.setEnabled(false);
