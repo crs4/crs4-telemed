@@ -33,7 +33,7 @@ import it.crs4.most.visualization.StreamViewerFragment;
 
 @SuppressLint("InlinedApi")
 public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
-    implements IStreamFragmentCommandListener {
+    implements IStreamFragmentCommandListener, StreamViewerFragment.OnCompleteListener {
 
     private static final String TAG = "EcoTeleconsultActivity";
 
@@ -275,5 +275,15 @@ public class EcoTeleconsultationActivity extends BaseEcoTeleconsultationActivity
             }
             toggleHoldCall(mIsOnHold);
         }
+    }
+
+    @Override
+    public void onFragmentCreate() {
+
+    }
+
+    @Override
+    public void onFragmentResume() {
+
     }
 }
