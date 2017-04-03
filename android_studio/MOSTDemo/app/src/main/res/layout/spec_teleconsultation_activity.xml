@@ -98,7 +98,7 @@
             <FrameLayout
                 android:id="@+id/container_stream_on_board_camera"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0"
                 android:layout_width="match_parent"
                 android:orientation="horizontal">
             </FrameLayout>
@@ -106,7 +106,7 @@
             <FrameLayout
                 android:id="@+id/container_stream_camera"
                 android:layout_height="0dp"
-                android:layout_weight="0"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:orientation="horizontal">
             </FrameLayout>

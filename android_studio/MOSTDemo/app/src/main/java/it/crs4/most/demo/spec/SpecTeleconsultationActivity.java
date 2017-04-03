@@ -103,7 +103,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
 
     private final String CAMERA_STREAM = "CAMERA_STREAM";
     private final String ON_BOARD_CAMERA_STREAM = "ON_BOARD_CAMERA_STREAM";
-    private String currentCameraStream = ON_BOARD_CAMERA_STREAM;
+    private String currentCameraStream = CAMERA_STREAM;
     private String ECO_STREAM = "ECO_STREAM";
     private String ECO_ARROW_ID = "ecoArrow";
     private String CAMER_ARROW_ID = "cameraArrow";
@@ -475,65 +475,65 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             streamingLib.initLib(getApplicationContext());
 
             String ecoAppAddress = teleconsultation.getLastSession().getEcoAppAddress();
-            if (ecoAppAddress != null && !ecoAppAddress.equals("")) {
-                String streamUri = "rtsp://" + ecoAppAddress + ":8554/test";
-//                String streamUri = "file:///sdcard/Movies/eco2.mp4";
-                Device onBoardCamera = new Device("OnBoardCamera", streamUri, "", "", "", "", "");
-                HashMap<String, String> streamOnBoardCameraParams = new HashMap<>();
-                streamOnBoardCameraParams.put("name", ON_BOARD_CAMERA_STREAM);
-                streamOnBoardCameraParams.put("uri", onBoardCamera.getStreamUri());
-                mStreamOnBoardCamera = streamingLib.createStream(streamOnBoardCameraParams);
-                mStreamOnBoardCamera.addEventListener(new IEventListener() {
-                    @Override
-                    public void frameReady(byte[] bytes) {
 
-                    }
+//            Camera board stream  created even if not available, just black screen in case
+            String streamUri = "rtsp://" + (ecoAppAddress == null? "":ecoAppAddress) + ":8554/test";
 
-                    @Override
-                    public void onPlay() {
-                        mStreamCamera.pause();
-                        if (mARToggle.isChecked())
-                            mStreamOnBoardCameraFragment.startAR();
-                    }
+            Device onBoardCamera = new Device("OnBoardCamera", streamUri, "", "", "", "", "");
+            HashMap<String, String> streamOnBoardCameraParams = new HashMap<>();
+            streamOnBoardCameraParams.put("name", ON_BOARD_CAMERA_STREAM);
+            streamOnBoardCameraParams.put("uri", onBoardCamera.getStreamUri());
+            mStreamOnBoardCamera = streamingLib.createStream(streamOnBoardCameraParams);
+            mStreamOnBoardCamera.addEventListener(new IEventListener() {
+                @Override
+                public void frameReady(byte[] bytes) {
 
-                    @Override
-                    public void onPause() {
-                        mStreamCamera.play();
+                }
 
-                    }
+                @Override
+                public void onPlay() {
+                    mStreamCamera.pause();
+                    if (mARToggle.isChecked())
+                        mStreamOnBoardCameraFragment.startAR();
+                }
 
-                    @Override
-                    public void onVideoChanged(int i, int i1) {
+                @Override
+                public void onPause() {
+                    mStreamCamera.play();
 
-                    }
-                });
+                }
 
-                mStreamOnBoardCameraFragment = ARFragment.newInstance(mStreamOnBoardCamera.getName());
-                mStreamOnBoardCameraFragment.setPlayerButtonsVisible(false);
-                mStreamOnBoardCameraFragment.setDeviceID("EPSON/embt2/embt2");
-                PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
-                mStreamOnBoardCameraFragment.setRenderer(renderer);
-                mStreamOnBoardCameraFragment.setStream(mStreamOnBoardCamera);
-                mStreamOnBoardCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
-                    @Override
-                    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                        TouchGLSurfaceView glView = mStreamOnBoardCameraFragment.getGlView();
-                        glView.setMeshManager(cameraMeshManager);
-                        glView.setPublisher(mARPublisher);
-                        glView.setEnabled(mStreamOnBoardCameraFragment.isEnabled());
-                    }
+                @Override
+                public void onVideoChanged(int i, int i1) {
 
-                    @Override
-                    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+                }
+            });
 
-                    }
+            mStreamOnBoardCameraFragment = ARFragment.newInstance(mStreamOnBoardCamera.getName());
+            mStreamOnBoardCameraFragment.setPlayerButtonsVisible(false);
+            mStreamOnBoardCameraFragment.setDeviceID("EPSON/embt2/embt2");
+            PubSubARRenderer renderer = new PubSubARRenderer(this, cameraMeshManager);
+            mStreamOnBoardCameraFragment.setRenderer(renderer);
+            mStreamOnBoardCameraFragment.setStream(mStreamOnBoardCamera);
+            mStreamOnBoardCameraFragment.setGlSurfaceViewCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                    TouchGLSurfaceView glView = mStreamOnBoardCameraFragment.getGlView();
+                    glView.setMeshManager(cameraMeshManager);
+                    glView.setPublisher(mARPublisher);
+                    glView.setEnabled(mStreamOnBoardCameraFragment.isEnabled());
+                }
 
-                    @Override
-                    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                @Override
+                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
-                    }
-                });
-            }
+                }
+
+                @Override
+                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+
+                }
+            });
 
             Device camera;
             camera = teleconsultation.getLastSession().getCamera();
