@@ -191,7 +191,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
         streamServer = new GstreamerRTSPServer(this);
-        streamServer.start();
+        String camResolution = PreferenceManager.getDefaultSharedPreferences(this).getString("pref_cameraResolution", "320x240");
+        String[] dims = camResolution.split("x", 2);
+        streamServer.start(Integer.parseInt(dims[0]), Integer.parseInt(dims[1]));
 
     }
 
