@@ -40,6 +40,7 @@ import java.util.Timer;
 
 import it.crs4.most.demo.QuerySettings;
 import it.crs4.most.demo.R;
+import it.crs4.most.demo.RESTClient;
 import it.crs4.most.streaming.GstreamerRTSPServer;
 import it.crs4.most.streaming.StreamServer;
 import it.crs4.most.visualization.augmentedreality.CalibrateTouchGLSurfaceView;
@@ -159,6 +160,10 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
             mOpticalARToolkit = new OpticalARToolkit(ARToolKit.getInstance());
             isOptical = true;
         }
+
+        String configServerIP = QuerySettings.getConfigServerAddress(this);
+        int configServerPort = Integer.valueOf(QuerySettings.getConfigServerPort(this));
+        mRESTClient = new RESTClient(this, configServerIP, configServerPort);
 
         String specAppAddress = teleconsultation.getLastSession().getSpecAppAddress();
         Log.d(TAG, "SpecApp Address: " + specAppAddress);
