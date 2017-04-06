@@ -300,6 +300,9 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 //            float [] extraCalibration = renderer.getExtraCalib ion[0], extraCalibration[1]);
         }
 
+        if (streamServer.isRunning()) {
+            streamServer.stop();
+        }
         this.mainLayout.removeView(this.glView);
         this.mainLayout.removeView(this.preview);
         unregisterReceiver(broadcastReceiver);
