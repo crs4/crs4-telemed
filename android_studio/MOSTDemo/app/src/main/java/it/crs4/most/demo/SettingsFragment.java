@@ -172,7 +172,8 @@ public class SettingsFragment extends PreferenceFragment {
             Camera.Parameters e = cam.getParameters();
             List previewSizes = e.getSupportedPreviewSizes();
             cam.release();
-            String camResolution = this.cameraResolutionPreference.getValue();
+            String currentResolution = this.cameraResolutionPreference.getValue();
+            String camResolution = currentResolution != null? currentResolution: "320x240";
             boolean foundCurrentResolution = false;
             CharSequence[] entries = new CharSequence[previewSizes.size()];
             CharSequence[] entryValues = new CharSequence[previewSizes.size()];
@@ -189,10 +190,14 @@ public class SettingsFragment extends PreferenceFragment {
 
             this.cameraResolutionPreference.setEntries(entries);
             this.cameraResolutionPreference.setEntryValues(entryValues);
+
             if(!foundCurrentResolution) {
-                this.cameraResolutionPreference.setValue(entryValues[0].toString());
-                this.cameraResolutionPreference.setSummary(this.cameraResolutionPreference.getEntry());
+                camResolution = entryValues[entryValues.length -1].toString();
             }
+
+            this.cameraResolutionPreference.setValue(camResolution);
+            this.cameraResolutionPreference.setSummary(this.cameraResolutionPreference.getEntry());
+
         } catch (RuntimeException ex) {
             Log.e("CameraPreferences", "buildResolutionListForCameraIndex(): Camera failed to open: " + ex.getLocalizedMessage());
         }
