@@ -189,12 +189,7 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-
         streamServer = new GstreamerRTSPServer(this);
-        String camResolution = PreferenceManager.getDefaultSharedPreferences(this).getString("pref_cameraResolution", "320x240");
-        String[] dims = camResolution.split("x", 2);
-        streamServer.start(Integer.parseInt(dims[0]), Integer.parseInt(dims[1]));
-
     }
 
     @Override
@@ -334,6 +329,11 @@ public class AREcoTeleconsultationActivity extends BaseEcoTeleconsultationActivi
 
     public void cameraPreviewStarted(int width, int height, int rate, int cameraIndex, boolean cameraIsFrontFacing) {
         Log.d(TAG, "cameraPreviewStarted");
+
+        if (!streamServer.isRunning()) {
+            Log.d(TAG, String.format("start server with %s %s %s", width, height, rate));
+            streamServer.start(width, height, rate);
+        }
         if (arInitialized) {
             return;
         }
