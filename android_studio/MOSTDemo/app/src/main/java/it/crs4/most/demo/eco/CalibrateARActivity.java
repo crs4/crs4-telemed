@@ -114,7 +114,7 @@ public class CalibrateARActivity extends AppCompatActivity implements CameraEven
         float [] calibration = QuerySettings.getARCalibration(this);
     //        renderer.setExtraCalibration(new float[]{calibration[0], calibration[1], 0});
         renderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
-        Circle arrow = new Circle(38, 10, 10, "ARROW");
+        Circle arrow = new Circle(20, 20, 2.5f, "ARROW");
         MarkerFactory.Marker markerA = MarkerFactory.getMarker("single;Data/multi/a.patt;40");
         arrow.addMarker(markerA);
         markerA.setGroup("keyboard");
