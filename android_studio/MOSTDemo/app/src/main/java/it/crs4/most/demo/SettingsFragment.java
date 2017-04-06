@@ -2,6 +2,8 @@ package it.crs4.most.demo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -17,6 +19,8 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import it.crs4.most.demo.eco.CalibrateARActivity;
 
 public class SettingsFragment extends PreferenceFragment {
@@ -31,6 +35,7 @@ public class SettingsFragment extends PreferenceFragment {
     private RESTClient restClient;
     private ListPreference role;
     private  String accessToken;
+    private ListPreference cameraResolutionPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -159,11 +164,51 @@ public class SettingsFragment extends PreferenceFragment {
 //            }
 //        });
 
+        cameraResolutionPreference = (ListPreference)this.findPreference("pref_cameraResolution");
+        cameraResolutionPreference.setEnabled(mArEnabled.isEnabled() && isEcographist());
+
+        try {
+            Camera cam = Camera.open(0);
+            Camera.Parameters e = cam.getParameters();
+            List previewSizes = e.getSupportedPreviewSizes();
+            cam.release();
+            String currentResolution = this.cameraResolutionPreference.getValue();
+            String camResolution = currentResolution != null? currentResolution: "320x240";
+            boolean foundCurrentResolution = false;
+            CharSequence[] entries = new CharSequence[previewSizes.size()];
+            CharSequence[] entryValues = new CharSequence[previewSizes.size()];
+
+            for(int i = 0; i < previewSizes.size(); ++i) {
+                int w = ((Camera.Size)previewSizes.get(i)).width;
+                int h = ((Camera.Size)previewSizes.get(i)).height;
+                entries[i] = w + "x" + h ;
+                entryValues[i] = w + "x" + h;
+                if(entryValues[i].equals(camResolution)) {
+                    foundCurrentResolution = true;
+                }
+            }
+
+            this.cameraResolutionPreference.setEntries(entries);
+            this.cameraResolutionPreference.setEntryValues(entryValues);
+
+            if(!foundCurrentResolution) {
+                camResolution = entryValues[entryValues.length -1].toString();
+            }
+
+            this.cameraResolutionPreference.setValue(camResolution);
+            this.cameraResolutionPreference.setSummary(this.cameraResolutionPreference.getEntry());
+
+        } catch (RuntimeException ex) {
+            Log.e("CameraPreferences", "buildResolutionListForCameraIndex(): Camera failed to open: " + ex.getLocalizedMessage());
+        }
+
+
 
         Preference.OnPreferenceChangeListener arEnablingListener =  new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 mARLowFilter.setEnabled((boolean) newValue);
+                cameraResolutionPreference.setEnabled((boolean) newValue && isEcographist());
                 setEnableEyeWearOptions((boolean) newValue && isEcographist());
                 return true;
             }
@@ -184,6 +229,9 @@ public class SettingsFragment extends PreferenceFragment {
         if (role.getValue() != null) {
             enabledArPreference(role.getValue());
         }
+
+
+
     }
 
     private void resetLogin() {
@@ -199,6 +247,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         mARLowFilter.setEnabled(mArEnabled.isChecked());
         setEnableEyeWearOptions(isEcographist && mArEnabled.isChecked());
+        cameraResolutionPreference.setEnabled(mArEnabled.isChecked() && isEcographist);
 
     }
 

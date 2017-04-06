@@ -35,7 +35,6 @@
             android:defaultValue="0.9f"
             android:enabled="false" />
 
-
         <ListPreference
             android:key="ar_eyes"
             android:title="Eyes"
@@ -50,20 +49,10 @@
             android:title="Calibrate"
             android:enabled="false"/>
 
-        <!--<Preference-->
-            <!--android:key="ar_clear_calibration"-->
-            <!--android:title="Clear calibration"-->
-            <!--android:enabled="false" />-->
-
-        <!--<EditTextPreference-->
-            <!--android:key="ar_calibrated_x"-->
-            <!--android:title="calibrated x"-->
-            <!--android:enabled="false"/>-->
-
-        <!--<EditTextPreference-->
-            <!--android:key="ar_calibrated_y"-->
-            <!--android:title="calibrated y"-->
-            <!--android:enabled="false"/>-->
+        <ListPreference
+            android:key="pref_cameraResolution"
+            android:title="Camera Resolution"
+            />
 
     </PreferenceCategory>
 
