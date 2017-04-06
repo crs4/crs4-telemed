@@ -45,10 +45,18 @@
             android:summary="%s"
             android:defaultValue="BOTH" />
 
+
+
         <Preference
             android:key="ar_calibrate"
             android:title="Calibrate"
             android:enabled="false"/>
+
+        <ListPreference
+            android:key="pref_cameraResolution"
+            android:title="Camera Resolution"
+            />
+
 
         <!--<Preference-->
             <!--android:key="ar_clear_calibration"-->
