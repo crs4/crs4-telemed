@@ -37,6 +37,14 @@ public class SettingsFragment extends PreferenceFragment {
     private  String accessToken;
     private ListPreference cameraResolutionPreference;
 
+    private Preference.OnPreferenceChangeListener summaryUpdater = new Preference.OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object o) {
+            preference.setSummary(o.toString());
+            return true;
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +54,11 @@ public class SettingsFragment extends PreferenceFragment {
 
         mArEnabled = (CheckBoxPreference) findPreference("ar_enabled");
         mArEyes = (ListPreference) findPreference("ar_eyes");
+        mArEyes.setSummary(mArEyes.getValue());
         mCalibrateAR = findPreference("ar_calibrate");
         mARLowFilter = (EditTextPreference) findPreference("ar_low_filter_level");
+        mARLowFilter.setOnPreferenceChangeListener(summaryUpdater);
+        mARLowFilter.setSummary(mARLowFilter.getText());
 //        mClearCalibration = findPreference("ar_clear_calibration");
 
         role = (ListPreference) findPreference("role_preference");
@@ -73,6 +84,7 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+        configServerAddr.setOnPreferenceChangeListener(summaryUpdater);
 
         EditTextPreference configServerPort = (EditTextPreference) findPreference("config_server_port");
         configServerPort.setSummary(configServerPort.getText());
@@ -85,6 +97,7 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+        configServerPort.setOnPreferenceChangeListener(summaryUpdater);
 
         String configServerIP = QuerySettings.getConfigServerAddress(getActivity());
 
@@ -95,6 +108,7 @@ public class SettingsFragment extends PreferenceFragment {
             mArEyes.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary(newValue.toString());
                     restClient.setARPreferences(
                         accessToken,
                         newValue.toString(),
@@ -202,6 +216,7 @@ public class SettingsFragment extends PreferenceFragment {
             Log.e("CameraPreferences", "buildResolutionListForCameraIndex(): Camera failed to open: " + ex.getLocalizedMessage());
         }
 
+        cameraResolutionPreference.setOnPreferenceChangeListener(summaryUpdater);
 
 
         Preference.OnPreferenceChangeListener arEnablingListener =  new Preference.OnPreferenceChangeListener() {
