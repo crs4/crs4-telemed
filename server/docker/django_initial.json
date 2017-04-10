@@ -607,6 +607,25 @@
   },
   {
     "fields": {
+      "task_group_type": "SP",
+      "name": "CLI Taskgroup",
+      "hospital": "",
+      "is_active": true,
+      "uuid": "5dw2x3jfkftxue5a5izw6yiplbbn4dlo",
+      "related_task_groups": [],
+      "users": [
+        [
+          "admin"
+        ]
+      ],
+      "is_health_care_provider": false,
+      "description": "Task group for REST from the CLI"
+    },
+    "model": "users.taskgroup",
+    "pk": 2
+  },
+  {
+    "fields": {
       "created": "2016-10-06T13:08:24.376Z",
       "expires": "2016-10-07T13:08:24.376Z",
       "modified": "2016-10-06T13:08:24.376Z",
@@ -635,5 +654,20 @@
     },
     "model": "provider.client",
     "pk": 1
+  },
+  {
+    "fields": {
+      "name": "CLI Client",
+      "created": "2017-03-28T07:41:05.090Z",
+      "url": "http://localhost/",
+      "client_type": 0,
+      "modified": "2017-03-28T07:41:05.096Z",
+      "redirect_uri": "http://localhost",
+      "user": null,
+      "client_id": "8c96bf8cea26fa555fa8",
+      "client_secret": "4fd1f508b7b03fba6509da4c193157d7a2b20838"
+    },
+    "model": "provider.client",
+    "pk": 2
   }
 ]

@@ -10,5 +10,6 @@ urlpatterns = patterns(
     url(r'^authentication/', include('most.web.authentication.urls')),
     url(r'^teleconsultation/', include('most.web.teleconsultation.urls')),
     url(r'^demographics/', include('most.web.demographics.urls')),
+    url(r'^medicalrecords/', include('most.web.medicalrecords.urls')),
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
 )

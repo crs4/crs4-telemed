@@ -18,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -55,65 +56,33 @@ public class ReportActivity extends AppCompatActivity {
         }
     }
 
-//    private JSONArray getTemplateJsonContent() {
-//        List<WidgetProvider> wps = mTemplateProvider.getWidgetProviders();
-//        JSONArray tmpJson = new JSONArray();
-//        for (int i = 0; i < wps.size(); i++)
-//            try {
-//                tmpJson.put(i, wps.get(i).toJson());
-//            }//    /**
-//     * Show info dialog.
-//     *
-//     * @param content the content
-//     */
-//    private void showInfoDialog(String content) {
-//        final Dialog dialog = new Dialog(this);
-//        dialog.setTitle("Json Adl Structure");
-//        dialog.setContentView(R.layout.custom_dialog);
-//        TextView dialogText = (TextView) dialog.findViewById(R.id.dialogText);
-//        dialogText.setMovementMethod(new ScrollingMovementMethod());
-//        dialogText.setText(content);
-//
-//        Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-//        dialogButton.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//
-//            }
-//        });
-//
-//        dialog.show();
-//    }
-//            catch (JSONException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//
-//        return tmpJson;
-//
-//    }
+    private JSONArray getTemplateJsonContent() {
+        List<WidgetProvider> wps = mTemplateProvider.getWidgetProviders();
+        JSONArray tmpJson = new JSONArray();
+        for (int i = 0; i < wps.size(); i++)
+            try {
+                tmpJson.put(i, wps.get(i).toJson());
+            }//    /**
+            catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        return tmpJson;
+
+    }
 
     private void setupButtonsListener() {
-//        Button butJson = (Button) findViewById(R.id.json_button);
-//        butJson.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                String content;
-//                try {
-//                    content = getTemplateJsonContent().toString(2);
-//                    showInfoDialog(content);
-//                }
-//                catch (JSONException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                    showInfoDialog(String.format("Error Parsing Json Content: \n\n %s", e.getMessage()));
-//                }
-//
-//            }
-//        });
+        Button butJson = (Button) findViewById(R.id.json_button);
+        butJson.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                JSONArray content;
+                content = getTemplateJsonContent();
+                Log.d(TAG, "JSON Archetype: " + content);
+            }
+        });
 
         Button butSave = (Button) findViewById(R.id.save_button);
         butSave.setOnClickListener(new OnClickListener() {

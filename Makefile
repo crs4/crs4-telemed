@@ -6,6 +6,7 @@ devel:
 	@if ! [ -d libs/most-voip ]; then git clone https://github.com/crs4/most-voip libs/most-voip -b develop; fi
 	@if ! [ -d libs/most-visualization ]; then git clone https://github.com/crs4/most-visualization libs/most-visualization -b develop; fi
 	@if ! [ -d libs/most-demographics ]; then git clone https://github.com/crs4/most-demographics libs/most-demographics -b develop; fi
+	@if ! [ -d libs/most-medicalrecords ]; then git clone https://github.com/crs4/most-medicalrecords libs/most-medicalrecords -b develop; fi
 
 	echo "link libs"
 
@@ -14,15 +15,18 @@ devel:
 	ln -s ../../../libs/most-streaming/service/src/most/web/streaming streaming; \
 	ln -s ../../../libs/most-voip/service/src/most/web/voip voip; \
 	ln -s ../../../libs/most-demographics/src/most/web/demographics demographics; \
+	ln -s ../../../libs/most-medicalrecords/src/most/web/medicalrecords medicalrecords; \
 
 	cd server; ln -fs ../libs/most/src/provider provider;
 
 clean:
 	echo "clean devel mode"
-	
-	rm server/provider
 
-	@if [ `git -C libs/most status --porcelain` ]]; then \
+	@if [ -f server/provider ]; then \
+		rm server/provider; \
+	fi
+
+	@if [ `git -C libs/most status --porcelain` ]; then \
 		echo "CHANGES - most repository not removed"; \
 	else \
 		echo "NO CHANGES - remove most repository"; \
@@ -32,7 +36,7 @@ clean:
 		rm -f server/most/web/authentication; \
 	fi
 
-	@if [ `git -C libs/most-streaming status --porcelain` ]]; then \
+	@if [ `git -C libs/most-streaming status --porcelain` ]; then \
 		echo "CHANGES - most streaming repository not removed"; \
 	else \
 		echo "NO CHANGES - remove most streaming repository"; \
@@ -63,17 +67,28 @@ clean:
 		rm -fr libs/most-demographics; \
 	fi
 
+	@if [ `git -C libs/most-medicalrecords status --porcelain` ]; then \
+		echo "CHANGES - most medicalrecords repository not removed"; \
+	else \
+		echo "NO CHANGES - remove most medicalrecords repository"; \
+		rm -fr libs/most-medicalrecords; \
+	fi
+
 run:
+
 	cd server/most; PYTHONPATH=.. python manage.py runserver 0.0.0.0:8000
 
 shell: 
+
 	cd server/most; PYTHONPATH=.. python manage.py shell
 
 sync:
+
 	cd server/most; PYTHONPATH=.. python manage.py makemigrations
 	cd server/most; PYTHONPATH=.. python manage.py migrate
 
 dump:
+
 	cd server/most; PYTHONPATH=.. python manage.py dumpdata --exclude contenttypes --exclude auth --exclude sessions \
 	--exclude admin  --exclude teleconsultation.teleconsultationsession --exclude teleconsultation.teleconsultation --natural-foreign
 

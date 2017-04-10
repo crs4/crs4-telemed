@@ -2,7 +2,7 @@ FROM ubuntu:14.04.4
 
 RUN apt-get update && apt-get install -y asterisk wget vim mysql-server libmysqlclient-dev git odbcinst python-pip build-essential sqlite3 \
 	unixodbc unixodbc-dev
-RUN pip install Django==1.7.9 shortuuid pytz hl7apy
+RUN pip install Django==1.7.9 shortuuid pytz hl7apy requests==2.13.0
 
 WORKDIR /tmp
 
@@ -35,5 +35,7 @@ RUN service mysql start && \
 	service mysql stop
 
 VOLUME ["/tmp/most-demo"]
+
+WORKDIR /tmp/most-demo
 
 EXPOSE 2000 3306 3478 5060 8000 10000-10010
