@@ -241,7 +241,6 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
         mARCameraRenderer = new PubSubARRenderer(this, cameraMeshManager);
         mARCameraRenderer.setLowFilterLevel(QuerySettings.getARLowFilterLevel(this));
         mAREcoRenderer = new PubSubARRenderer(this, ecoMeshManager);
-        mAREcoRenderer.setEnableGrid(true);
         mPTZPopupWindowController = new PTZ_ControllerPopupWindowFactory(this,
                 new PTZHandler(this), true, true, true, 100, 100);
         mStreamLayout = (LinearLayout) findViewById(R.id.stream_layout);
@@ -253,6 +252,7 @@ public class SpecTeleconsultationActivity extends BaseTeleconsultationActivity i
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.ar_conf_fragment, arConfigurationFragment);
             fragmentTransaction.commit();
+            mAREcoRenderer.setEnableGrid(true);
 
 
         }
