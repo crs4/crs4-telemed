@@ -1,6 +1,6 @@
 To build the docker image launch the command
 
-- docker build -t most_demo -f Dockerfile .
+- docker build -t crs4-telemedicine -f Dockerfile .
 
 To launch the container use the command
 
