@@ -4,7 +4,7 @@ To build the docker image launch the command
 
 To launch the container use the command
 
-- docker run -it --net=host -v <path/to/crs4-telemed/git/repository>:/tmp/crs4-telemed  --name <name_of_the_container> crs4-telemed
+- docker run -it --net=host -v <path/to/crs4-telemed/git/repository>:/opt/crs4-telemed  --name <name_of_the_container> crs4-telemed
 
 The first time you launch the container run in the container the command
 
