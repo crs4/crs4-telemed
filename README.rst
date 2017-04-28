@@ -31,7 +31,7 @@ Available MOST Frameworks
   * `MOST-Report  <https://github.com/crs4/most-report>`_ (a library for managing clinical models)
   * `MOST-Demographics  <https://github.com/crs4/most-demographics>`_ (a Django application for patients management)
   * `MOST-MedicalRecords  <https://github.com/crs4/most-medicalrecords>`_ (a frontend REST api for accessing to demographics and clinical data of patients)
-  * `MOST-Demo  <https://github.com/crs4/most-demo>`_ (a DEMO Application showing the main features of the MOST frameworks)
+  * `CRS4 Telemed  <https://github.com/crs4/crs4-telemed>`_ (a DEMO Application showing the main features of the MOST frameworks)
 
 
 License
