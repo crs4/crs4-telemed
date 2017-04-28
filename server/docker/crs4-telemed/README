@@ -1,10 +1,10 @@
 To build the docker image launch the command
 
-- docker build -t crs4-telemedicine -f Dockerfile .
+- docker build -t crs4-telemed -f Dockerfile .
 
 To launch the container use the command
 
-- docker run -it --net=host -v <path/to/most-demo/git/repository>:/tmp/most-demo  --name <name_of_the_container> most_demo
+- docker run -it --net=host -v <path/to/crs4-telemed/git/repository>:/tmp/crs4-telemed  --name <name_of_the_container> crs4-telemed
 
 The first time you launch the container run in the container the command
 
